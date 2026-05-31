@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO's 웹앱 아이디어 창고</title>
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>웹앱 아이디어 창고</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="#" class="active">홈</a></li>
+        <li><a href="#">무료 앱 189종</a></li>
+        <li><a href="#">CineAHO</a></li>
+        <li><a href="#">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <div class="nav-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="global-search" placeholder="전체 검색...">
+      </div>
+      <button id="theme-toggle" class="btn-theme">
+        <i class="fa-solid fa-sun"></i>
+        <span>라이트</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="hero-container">
+    <div class="hero-content">
+      
+      <!-- Hero Left: Description -->
+      <section class="hero-left">
+        <div class="badge-capsule glass-panel">
+          <span class="pulse-dot"></span>
+          <span>✨ 데이터가 흐르는 웹 앱 창고</span>
+        </div>
+        
+        <h1 class="hero-title">
+          CineAHO와 함께<br>
+          <span class="gradient-text">유튜브 도전!</span>
+        </h1>
+        
+        <p class="hero-desc">
+          전문가급 유튜브 분석부터 생활 속 계산기, 로또 생성, 3D 게임까지 —<br>
+          수백 가지의 프리미엄 도구를 설치 없이 브라우저에서 즉시 실행하세요.
+        </p>
+
+        <div class="hero-actions">
+          <a href="./youtube-hub/index.html" class="btn btn-hero-start">
+            <i class="fa-solid fa-chart-simple"></i>
+            <span>CineAHO 시작하기</span>
+          </a>
+          <div class="hero-search-bar">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" id="hero-tool-search" placeholder="원하는 도구를 검색해보세요...">
+          </div>
+        </div>
+      </section>
+
+      <!-- Hero Right: YouTube Feature Card -->
+      <section class="hero-right">
+        <div class="neon-backglow"></div>
+        <div class="main-feature-card glass-panel">
+          
+          <!-- Card Interior Grid -->
+          <div class="card-grid">
+            <div class="card-left">
+              <div class="app-icon-wrapper">
+                <i class="fa-solid fa-chart-column"></i>
+              </div>
+              <div class="app-info">
+                <h3>YouTube 채널 분석</h3>
+                <span class="app-sub">실시간 데이터 분석 플랫폼</span>
+              </div>
+
+              <ul class="app-bullets">
+                <li><span class="bullet bullet-green"></span> 190,015개의 채널 데이터 분석</li>
+                <li><span class="bullet bullet-blue"></span> A1~C3 등급별 채널 분류</li>
+                <li><span class="bullet bullet-purple"></span> 성장률, 지역별 통계 제공</li>
+              </ul>
+
+              <a href="./youtube-hub/index.html" class="btn btn-app-launch">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>분석 시작하기</span>
+              </a>
+            </div>
+
+            <div class="card-right">
+              <div class="sub-action-cards">
+                <div class="sub-card active glass-panel">
+                  <i class="fa-solid fa-chart-area"></i>
+                  <span>실시간 분석</span>
+                </div>
+                <div class="sub-card glass-panel">
+                  <i class="fa-solid fa-filter"></i>
+                  <span>고급 필터링</span>
+                </div>
+                <div class="sub-card glass-panel">
+                  <i class="fa-solid fa-table-cells"></i>
+                  <span>스프레드시트</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Divider -->
+          <div class="card-divider"></div>
+
+          <!-- Statistics Row -->
+          <div class="card-stats">
+            <div class="stat-item">
+              <span class="stat-num">190,015</span>
+              <span class="stat-label">채널 분석</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <span class="stat-num">A1~C3</span>
+              <span class="stat-label">등급 분류</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <span class="stat-num">실시간</span>
+              <span class="stat-label">데이터 업데이트</span>
+            </div>
+          </div>
+
+          <!-- Floating 3D Graphic Decors -->
+          <div class="decor decor-chart"><i class="fa-solid fa-square-poll-vertical"></i></div>
+          <div class="decor decor-search"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+          <div class="decor decor-slate"><i class="fa-solid fa-clapperboard"></i></div>
+          <div class="decor decor-star"><i class="fa-solid fa-star"></i></div>
+          <div class="decor decor-sheet"><i class="fa-solid fa-table"></i></div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Bottom App Portal Section -->
+  <section class="tools-portal-section" id="tools-section">
+    <div class="portal-header-wrapper">
+      <div class="portal-badge">🚀 ONLINE APP STORE</div>
+      <h2 class="portal-section-title">다양한 무료 온라인 도구 모음</h2>
+      <p class="portal-section-subtitle">추가 설치 없이 웹브라우저에서 바로 사용할 수 있는 CineAHO의 유용한 도구 모음집입니다.</p>
+    </div>
+
+    <!-- App Cards Grid -->
+    <div class="tools-grid" id="tools-grid">
+      
+      <!-- App Card 1: 네이버 블로그 SEO 분석기 -->
+      <article class="tool-card glass-panel" data-tags="naver seo blog 네이버 블로그 마케팅 검색 노출">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-green"><i class="fa-solid fa-square-rss"></i></div>
+        <div class="tool-meta">
+          <h3>네이버 블로그 SEO 분석기</h3>
+          <p class="tool-desc">네이버 블로그 주소와 키워드를 분석하여 9대 SEO 수칙 점수를 실시간으로 진단하고 즉석 교정합니다.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-gears"></i> 마케팅 툴</span>
+          <a href="./naver-seo/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- App Card 2: YouTube 채널 데이터 분석 -->
+      <article class="tool-card glass-panel" data-tags="youtube 유투브 영상 크리에이터 채널 분석 통계">
+        <div class="tool-badge badge-demo">Demo</div>
+        <div class="tool-icon icon-red"><i class="fa-brands fa-youtube"></i></div>
+        <div class="tool-meta">
+          <h3>YouTube 채널 데이터 분석</h3>
+          <p class="tool-desc">전 세계 유튜브 채널 데이터를 기반으로 구독자 추이, 등급 분류 및 성장률 통계를 다차원 분석합니다.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-chart-line"></i> 빅데이터</span>
+          <a href="./youtube-hub/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- App Card 3: 인터랙티브 체크리스트 관리자 -->
+      <article class="tool-card glass-panel" data-tags="checklist 체크리스트 여행 이사 스케줄 업무 관리">
+        <div class="tool-badge badge-ready">Ready</div>
+        <div class="tool-icon icon-purple"><i class="fa-solid fa-clipboard-check"></i></div>
+        <div class="tool-meta">
+          <h3>체크리스트 정보 관리기</h3>
+          <p class="tool-desc">사용자 요구사항에 맞게 검색 기반 또는 AI 추천 기반으로 대화형 체크리스트를 자동 생성하고 보관합니다.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-circle-check"></i> 생산성</span>
+          <a href="./checklist/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- App Card 4: 로또 번호 생성기 및 통계 -->
+      <article class="tool-card glass-panel" data-tags="lotto 로또 번호 생성기 번호 추천 당첨 확인">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-gold"><i class="fa-solid fa-dice"></i></div>
+        <div class="tool-meta">
+          <h3>로또 번호 추천 생성기</h3>
+          <p class="tool-desc">역대 로또 당첨 번호 통계 분석을 거쳐 확률 가중치를 적용한 맞춤 번호 조합을 무제한 생성합니다.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-clover"></i> 엔터테인먼트</span>
+          <a href="./lotto/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- App Card 5: CineAHO 클래식 오목 대국실 -->
+      <article class="tool-card glass-panel" data-tags="game 게임 오목 대국 바둑 AI 인공지능 렌주">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-blue"><i class="fa-solid fa-gamepad"></i></div>
+        <div class="tool-meta">
+          <h3>CineAHO 클래식 오목 대국실</h3>
+          <p class="tool-desc">정교한 휴리스틱 AI 수읽기 엔진과 3-3 쌍삼 금지 룰을 탑재한 반응형 오목 대국실입니다.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-dragon"></i> 클래식 보드게임</span>
+          <a href="./omok/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- App Card 6: CineAHO 천하제일 장기 대국실 -->
+      <article class="tool-card glass-panel" data-tags="game 게임 장기 대국 한자 체스 AI 인공지능 전통">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-cyan"><i class="fa-solid fa-gamepad"></i></div>
+        <div class="tool-meta">
+          <h3>CineAHO 천하제일 장기 대국실</h3>
+          <p class="tool-desc">알파베타 탐색 기법을 가미한 AI 장기 엔진과 한자 테마 9x10 전통 장기판 대국 앱입니다.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-coins"></i> 클래식 보드게임</span>
+          <a href="./janggi/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- App Card 7: 궁극의 계산기 프로 울티메이트 -->
+      <article class="tool-card glass-panel" data-tags="calculator 계산기 수학 공학 프로그래머 단위 변환 금융 행렬 통계 그래프">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-purple"><i class="fa-solid fa-calculator"></i></div>
+        <div class="tool-meta">
+          <h3>궁극의 계산기 프로 울티메이트</h3>
+          <p class="tool-desc">표준, 공학용, 프로그래머, 단위변환, 금융, 행렬, 통계, 그래프 계산을 지원하는 올인원 통합 계산 도구입니다.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-square-root-variable"></i> 유틸리티</span>
+          <a href="./calculator/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- App Card 8: KOSIS 실시간 물가 통계 대시보드 -->
+      <article class="tool-card glass-panel" data-tags="kosis 물가 통계 경제 분석 데이터 cpi 인플레이션 지수 차트">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-blue"><i class="fa-solid fa-chart-line"></i></div>
+        <div class="tool-meta">
+          <h3>KOSIS 실시간 물가 통계</h3>
+          <p class="tool-desc">소비자물가, 신선식품, 생활물가 등 통계청 KOSIS 데이터를 실시간 분석하고 차트로 시각화하는 경제 통계 플랫폼입니다.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-chart-pie"></i> 빅데이터</span>
+          <a href="./kosis/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- App Card 9: 사주팔자 운세 분석 및 AI 명리학 상담 -->
+      <article class="tool-card glass-panel" data-tags="saju 사주 팔자 운세 명리 명리학 사주풀이 만세력 전통 상담 신년 운세">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-purple"><i class="fa-solid fa-hand-holding-heart"></i></div>
+        <div class="tool-meta">
+          <h3>사주팔자 운세 분석 및 AI 상담</h3>
+          <p class="tool-desc">전통 명리학 만세력 연산과 절기/시간 보정을 통해 사주팔자를 도출하고, AI 기반의 다차원 종합 운세 분석 리포트를 제공합니다.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-wand-magic-sparkles"></i> 엔터테인먼트</span>
+          <a href="./saju/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- App Card 10: 타로카드 무료 점술 및 해석 -->
+      <article class="tool-card glass-panel" data-tags="tarot 타로 카드 점술 운세 연애운 직장운 오늘의운세 켈틱크로스 무료타로">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-gold"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+        <div class="tool-meta">
+          <h3>타로카드 무료 점술 및 해석</h3>
+          <p class="tool-desc">정통 라이더-웨이트 78장 타로 덱을 활용하여 6가지 정밀 스프레드(오늘의운세, 연애, 직장, 켈틱크로스 등) 및 정/역방향 3D 카드 리딩을 제공합니다.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-hat-wizard"></i> 엔터테인먼트</span>
+          <a href="./tarot/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- App Card 11: 스도쿠 Pro - 상용급 퍼즐 엔진 -->
+      <article class="tool-card glass-panel" data-tags="sudoku 스도쿠 퍼즐 보드 게임 두뇌 연필 메모 힌트 3x3 격자">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-purple"><i class="fa-solid fa-puzzle-piece"></i></div>
+        <div class="tool-meta">
+          <h3>스도쿠 Pro - 상용급 퍼즐 엔진</h3>
+          <p class="tool-desc">유일해 보장 백트래킹 생성 엔진, 5단계 난이도 설정, 연필 메모 및 자동 메모 필터링, 되돌리기 및 힌트 연동을 지원하는 고성능 스도쿠 게임입니다.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-brain"></i> 클래식 퍼즐게임</span>
+          <a href="./sudoku/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- App Card 12: 전설의 퍼즐 게임 - LEGENDARY BLOCK -->
+      <article class="tool-card glass-panel" data-tags="tetris 테트리스 블록 퍼즐 레전드 게임 60fps 홀드 넥스트">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-red"><i class="fa-solid fa-shapes"></i></div>
+        <div class="tool-meta">
+          <h3>전설의 퍼즐 게임 - LEGENDARY BLOCK</h3>
+          <p class="tool-desc">60fps 캔버스 그래픽, 홀드 및 넥스트 대기열, 하강 및 Wall-Kick 회전 물리, 콤보 연쇄 스코어와 9단 완벽 가이드를 완비한 테트리스 퍼즐 게임입니다.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-cubes"></i> 클래식 블록게임</span>
+          <a href="./tetris/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+      
+      <!-- App Card 13: 2048 숫자 타일 합치기 - 네온 스펙트럼 -->
+      <article class="tool-card glass-panel" data-tags="2048 숫자 합치기 타일 퍼즐 게임 AI 힌트 관전 시드 undo 실행취소">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-blue"><i class="fa-solid fa-square-plus"></i></div>
+        <div class="tool-meta">
+          <h3>2048 숫자 타일 합치기 - 네온 스펙트럼</h3>
+          <p class="tool-desc">3x3~6x6 가변 보드, 20회 실행취소, 실시간 고대비 모드, LCG 난수 시드 및 리플레이 복사, 휴리스틱 AI 힌트 및 120ms 초고속 관전 모드와 11단 가이드를 완비했습니다.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-calculator"></i> 퍼즐 수학게임</span>
+          <a href="./2048/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+      
+      <!-- App Card 14: 스페이스 워리어 - 갤러그 슈팅 -->
+      <article class="tool-card glass-panel" data-tags="galaga 갤러그 슈팅 게임 스페이스 워리어 듀얼 파이터 트랙터 빔 챌린징 스테이지 retro">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-red"><i class="fa-solid fa-rocket"></i></div>
+        <div class="tool-meta">
+          <h3>스페이스 워리어 - 갤러그 슈팅</h3>
+          <p class="tool-desc">듀얼 파이터 시스템, 보스 기체의 트랙터 빔 포획과 복원, 5스테이지 주기 보너스 챌린징 스테이지, 255단계 무한 레벨과 Web Audio 자가 효과음을 내장한 프리미엄 슈팅 퍼포먼스입니다.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-gamepad"></i> 클래식 슈팅게임</span>
+          <a href="./galaga/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+      
+      <!-- App Card 15: QR코드 생성기 Pro -->
+      <article class="tool-card glass-panel" data-tags="qrcode qr 코드 생성기 유틸리티 제작 다운로드 커스텀 로고 와이파이 연락처">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-purple"><i class="fa-solid fa-qrcode"></i></div>
+        <div class="tool-meta">
+          <h3>QR코드 생성기 Pro</h3>
+          <p class="tool-desc">8가지 데이터 포맷(WiFi, 연락처 등), 실시간 색상/그라데이션 및 도트 모양 커스텀, 중앙 로고 합성, 고대비 대비 및 PNG/SVG 다운로드가 가능한 고기능성 생성 도구입니다.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-screwdriver-wrench"></i> 생산성 유틸리티</span>
+          <a href="./qrcode/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+      
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <p>&copy; 2026 CineAHO Web Application Store. All rights reserved.</p>
+    <p class="footer-note">Cineaho 포털 하위에 여러 독립적인 웹 애플리케이션을 유연하게 마운트하여 관리할 수 있습니다.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>
