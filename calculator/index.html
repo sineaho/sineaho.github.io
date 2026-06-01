@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO 궁극의 계산기 프로 울티메이트</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>웹앱 아이디어 창고</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="#">무료 앱 189종</a></li>
+        <li><a href="#" class="active">CineAHO</a></li>
+        <li><a href="#">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Calculator Container -->
+  <main class="calc-container">
+    
+    <!-- Title & Description Header -->
+    <section class="calc-header-section">
+      <h1 class="main-title"><i class="fa-solid fa-calculator text-purple"></i> 궁극의 계산기 프로 <span>울티메이트</span></h1>
+      <p class="subtitle-desc">
+        8가지 전문 계산기들을 하나로 통합한 최고의 계산 도구입니다. 공학용, 프로그래머, 금융, 통계, 행렬,<br>
+        그래프, 단위변환, 표준 계산기를 모두 완벽하게 지원합니다.
+      </p>
+      
+      <div class="tag-badges">
+        <span class="badge">계산기</span>
+        <span class="badge">수학</span>
+        <span class="badge">공학</span>
+        <span class="badge">통계</span>
+        <span class="badge">금융</span>
+      </div>
+    </section>
+
+    <!-- 8 Tabs Bar -->
+    <nav class="calc-tabs-bar glass-panel">
+      <button class="tab-btn active" data-mode="standard"><i class="fa-solid fa-calculator"></i> 표준</button>
+      <button class="tab-btn" data-mode="scientific"><i class="fa-solid fa-plus"></i> 공학용</button>
+      <button class="tab-btn" data-mode="programmer"><i class="fa-solid fa-microchip"></i> 프로그래머</button>
+      <button class="tab-btn" data-mode="converter"><i class="fa-solid fa-right-left"></i> 단위변환</button>
+      <button class="tab-btn" data-mode="finance"><i class="fa-solid fa-dollar-sign"></i> 금융</button>
+      <button class="tab-btn" data-mode="matrix"><i class="fa-solid fa-table-cells"></i> 행렬</button>
+      <button class="tab-btn" data-mode="statistics"><i class="fa-solid fa-chart-column"></i> 통계</button>
+      <button class="tab-btn" data-mode="graph"><i class="fa-solid fa-chart-line"></i> 그래프</button>
+    </nav>
+
+    <!-- Subtitle Mode Indicator -->
+    <div class="mode-indicator-bar">
+      <span class="indicator-icon" id="indicator-icon"><i class="fa-solid fa-calculator"></i></span>
+      <h4 id="mode-title-text">표준 계산기</h4>
+      <span class="mode-badge" id="mode-desc-badge">기본 사칙연산</span>
+      <div class="history-controls">
+        <button class="btn-history-toggle" id="btn-history-toggle" title="계산 기록 보기">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+        </button>
+        <button class="btn-history-toggle" id="btn-config-toggle" title="계산기 설정">
+          <i class="fa-solid fa-gear"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Workspace Grid (Left Body / Right History Panel) -->
+    <div class="calc-workspace-grid">
+      
+      <!-- Calculator Core Box -->
+      <section class="calc-core-panel glass-panel">
+        
+        <!-- LCD Display -->
+        <div class="calc-lcd-display">
+          <button class="btn-copy-display" id="btn-copy-display" title="결과 복사">
+            <i class="fa-regular fa-copy"></i>
+          </button>
+          <div class="lcd-formula" id="lcd-formula"></div>
+          <div class="lcd-output" id="lcd-output">0</div>
+        </div>
+
+        <!-- Dynamic Pad (Replaced by JS) -->
+        <div class="calc-pad-area" id="calc-pad-area">
+          <!-- Default Standard Pad will be inserted here -->
+        </div>
+
+      </section>
+
+      <!-- History Side Panel -->
+      <section class="history-side-panel glass-panel" id="history-panel">
+        <div class="history-header">
+          <h4><i class="fa-solid fa-history"></i> 계산 기록</h4>
+          <button class="btn-clear-history" id="btn-clear-history" title="기록 전체 삭제">
+            <i class="fa-regular fa-trash-can"></i>
+          </button>
+        </div>
+        <div class="history-list" id="history-list">
+          <div class="history-empty">아직 계산 기록이 없습니다.</div>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- 3. Gimmick: Floating Navigator Widgets (탐색 메뉴) -->
+  <aside class="floating-navigator" id="floating-menu">
+    <div class="nav-overlay-menu glass-panel" id="nav-overlay-menu">
+      <h5>전체 앱 탐색 (189종)</h5>
+      <ul>
+        <li><i class="fa-solid fa-mobile-screen-button"></i> 앱 <span>63개</span></li>
+        <li class="active"><i class="fa-solid fa-calculator"></i> 계산기 <span>126개</span></li>
+      </ul>
+    </div>
+    
+    <div class="floating-buttons-col">
+      <div class="progress-badge">
+        <svg class="progress-ring" width="36" height="36">
+          <circle class="progress-ring__circle-bg" stroke="rgba(255,255,255,0.06)" stroke-width="3" fill="transparent" r="15" cx="18" cy="18"/>
+          <circle class="progress-ring__circle" stroke="#10b981" stroke-width="3" fill="transparent" r="15" cx="18" cy="18"/>
+        </svg>
+        <span class="progress-text">0%</span>
+      </div>
+      
+      <button class="btn-float btn-scroll-top" id="btn-scroll-top" title="위로 이동"><i class="fa-solid fa-arrow-up"></i></button>
+      <button class="btn-float btn-scroll-bottom" id="btn-scroll-bottom" title="아래로 이동"><i class="fa-solid fa-arrow-down"></i></button>
+      <button class="btn-float btn-menu-trigger" id="btn-menu-trigger" title="전체 앱 탐색"><i class="fa-solid fa-list-ul"></i></button>
+    </div>
+  </aside>
+
+  <!-- Toast Copy Notification -->
+  <div class="toast-notification" id="calc-toast">클립보드에 복사되었습니다!</div>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>
