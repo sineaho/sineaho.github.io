@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO 클래식 오목 대국실</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>웹앱 아이디어 창고</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="#">무료 앱 189종</a></li>
+        <li><a href="#" class="active">CineAHO</a></li>
+        <li><a href="#">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Workspace Wrapper -->
+  <main class="game-container">
+    <div class="game-content">
+      
+      <!-- Left Panel: Board View -->
+      <section class="board-panel glass-panel">
+        <div class="board-status-bar">
+          <div class="turn-indicator" id="turn-display">
+            <span class="turn-stone stone-black"></span>
+            <span class="turn-text">흑 차례</span>
+          </div>
+          <div class="board-meta">
+            <span>보드: <strong id="board-size-text">15 × 15</strong></span>
+            <span class="meta-divider"></span>
+            <span>수: <strong id="move-count-text">0</strong></span>
+          </div>
+        </div>
+
+        <!-- Canvas Board Outer frame -->
+        <div class="board-viewport">
+          <canvas id="omok-canvas" width="600" height="600"></canvas>
+          
+          <!-- Opening Modal (대국 시작) -->
+          <div class="start-modal-overlay" id="start-modal">
+            <div class="start-modal-box">
+              <div class="stones-icon">
+                <span class="ico-stone black-ico"></span>
+                <span class="ico-stone white-ico"></span>
+              </div>
+              <h2>대국 시작</h2>
+              <p>당신의 실력을 증명할 준비가 되셨나요?</p>
+              
+              <div class="start-options">
+                <button class="btn btn-start-black" id="btn-play-black">
+                  <span class="dot-stone black"></span>
+                  내가 흑 (선공)
+                </button>
+                <button class="btn btn-start-white" id="btn-play-white">
+                  <span class="dot-stone white"></span>
+                  내가 백 (후공)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Board Toolbar -->
+        <div class="board-toolbar">
+          <button class="btn-tool" id="btn-undo"><i class="fa-solid fa-reply"></i> 무르기</button>
+          <button class="btn-tool" id="btn-restart"><i class="fa-solid fa-rotate-left"></i> 다시두기</button>
+          <button class="btn-tool" id="btn-newgame"><i class="fa-solid fa-gamepad"></i> 새 게임</button>
+          <button class="btn-tool" id="btn-replay" disabled><i class="fa-solid fa-circle-play"></i> 리플레이</button>
+        </div>
+      </section>
+
+      <!-- Right Panel: Configurations & Rules -->
+      <section class="config-panel glass-panel">
+        <div class="panel-header">
+          <i class="fa-solid fa-sliders"></i>
+          <h2>게임 설정</h2>
+        </div>
+
+        <div class="config-scroll-area">
+          
+          <!-- Mode Selection -->
+          <div class="setting-group">
+            <label>게임 모드</label>
+            <div class="mode-tabs">
+              <button class="tab-btn" data-mode="pvp">사람 vs 사람</button>
+              <button class="tab-btn active" data-mode="pve">사람 vs AI</button>
+              <button class="tab-btn" data-mode="eve">AI vs AI</button>
+            </div>
+          </div>
+
+          <!-- Color Choice (For PVE Mode) -->
+          <div class="setting-group" id="stone-color-selector">
+            <label>돌 색깔 (선공)</label>
+            <div class="color-options">
+              <label class="radio-card">
+                <input type="radio" name="stone-color" value="black" checked>
+                <span class="radio-design"></span>
+                <span class="radio-label">흑 (선공)</span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="stone-color" value="white">
+                <span class="radio-design white-design"></span>
+                <span class="radio-label">백 (후공)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- AI Difficulty -->
+          <div class="setting-group" id="ai-difficulty-selector">
+            <label for="ai-level">AI 난이도</label>
+            <div class="select-wrapper">
+              <select id="ai-level">
+                <option value="easy">초보 (패턴 방어 위주)</option>
+                <option value="medium" selected>중수 (가중치 스캔 탐색)</option>
+                <option value="hard">고수 (고밀도 수읽기 공격)</option>
+              </select>
+              <i class="fa-solid fa-chevron-down"></i>
+            </div>
+          </div>
+
+          <hr class="divider">
+
+          <div class="panel-header" style="margin-bottom: 1rem; border-bottom: none; padding-bottom: 0;">
+            <i class="fa-solid fa-gear"></i>
+            <h2>고급 설정</h2>
+          </div>
+
+          <!-- Rule Preset -->
+          <div class="setting-group">
+            <label for="rule-preset">룰 프리셋</label>
+            <div class="select-wrapper">
+              <select id="rule-preset">
+                <option value="renju" selected>렌주 룰 (Renju)</option>
+                <option value="freestyle">자유 룰 (Freestyle)</option>
+              </select>
+              <i class="fa-solid fa-chevron-down"></i>
+            </div>
+          </div>
+
+          <!-- Boolean toggles -->
+          <div class="toggle-list">
+            <div class="toggle-item">
+              <div class="toggle-meta">
+                <span>오버라인 금지 (흑 전용)</span>
+                <p>흑은 6목 이상을 형성하면 반칙패 처리됩니다.</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="chk-overline" checked>
+                <span class="slider-toggle"></span>
+              </label>
+            </div>
+
+            <div class="toggle-item">
+              <div class="toggle-meta">
+                <span>쌍삼 금지 (흑 전용)</span>
+                <p>흑은 동시에 두 개의 3을 형성할 수 없습니다.</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="chk-three-three" checked>
+                <span class="slider-toggle"></span>
+              </label>
+            </div>
+
+            <div class="toggle-item">
+              <div class="toggle-meta">
+                <span>쌍사 금지 (흑 전용, 4-4)</span>
+                <p>흑은 동시에 두 개의 4를 형성할 수 없습니다.</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="chk-four-four" checked>
+                <span class="slider-toggle"></span>
+              </label>
+            </div>
+
+            <div class="toggle-item">
+              <div class="toggle-meta">
+                <span>수순 번호 표시</span>
+                <p>바둑돌 위에 놓인 순서대로 번호를 그립니다.</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="chk-show-numbers">
+                <span class="slider-toggle"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Quick Rule Description -->
+          <div class="rule-desc-box">
+            <ul>
+              <li>• 기본 규칙: 연속된 동일 색 돌 5개를 먼저 연결하면 승리합니다.</li>
+              <li>• 오버라인 금지를 활성화하면 흑의 6목 이상은 반칙으로 간주됩니다.</li>
+              <li>• AI는 패턴 기반 평가 + 가중치 수읽기 탐색으로 고품질 수읽기를 수행합니다.</li>
+            </ul>
+          </div>
+        </div>
+
+        <button class="btn btn-toggle-config" id="btn-save-settings">설정 저장</button>
+      </section>
+
+    </div>
+
+    <!-- Bottom Section: Guide -->
+    <section class="guide-panel glass-panel">
+      <div class="guide-header">
+        <i class="fa-solid fa-book-open"></i>
+        <div>
+          <h2>오목 프로 완벽 가이드</h2>
+          <span>게임 플레이 방법과 자주 묻는 질문을 확인하세요</span>
+        </div>
+      </div>
+      
+      <div class="guide-content-row">
+        <div class="guide-card">
+          <h4><i class="fa-solid fa-list-numeric"></i> 1. 빠른 시작 가이드</h4>
+          <p>모드를 선택하고 대국을 시작하세요. 마우스로 오목판의 교차점을 클릭하면 돌을 놓을 수 있습니다. 무르기 버튼으로 실수를 취소할 수도 있습니다.</p>
+        </div>
+        <div class="guide-card">
+          <h4><i class="fa-solid fa-hourglass-half"></i> 2. 오목의 역사</h4>
+          <p>오목은 오랜 고대 바둑판 유래 보드게임으로, 흑의 절대선수 공격권을 보정하기 위해 쌍삼 금지와 오버라인 금지 등의 렌주 룰이 완성되었습니다.</p>
+        </div>
+        <div class="guide-card">
+          <h4><i class="fa-solid fa-graduation-cap"></i> 3. 게임 소개</h4>
+          <p>본 게임은 브라우저에서 서버 통신 없이 순수 Javascript 휴리스틱 분석 엔진으로 동작하는 경량 고기능 인공지능 오목 대국실 프로그램입니다.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Winner Modal overlay -->
+  <div class="winner-modal-overlay" id="winner-modal">
+    <div class="winner-box glass-panel animate-win">
+      <div class="trophy-icon"><i class="fa-solid fa-trophy"></i></div>
+      <h2 id="winner-title">흑 승리!</h2>
+      <p id="winner-detail">연속된 5개의 돌이 완성되었습니다.</p>
+      <button class="btn btn-win-close" id="btn-win-close">대국장 복귀</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>
