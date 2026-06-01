@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO 2048 - 숫자 타일 합치기 퍼즐</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>웹앱 아이디어 창고</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="#">무료 앱 189종</a></li>
+        <li><a href="#" class="active">CineAHO</a></li>
+        <li><a href="#">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 2048 App Container -->
+  <main class="game-container">
+    
+    <!-- Title & Description Header -->
+    <section class="game-header-section">
+      <h1 class="main-title">
+        <i class="fa-solid fa-square-plus text-blue"></i> CineAHO <span>2048 퍼즐</span>
+      </h1>
+      <p class="subtitle-desc">
+        3x3부터 6x6까지 지원하는 가변 격자판, 최대 20회 실행취소, 실시간 고대비 모드, LCG 난수기 시드 재현 및 리플레이 공유, 1단계 예측 휴리스틱 AI 힌트 및 최대 120ms 실시간 자동 관전(Autoplay) 엔진을 완비한 프리미엄 2048 퍼즐입니다.
+      </p>
+      
+      <div class="tag-badges">
+        <span class="badge badge-tag">게임</span>
+        <span class="badge badge-tag">수학 퍼즐</span>
+        <span class="badge badge-tag">AI 시뮬레이터</span>
+        <span class="badge badge-tag">리플레이 공유</span>
+      </div>
+    </section>
+
+    <!-- Top Play Config Bar -->
+    <section class="game-control-bar glass-panel">
+      <div class="control-left">
+        <div class="select-wrapper">
+          <select id="select-board-size" class="dropdown-select">
+            <option value="3">3 x 3</option>
+            <option value="4" selected>4 x 4 (기본)</option>
+            <option value="5">5 x 5</option>
+            <option value="6">6 x 6</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary" id="btn-new-game">
+          <i class="fa-solid fa-rotate-right"></i> 새 게임
+        </button>
+
+        <button class="btn btn-secondary" id="btn-undo" disabled>
+          <i class="fa-solid fa-arrow-rotate-left"></i> 되돌리기 (<span id="undo-count">0</span>/20)
+        </button>
+
+        <button class="btn btn-secondary btn-hint" id="btn-hint">
+          <i class="fa-solid fa-lightbulb"></i> AI 힌트
+        </button>
+
+        <button class="btn btn-primary btn-autoplay" id="btn-autoplay">
+          <i class="fa-solid fa-play"></i> 관전 시작 (Autoplay)
+        </button>
+      </div>
+
+      <div class="control-right">
+        <button class="btn-icon-circle" id="btn-toggle-contrast" title="고대비 모드 토글">
+          <i class="fa-solid fa-eye-slash"></i>
+        </button>
+        <button class="btn-icon-circle" id="btn-settings-toggle" title="보드 세부 설정">
+          <i class="fa-solid fa-sliders"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- Sub Settings & Slider Control Panel (Collapsible / Toggleable) -->
+    <section class="settings-panel glass-panel" id="settings-panel" style="display: none;">
+      <div class="settings-grid">
+        <div class="setting-item">
+          <div class="setting-label-row">
+            <label for="slider-cell-size"><i class="fa-solid fa-expand"></i> 셀 크기</label>
+            <span id="label-cell-size">80px</span>
+          </div>
+          <input type="range" id="slider-cell-size" min="50" max="120" value="80" step="5">
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-label-row">
+            <label for="slider-cell-gap"><i class="fa-solid fa-arrows-left-right-to-line"></i> 셀 간격</label>
+            <span id="label-cell-gap">10px</span>
+          </div>
+          <input type="range" id="slider-cell-gap" min="2" max="16" value="10" step="1">
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-label-row">
+            <label for="slider-autoplay-speed"><i class="fa-solid fa-gauge-high"></i> 관전 속도 (딜레이)</label>
+            <span id="label-autoplay-speed">250ms</span>
+          </div>
+          <input type="range" id="slider-autoplay-speed" min="120" max="1000" value="250" step="10">
+        </div>
+
+        <div class="setting-item setting-toggle-wrapper">
+          <label class="toggle-switch-container">
+            <span class="toggle-label"><i class="fa-solid fa-skull"></i> 하드 모드 (4 스폰 확률 상승)</span>
+            <input type="checkbox" id="chk-hard-mode">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seed & Replay Input / Share Bar -->
+    <section class="seed-control-bar glass-panel">
+      <div class="seed-input-group">
+        <label for="input-seed"><i class="fa-solid fa-key"></i> 난수 시드(Seed)</label>
+        <input type="text" id="input-seed" placeholder="숫자 시드 입력">
+        <button class="btn btn-secondary" id="btn-apply-seed">적용</button>
+      </div>
+
+      <div class="seed-actions-group">
+        <button class="btn btn-secondary" id="btn-copy-seed">
+          <i class="fa-solid fa-copy"></i> 시드 복사
+        </button>
+        <button class="btn btn-secondary" id="btn-copy-replay">
+          <i class="fa-solid fa-share-nodes"></i> 리플레이 공유 링크 복사
+        </button>
+      </div>
+    </section>
+
+    <!-- Main Game Play Area (Board + Stats) -->
+    <section class="game-workspace">
+      
+      <!-- Stats Sidebar (Left/Right depending on screen width, desktop right) -->
+      <div class="game-sidebar">
+        
+        <!-- Current Scores & Best Score -->
+        <div class="glass-panel stat-card-box">
+          <div class="stat-rows-box">
+            <div class="stat-card-item">
+              <div class="stat-lbl">SCORE</div>
+              <div class="stat-val-large" id="lbl-score">0</div>
+            </div>
+            
+            <div class="stat-card-item">
+              <div class="stat-lbl">BEST RECORD</div>
+              <div class="stat-val-large" id="lbl-best">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Stats (Moves, Max Tile) -->
+        <div class="glass-panel stat-details-box">
+          <div class="stat-row">
+            <span><i class="fa-solid fa-shoe-prints"></i> 이동 횟수</span>
+            <strong id="lbl-moves">0</strong>
+          </div>
+          <div class="stat-row">
+            <span><i class="fa-solid fa-trophy"></i> 최대 타일</span>
+            <strong id="lbl-max-tile">2</strong>
+          </div>
+          <div class="stat-row">
+            <span><i class="fa-solid fa-shuffle"></i> 현재 시드</span>
+            <strong id="lbl-current-seed">-</strong>
+          </div>
+        </div>
+
+        <!-- AI Hint Display overlay text -->
+        <div class="glass-panel ai-panel-box">
+          <div class="ai-box-title">
+            <i class="fa-solid fa-brain text-purple"></i> AI 휴리스틱 분석기
+          </div>
+          <div class="ai-recommendation" id="ai-hint-direction">
+            추천 방향: <span>대기 중</span>
+          </div>
+          <div class="ai-scores-list" id="ai-scores-list">
+            <div>↑ 위: -</div>
+            <div>↓ 아래: -</div>
+            <div>← 왼쪽: -</div>
+            <div>→ 오른쪽: -</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Main 2048 Grid Board Area -->
+      <div class="board-panel glass-panel">
+        <!-- Board sizing is controlled by JS variables, using inline styles or CSS custom variables -->
+        <div class="grid-board-wrapper">
+          <div class="grid-board" id="grid-board">
+            <!-- Dynamically populated cells in JS -->
+          </div>
+        </div>
+        <!-- Game Over & Game Win Overlays -->
+        <div class="board-overlay" id="board-gameover-overlay" style="display: none;">
+          <div class="overlay-content">
+            <h2>게임 오버!</h2>
+            <p>더 이상 움직일 수 있는 타일이 없습니다.</p>
+            <button class="btn btn-primary" id="btn-overlay-retry">다시 도전</button>
+          </div>
+        </div>
+        <div class="board-overlay board-win" id="board-win-overlay" style="display: none;">
+          <div class="overlay-content">
+            <h2>축하합니다!</h2>
+            <p>2048 타일을 달성하셨습니다!</p>
+            <div class="overlay-buttons">
+              <button class="btn btn-primary" id="btn-overlay-continue">계속 플레이</button>
+              <button class="btn btn-secondary" id="btn-overlay-win-retry">다시 시작</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Bottom Guide Board (11-part document viewer) -->
+    <section class="explanation-board-section">
+      <div class="board-header">
+        <i class="fa-solid fa-book text-blue"></i>
+        <div>
+          <h2>2048 백과사전</h2>
+          <span>게임 규칙, 조작법, AI 힌트 설명 및 고득점을 위한 정밀 공략 가이드입니다.</span>
+        </div>
+      </div>
+
+      <div class="explanation-layout">
+        <!-- 11-part Navigation List (Left Column) -->
+        <nav class="explanation-index-list">
+          <ul>
+            <li class="active" data-index="1"><span class="index-num">01</span> 2048이란?</li>
+            <li data-index="2"><span class="index-num">02</span> 게임의 유래</li>
+            <li data-index="3"><span class="index-num">03</span> 기본 규칙</li>
+            <li data-index="4"><span class="index-num">04</span> 핵심 조작법</li>
+            <li data-index="5"><span class="index-num">05</span> 보드 설정 및 커스텀</li>
+            <li data-index="6"><span class="index-num">06</span> AI 및 자동 관전 활용</li>
+            <li data-index="7"><span class="index-num">07</span> 난수 시드 및 리플레이</li>
+            <li data-index="8"><span class="index-num">08</span> 초급 공략 기법</li>
+            <li data-index="9"><span class="index-num">09</span> 고급 공략 기법</li>
+            <li data-index="10"><span class="index-num">10</span> 기대 효과</li>
+            <li data-index="11"><span class="index-num">11</span> 자주 묻는 질문 (FAQ)</li>
+          </ul>
+        </nav>
+
+        <!-- Dynamic Content Board Display Box (Right Column) -->
+        <div class="explanation-display-box glass-panel">
+          <div class="display-content-inner" id="explanation-board-content">
+            <!-- Icon/Label on Top -->
+            <div class="display-top-badge">
+              <i class="fa-solid fa-circle-info text-blue"></i>
+              <span id="explanation-title-badge">가이드 01: 2048 개요</span>
+            </div>
+            
+            <h3 id="explanation-display-title">2048이란?</h3>
+            
+            <div class="display-text-body" id="explanation-display-text">
+              스도쿠(Sudoku)는 9x9 격자에 1부터 9까지의 숫자를 겹치지 않게 채워 넣는 대표적인 논리 기반 퍼즐입니다.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Floating Navigation Widget -->
+  <aside class="floating-navigator" id="floating-menu">
+    <div class="floating-buttons-col">
+      <button class="btn-float btn-scroll-top" id="btn-scroll-top" title="위로 이동"><i class="fa-solid fa-arrow-up"></i></button>
+      <button class="btn-float btn-scroll-bottom" id="btn-scroll-bottom" title="아래로 이동"><i class="fa-solid fa-arrow-down"></i></button>
+    </div>
+  </aside>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>
