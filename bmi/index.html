@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO BMI 비만도 계산기 Pro - 체질량지수 분석</title>
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-cyan"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- ==========================================
+       1. PORTAL HEADER
+       ========================================== -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>웹앱 아이디어 창고</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="#">무료 앱 189종</a></li>
+        <li><a href="#" class="active">CineAHO</a></li>
+        <li><a href="#">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==========================================
+       2. MAIN CONTENT CONTAINER
+       ========================================== -->
+  <main class="bmi-container">
+    
+    <!-- Sub-navigation Back Link -->
+    <div class="sub-nav-back">
+      <a href="../index.html" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>건강·영양 계산기로 돌아가기</span>
+      </a>
+    </div>
+
+    <!-- App Title Header Banner -->
+    <section class="app-banner glass-panel">
+      <div class="banner-info">
+        <span class="badge-capsule">신체지수(BMI) 계산기</span>
+        <h2>BMI 비만도 계산기</h2>
+        <p>키와 몸무게를 기준으로 비만도 및 질병 위험도 평가</p>
+      </div>
+      <div class="banner-decor">
+        <i class="fa-solid fa-scale-balanced"></i>
+      </div>
+    </section>
+
+    <!-- Quick Height Select Row -->
+    <section class="quick-select-card glass-panel">
+      <div class="qs-title">
+        <i class="fa-solid fa-magnifying-glass text-cyan"></i>
+        <span>빠른 선택 (키)</span>
+      </div>
+      <div class="qs-buttons" id="quick-height-buttons">
+        <button class="qs-btn" data-val="150">150cm</button>
+        <button class="qs-btn" data-val="160">160cm</button>
+        <button class="qs-btn" data-val="165">165cm</button>
+        <button class="qs-btn active" data-val="170">170cm</button>
+        <button class="qs-btn" data-val="175">175cm</button>
+        <button class="qs-btn" data-val="180">180cm</button>
+        <button class="qs-btn" data-val="185">185cm</button>
+        <button class="qs-btn" data-val="190">190cm</button>
+      </div>
+    </section>
+
+    <!-- Grid Column: Inputs vs Results -->
+    <section class="calculator-grid">
+      
+      <!-- Left side inputs -->
+      <div class="grid-col-input glass-panel">
+        <div class="panel-header">
+          <div class="title">
+            <i class="fa-solid fa-address-card text-blue"></i>
+            <span>신체 정보 입력</span>
+          </div>
+          <button class="btn-reset" id="btn-reset-inputs" title="입력 초기화">
+            <i class="fa-solid fa-rotate-right"></i>
+          </button>
+        </div>
+
+        <!-- Height Slider -->
+        <div class="slider-group">
+          <div class="slider-label-row">
+            <span class="label">키</span>
+            <span class="value-display"><strong id="txt-height">170</strong> <span class="unit">cm</span></span>
+          </div>
+          <input type="range" id="slider-height" min="130" max="210" value="170" class="range-slider">
+          <div class="range-bounds">
+            <span>130cm</span>
+            <span>210cm</span>
+          </div>
+        </div>
+
+        <!-- Weight Slider -->
+        <div class="slider-group">
+          <div class="slider-label-row">
+            <span class="label">몸무게</span>
+            <span class="value-display"><strong id="txt-weight">70</strong> <span class="unit">kg</span></span>
+          </div>
+          <input type="range" id="slider-weight" min="30" max="150" value="70" class="range-slider">
+          <div class="range-bounds">
+            <span>30kg</span>
+            <span>150kg</span>
+          </div>
+        </div>
+
+        <!-- Quick Weight Buttons -->
+        <div class="quick-weight-selector">
+          <div class="qw-buttons" id="quick-weight-buttons">
+            <button class="qw-btn" data-val="50">50kg</button>
+            <button class="qw-btn" data-val="55">55kg</button>
+            <button class="qw-btn" data-val="60">60kg</button>
+            <button class="qw-btn" data-val="65">65kg</button>
+            <button class="qw-btn active" data-val="70">70kg</button>
+            <button class="qw-btn" data-val="75">75kg</button>
+            <button class="qw-btn" data-val="80">80kg</button>
+            <button class="qw-btn" data-val="85">85kg</button>
+            <button class="qw-btn" data-val="90">90kg</button>
+            <button class="qw-btn" data-val="100">100kg</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right side results -->
+      <div class="grid-col-results glass-panel">
+        
+        <!-- Results header with copy button -->
+        <div class="panel-header no-border">
+          <span class="title-sub">나의 분석 결과</span>
+          <button class="btn-copy" id="btn-copy-result" title="결과 복사">
+            <i class="fa-solid fa-copy"></i>
+          </button>
+        </div>
+
+        <!-- Large BMI value output -->
+        <div class="bmi-output-display">
+          <span class="label">나의 체질량지수 (BMI)</span>
+          <h1 id="result-bmi-val">24.2</h1>
+          <h2 id="result-bmi-class" class="text-orange">과체중</h2>
+          <p id="result-bmi-risk" class="text-muted">대사질환 위험 초기 시작</p>
+        </div>
+
+        <!-- Interactive Gauge Scale Bar -->
+        <div class="bmi-gauge-wrapper">
+          <div class="bmi-gauge-bar">
+            <!-- Segments -->
+            <div class="gauge-sec underweight" style="width: 20%;">저체중</div>
+            <div class="gauge-sec normal" style="width: 20%;">정상</div>
+            <div class="gauge-sec overweight" style="width: 20%;">과체중</div>
+            <div class="gauge-sec obese-1" style="width: 20%;">비만</div>
+            <div class="gauge-sec obese-2" style="width: 20%;">고도비만</div>
+            
+            <!-- Needle pointer -->
+            <div class="gauge-pointer" id="gauge-pointer-pin">
+              <div class="pointer-bubble" id="pointer-bubble-val">24.2</div>
+              <div class="pointer-arrow"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Secondary Cards Grid -->
+        <div class="results-cards-grid">
+          
+          <!-- Card 1: Ideal Weight -->
+          <div class="res-sub-card">
+            <div class="icon-wrap color-green">
+              <i class="fa-solid fa-check"></i>
+            </div>
+            <div class="card-info">
+              <span class="lbl">이상적인 체중</span>
+              <h3 id="ideal-weight-val">63.6 kg</h3>
+              <p>BMI 22 기준</p>
+            </div>
+          </div>
+
+          <!-- Card 2: Recommended Weight Change -->
+          <div class="res-sub-card">
+            <div class="icon-wrap color-orange" id="weight-change-icon-wrap">
+              <i class="fa-solid fa-arrow-down"></i>
+            </div>
+            <div class="card-info">
+              <span class="lbl" id="weight-change-lbl">감량 권장</span>
+              <h3 id="weight-change-val">6.4 kg</h3>
+              <p id="weight-change-desc">추천 목표치</p>
+            </div>
+          </div>
+
+          <!-- Full width range card -->
+          <div class="res-sub-card span-all">
+            <div class="icon-wrap color-cyan">
+              <i class="fa-solid fa-heart-pulse"></i>
+            </div>
+            <div class="card-info">
+              <span class="lbl">내 키(<span id="status-height-val">170</span>cm) 정상 체중 범위</span>
+              <h3 id="normal-weight-range-val">53.5 kg ~ 66.5 kg</h3>
+              <p>BMI 18.5 ~ 23 기준 (아시아 기준)</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- Classification Standard Table Section -->
+    <section class="standard-table-section glass-panel">
+      <h3><i class="fa-solid fa-table-list text-green"></i> BMI 분류표 (아시아-한국 기준)</h3>
+      <div class="table-container">
+        <table class="bmi-table" id="bmi-standard-table">
+          <thead>
+            <tr>
+              <th>분류</th>
+              <th>BMI 범위</th>
+              <th>건강 위험</th>
+              <th>권장 조치</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-class="underweight" class="row-underweight">
+              <td class="class-title"><span class="marker"></span>저체중</td>
+              <td>18.5 미만</td>
+              <td>면역력 저하, 영양 부족</td>
+              <td>영양 보충, 근력 운동</td>
+            </tr>
+            <tr data-class="normal" class="row-normal">
+              <td class="class-title"><span class="marker"></span>정상 <span class="check-icon">✓</span></td>
+              <td>18.5 ~ 23</td>
+              <td>가장 건강한 범위</td>
+              <td>현재 유지</td>
+            </tr>
+            <tr data-class="overweight" class="row-overweight">
+              <td class="class-title"><span class="marker"></span>과체중</td>
+              <td>23 ~ 25</td>
+              <td>대사질환 위험 시작</td>
+              <td>식습관 개선, 운동</td>
+            </tr>
+            <tr data-class="obese-1" class="row-obese-1">
+              <td class="class-title"><span class="marker"></span>비만 1단계</td>
+              <td>25 ~ 30</td>
+              <td>당뇨, 고혈압 위험</td>
+              <td>체중 관리 필요</td>
+            </tr>
+            <tr data-class="obese-2" class="row-obese-2">
+              <td class="class-title"><span class="marker"></span>비만 2단계</td>
+              <td>30 ~ 35</td>
+              <td>심혈관 질환 고위험</td>
+              <td>전문가 상담 권장</td>
+            </tr>
+            <tr data-class="obese-3" class="row-obese-3">
+              <td class="class-title"><span class="marker"></span>고도비만</td>
+              <td>35 이상</td>
+              <td>심각한 건강 위험</td>
+              <td>의료적 개입 필요</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-footnote">※ 아시아-한국 기준은 WHO 기준(과체중 25~30, 비만 30+보다 낮습니다. 아시아인은 동일 BMI에서도 더 높은 당뇨 및 고혈압 등 건강 위험이 있기 때문입니다.</p>
+    </section>
+
+    <!-- Comprehensive Guide Section -->
+    <section class="guide-details-section glass-panel">
+      <h3><i class="fa-solid fa-graduation-cap text-purple"></i> BMI(체질량지수) 완벽 가이드</h3>
+      <p class="guide-intro">BMI(Body Mass Index, 체질량지수)는 키와 몸무게를 이용해 비만도를 평가하는 가장 보편적인 지표입니다. 세계보건기구(WHO)와 대한비만학회에서 공식적으로 채택한 표준 측정 방법으로, 건강 검진과 체중 관리의 기본 자료로 활용됩니다.</p>
+
+      <div class="guide-grid">
+        
+        <!-- Usage card -->
+        <div class="guide-card">
+          <h4><i class="fa-solid fa-circle-question"></i> BMI 계산기 사용법</h4>
+          <ol class="guide-list">
+            <li><span class="num">1</span> <strong>키 입력</strong>: 슬라이더나 상단 빠른 선택 버튼을 이용해 본인의 키(cm)를 입력합니다.</li>
+            <li><span class="num">2</span> <strong>몸무게 입력</strong>: 슬라이더나 빠른 선택 버튼을 이용해 현재 몸무게(kg)를 입력합니다.</li>
+            <li><span class="num">3</span> <strong>결과 확인</strong>: 실시간으로 도출되는 BMI 수치, 분류 등급, 이상 체중, 정상 범위 및 권장 조치를 확인하고 클립보드 복사 아이콘을 통해 데이터를 간편히 저장합니다.</li>
+          </ol>
+        </div>
+
+        <!-- Formula card -->
+        <div class="guide-card">
+          <h4><i class="fa-solid fa-compass-drafting"></i> BMI 계산 공식</h4>
+          <div class="formula-box">
+            <span class="formula">BMI = 체중(kg) ÷ 신장(m)²</span>
+            <span class="example">예: 키 175cm, 체중 70kg = 70 ÷ 1.75² = 22.9 (정상)</span>
+          </div>
+          <p class="formula-desc">신장 값을 미터(m) 단위로 환산한 후 제곱하여 몸무게(kg)에서 나누어 줍니다. 키가 클수록 분모가 커지므로, 절대적인 몸무게 비율 대비 뼈대 두께와 길이를 합리적으로 가중 보정해 줍니다.</p>
+        </div>
+
+      </div>
+
+      <!-- Standards Comparison -->
+      <div class="guide-comparison-wrap">
+        <h4><i class="fa-solid fa-scale-unbalanced-flip"></i> WHO 기준 vs 아시아-한국 기준 비교</h4>
+        <div class="table-container">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>분류</th>
+                <th>WHO 기준 (국제 표준)</th>
+                <th>아시아-한국 기준 (대한비만학회)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="type">저체중</td>
+                <td>18.5 미만</td>
+                <td>18.5 미만</td>
+              </tr>
+              <tr>
+                <td class="type">정상</td>
+                <td>18.5 ~ 24.9</td>
+                <td>18.5 ~ 22.9</td>
+              </tr>
+              <tr>
+                <td class="type">과체중</td>
+                <td>25.0 ~ 29.9</td>
+                <td>23.0 ~ 24.9</td>
+              </tr>
+              <tr>
+                <td class="type">비만</td>
+                <td>30.0 이상</td>
+                <td>25.0 이상 (1단계: 25~30 / 2단계: 30~35 / 3단계: 35 이상)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="comparison-note"><strong>왜 아시아 기준은 더 낮을까요?</strong> 아시아인은 서양인에 비해 골격이 작고 근육량이 적어, 동일한 체질량지수(BMI) 수준에서도 당뇨병, 고혈압, 지방간 등의 대사성 합병증 발생 빈도가 훨씬 높습니다. 따라서 대한비만학회는 보다 적극적인 대사 질환 예방을 위해 엄격한 기준치를 운용하고 있습니다.</p>
+      </div>
+
+      <!-- Health tips list -->
+      <div class="guide-health-tips">
+        <h4><i class="fa-solid fa-lightbulb"></i> BMI 해석 시 주의사항 (한계점)</h4>
+        <ul class="tips-bullets">
+          <li>
+            <i class="fa-solid fa-triangle-exclamation text-yellow"></i>
+            <strong>체성분 구성(근육 vs 지방)의 미반영:</strong>
+            BMI는 순수 체중 대비 신장의 수학적 비율일 뿐이므로, 체지방량과 근육량을 정밀 분리하지 못합니다. 보디빌더나 운동선수처럼 근육질인 경우 BMI상 '비만'으로 오판될 수 있고, 반대로 근육이 극도로 부족한 노약자는 체지방률이 높음에도 '정상'으로 판정받을 수 있습니다.
+          </li>
+          <li>
+            <i class="fa-solid fa-triangle-exclamation text-yellow"></i>
+            <strong>복부 비만(내장 지방) 누락:</strong>
+            복부에 집중된 내장 지방은 대사 증후군의 가장 직접적인 요인입니다. BMI 수치가 정상 범위에 들어오더라도 허리둘레가 남성 90cm, 여성 85cm 이상이면 복부 비만에 해당되어 관리가 권장됩니다.
+          </li>
+          <li>
+            <i class="fa-solid fa-triangle-exclamation text-yellow"></i>
+            <strong>소아, 임산부 적용 배제:</strong>
+            임산부나 수유부, 한창 성장 중인 소아·청소년은 연령별 성장 발달 곡선이나 특수한 생체 상태가 존재하므로 본 일반인 비만 분류표를 직접 투영해 해석해서는 안 됩니다.
+          </li>
+        </ul>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       3. FLOATING TOOLBAR CONTROLS
+       ========================================== -->
+  <div class="floating-controls-panel">
+    <!-- Scroll position progress ring -->
+    <div class="progress-ring-wrap" id="scroll-progress-ring" title="스크롤 위치">
+      <svg class="progress-ring-svg" width="50" height="50">
+        <circle class="progress-ring-circle-bg" cx="25" cy="25" r="20" />
+        <circle class="progress-ring-circle-indicator" id="progress-circle-indicator" cx="25" cy="25" r="20" />
+      </svg>
+      <span class="progress-txt" id="scroll-percentage-lbl">0%</span>
+    </div>
+
+    <!-- Quick Scroll Top -->
+    <button class="floating-btn" id="btn-scroll-top" title="맨 위로 가기">
+      <i class="fa-solid fa-arrow-up"></i>
+    </button>
+    <!-- Quick Scroll Bottom -->
+    <button class="floating-btn" id="btn-scroll-bottom" title="맨 아래로 가기">
+      <i class="fa-solid fa-arrow-down"></i>
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <p>&copy; 2026 CineAHO Web Application Store. All rights reserved.</p>
+    <p class="footer-note">Cineaho 포털 하위에 여러 독립적인 웹 애플리케이션을 유연하게 마운트하여 관리할 수 있습니다.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
