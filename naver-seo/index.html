@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>네이버 블로그 SEO 분석기 & 실시간 편집기</title>
+  <!-- Google Fonts Outfit & Inter & Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Glowing Orbs -->
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo">
+        <i class="fa-solid fa-chart-line-up neon-icon"></i>
+        <h1>NAVER <span>SEO ANALYZER</span></h1>
+      </div>
+      <p class="subtitle">네이버 블로그 상위 노출을 위한 2026 알고리즘 기반 실시간 SEO 교정 시스템</p>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="workspace">
+      
+      <!-- Left Panel: Input & Control -->
+      <section class="panel control-panel glass-panel">
+        <div class="panel-header">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <h2>분석 대상 입력</h2>
+        </div>
+        
+        <form id="analyze-form" class="analyze-form">
+          <div class="input-group">
+            <label for="blog-url">네이버 블로그 주소 <span class="required">*</span></label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-link"></i>
+              <input type="url" id="blog-url" placeholder="https://blog.naver.com/아이디/글번호" required>
+            </div>
+            <p class="input-tip">모바일 주소(m.blog...)나 일반 주소 모두 입력 가능합니다.</p>
+          </div>
+
+          <div class="input-group">
+            <label for="target-keyword">타겟 핵심 키워드 (해시태그 자동 추출)</label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-key"></i>
+              <input type="text" id="target-keyword" placeholder="분석 시 해시태그 중 첫 번째가 자동으로 적용됩니다.">
+            </div>
+            <p class="input-tip">분석 후 원하는 키워드로 직접 수정하여 실시간 재평가도 가능합니다.</p>
+          </div>
+
+          <button type="submit" id="submit-btn" class="btn btn-primary">
+            <span class="btn-text">분석 시작</span>
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <div class="spinner hidden"></div>
+          </button>
+        </form>
+
+        <hr class="divider">
+
+        <div class="guide-box">
+          <h3><i class="fa-solid fa-circle-info"></i> 네이버 3대 알고리즘 핵심 요약</h3>
+          <ul>
+            <li><strong>C-Rank</strong>: 전문성 및 원토픽(One-Topic) 포스팅 지속성 평가</li>
+            <li><strong>D.I.A. / D.I.A.+</strong>: 경험성 지표, 독창적 정보 및 실제 체류 시간 평가</li>
+            <li><strong>스마트블록</strong>: 세부 상황(Context) 및 검색 의도 타겟팅 노출</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Center Panel: Live Editor -->
+      <section class="panel editor-panel glass-panel">
+        <div class="panel-header">
+          <i class="fa-solid fa-pen-to-square"></i>
+          <h2>본문 실시간 편집기</h2>
+          <div class="editor-status hidden" id="editor-status-badge">
+            <span class="dot pulse"></span> 실시간 분석중
+          </div>
+        </div>
+
+        <div class="editor-workspace">
+          <div class="input-group">
+            <label for="editor-title">포스팅 제목</label>
+            <input type="text" id="editor-title" placeholder="블로그 제목을 입력하거나 주소를 분석해 주세요." disabled>
+            <div class="char-counter"><span id="title-char-count">0</span> / 40자 (권장)</div>
+          </div>
+
+          <div class="input-group">
+            <div class="label-row">
+              <label for="editor-body">포스팅 본문</label>
+              <div class="editor-toolbar">
+                <button type="button" class="tool-btn" id="tool-h2" title="H2 소제목 추가">H2</button>
+                <button type="button" class="tool-btn" id="tool-h3" title="H3 소제목 추가">H3</button>
+                <button type="button" class="tool-btn" id="tool-img" title="이미지 자리 표시 추가"><i class="fa-regular fa-image"></i></button>
+                <button type="button" class="tool-btn" id="tool-link" title="링크 추가"><i class="fa-solid fa-link"></i></button>
+                <button type="button" class="tool-btn" id="tool-faq" title="FAQ 섹션 추가">FAQ</button>
+              </div>
+            </div>
+            <textarea id="editor-body" placeholder="블로그 본문을 입력하거나 위 입력창을 통해 자동으로 가져와 주세요.&#10;&#10;[작성 팁]&#10;- 소제목은 줄 맨 앞에 '## 소제목' (H2), '### 소제목' (H3) 형식으로 기입해 주세요.&#10;- 이미지가 들어갈 자리에는 '[이미지: 설명]' 형식으로 기입해 주세요.&#10;- 링크가 들어갈 자리에는 '[링크: 제목](주소)' 형식으로 기입해 주세요." disabled></textarea>
+            
+            <div class="editor-footer">
+              <div class="metrics-row">
+                <div class="metric-item">공백 포함: <strong id="body-char-count">0</strong>자</div>
+                <div class="metric-item">공백 제외: <strong id="body-char-no-space-count">0</strong>자</div>
+              </div>
+              <div class="status-msg" id="editor-alert-msg">블로그 주소를 입력하여 본문을 불러오세요.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Panel: SEO Report -->
+      <section class="panel report-panel glass-panel">
+        <div class="panel-header">
+          <i class="fa-solid fa-square-poll-vertical"></i>
+          <h2>SEO 진단 리포트</h2>
+        </div>
+
+        <div class="report-content">
+          <!-- Circular Score Chart -->
+          <div class="score-container">
+            <div class="radial-progress">
+              <svg class="progress-ring" width="160" height="160">
+                <circle class="progress-ring__circle-bg" stroke="rgba(255,255,255,0.05)" stroke-width="12" fill="transparent" r="70" cx="80" cy="80" />
+                <circle class="progress-ring__circle" id="score-ring" stroke="var(--accent-color, #00f2fe)" stroke-width="12" fill="transparent" r="70" cx="80" cy="80" />
+              </svg>
+              <div class="score-value">
+                <span id="score-num">0</span>
+                <span class="total">/ 100</span>
+              </div>
+            </div>
+            <div class="score-grade" id="score-grade">진단 대기중</div>
+          </div>
+
+          <!-- SEO Checklist Grid -->
+          <div class="checklist-area">
+            <h3><i class="fa-solid fa-list-check"></i> 세부 검증 리스트</h3>
+            
+            <div class="checklist-items">
+              <!-- Item 1: 키워드 배치 -->
+              <div class="check-item card-item" id="chk-keywords">
+                <div class="check-status"><i class="fa-solid fa-circle-question"></i></div>
+                <div class="check-details">
+                  <h4>1. 키워드 배치 및 밀도</h4>
+                  <p class="desc">도입부 100자 내 포함, 3회 이상 등장, 결론부 재언급, 밀도 0~3%</p>
+                  <div class="sub-metrics" id="sub-chk-keywords">
+                    <span>도입부: -</span> | <span>본문 빈도: -</span> | <span>결론부: -</span> | <span>밀도: -</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Item 2: 제목 최적화 -->
+              <div class="check-item card-item" id="chk-title">
+                <div class="check-status"><i class="fa-solid fa-circle-question"></i></div>
+                <div class="check-details">
+                  <h4>2. 제목 최적화</h4>
+                  <p class="desc">키워드 포함, 숫자 포함, 행동유도어 포함, 15~40자 이내</p>
+                  <div class="sub-metrics" id="sub-chk-title">
+                    <span>키워드: -</span> | <span>숫자: -</span> | <span>행동유도: -</span> | <span>길이: -</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Item 3: 소제목 구조 -->
+              <div class="check-item card-item" id="chk-subheadings">
+                <div class="check-status"><i class="fa-solid fa-circle-question"></i></div>
+                <div class="check-details">
+                  <h4>3. 소제목 구조 (H2/H3)</h4>
+                  <p class="desc">H2 소제목 4개 이상, H3 소제목 2개 이상 (구조화 검증)</p>
+                  <div class="sub-metrics" id="sub-chk-subheadings">
+                    <span>H2: - / 4개</span> | <span>H3: - / 2개</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Item 4: 글 분량 -->
+              <div class="check-item card-item" id="chk-length">
+                <div class="check-status"><i class="fa-solid fa-circle-question"></i></div>
+                <div class="check-details">
+                  <h4>4. 글 분량</h4>
+                  <p class="desc">상위 노출 권장 공백 포함 2,197자 이상 달성도</p>
+                  <div class="sub-metrics" id="sub-chk-length">
+                    <span>현재 글자수: -자 / 2,197자 (-%)</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Item 5: 이미지 수 -->
+              <div class="check-item card-item" id="chk-images">
+                <div class="check-status"><i class="fa-solid fa-circle-question"></i></div>
+                <div class="check-details">
+                  <h4>5. 이미지 수</h4>
+                  <p class="desc">직접 경험 입증용 본문 이미지 5개 이상 기입</p>
+                  <div class="sub-metrics" id="sub-chk-images">
+                    <span>이미지 수: - / 5개</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Item 6: 가독성 지표 -->
+              <div class="check-item card-item" id="chk-readability">
+                <div class="check-status"><i class="fa-solid fa-circle-question"></i></div>
+                <div class="check-details">
+                  <h4>6. 가독성 및 가치</h4>
+                  <p class="desc">단문 비중 70% 이상, 표/목록 1개 이상, 질문형 문장 2개 이상</p>
+                  <div class="sub-metrics" id="sub-chk-readability">
+                    <span>단문 비율: -</span> | <span>표/목록: -</span> | <span>질문형: -</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Item 7: 링크 유무 -->
+              <div class="check-item card-item" id="chk-links">
+                <div class="check-status"><i class="fa-solid fa-circle-question"></i></div>
+                <div class="check-details">
+                  <h4>7. 정보 링크 유무</h4>
+                  <p class="desc">유용한 아웃바운드 링크 1개 이상 포함 여부</p>
+                  <div class="sub-metrics" id="sub-chk-links">
+                    <span>링크 수: - / 1개</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Item 8: FAQ 섹션 -->
+              <div class="check-item card-item" id="chk-faq">
+                <div class="check-status"><i class="fa-solid fa-circle-question"></i></div>
+                <div class="check-details">
+                  <h4>8. FAQ 섹션</h4>
+                  <p class="desc">FAQ 관련 키워드 포함 및 Q&A 구조 3쌍 이상</p>
+                  <div class="sub-metrics" id="sub-chk-faq">
+                    <span>FAQ 섹션: -</span> | <span>Q&A 쌍: - / 3쌍</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Item 9: 해시태그 -->
+              <div class="check-item card-item" id="chk-tags">
+                <div class="check-status"><i class="fa-solid fa-circle-question"></i></div>
+                <div class="check-details">
+                  <h4>9. 해시태그 최적화</h4>
+                  <p class="desc">스마트블록 매칭용 해시태그 1개 ~ 5개 이내</p>
+                  <div class="sub-metrics" id="sub-chk-tags">
+                    <span>태그 수: - / 1~5개</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- JS Code -->
+  <script src="app.js"></script>
+</body>
+</html>
