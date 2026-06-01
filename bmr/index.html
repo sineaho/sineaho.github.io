@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO BMR/TDEE 계산기 Pro - 기초대사량 및 하루 소비 칼로리 분석</title>
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-crimson"></div>
+  <div class="bg-glow bg-glow-orange"></div>
+
+  <!-- ==========================================
+       1. PORTAL HEADER
+       ========================================== -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>웹앱 아이디어 창고</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="#">무료 앱 189종</a></li>
+        <li><a href="#" class="active">CineAHO</a></li>
+        <li><a href="#">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==========================================
+       2. MAIN CONTENT CONTAINER
+       ========================================== -->
+  <main class="bmr-container">
+    
+    <!-- Sub-navigation Back Link -->
+    <div class="sub-nav-back">
+      <a href="../index.html" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>건강·영양 계산기로 돌아가기</span>
+      </a>
+    </div>
+
+    <!-- App Title Header Banner -->
+    <section class="app-banner glass-panel">
+      <div class="banner-info">
+        <span class="badge-capsule">신체에너지 계산기</span>
+        <h2>BMR/TDEE 계산기</h2>
+        <p>기초대사량 및 활동량 기반 하루 총 에너지 소비량 계산</p>
+      </div>
+      <div class="banner-decor">
+        <i class="fa-solid fa-fire"></i>
+      </div>
+    </section>
+
+    <!-- Quick Age Select Row -->
+    <section class="quick-select-card glass-panel">
+      <div class="qs-title">
+        <i class="fa-solid fa-bolt text-red"></i>
+        <span>나이 빠른 선택</span>
+      </div>
+      <div class="qs-buttons" id="quick-age-buttons">
+        <button class="qs-btn" data-val="20">20세</button>
+        <button class="qs-btn" data-val="25">25세</button>
+        <button class="qs-btn active" data-val="30">30세</button>
+        <button class="qs-btn" data-val="35">35세</button>
+        <button class="qs-btn" data-val="40">40세</button>
+        <button class="qs-btn" data-val="45">45세</button>
+        <button class="qs-btn" data-val="50">50세</button>
+        <button class="qs-btn" data-val="55">55세</button>
+        <button class="qs-btn" data-val="60">60세</button>
+      </div>
+    </section>
+
+    <!-- Main Calculation Space -->
+    <section class="calculator-grid">
+      
+      <!-- Left side Inputs panel -->
+      <div class="grid-col-input glass-panel">
+        <div class="panel-header">
+          <div class="title">
+            <i class="fa-solid fa-calculator text-red"></i>
+            <span>신체 정보 입력</span>
+          </div>
+          <button class="btn-reset" id="btn-reset-inputs" title="입력 초기화">
+            <i class="fa-solid fa-rotate-right"></i>
+          </button>
+        </div>
+
+        <!-- Gender buttons -->
+        <div class="gender-selection-row">
+          <span class="label">성별</span>
+          <div class="gender-btns">
+            <button class="gender-btn active" id="btn-gender-male">
+              <i class="fa-solid fa-mars"></i> 남성
+            </button>
+            <button class="gender-btn" id="btn-gender-female">
+              <i class="fa-solid fa-venus"></i> 여성
+            </button>
+          </div>
+        </div>
+
+        <!-- Age Slider -->
+        <div class="slider-group">
+          <div class="slider-label-row">
+            <span class="label">나이</span>
+            <span class="value-display text-red"><strong id="txt-age">30</strong> <span class="unit">세</span></span>
+          </div>
+          <input type="range" id="slider-age" min="10" max="90" value="30" class="range-slider range-red">
+          <div class="range-bounds">
+            <span>10세</span>
+            <span>90세</span>
+          </div>
+        </div>
+
+        <!-- Height Slider -->
+        <div class="slider-group">
+          <div class="slider-label-row">
+            <span class="label">키</span>
+            <span class="value-display text-red"><strong id="txt-height">170</strong> <span class="unit">cm</span></span>
+          </div>
+          <input type="range" id="slider-height" min="130" max="210" value="170" class="range-slider range-red">
+          <div class="range-bounds">
+            <span>130cm</span>
+            <span>210cm</span>
+          </div>
+          
+          <!-- Height quick selections -->
+          <div class="quick-inner-bounds" id="quick-height-container">
+            <button class="inner-btn" data-val="155">155</button>
+            <button class="inner-btn" data-val="160">160</button>
+            <button class="inner-btn" data-val="165">165</button>
+            <button class="inner-btn active" data-val="170">170</button>
+            <button class="inner-btn" data-val="175">175</button>
+            <button class="inner-btn" data-val="180">180</button>
+            <button class="inner-btn" data-val="185">185</button>
+          </div>
+        </div>
+
+        <!-- Weight Slider -->
+        <div class="slider-group">
+          <div class="slider-label-row">
+            <span class="label">체중</span>
+            <span class="value-display text-red"><strong id="txt-weight">70</strong> <span class="unit">kg</span></span>
+          </div>
+          <input type="range" id="slider-weight" min="30" max="150" value="70" class="range-slider range-red">
+          <div class="range-bounds">
+            <span>30kg</span>
+            <span>150kg</span>
+          </div>
+
+          <!-- Weight quick selections -->
+          <div class="quick-inner-bounds" id="quick-weight-container">
+            <button class="inner-btn" data-val="50">50</button>
+            <button class="inner-btn" data-val="55">55</button>
+            <button class="inner-btn" data-val="60">60</button>
+            <button class="inner-btn" data-val="65">65</button>
+            <button class="inner-btn active" data-val="70">70</button>
+            <button class="inner-btn" data-val="75">75</button>
+            <button class="inner-btn" data-val="80">80</button>
+            <button class="inner-btn" data-val="85">85</button>
+            <button class="inner-btn" data-val="90">90</button>
+          </div>
+        </div>
+
+        <!-- Activity multiplier list selection -->
+        <div class="activity-selector-section">
+          <span class="section-label">활동량 수준</span>
+          <div class="activity-cards" id="activity-cards-wrap">
+            
+            <div class="activity-card" data-factor="1.2">
+              <div class="card-radio"></div>
+              <div class="card-desc">
+                <div class="title-row">
+                  <strong>거의 활동 없음</strong>
+                  <span class="factor">×1.2</span>
+                </div>
+                <p>사무직, 좌식 근무, 일상적 움직임 외 운동 안 함</p>
+              </div>
+            </div>
+
+            <div class="activity-card" data-factor="1.375">
+              <div class="card-radio"></div>
+              <div class="card-desc">
+                <div class="title-row">
+                  <strong>가벼운 활동</strong>
+                  <span class="factor">×1.375</span>
+                </div>
+                <p>출퇴근 도보, 가벼운 집안일, 주 1~3회 가벼운 운동</p>
+              </div>
+            </div>
+
+            <div class="activity-card active" data-factor="1.55">
+              <div class="card-radio"></div>
+              <div class="card-desc">
+                <div class="title-row">
+                  <strong>보통 활동</strong>
+                  <span class="factor">×1.55</span>
+                </div>
+                <p>규칙적인 도보, 활동적인 취미, 주 3~5회 중간 강도 운동</p>
+              </div>
+            </div>
+
+            <div class="activity-card" data-factor="1.725">
+              <div class="card-radio"></div>
+              <div class="card-desc">
+                <div class="title-row">
+                  <strong>활발한 활동</strong>
+                  <span class="factor">×1.725</span>
+                </div>
+                <p>신체 활동이 많은 직업, 주 6~7회 격렬한 고강도 운동</p>
+              </div>
+            </div>
+
+            <div class="activity-card" data-factor="1.9">
+              <div class="card-radio"></div>
+              <div class="card-desc">
+                <div class="title-row">
+                  <strong>매우 활발</strong>
+                  <span class="factor">×1.9</span>
+                </div>
+                <p>운동선수, 건설 및 토목 목재 노동 등 고강도 노동 / 하루 2회 운동</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right side Results panel -->
+      <div class="grid-col-results glass-panel">
+        
+        <!-- Results header with copy button -->
+        <div class="panel-header no-border">
+          <span class="title-sub">나의 칼로리 대시보드</span>
+          <button class="btn-copy" id="btn-copy-result" title="결과 복사">
+            <i class="fa-solid fa-copy"></i>
+          </button>
+        </div>
+
+        <!-- Big stats BMR and TDEE cards -->
+        <div class="energy-outcome-cards">
+          
+          <!-- BMR -->
+          <div class="energy-card">
+            <span class="card-title">기초대사량 (BMR)</span>
+            <div class="val-block">
+              <h2 id="result-bmr-val">1618</h2>
+              <span class="unit">kcal/일</span>
+            </div>
+            <p>생명 유지에 필요한 최소 열량</p>
+          </div>
+
+          <!-- TDEE -->
+          <div class="energy-card highlighted">
+            <div class="highlight-fire-badge"><i class="fa-solid fa-fire"></i> TDEE</div>
+            <span class="card-title">하루 총 에너지 소비량 (TDEE)</span>
+            <div class="val-block">
+              <h2 id="result-tdee-val">2507</h2>
+              <span class="unit">kcal/일</span>
+            </div>
+            <p>기초대사량과 활동을 포함한 하루 총 소비 칼로리</p>
+          </div>
+
+        </div>
+
+        <!-- Goal-based target calorie list -->
+        <div class="goals-calorie-section">
+          <span class="section-title"><i class="fa-solid fa-stopwatch text-orange"></i> 목표별 일일 칼로리</span>
+          <div class="goals-list" id="goals-calorie-list">
+            
+            <div class="goal-item" data-goal="loss-heavy">
+              <div class="goal-name">
+                <i class="fa-solid fa-angles-down text-blue"></i>
+                <span>체중 감량 (-0.5kg/주)</span>
+              </div>
+              <div class="goal-val"><span class="kcal-num" id="cal-loss-heavy">2007</span> <span class="unit">kcal</span></div>
+            </div>
+
+            <div class="goal-item" data-goal="loss-light">
+              <div class="goal-name">
+                <i class="fa-solid fa-angle-down text-cyan"></i>
+                <span>완만한 감량 (-0.3kg/주)</span>
+              </div>
+              <div class="goal-val"><span class="kcal-num" id="cal-loss-light">2207</span> <span class="unit">kcal</span></div>
+            </div>
+
+            <div class="goal-item active" data-goal="maintain">
+              <div class="goal-name">
+                <i class="fa-solid fa-equals text-green"></i>
+                <span>체중 유지</span>
+              </div>
+              <div class="goal-val"><span class="kcal-num" id="cal-maintain">2507</span> <span class="unit">kcal</span></div>
+            </div>
+
+            <div class="goal-item" data-goal="gain-light">
+              <div class="goal-name">
+                <i class="fa-solid fa-angle-up text-yellow"></i>
+                <span>완만한 증량 (+0.3kg/주)</span>
+              </div>
+              <div class="goal-val"><span class="kcal-num" id="cal-gain-light">2807</span> <span class="unit">kcal</span></div>
+            </div>
+
+            <div class="goal-item" data-goal="gain-heavy">
+              <div class="goal-name">
+                <i class="fa-solid fa-angles-up text-red"></i>
+                <span>근육 증량 (+0.5kg/주)</span>
+              </div>
+              <div class="goal-val"><span class="kcal-num" id="cal-gain-heavy">3007</span> <span class="unit">kcal</span></div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Calorie meal distribution cards -->
+        <div class="meal-distribution-section">
+          <span class="section-title">위 식사별 칼로리 분배 <span class="sub" id="distribution-target-lbl">(유지 기준)</span></span>
+          <div class="meal-cards-grid">
+            
+            <div class="meal-card">
+              <div class="meal-icon color-cyan"><i class="fa-solid fa-sun-rising"></i></div>
+              <div class="meal-info">
+                <span class="label">아침</span>
+                <h4 id="meal-breakfast-val">627</h4>
+                <p>비율 25%</p>
+              </div>
+            </div>
+
+            <div class="meal-card">
+              <div class="meal-icon color-orange"><i class="fa-solid fa-sun"></i></div>
+              <div class="meal-info">
+                <span class="label">점심</span>
+                <h4 id="meal-lunch-val">877</h4>
+                <p>비율 35%</p>
+              </div>
+            </div>
+
+            <div class="meal-card">
+              <div class="meal-icon color-purple"><i class="fa-solid fa-moon"></i></div>
+              <div class="meal-info">
+                <span class="label">저녁</span>
+                <h4 id="meal-dinner-val">752</h4>
+                <p>비율 30%</p>
+              </div>
+            </div>
+
+            <div class="meal-card">
+              <div class="meal-icon color-red"><i class="fa-solid fa-apple-whole"></i></div>
+              <div class="meal-info">
+                <span class="label">간식</span>
+                <h4 id="meal-snack-val">251</h4>
+                <p>비율 10%</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- Activity Multiplier Detailed Table -->
+    <section class="activity-table-section glass-panel">
+      <h3><i class="fa-solid fa-table-list text-red"></i> 활동 계수 상세 가이드</h3>
+      <div class="table-container">
+        <table class="activity-table" id="activity-guide-table">
+          <thead>
+            <tr>
+              <th>활동 수준</th>
+              <th>계수</th>
+              <th>일상생활 예시</th>
+              <th>주간 평균 운동 강도</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-level="1.2">
+              <td class="level-title"><i class="fa-solid fa-chair"></i> 거의 활동 없음</td>
+              <td class="factor-val">×1.2</td>
+              <td>사무직 행정업무, 재택근무 위주, 앉아있는 시간이 대부분</td>
+              <td>정기적인 운동 없음</td>
+            </tr>
+            <tr data-level="1.375">
+              <td class="level-title"><i class="fa-solid fa-person-walking"></i> 가벼운 활동</td>
+              <td class="factor-val">×1.375</td>
+              <td>통근 및 마트 장보기 도보 이동, 가벼운 서서 하는 집안일</td>
+              <td>주 1~3회 가벼운 걷기, 요가, 가벼운 움직임</td>
+            </tr>
+            <tr data-level="1.55" class="active-highlight">
+              <td class="level-title"><i class="fa-solid fa-person-running"></i> 보통 활동 <span class="check-icon">✓</span></td>
+              <td class="factor-val">×1.55</td>
+              <td>자주 걷거나 서서 활동, 규칙적인 외부 활동, 활동적인 취미</td>
+              <td>주 3~5회 중간 강도의 유산소/근력 피트니스</td>
+            </tr>
+            <tr data-level="1.725">
+              <td class="level-title"><i class="fa-solid fa-dumbbell"></i> 활발한 활동</td>
+              <td class="factor-val">×1.725</td>
+              <td>배달, 서빙, 조리 등 종일 서서 육체 노동을 하는 직군</td>
+              <td>주 6~7회 격렬한 고강도 스포츠, 중량 리프팅</td>
+            </tr>
+            <tr data-level="1.9">
+              <td class="level-title"><i class="fa-solid fa-person-digging"></i> 매우 활발</td>
+              <td class="factor-val">×1.9</td>
+              <td>전문 운동선수, 군인 특수훈련, 택배 물류 상하차, 광부 및 농업 노동</td>
+              <td>하루 2회 이상 고주파 격타 훈련 또는 풀타임 육체 노동</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Comprehensive Guide Section -->
+    <section class="guide-details-section glass-panel">
+      <h3><i class="fa-solid fa-graduation-cap text-orange"></i> BMR/TDEE 완벽 가이드 - 나의 하루 칼로리</h3>
+      <p class="guide-intro">BMR(기초대사량)은 우리가 아무런 활동을 하지 않고 가만히 있어도 생명 유지(숨쉬기, 혈액 순환, 뇌 활동 등)를 위해 몸이 소비하는 최소한의 에너지입니다. 여기에 일상 움직임과 운동량을 고려해 곱한 값이 TDEE(하루 총 에너지 소비량)입니다. 이 두 수치를 알면 건강하고 효과적인 다이어트나 린매스업(근육 증량) 식단을 오차 없이 구성할 수 있습니다.</p>
+
+      <div class="guide-grid">
+        
+        <!-- Usage card -->
+        <div class="guide-card">
+          <h4><i class="fa-solid fa-circle-question"></i> BMR/TDEE 계산기 사용법</h4>
+          <ol class="guide-list">
+            <li><span class="num">1</span> <strong>신체 정보 입력</strong>: 성별을 고르고 나이 빠른 선택 버튼 또는 세부 나이, 키, 체중 슬라이더를 통해 신체 스펙을 등록합니다.</li>
+            <li><span class="num">2</span> <strong>활동 수준 선택</strong>: 하루 중 본인이 대략적으로 소비하는 운동 및 신체 노동 강도에 매칭되는 활동 수준 카드를 선택합니다.</li>
+            <li><span class="num">3</span> <strong>목표 칼로리 확인</strong>: 감량 및 근육 증량 필요 칼로리 스케줄 목록 중 본인의 다이어트 계획에 부합하는 목표를 클릭하면 아래 식사별 분배 계산기 값이 동적으로 동기화됩니다.</li>
+          </ol>
+        </div>
+
+        <!-- Formula card -->
+        <div class="guide-card">
+          <h4><i class="fa-solid fa-compass-drafting"></i> 계산 공식 (Mifflin-St Jeor)</h4>
+          <div class="formula-box">
+            <span class="formula">남성: BMR = (10 × W) + (6.25 × H) - (5 × A) + 5</span>
+            <span class="formula">여성: BMR = (10 × W) + (6.25 × H) - (5 × A) - 161</span>
+            <span class="example">※ W: 체중(kg) | H: 신장(cm) | A: 나이(세)</span>
+          </div>
+          <p class="formula-desc">Mifflin-St Jeor 공식은 1990년에 정립된 현대 표준 기초대사량 산출 공식입니다. 과거 해리스-베네딕트 공식보다 실제 체성분 및 대사율 오차가 적어 현역 영양사들과 헬스 케어 플랫폼에서 기본 공식을 대표해 사용하고 있습니다.</p>
+        </div>
+
+      </div>
+
+      <!-- Health tips list -->
+      <div class="guide-health-tips">
+        <h4><i class="fa-solid fa-lightbulb"></i> BMR/TDEE 기반 식단 설계 전략</h4>
+        <ul class="tips-bullets">
+          <li>
+            <i class="fa-solid fa-circle-check text-red"></i>
+            <strong>절식 다이어트의 위험성 (기초대사량 이하 섭취 금지):</strong>
+            빠른 감량을 위해 자신의 기초대사량(BMR)보다 적게 먹는 극단적인 다이어트를 하면, 신체는 비상 에너지 절약 모드로 들어가 근육을 분해하고 대사 속도를 강제로 떨어뜨립니다. 이는 다이어트 중단 시 극단적인 요요 현상을 불러오며 탈모, 피로감 등의 부작용을 동반합니다. 따라서 감량 시에도 BMR과 TDEE 사이 구간(TDEE - 500 kcal 권장)으로 섭취하는 것이 좋습니다.
+          </li>
+          <li>
+            <i class="fa-solid fa-circle-check text-red"></i>
+            <strong>안전하고 지속 가능한 감량 섭취:</strong>
+            안전한 체중 조절 속도는 주당 0.5kg 내외입니다. 1kg의 지방을 연소하는 데 필요한 에너지는 약 7700 kcal입니다. 하루에 TDEE보다 500 kcal 적게 섭취하면 일주일에 3500 kcal의 에너지 적자가 생겨 건강하게 약 0.5kg의 체중을 줄여 나갈 수 있습니다.
+          </li>
+          <li>
+            <i class="fa-solid fa-circle-check text-red"></i>
+            <strong>체지방률과 활동 계수 보정:</strong>
+            근육은 지방보다 가만히 있을 때 소비하는 에너지가 훨씬 큽니다. 근육량이 많고 체지방률이 극히 낮은 사람이라면 실제 기초대사량이 공식 도출값보다 10~15% 정도 높을 수 있습니다. 반면, 체지방률이 높은 과체중인 경우 실제 총소비량(TDEE)이 계산기 결과치보다 약간 낮을 수 있으므로 유산소 및 저항성 근력 운동을 결합하여 근육 보존율을 지켜내는 것이 정석입니다.
+          </li>
+        </ul>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       3. FLOATING TOOLBAR CONTROLS
+       ========================================== -->
+  <div class="floating-controls-panel">
+    <!-- Scroll position progress ring -->
+    <div class="progress-ring-wrap" id="scroll-progress-ring" title="스크롤 위치">
+      <svg class="progress-ring-svg" width="50" height="50">
+        <circle class="progress-ring-circle-bg" cx="25" cy="25" r="20" />
+        <circle class="progress-ring-circle-indicator" id="progress-circle-indicator" cx="25" cy="25" r="20" />
+      </svg>
+      <span class="progress-txt" id="scroll-percentage-lbl">0%</span>
+    </div>
+
+    <!-- Quick Scroll Top -->
+    <button class="floating-btn" id="btn-scroll-top" title="맨 위로 가기">
+      <i class="fa-solid fa-arrow-up"></i>
+    </button>
+    <!-- Quick Scroll Bottom -->
+    <button class="floating-btn" id="btn-scroll-bottom" title="맨 아래로 가기">
+      <i class="fa-solid fa-arrow-down"></i>
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <p>&copy; 2026 CineAHO Web Application Store. All rights reserved.</p>
+    <p class="footer-note">Cineaho 포털 하위에 여러 독립적인 웹 애플리케이션을 유연하게 마운트하여 관리할 수 있습니다.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
