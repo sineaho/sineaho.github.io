@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO 갓 필드 (God Field) - 온라인 예언자 카드 배틀</title>
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Glow Orbs for Mystical Atmosphere -->
+  <div class="bg-glow bg-glow-green"></div>
+  <div class="bg-glow bg-glow-yellow"></div>
+
+  <!-- ==========================================
+       1. LOBBY / TITLE SCREEN
+       ========================================== -->
+  <div class="lobby-screen" id="lobby-screen">
+    <!-- Top Tiny Back to Portal Bar -->
+    <div class="lobby-top-bar">
+      <a href="../index.html" class="btn-lobby-back">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>포털 메인</span>
+      </a>
+      <button class="btn-lobby-book" id="btn-lobby-bible">
+        <i class="fa-solid fa-book-bible"></i>
+        <span>교전 (敎典)</span>
+      </button>
+    </div>
+
+    <!-- Title Art Container -->
+    <div class="title-logo-container">
+      <div class="title-logo-glow"></div>
+      <div class="title-logo-wrapper">
+        <div class="sun-orb"></div>
+        <h1 class="game-title">
+          <span class="title-word title-god">GOD</span>
+          <span class="sword-divider"><i class="fa-solid fa-shield-halved"></i></span>
+          <span class="title-word title-field">FIELD</span>
+        </h1>
+      </div>
+    </div>
+
+    <!-- Input and Start Panel -->
+    <div class="setup-panel glass-panel">
+      <div class="form-group">
+        <label for="prophet-name">예언자의 이름</label>
+        <input type="text" id="prophet-name" value="cineaho" maxlength="12" placeholder="이름을 입력하세요">
+      </div>
+
+      <div class="setup-options">
+        <div class="option-item">
+          <label for="ai-count">대전 인원</label>
+          <select id="ai-count" class="select-box">
+            <option value="4" selected>4인 FFA 배틀로얄</option>
+            <option value="2">1:1 예언자 결투</option>
+          </select>
+        </div>
+
+        <div class="option-item">
+          <label for="difficulty">상대 난이도</label>
+          <select id="difficulty" class="select-box">
+            <option value="easy">쉬움 (Easy)</option>
+            <option value="normal" selected>보통 (Normal)</option>
+            <option value="hard">어려움 (Hard)</option>
+          </select>
+        </div>
+      </div>
+
+      <button id="btn-birth" class="btn-birth">
+        <span>탄생하기</span>
+      </button>
+    </div>
+
+    <!-- Mock Store Badges to replicate original branding vibe -->
+    <div class="store-badges">
+      <a href="#" class="store-badge-btn" onclick="alert('CineAHO 포털 내부용 브라우저 게임입니다!'); return false;">
+        <i class="fa-brands fa-apple"></i>
+        <div class="badge-text">
+          <span>App Store에서</span>
+          <strong>다운로드 하기</strong>
+        </div>
+      </a>
+      <a href="#" class="store-badge-btn" onclick="alert('CineAHO 포털 내부용 브라우저 게임입니다!'); return false;">
+        <i class="fa-brands fa-google-play"></i>
+        <div class="badge-text">
+          <span>다운로드하기</span>
+          <strong>Google Play</strong>
+        </div>
+      </a>
+    </div>
+
+    <!-- Lobby Footer -->
+    <footer class="lobby-footer">
+      <button class="btn-footer-settings" id="btn-settings-toggle">
+        <i class="fa-solid fa-gear"></i>
+        <span>설정</span>
+      </button>
+      
+      <!-- Vol Slider -->
+      <div class="volume-container">
+        <i class="fa-solid fa-volume-high" id="vol-icon"></i>
+        <div class="volume-steps" id="vol-steps">
+          <span class="vol-step active" data-val="1"></span>
+          <span class="vol-step active" data-val="2"></span>
+          <span class="vol-step active" data-val="3"></span>
+          <span class="vol-step active" data-val="4"></span>
+          <span class="vol-step" data-val="5"></span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ==========================================
+       2. MAIN GAME BOARD SCREEN
+       ========================================== -->
+  <div class="game-screen hidden" id="game-screen">
+    
+    <!-- Top Header Bar -->
+    <header class="game-header">
+      <div class="header-left">
+        <span class="logo-small">GOD FIELD</span>
+        <div class="turn-banner" id="turn-banner">
+          <span class="pulse-dot-green"></span>
+          <span id="turn-txt">경기 대기 중</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <button class="btn-header" id="btn-open-bible">
+          <i class="fa-solid fa-book-bible"></i>
+          <span>교전(敎典)</span>
+        </button>
+        <button class="btn-header btn-danger" id="btn-quit">
+          <i class="fa-solid fa-circle-xmark"></i>
+          <span>포기하기</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Play Workspace Split Layout -->
+    <div class="game-workspace">
+      
+      <!-- Left: Event Logs -->
+      <div class="panel-left">
+        <div class="glass-panel log-card">
+          <div class="panel-title">
+            <i class="fa-solid fa-scroll"></i>
+            <span>배틀 로그</span>
+          </div>
+          <div class="log-content" id="log-list">
+            <div class="log-row system">예언자 대전판에 입장하셨습니다.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center: Battle Circular Ring Arena -->
+      <div class="panel-center">
+        <div class="arena-ring">
+          
+          <!-- AI Slot 2 (Top) -->
+          <div class="player-slot slot-top" id="slot-cpu2" data-slot="2">
+            <div class="player-avatar-wrapper">
+              <div class="turn-border"></div>
+              <div class="avatar icon-blue"><i class="fa-solid fa-dharmachakra"></i></div>
+            </div>
+            <div class="player-info">
+              <div class="player-name">미카엘 <span class="ai-badge">CPU</span></div>
+              <div class="stats-row">
+                <span class="stat hp"><i class="fa-solid fa-heart"></i> <strong class="hp-val">40</strong></span>
+                <span class="stat mp"><i class="fa-solid fa-bolt"></i> <strong class="mp-val">20</strong></span>
+                <span class="stat gold"><i class="fa-solid fa-coins"></i> <strong class="gold-val">20</strong></span>
+              </div>
+              <div class="curses-row" id="curses-cpu2">
+                <!-- Status Icons like 감기, 지옥병 etc -->
+              </div>
+            </div>
+          </div>
+
+          <!-- AI Slot 1 (Left) -->
+          <div class="player-slot slot-left" id="slot-cpu1" data-slot="1">
+            <div class="player-avatar-wrapper">
+              <div class="turn-border"></div>
+              <div class="avatar icon-red"><i class="fa-solid fa-gopuram"></i></div>
+            </div>
+            <div class="player-info">
+              <div class="player-name">가브리엘 <span class="ai-badge">CPU</span></div>
+              <div class="stats-row">
+                <span class="stat hp"><i class="fa-solid fa-heart"></i> <strong class="hp-val">40</strong></span>
+                <span class="stat mp"><i class="fa-solid fa-bolt"></i> <strong class="mp-val">20</strong></span>
+                <span class="stat gold"><i class="fa-solid fa-coins"></i> <strong class="gold-val">20</strong></span>
+              </div>
+              <div class="curses-row" id="curses-cpu1"></div>
+            </div>
+          </div>
+
+          <!-- AI Slot 3 (Right) -->
+          <div class="player-slot slot-right" id="slot-cpu3" data-slot="3">
+            <div class="player-avatar-wrapper">
+              <div class="turn-border"></div>
+              <div class="avatar icon-purple"><i class="fa-solid fa-torii-gate"></i></div>
+            </div>
+            <div class="player-info">
+              <div class="player-name">라파엘 <span class="ai-badge">CPU</span></div>
+              <div class="stats-row">
+                <span class="stat hp"><i class="fa-solid fa-heart"></i> <strong class="hp-val">40</strong></span>
+                <span class="stat mp"><i class="fa-solid fa-bolt"></i> <strong class="mp-val">20</strong></span>
+                <span class="stat gold"><i class="fa-solid fa-coins"></i> <strong class="gold-val">20</strong></span>
+              </div>
+              <div class="curses-row" id="curses-cpu3"></div>
+            </div>
+          </div>
+
+          <!-- Central Battle Visual Area -->
+          <div class="battle-center-board glass-panel" id="center-board">
+            
+            <div class="combat-indicator-pane" id="combat-pane">
+              <!-- Animated sword icons, arrows pointing to target, damage indicator -->
+              <div class="center-idle" id="center-idle-txt">
+                <p>갓 필드 전장</p>
+                <span>턴이 시작되면 카드를 내어 행동하세요.</span>
+              </div>
+              
+              <div class="center-action hidden" id="center-action-pane">
+                <div class="actor-row">
+                  <span id="actor-badge" class="action-badge">공격</span>
+                  <span id="actor-txt">예언자</span>
+                </div>
+                <div class="action-card-visual" id="action-card-showcase">
+                  <!-- Render card image placeholder of played card -->
+                </div>
+                <div class="target-row">
+                  <i class="fa-solid fa-arrow-down-long arrow-anim"></i>
+                  <span id="target-txt">대상 예언자</span>
+                </div>
+              </div>
+
+              <!-- Defending Overlay Banner -->
+              <div class="defense-banner-overlay hidden" id="defense-overlay">
+                <div class="def-banner-title"><i class="fa-solid fa-shield-halved"></i> 공격 감지!</div>
+                <p id="defense-detail-txt">ATK 5 공격이 가해졌습니다. 방어 카드를 선택해 상쇄하십시오.</p>
+                <div class="def-stats">
+                  <span>필요 방어량: <strong id="def-needed-val">0</strong></span>
+                  <span>등록된 방어량: <strong id="def-registered-val">0</strong></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Directional Attack Pointer Indicator -->
+            <div class="combat-arrow-svg-container" id="svg-arrows">
+              <!-- SVGs of arrows to targets will be drawn dynamically -->
+            </div>
+          </div>
+
+          <!-- User Slot 0 (Bottom) -->
+          <div class="player-slot slot-bottom" id="slot-player" data-slot="0">
+            <div class="player-avatar-wrapper">
+              <div class="turn-border"></div>
+              <div class="avatar icon-gold"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+            </div>
+            <div class="player-info">
+              <div class="player-name" id="user-prophet-name">cineaho <span class="user-badge">나</span></div>
+              <div class="stats-row">
+                <span class="stat hp"><i class="fa-solid fa-heart"></i> <strong class="hp-val" id="player-hp">40</strong></span>
+                <span class="stat mp"><i class="fa-solid fa-bolt"></i> <strong class="mp-val" id="player-mp">20</strong></span>
+                <span class="stat gold"><i class="fa-solid fa-coins"></i> <strong class="gold-val" id="player-gold">20</strong></span>
+              </div>
+              <div class="curses-row" id="curses-player"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom Deciding Console Area -->
+    <div class="bottom-controller-dock">
+      
+      <!-- Hand Cards Container (Glass Shelf Layout) -->
+      <div class="hand-shelf glass-panel">
+        <div class="hand-header">
+          <span><i class="fa-solid fa-layer-group text-gold"></i> 소지 성물 (신기)</span>
+          <span class="hand-count" id="hand-count-lbl">9 / 9장</span>
+        </div>
+        <div class="hand-cards-grid" id="hand-cards-container">
+          <!-- Dynamically loaded cards -->
+        </div>
+      </div>
+
+      <!-- Action Panel Buttons -->
+      <div class="action-buttons-rack">
+        
+        <!-- Standard Active Turn Actions -->
+        <div class="action-rack-group" id="rack-active-turn">
+          <button class="btn-action btn-confirm" id="btn-play-card" disabled>
+            <i class="fa-solid fa-play"></i>
+            <span>카드 사용 / 결정</span>
+          </button>
+          
+          <button class="btn-action btn-pray" id="btn-pray" disabled>
+            <i class="fa-solid fa-hands-praying"></i>
+            <span>기도 올리기</span>
+          </button>
+
+          <button class="btn-action btn-pass" id="btn-pass-turn">
+            <i class="fa-solid fa-forward"></i>
+            <span>행동 안함 / 패스</span>
+          </button>
+        </div>
+
+        <!-- Defending Turn Actions -->
+        <div class="action-rack-group hidden" id="rack-defense-turn">
+          <button class="btn-action btn-defend" id="btn-defend-execute">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>방어 실행 (결정)</span>
+          </button>
+
+          <button class="btn-action btn-take-hit" id="btn-take-damage">
+            <i class="fa-solid fa-burst"></i>
+            <span>피격 수락 (방패 아낌)</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ==========================================
+       3. HOLY BIBLE (교전) MANUAL MODAL POPUP
+       ========================================== -->
+  <div class="modal-overlay hidden" id="bible-modal">
+    <div class="bible-card glass-panel">
+      <div class="bible-header">
+        <h3><i class="fa-solid fa-book-bible text-gold"></i> 갓 필드 교전 (敎典)</h3>
+        <button class="btn-close-modal" id="btn-close-bible"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="bible-body">
+        
+        <!-- Tab Headers -->
+        <div class="bible-tabs">
+          <button class="tab-btn active" data-tab="tab-rules">기본 규칙</button>
+          <button class="tab-btn" data-tab="tab-weapons">무기 (공격)</button>
+          <button class="tab-btn" data-tab="tab-shields">방어구 (방어)</button>
+          <button class="tab-btn" data-tab="tab-sundry">잡화 (유틸)</button>
+          <button class="tab-btn" data-tab="tab-miracles">기적 (마법)</button>
+          <button class="tab-btn" data-tab="tab-curses">질병/재앙</button>
+        </div>
+
+        <!-- Tab contents -->
+        <div class="tab-contents-container">
+          
+          <!-- Rules Tab -->
+          <div class="tab-pane active" id="tab-rules">
+            <h4>1. 승리 조건</h4>
+            <p>모든 상대 예언자의 HP를 0으로 만들어 최종 1인이 되면 승리하며, HP가 0이 되는 행위를 <strong>'승천(Elimination)'</strong>이라 부릅니다.</p>
+            
+            <h4>2. 턴 진행 순서</h4>
+            <p>턴은 시계 방향(나 -> 미카엘 -> 가브리엘 -> 라파엘)으로 순환합니다. 자신의 턴에 카드를 사용하여 공격/치료/교환 등의 행동을 수행할 수 있습니다.</p>
+            
+            <h4>3. 카드 드로우 (패 보충)</h4>
+            <p>자신의 턴에 카드를 사용하면, 사용한 양만큼 즉시 카드 더미(덱)에서 <strong>자동으로 손패를 9장까지 보충</strong>합니다. 패 회전이 빠를수록 좋은 기회를 잡을 수 있습니다.</p>
+            
+            <h4>4. 기도 (Pray)</h4>
+            <p>손패에 공격을 위한 <strong>'무기' 카드가 단 한 장도 없을 때만</strong> 활성화되는 전략적 커맨드입니다. 기도를 누르면 턴을 넘기는 대신 카드 덱에서 성물을 1장 보충받습니다.</p>
+          </div>
+
+          <!-- Weapons Tab -->
+          <div class="tab-pane" id="tab-weapons">
+            <p>무기는 상대방에게 데미지를 주는 카드입니다. 턴당 기본 1개만 사용할 수 있으나, 카드 이름 뒤에 <strong>'+' 표시</strong>가 붙은 무기는 연속으로 겹쳐서 공격력을 콤보로 강화할 수 있습니다.</p>
+            
+            <div class="bible-card-grid">
+              <div class="mini-card-desc red"><strong>철 검 (Iron Sword)</strong>: ATK 5. 기본적이고 튼튼한 무기.</div>
+              <div class="mini-card-desc red"><strong>돌 망치 (Stone Hammer)</strong>: ATK 4. 단단하며 돌(Stone) 속성을 지님.</div>
+              <div class="mini-card-desc red"><strong>나무 활 (Wooden Bow)</strong>: ATK 3. 가벼운 나무(Wood) 속성 무기.</div>
+              <div class="mini-card-desc red"><strong>연속 단검 + (Daggers +)</strong>: ATK 2. '+'가 붙어 다른 무기와 결합 가능.</div>
+              <div class="mini-card-desc red"><strong>불꽃 검 (Fire Sword)</strong>: ATK 5. 강력한 화염(Fire) 속성을 품은 검.</div>
+              <div class="mini-card-desc red"><strong>얼음 도끼 (Ice Axe)</strong>: ATK 5. 물(Water) 속성 도끼.</div>
+              <div class="mini-card-desc red"><strong>어둠의 채찍 (Dark Whip)</strong>: ATK 6. 적을 타격하는 암흑(Darkness) 채찍.</div>
+              <div class="mini-card-desc red"><strong>빛의 검 (Light Sword)</strong>: ATK 8. 아주 높은 공격력과 신성(Light) 속성 소유.</div>
+              <div class="mini-card-desc red"><strong>태풍의 눈 (Typhoon)</strong>: ATK 5. 모든 적을 강타하는 광역 풍/수 속성 활성.</div>
+            </div>
+          </div>
+
+          <!-- Shields Tab -->
+          <div class="tab-pane" id="tab-shields">
+            <p>공격 카드를 받아쳤을 때, 해당하는 속성 및 수치의 방어구 카드를 매칭하여 방어력을 합산할 수 있습니다. 방어구는 한 턴에 여러 장을 조합하여 동시에 낼 수 있습니다.</p>
+            
+            <div class="bible-card-grid">
+              <div class="mini-card-desc blue"><strong>철 방패 (Iron Shield)</strong>: DEF 5. 표준 물리 충격을 잘 막아냄.</div>
+              <div class="mini-card-desc blue"><strong>나무 방패 (Wooden Shield)</strong>: DEF 3. 가볍고 평범하며 나무(Wood) 속성.</div>
+              <div class="mini-card-desc blue"><strong>돌 방패 (Stone Shield)</strong>: DEF 4. 대지의 기운이 실린 돌(Stone) 속성 방패.</div>
+              <div class="mini-card-desc blue"><strong>화염 방패 (Fire Shield)</strong>: DEF 5. 화염 속성 공격을 원천 상쇄.</div>
+              <div class="mini-card-desc blue"><strong>얼음 방패 (Ice Shield)</strong>: DEF 5. 물/수 속성 공격에 저항.</div>
+              <div class="mini-card-desc blue"><strong>거울 방패 (Mirror Shield)</strong>: DEF 2. 적의 공격 데미지를 <strong>공격자에게 고스란히 반사</strong>!</div>
+              <div class="mini-card-desc blue"><strong>무적의 오라 (Invincible Aura)</strong>: DEF 99. 모든 데미지를 완전 면역(MP 5 소비).</div>
+            </div>
+          </div>
+
+          <!-- Sundry Tab -->
+          <div class="tab-pane" id="tab-sundry">
+            <p>치료, 능력치 추가, 억지 거래 등 다채로운 효과를 제공하는 녹색 카드군입니다.</p>
+            
+            <div class="bible-card-grid">
+              <div class="mini-card-desc green"><strong>약초 (Herb)</strong>: HP +10 회복. 부담 없는 기초 약물.</div>
+              <div class="mini-card-desc green"><strong>구급상자 (First Aid Kit)</strong>: HP +20 회복.</div>
+              <div class="mini-card-desc green"><strong>엘릭서 (Elixir)</strong>: HP 즉시 40 전체 치유 (풀 회복).</div>
+              <div class="mini-card-desc green"><strong>마나 포션 (Mana Potion)</strong>: MP +10 회복. 마법의 원천.</div>
+              <div class="mini-card-desc green"><strong>돈주머니 (Money Bag)</strong>: 돈(Gold) +15 추가.</div>
+              <div class="mini-card-desc green"><strong>백신 (Vaccine)</strong>: 자신에게 걸려있는 모든 질병(감기, 지옥 등)과 재앙을 완전 제거.</div>
+              <div class="mini-card-desc green"><strong>감기 바이러스 (Cold Virus)</strong>: 타겟 예언자를 '감기' 상태이상으로 감염시킵니다.</div>
+              <div class="mini-card-desc green"><strong>구매 (Buy)</strong>: 돈 5를 대상에게 지불하고, 대상의 손패에서 무작위 카드 1장을 탈취.</div>
+              <div class="mini-card-desc green"><strong>판매 (Sell)</strong>: 대상에게 내 카드 1장을 건네며 강제로 돈 10을 강탈(내 소지금 +10, 적 -10).</div>
+              <div class="mini-card-desc green"><strong>환전 (Exchange)</strong>: 자신의 HP와 MP 수치를 맞교환하는 전략적 신기.</div>
+            </div>
+          </div>
+
+          <!-- Miracles Tab -->
+          <div class="tab-pane" id="tab-miracles">
+            <p>MP를 소모하여 강력한 속성 공격 및 회복을 일으키는 카드로 보라색 테두리를 가집니다.</p>
+            
+            <div class="bible-card-grid">
+              <div class="mini-card-desc purple"><strong>기적: 치유 (Heal)</strong>: MP 5 소모. HP +15 회복.</div>
+              <div class="mini-card-desc purple"><strong>기적: 파이어 볼 (Fireball)</strong>: MP 6 소모. 화염 속성 8 데미지.</div>
+              <div class="mini-card-desc purple"><strong>기적: 벼락 (Lightning)</strong>: MP 7 소모. 물리 10 데미지 및 대상의 방패 사용을 차단(섬광 유발).</div>
+              <div class="mini-card-desc purple"><strong>기적: 메테오 (Meteor)</strong>: MP 10 소모. 모든 적 예언자 전체에게 12 화염/돌 데미지.</div>
+              <div class="mini-card-desc purple"><strong>기적: 눈보라 (Blizzard)</strong>: MP 8 소모. 모든 적 전체에게 7 물 데미지 및 '감기' 전파.</div>
+              <div class="mini-card-desc purple"><strong>기적: 축복 (Blessing)</strong>: MP 8 소모. 모든 질병을 정화하고 HP 25를 회복.</div>
+            </div>
+          </div>
+
+          <!-- Curses Tab -->
+          <div class="tab-pane" id="tab-curses">
+            <h4>1. 질병 병(病) 계열 (매 턴 종료 시 적용)</h4>
+            <ul>
+              <li><strong>감기 (Cold)</strong>: 매 턴 HP -1 소실.</li>
+              <li><strong>열병 (Fever)</strong>: 매 턴 HP -2 소실.</li>
+              <li><strong>지옥병 (Hell)</strong>: 매 턴 HP -5 소실.</li>
+              <li><strong>천국병 (Heaven)</strong>: 매 턴 HP +5 회복되지만, <strong>매 턴 5% 확률로 발작 즉사(승천)</strong>.</li>
+              <li>진화: 병에 걸린 상태에서 질병 전파 카드를 받으면 다음 등급의 질병으로 강제 진화하며, 천국병 상태에서 진화 시 즉사합니다.</li>
+            </ul>
+
+            <h4 style="margin-top: 1rem;">2. 환경 재앙 계열</h4>
+            <ul>
+              <li><strong>안개 (Fog)</strong>: 모든 예언자 스탯이 '?'로 보이며, 공격 대상 타겟팅이 랜덤하게 바뀝니다.</li>
+              <li><strong>섬광 (Flash)</strong>: 방어 시 오직 1장의 방어 카드만 제시할 수 있게 되어 콤보 방어가 막힙니다.</li>
+              <li><strong>꿈 (Dream)</strong>: 현재 보유한 성물의 이름과 공격/방어 수치가 50% 확률로 가짜 데이터로 둔갑해 보입니다.</li>
+            </ul>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- End Game Winning / Losing Overlay Dialog -->
+  <div class="game-over-overlay hidden" id="game-over-panel">
+    <div class="game-over-card glass-panel">
+      <div class="crown-icon-glow"><i class="fa-solid fa-crown"></i></div>
+      <h2 id="go-title">예언자 승천</h2>
+      <p id="go-desc">당신은 결투 도중 힘을 다해 하늘로 승천하였습니다.</p>
+      
+      <div class="game-stats-summary" id="go-summary">
+        <!-- Summary stats -->
+      </div>
+      
+      <button class="btn-restart" id="btn-restart-game">
+        <i class="fa-solid fa-rotate-left"></i>
+        <span>로비로 돌아가기</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Screen Shake & Laser Flash effects containers -->
+  <div class="flash-screen-effect" id="screen-flash"></div>
+
+  <!-- Audio synthesizers and logic script inclusion -->
+  <script src="app.js"></script>
+</body>
+</html>
