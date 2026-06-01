@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR코드 생성기 Pro - 프리미엄 커스텀 메이커</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>웹앱 아이디어 창고</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="#">무료 앱 189종</a></li>
+        <li><a href="#" class="active">CineAHO</a></li>
+        <li><a href="#">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- QR Code Generator Container -->
+  <main class="qr-container">
+    
+    <!-- Title & Description Header -->
+    <section class="qr-header-section">
+      <h1 class="main-title">
+        <i class="fa-solid fa-qrcode text-purple"></i> QR 코드 생성기
+      </h1>
+      <p class="subtitle-desc">
+        텍스트, URL, 연락처를 QR 코드로 변환하는 간편한 도구입니다. 다양한 커스터마이징과 다운로드 옵션을 제공합니다.
+      </p>
+      
+      <div class="tag-badges">
+        <span class="badge badge-tag">QR코드</span>
+        <span class="badge badge-tag">생성기</span>
+        <span class="badge badge-tag">유틸리티</span>
+      </div>
+    </section>
+
+    <!-- Main Workspace (Controls Panel Left, Preview Board Right) -->
+    <section class="qr-workspace">
+      
+      <!-- Left Column: Settings and inputs -->
+      <div class="settings-column">
+        
+        <!-- 1. Data Type Selector -->
+        <div class="glass-panel panel-box">
+          <h3 class="panel-title">데이터 타입</h3>
+          <div class="datatype-grid">
+            <button class="btn-type-tab active" data-type="text"><i class="fa-solid fa-align-left"></i> 텍스트</button>
+            <button class="btn-type-tab" data-type="url"><i class="fa-solid fa-link"></i> URL</button>
+            <button class="btn-type-tab" data-type="email"><i class="fa-solid fa-envelope"></i> 이메일</button>
+            <button class="btn-type-tab" data-type="phone"><i class="fa-solid fa-phone"></i> 전화</button>
+            <button class="btn-type-tab" data-type="wifi"><i class="fa-solid fa-wifi"></i> WiFi</button>
+            <button class="btn-type-tab" data-type="vcard"><i class="fa-solid fa-id-card"></i> 연락처</button>
+            <button class="btn-type-tab" data-type="sms"><i class="fa-solid fa-comment-sms"></i> SMS</button>
+            <button class="btn-type-tab" data-type="geo"><i class="fa-solid fa-location-dot"></i> 위치</button>
+          </div>
+        </div>
+
+        <!-- 2. Dynamic Input Fields -->
+        <div class="glass-panel panel-box input-box-container">
+          <h3 class="panel-title">데이터 입력</h3>
+          
+          <div class="input-form-fields" id="dynamic-inputs">
+            <!-- Dynamic Fields Rendered via JS -->
+            <div class="form-group text-type-fields active-fields">
+              <textarea id="input-text" placeholder="여기에 텍스트를 입력하세요..." maxlength="1435"></textarea>
+              <div class="char-counter">일반 텍스트를 입력하세요 <span id="lbl-char-count">0/1435</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Bottom Action Toggle Tabs -->
+        <div class="action-tab-group">
+          <button class="btn-action-tab active" data-target="drawer-template"><i class="fa-solid fa-border-all"></i> 템플릿</button>
+          <button class="btn-action-tab" data-target="drawer-custom"><i class="fa-solid fa-wand-magic-sparkles"></i> 커스터마이징</button>
+          <button class="btn-action-tab" data-target="drawer-download"><i class="fa-solid fa-download"></i> 다운로드</button>
+        </div>
+
+        <!-- 4. Dynamic Options Drawer Box -->
+        <div class="glass-panel panel-box drawer-container">
+          
+          <!-- Template Drawer -->
+          <div class="drawer-panel active" id="drawer-template">
+            <h4 class="drawer-title">템플릿 프리셋</h4>
+            <div class="templates-grid">
+              <div class="template-item active" data-preset="classic">
+                <div class="template-preview" style="background:#fff; border:3px solid #000;"></div>
+                <span>클래식 블랙</span>
+              </div>
+              <div class="template-item" data-preset="neon">
+                <div class="template-preview" style="background:linear-gradient(135deg, #a855f7 0%, #3b82f6 100%);"></div>
+                <span>네온 사이버</span>
+              </div>
+              <div class="template-item" data-preset="emerald">
+                <div class="template-preview" style="background:linear-gradient(135deg, #10b981 0%, #047857 100%);"></div>
+                <span>에메랄드</span>
+              </div>
+              <div class="template-item" data-preset="sakura">
+                <div class="template-preview" style="background:linear-gradient(135deg, #f43f5e 0%, #f472b6 100%);"></div>
+                <span>사쿠라 핑크</span>
+              </div>
+              <div class="template-item" data-preset="sunset">
+                <div class="template-preview" style="background:linear-gradient(135deg, #f97316 0%, #eab308 100%);"></div>
+                <span>썬셋 골드</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Customization Drawer -->
+          <div class="drawer-panel" id="drawer-custom">
+            <h4 class="drawer-title">세부 커스터마이징</h4>
+            <div class="custom-controls-grid">
+              
+              <!-- Color Select -->
+              <div class="custom-control-item">
+                <label><i class="fa-solid fa-palette"></i> 전경색 타입</label>
+                <select id="select-color-type" class="dropdown-select">
+                  <option value="solid" selected>단색 (Solid)</option>
+                  <option value="gradient">그라데이션 (Gradient)</option>
+                </select>
+              </div>
+
+              <div class="custom-control-item" id="fg-color-single-group">
+                <label>전경색 색상</label>
+                <div class="color-picker-row">
+                  <input type="color" id="picker-fg-color" value="#000000">
+                  <input type="text" id="txt-fg-color" value="#000000" class="hex-input">
+                </div>
+              </div>
+
+              <div class="custom-control-item" id="fg-color-grad-group" style="display:none;">
+                <label>그라데이션 시작/끝</label>
+                <div class="color-picker-row">
+                  <input type="color" id="picker-grad-start" value="#a855f7">
+                  <input type="color" id="picker-grad-end" value="#3b82f6">
+                </div>
+              </div>
+
+              <div class="custom-control-item">
+                <label>배경색 색상</label>
+                <div class="color-picker-row">
+                  <input type="color" id="picker-bg-color" value="#ffffff">
+                  <input type="text" id="txt-bg-color" value="#ffffff" class="hex-input">
+                </div>
+              </div>
+
+              <!-- Dot Shapes -->
+              <div class="custom-control-item">
+                <label><i class="fa-solid fa-shapes"></i> 도트 형태</label>
+                <select id="select-dot-style" class="dropdown-select">
+                  <option value="square" selected>스퀘어 (기본)</option>
+                  <option value="rounded">라운드 (Rounded)</option>
+                  <option value="circle">써클 (Circle)</option>
+                </select>
+              </div>
+
+              <!-- Error Correction -->
+              <div class="custom-control-item">
+                <label><i class="fa-solid fa-shield-halved"></i> 에러 복원 레벨</label>
+                <select id="select-ec-level" class="dropdown-select">
+                  <option value="L">L (7% 복원)</option>
+                  <option value="M" selected>M (15% 복원)</option>
+                  <option value="Q">Q (25% 복원)</option>
+                  <option value="H">H (30% 복원 - 로고 권장)</option>
+                </select>
+              </div>
+
+              <!-- Center Logo insert -->
+              <div class="custom-control-item">
+                <label><i class="fa-solid fa-image"></i> 중앙 로고 아이콘</label>
+                <select id="select-logo-preset" class="dropdown-select">
+                  <option value="none" selected>없음 (None)</option>
+                  <option value="link">링크 아이콘 (URL)</option>
+                  <option value="wifi">WiFi 아이콘</option>
+                  <option value="phone">전화 아이콘</option>
+                  <option value="custom">커스텀 이미지 업로드</option>
+                </select>
+              </div>
+
+              <!-- Custom upload file selector (hidden by default) -->
+              <div class="custom-control-item" id="logo-upload-group" style="display:none;">
+                <label>커스텀 이미지 파일</label>
+                <input type="file" id="input-logo-file" accept="image/*">
+              </div>
+
+              <!-- QR Size -->
+              <div class="custom-control-item slider-item">
+                <div class="slider-label-row">
+                  <label for="slider-qr-size">QR 해상도 크기</label>
+                  <span id="lbl-qr-size">300px</span>
+                </div>
+                <input type="range" id="slider-qr-size" min="150" max="600" value="300" step="50">
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Download Drawer -->
+          <div class="drawer-panel" id="drawer-download">
+            <h4 class="drawer-title">내보내기 및 다운로드</h4>
+            <div class="download-buttons-col">
+              <button class="btn btn-primary" id="btn-download-png">
+                <i class="fa-solid fa-file-image"></i> PNG 이미지 저장
+              </button>
+              <button class="btn btn-secondary" id="btn-download-jpeg">
+                <i class="fa-solid fa-file-image"></i> JPEG 이미지 저장
+              </button>
+              <button class="btn btn-secondary" id="btn-download-svg">
+                <i class="fa-solid fa-file-code"></i> SVG 파일 저장 (벡터 포맷)
+              </button>
+              <button class="btn btn-secondary" id="btn-copy-clipboard">
+                <i class="fa-solid fa-copy"></i> 클립보드 이미지 복사
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Right Column: Live QR Preview Board -->
+      <div class="preview-column">
+        <div class="glass-panel preview-panel">
+          <div class="preview-header">
+            <h3>QR 코드 미리보기</h3>
+            <div class="badge-capsule" id="lbl-preview-badge">
+              <i class="fa-solid fa-align-left text-blue"></i> 텍스트: 입력 대기 중
+            </div>
+          </div>
+
+          <div class="qr-canvas-box" id="qr-canvas-box">
+            
+            <!-- Canvas for QR drawing -->
+            <canvas id="qr-canvas" width="300" height="300"></canvas>
+            
+            <!-- Empty Placeholder overlay -->
+            <div class="qr-placeholder-overlay" id="qr-placeholder">
+              <div class="placeholder-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+              <p>데이터를 입력하면<br>QR 코드가 생성됩니다</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Tips Panel -->
+    <section class="tips-box-panel glass-panel">
+      <h4><i class="fa-solid fa-lightbulb"></i> 사용 팁</h4>
+      <ul>
+        <li>다양한 데이터 타입을 선택하여 맞춤형 QR 코드를 생성하세요</li>
+        <li>커스터마이징으로 색상과 크기를 조절할 수 있습니다</li>
+        <li>템플릿을 사용하면 빠르게 일반적인 QR 코드를 만들 수 있습니다</li>
+        <li>생성된 QR 코드는 다양한 형식으로 다운로드할 수 있습니다</li>
+      </ul>
+    </section>
+
+    <!-- Bottom Guide Board (11-part document viewer) -->
+    <section class="explanation-board-section">
+      <div class="board-header">
+        <i class="fa-solid fa-book text-blue"></i>
+        <div>
+          <h2>QR 코드 마스터 백과사전</h2>
+          <span>QR코드의 오류 복원 연산 원리, 표준 데이터 스키마 및 고밀도 인코딩 공식 가이드입니다.</span>
+        </div>
+      </div>
+
+      <div class="explanation-layout">
+        <!-- 11-part Navigation List (Left Column) -->
+        <nav class="explanation-index-list">
+          <ul>
+            <li class="active" data-index="1"><span class="index-num">01</span> QR 코드 개요</li>
+            <li data-index="2"><span class="index-num">02</span> 역사와 인코딩 원리</li>
+            <li data-index="3"><span class="index-num">03</span> 오류 복원력(EC)의 기작</li>
+            <li data-index="4"><span class="index-num">04</span> 8대 데이터 스키마 규격</li>
+            <li data-index="5"><span class="index-num">05</span> 디자인 커스텀 가이드</li>
+            <li data-index="6"><span class="index-num">06</span> 템플릿 프리셋 활용</li>
+            <li data-index="7"><span class="index-num">07</span> 내보내기 포맷 비교 (PNG/SVG)</li>
+            <li data-index="8"><span class="index-num">08</span> 스캔 오류 해결 기법</li>
+            <li data-index="9"><span class="index-num">09</span> 비즈니스 마케팅 활용</li>
+            <li data-index="10"><span class="index-num">10</span> 모바일 접근성 시너지</li>
+            <li data-index="11"><span class="index-num">11</span> 자주 묻는 질문 (FAQ)</li>
+          </ul>
+        </nav>
+
+        <!-- Dynamic Content Board Display Box (Right Column) -->
+        <div class="explanation-display-box glass-panel">
+          <div class="display-content-inner" id="explanation-board-content">
+            <!-- Icon/Label on Top -->
+            <div class="display-top-badge">
+              <i class="fa-solid fa-circle-info text-blue"></i>
+              <span id="explanation-title-badge">가이드 01: 개요</span>
+            </div>
+            
+            <h3 id="explanation-display-title">QR 코드란?</h3>
+            
+            <div class="display-text-body" id="explanation-display-text">
+              로딩 중...
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Floating Navigation Widget -->
+  <aside class="floating-navigator" id="floating-menu">
+    <div class="floating-buttons-col">
+      <button class="btn-float btn-scroll-top" id="btn-scroll-top" title="위로 이동"><i class="fa-solid fa-arrow-up"></i></button>
+      <button class="btn-float btn-scroll-bottom" id="btn-scroll-bottom" title="아래로 이동"><i class="fa-solid fa-arrow-down"></i></button>
+    </div>
+  </aside>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>

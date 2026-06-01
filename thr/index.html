@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO 목표 심박수(THR) 계산기 Pro - 카르보넨 공식</title>
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-rose"></div>
+  <div class="bg-glow bg-glow-crimson"></div>
+
+  <!-- ==========================================
+       1. PORTAL HEADER
+       ========================================== -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>웹앱 아이디어 창고</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="#">무료 앱 189종</a></li>
+        <li><a href="#" class="active">CineAHO</a></li>
+        <li><a href="#">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==========================================
+       2. MAIN CONTENT CONTAINER
+       ========================================== -->
+  <main class="thr-container">
+    
+    <!-- Sub-navigation Back Link -->
+    <div class="sub-nav-back">
+      <a href="../index.html" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>건강·영양 계산기로 돌아가기</span>
+      </a>
+    </div>
+
+    <!-- App Title Header Banner -->
+    <section class="app-banner glass-panel">
+      <div class="banner-info">
+        <span class="badge-capsule">운동 심박수 계산기</span>
+        <h2>목표 심박수 계산기</h2>
+        <p>나이 기반 운동 목적에 맞는 심박수 구간 확인</p>
+      </div>
+      <div class="banner-decor">
+        <i class="fa-solid fa-heart-pulse"></i>
+      </div>
+    </section>
+
+    <!-- Exercise Goal Selector Section -->
+    <section class="goal-selector-section">
+      <div class="gs-title">
+        <i class="fa-solid fa-circle-play text-rose"></i>
+        <span>운동 목표 선택</span>
+      </div>
+      <div class="goal-cards">
+        
+        <div class="goal-card active" data-goal="fat-burn" id="btn-goal-fat-burn">
+          <div class="goal-icon"><i class="fa-solid fa-fire"></i></div>
+          <div class="goal-desc">
+            <strong>체중 감량</strong>
+            <span>Zone 2에서 30분+ 운동</span>
+          </div>
+        </div>
+
+        <div class="goal-card" data-goal="health-care" id="btn-goal-health-care">
+          <div class="goal-icon"><i class="fa-solid fa-heart"></i></div>
+          <div class="goal-desc">
+            <strong>건강 유지</strong>
+            <span>Zone 2~3 일상 운동</span>
+          </div>
+        </div>
+
+        <div class="goal-card" data-goal="cardio" id="btn-goal-cardio">
+          <div class="goal-icon"><i class="fa-solid fa-person-running"></i></div>
+          <div class="goal-desc">
+            <strong>심폐 지구력</strong>
+            <span>Zone 3~4 지속 관리</span>
+          </div>
+        </div>
+
+        <div class="goal-card" data-goal="performance" id="btn-goal-performance">
+          <div class="goal-icon"><i class="fa-solid fa-gauge-high"></i></div>
+          <div class="goal-desc">
+            <strong>운동 능력</strong>
+            <span>Zone 4~5 인터벌</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Main Calculation Grid -->
+    <section class="calculator-grid">
+      
+      <!-- Left side Inputs panel -->
+      <div class="grid-col-input glass-panel">
+        <div class="panel-header">
+          <div class="title">
+            <i class="fa-solid fa-sliders text-rose"></i>
+            <span>기본 정보 입력</span>
+          </div>
+          <button class="btn-reset" id="btn-reset-inputs" title="입력 초기화">
+            <i class="fa-solid fa-rotate-right"></i>
+          </button>
+        </div>
+
+        <!-- Age slider -->
+        <div class="slider-group">
+          <div class="slider-label-row">
+            <span class="label">나이</span>
+            <span class="value-display text-rose"><strong id="txt-age">30</strong> <span class="unit">세</span></span>
+          </div>
+          <input type="range" id="slider-age" min="15" max="80" value="30" class="range-slider">
+          <div class="range-bounds">
+            <span>15세</span>
+            <span>80세</span>
+          </div>
+          
+          <!-- Quick buttons -->
+          <div class="quick-inner-bounds" id="quick-age-container">
+            <button class="inner-btn" data-val="20">20세</button>
+            <button class="inner-btn" data-val="25">25세</button>
+            <button class="inner-btn active" data-val="30">30세</button>
+            <button class="inner-btn" data-val="35">35세</button>
+            <button class="inner-btn" data-val="40">40세</button>
+            <button class="inner-btn" data-val="45">45세</button>
+            <button class="inner-btn" data-val="50">50세</button>
+            <button class="inner-btn" data-val="55">55세</button>
+            <button class="inner-btn" data-val="60">60세</button>
+            <button class="inner-btn" data-val="65">65세</button>
+          </div>
+        </div>
+
+        <!-- Resting Heart Rate slider -->
+        <div class="slider-group">
+          <div class="slider-label-row">
+            <span class="label">♡ 안정시 심박수</span>
+            <span class="value-display text-rose"><strong id="txt-rhr">70</strong> <span class="unit">bpm</span></span>
+          </div>
+          <input type="range" id="slider-rhr" min="50" max="100" value="70" class="range-slider">
+          <div class="range-bounds">
+            <span>50bpm</span>
+            <span>100bpm</span>
+          </div>
+          
+          <!-- Quick buttons -->
+          <div class="quick-inner-bounds" id="quick-rhr-container">
+            <button class="inner-btn" data-val="55">55</button>
+            <button class="inner-btn" data-val="60">60</button>
+            <button class="inner-btn" data-val="65">65</button>
+            <button class="inner-btn active" data-val="70">70</button>
+            <button class="inner-btn" data-val="75">75</button>
+            <button class="inner-btn" data-val="80">80</button>
+            <button class="inner-btn" data-val="85">85</button>
+          </div>
+          <p class="slider-tip"><i class="fa-solid fa-circle-info"></i> 아침 기상 직후, 편안히 누운 상태에서 1분간 맥박을 재보세요.</p>
+        </div>
+
+        <!-- Fitness Level based on Resting HR -->
+        <div class="fitness-selector-group">
+          <div class="group-title">체력 수준 (안정시 심박수 기준)</div>
+          <div class="fitness-cards">
+            
+            <div class="fit-card" data-rhr="75" id="btn-fit-beginner">
+              <div class="fit-title">초보자</div>
+              <div class="fit-value">75bpm</div>
+            </div>
+
+            <div class="fit-card active" data-rhr="70" id="btn-fit-average">
+              <div class="fit-title">일반인</div>
+              <div class="fit-value">70bpm</div>
+            </div>
+
+            <div class="fit-card" data-rhr="65" id="btn-fit-active">
+              <div class="fit-title">향상자</div>
+              <div class="fit-value">65bpm</div>
+            </div>
+
+            <div class="fit-card" data-rhr="60" id="btn-fit-fit">
+              <div class="fit-title">숙련자</div>
+              <div class="fit-value">60bpm</div>
+            </div>
+
+            <div class="fit-card" data-rhr="55" id="btn-fit-athlete">
+              <div class="fit-title">선수급</div>
+              <div class="fit-value">55bpm</div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right side Results panel -->
+      <div class="grid-col-results glass-panel">
+        
+        <!-- Results header with copy button -->
+        <div class="panel-header no-border">
+          <span class="title-sub">운동 심박수 처방전</span>
+          <button class="btn-copy" id="btn-copy-result" title="결과 복사">
+            <i class="fa-solid fa-copy"></i>
+          </button>
+        </div>
+
+        <!-- Dual Card Row for Max HR and HRR -->
+        <div class="dual-output-cards">
+          
+          <div class="out-card">
+            <div class="icon-wrap color-red">
+              <i class="fa-solid fa-heart-pulse"></i>
+            </div>
+            <div class="card-info">
+              <span class="lbl">최대 심박수</span>
+              <h3><strong id="result-max-hr">190</strong> <span class="unit">bpm</span></h3>
+            </div>
+          </div>
+
+          <div class="out-card">
+            <div class="icon-wrap color-rose">
+              <i class="fa-solid fa-shield-heart"></i>
+            </div>
+            <div class="card-info">
+              <span class="lbl">심박수 여유량</span>
+              <h3><strong id="result-hrr">120</strong> <span class="unit">bpm</span></h3>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Core Target Heart Rate Range Display -->
+        <div class="target-range-display warning-card">
+          <div class="target-icon">
+            <i class="fa-solid fa-bullseye"></i>
+          </div>
+          <div class="target-info">
+            <span class="lbl" id="target-goal-title">체중 감량 목표 심박수</span>
+            <h2><strong id="target-range-val">142 ~ 154</strong> <span class="unit">bpm</span></h2>
+            <p id="target-goal-desc">Zone 2에서 30분+ 운동</p>
+          </div>
+        </div>
+
+        <!-- Visual List of 5 Heart Rate Zones -->
+        <div class="zones-visual-list">
+          
+          <!-- Zone 1 -->
+          <div class="zone-bar-item" id="zone-item-1" data-zone="1">
+            <div class="zone-header">
+              <span class="title"><i class="fa-solid fa-battery-quarter"></i> Zone 1: 워밍업 / 회복</span>
+              <span class="range" id="zone-range-1">130 ~ 142 bpm</span>
+            </div>
+            <div class="bar-container">
+              <div class="bar-fill color-zone-1" style="width: 60%"></div>
+              <span class="intensity-lbl">50~60%</span>
+            </div>
+          </div>
+
+          <!-- Zone 2 -->
+          <div class="zone-bar-item" id="zone-item-2" data-zone="2">
+            <div class="zone-header">
+              <span class="title"><i class="fa-solid fa-battery-half"></i> Zone 2: 지방 연소 <span class="badge">추천</span></span>
+              <span class="range" id="zone-range-2">142 ~ 154 bpm</span>
+            </div>
+            <div class="bar-container">
+              <div class="bar-fill color-zone-2" style="width: 70%"></div>
+              <span class="intensity-lbl">60~70%</span>
+            </div>
+          </div>
+
+          <!-- Zone 3 -->
+          <div class="zone-bar-item" id="zone-item-3" data-zone="3">
+            <div class="zone-header">
+              <span class="title"><i class="fa-solid fa-battery-three-quarters"></i> Zone 3: 심폐 능력 개선</span>
+              <span class="range" id="zone-range-3">154 ~ 166 bpm</span>
+            </div>
+            <div class="bar-container">
+              <div class="bar-fill color-zone-3" style="width: 80%"></div>
+              <span class="intensity-lbl">70~80%</span>
+            </div>
+          </div>
+
+          <!-- Zone 4 -->
+          <div class="zone-bar-item" id="zone-item-4" data-zone="4">
+            <div class="zone-header">
+              <span class="title"><i class="fa-solid fa-battery-full"></i> Zone 4: 무산소 역치</span>
+              <span class="range" id="zone-range-4">166 ~ 178 bpm</span>
+            </div>
+            <div class="bar-container">
+              <div class="bar-fill color-zone-4" style="width: 90%"></div>
+              <span class="intensity-lbl">80~90%</span>
+            </div>
+          </div>
+
+          <!-- Zone 5 -->
+          <div class="zone-bar-item" id="zone-item-5" data-zone="5">
+            <div class="zone-header">
+              <span class="title"><i class="fa-solid fa-bolt-lightning"></i> Zone 5: 최대 노력</span>
+              <span class="range" id="zone-range-5">178 ~ 190 bpm</span>
+            </div>
+            <div class="bar-container">
+              <div class="bar-fill color-zone-5" style="width: 100%"></div>
+              <span class="intensity-lbl">90~100%</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- Heart Rate Zone Detailed Guide Table -->
+    <section class="guide-table-section glass-panel">
+      <h3><i class="fa-solid fa-table-list text-rose"></i> 심박수 구간별 상세 가이드</h3>
+      <div class="table-container">
+        <table class="thr-table" id="thr-zone-table">
+          <thead>
+            <tr>
+              <th>구간</th>
+              <th>강도</th>
+              <th>심박수</th>
+              <th>권장 시간</th>
+              <th>주요 효과</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-zone="1" class="row-zone-1">
+              <td class="zone-title"><span class="marker"></span>Zone 1</td>
+              <td>50~60%</td>
+              <td class="val-hr" id="tbl-range-1">130 ~ 142 bpm</td>
+              <td>5~10분, 제한 없음</td>
+              <td>워밍업/쿨다운, 혈액순환 개선, 피로 회복</td>
+            </tr>
+            <tr data-zone="2" class="row-zone-2">
+              <td class="zone-title"><span class="marker"></span>Zone 2</td>
+              <td>60~70%</td>
+              <td class="val-hr" id="tbl-range-2">142 ~ 154 bpm</td>
+              <td>30~60분</td>
+              <td>지방 연소 최적, 유산소 기초 체력 증진, 장시간 지속 가능</td>
+            </tr>
+            <tr data-zone="3" class="row-zone-3">
+              <td class="zone-title"><span class="marker"></span>Zone 3</td>
+              <td>70~80%</td>
+              <td class="val-hr" id="tbl-range-3">154 ~ 166 bpm</td>
+              <td>20~40분</td>
+              <td>심폐 능력 향상, 심혈관계 지구력 강화, 칼로리 소모 증대</td>
+            </tr>
+            <tr data-zone="4" class="row-zone-4">
+              <td class="zone-title"><span class="marker"></span>Zone 4</td>
+              <td>80~90%</td>
+              <td class="val-hr" id="tbl-range-4">166 ~ 178 bpm</td>
+              <td>10~20분 (인터벌)</td>
+              <td>젖산 내성 및 무산소 한계 역치 향상, 속도 및 근력 강화</td>
+            </tr>
+            <tr data-zone="5" class="row-zone-5">
+              <td class="zone-title"><span class="marker"></span>Zone 5</td>
+              <td>90~100%</td>
+              <td class="val-hr" id="tbl-range-5">178 ~ 190 bpm</td>
+              <td>1~5분 (스프린트)</td>
+              <td>폭발적인 파워 및 스피드 향상, 신경근 효율 극대화</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-footnote">※ 카르보넨 공식을 적용한 기준이며, 당뇨나 고혈압 환자 혹은 운동 초보자는 전문 의료인/트레이너와 조율해 기준을 하향 조절하는 것이 건강에 안전합니다.</p>
+    </section>
+
+    <!-- Workout Program Recommendation Grid -->
+    <section class="exercise-programs-section">
+      <div class="section-title-row">
+        <i class="fa-solid fa-list-check text-rose"></i>
+        <span>심박수 기반 운동 프로그램 예시</span>
+      </div>
+      
+      <div class="program-cards-grid">
+        
+        <!-- Program 1: Weight Loss -->
+        <div class="program-card glass-panel" id="prog-card-fat-burn">
+          <div class="card-icon color-zone-2">
+            <i class="fa-solid fa-fire"></i>
+          </div>
+          <h4>체중 감량 프로그램</h4>
+          <ul class="steps-list">
+            <li><span class="num">1</span> <strong>Zone 1 워밍업</strong>: 5분 간 가볍게 걷기</li>
+            <li><span class="num">2</span> <strong>Zone 2 유지</strong>: 30~45분 간 지속적인 유산소 운동</li>
+            <li><span class="num">3</span> <strong>Zone 1 쿨다운</strong>: 5분 간 서서히 심박수 낮추기</li>
+          </ul>
+          <div class="frequency-lbl">주 4~5회 권장 | 총 40~55분!</div>
+        </div>
+
+        <!-- Program 2: Cardio Endurance -->
+        <div class="program-card glass-panel" id="prog-card-cardio">
+          <div class="card-icon color-zone-3">
+            <i class="fa-solid fa-person-running"></i>
+          </div>
+          <h4>심폐 지구력 프로그램</h4>
+          <ul class="steps-list">
+            <li><span class="num">1</span> <strong>Zone 1 워밍업</strong>: 10분 간 조깅</li>
+            <li><span class="num">2</span> <strong>Zone 3 유지</strong>: 20~30분 간 중강도 러닝</li>
+            <li><span class="num">3</span> <strong>Zone 2 회복</strong>: 5분 간 템포 늦추기</li>
+            <li><span class="num">4</span> <strong>Zone 1 쿨다운</strong>: 5분 간 천천히 걷기</li>
+          </ul>
+          <div class="frequency-lbl">주 3~4회 권장 | 총 40~50분!</div>
+        </div>
+
+        <!-- Program 3: HIIT Interval -->
+        <div class="program-card glass-panel" id="prog-card-performance">
+          <div class="card-icon color-zone-5">
+            <i class="fa-solid fa-bolt-lightning"></i>
+          </div>
+          <h4>HIIT 인터벌 프로그램</h4>
+          <ul class="steps-list">
+            <li><span class="num">1</span> <strong>Zone 1 워밍업</strong>: 5분 간 동적 스트레칭</li>
+            <li><span class="num">2</span> <strong>Zone 4~5 스프린트</strong>: 30초 간 폭발적 대시</li>
+            <li><span class="num">3</span> <strong>Zone 2 회복</strong>: 90초 간 가벼운 조깅</li>
+            <li><span class="num">4</span> <strong>반복</strong>: 2번과 3번 과정을 8~10회 반복</li>
+            <li><span class="num">5</span> <strong>Zone 1 쿨다운</strong>: 5분 간 회복 보행</li>
+          </ul>
+          <div class="frequency-lbl">주 2~3회 권장 | 총 25~30분!</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Detailed Target HR Guide Documents -->
+    <section class="guide-details-section glass-panel">
+      <h3><i class="fa-solid fa-graduation-cap text-purple"></i> 목표 심박수 구간 완벽 가이드</h3>
+      <p class="guide-intro">목표 심박수(Target Heart Rate, THR)는 각자의 피트니스 목표(지방 연소, 심폐 기능 강화, 고강도 능력 극대화 등)에 따라 가장 효율적이고 안전하게 심장을 자극할 수 있는 지표 범위입니다. 스마트워치나 흉부 스트랩 심박계를 활용하여 운동 중 이 수치를 실시간 점검하면, 오버트레이닝(과훈련)으로 인한 심장 무리를 예방하고 저강도 운동으로 인한 정체기를 탈출할 수 있습니다.</p>
+
+      <div class="guide-grid">
+        
+        <!-- Usage Instruction -->
+        <div class="guide-card">
+          <h4><i class="fa-solid fa-circle-question"></i> 심박수 구간 계산기 사용법</h4>
+          <ol class="guide-list">
+            <li><span class="num">1</span> <strong>운동 목표 선택</strong>: 상단의 4가지 운동 목적 카드 중 하나를 선택하면 해당하는 추천 심박수 Zone이 우측 결과에 강조 매칭됩니다.</li>
+            <li><span class="num">2</span> <strong>나이 입력</strong>: 자신의 나이를 슬라이더나 퀵 버튼을 통해 세팅합니다. (최대 심박수 $220 - 나이$가 자동 결정됩니다)</li>
+            <li><span class="num">3</span> <strong>안정시 심박수 입력</strong>: 자신의 평상시 RHR 수치를 설정합니다. RHR을 모를 경우 하단의 체력 수준 카드를 클릭하여 임의 지정할 수 있습니다.</li>
+            <li><span class="num">4</span> <strong>차트와 처방전 점검</strong>: 설정된 나이와 RHR을 바탕으로 카르보넨 공식을 적용한 5개 존의 심박수 경계치와 가이드 표, 맞춤형 운동 프로그램 예시가 동적으로 산출됩니다.</li>
+          </ol>
+        </div>
+
+        <!-- Measurement Details -->
+        <div class="guide-card">
+          <h4><i class="fa-solid fa-heart-pulse"></i> 안정시 심박수(RHR) 측정 팁</h4>
+          <div class="measurement-wrap">
+            <div class="measure-box">
+              <strong>1. 가장 정확한 측정 조건:</strong>
+              <p>아침 기상 직후, 침대에서 일어나기 전 차분한 상태가 제일 이상적입니다. 측정 전날 과음, 무리한 운동, 자극적 식사를 피하고 카페인 섭취나 흡연을 하지 않은 상태여야 오차가 없습니다.</p>
+            </div>
+            <div class="measure-box">
+              <strong>2. 수동 측정 방법:</strong>
+              <p>검지와 중지를 목 옆의 경동맥이나 손목 안쪽의 요골동맥 부위에 가볍게 댄 뒤, 맥박이 뛰는 횟수를 60초간 세어 측정합니다. (또는 10초간 세어 6을 곱하거나, 15초간 세어 4를 곱합니다)</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Karvonen vs Simple HR explanation -->
+      <div class="guide-karvonen-vs-simple">
+        <h4><i class="fa-solid fa-circle-info"></i> 왜 카르보넨(Karvonen) 공식인가요?</h4>
+        <p class="comparison-note">단순 최대심박수 백분율 방식($220 - 나이 \times \%강도$)은 안정시 심박수를 고려하지 않습니다. 예를 들어, 나이가 30세로 같지만 평소 심박수가 50인 마라토너와 평소 심박수가 80인 비운동선수의 목표 심박수를 동일하게 계산해 버립니다. 카르보넨 공식은 <strong>최대 심박수와 안정시 심박수의 차이인 '여유 심박수(HRR)'</strong>를 구한 뒤 운동 강도를 곱하고 여기에 다시 안정시 심박수를 더해줍니다. 이 방식은 개개인의 기초 체력 수준이 그대로 녹아 있어 훨씬 맞춤형이고 임상적으로도 정밀한 운동을 가능하게 해 줍니다.</p>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       3. FLOATING TOOLBAR CONTROLS
+       ========================================== -->
+  <div class="floating-controls-panel">
+    <!-- Scroll position progress ring -->
+    <div class="progress-ring-wrap" id="scroll-progress-ring" title="스크롤 위치">
+      <svg class="progress-ring-svg" width="50" height="50">
+        <circle class="progress-ring-circle-bg" cx="25" cy="25" r="20" />
+        <circle class="progress-ring-circle-indicator" id="progress-circle-indicator" cx="25" cy="25" r="20" />
+      </svg>
+      <span class="progress-txt" id="scroll-percentage-lbl">0%</span>
+    </div>
+
+    <!-- Quick Scroll Top -->
+    <button class="floating-btn" id="btn-scroll-top" title="맨 위로 가기">
+      <i class="fa-solid fa-arrow-up"></i>
+    </button>
+    <!-- Quick Scroll Bottom -->
+    <button class="floating-btn" id="btn-scroll-bottom" title="맨 아래로 가기">
+      <i class="fa-solid fa-arrow-down"></i>
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <p>&copy; 2026 CineAHO Web Application Store. All rights reserved.</p>
+    <p class="footer-note">Cineaho 포털 하위에 여러 독립적인 웹 애플리케이션을 유연하게 마운트하여 관리할 수 있습니다.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

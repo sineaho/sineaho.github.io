@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO 웹 프린트 편집기 Pro - PrintWhatYouLike</title>
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ==========================================
+       1. PORTAL HEADER (Visible in Lobby)
+       ========================================== -->
+  <header class="main-header glass-header" id="portal-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>웹앱 아이디어 창고</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="#">무료 앱 189종</a></li>
+        <li><a href="#" class="active">CineAHO</a></li>
+        <li><a href="#">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==========================================
+       2. LOBBY VIEW (WELCOME PAGE - REPLICATED)
+       ========================================== -->
+  <main class="lobby-view" id="lobby-view">
+    <div class="lobby-content-container">
+      
+      <!-- Logo & Intro -->
+      <div class="hero-split-row">
+        <div class="hero-left">
+          <div class="logo-wrapper">
+            <!-- Printer leaf logo icon illustration -->
+            <div class="leaf-icon">
+              <i class="fa-solid fa-leaf"></i>
+            </div>
+            <div class="printer-character">
+              <div class="eyes">
+                <span class="eye"></span>
+                <span class="eye"></span>
+              </div>
+              <div class="mouth"></div>
+              <div class="paper-slot"></div>
+            </div>
+            <div class="logo-text-block">
+              <h1><span>Print</span>What<br>You<span>Like</span>.com</h1>
+            </div>
+          </div>
+
+          <p class="hero-p">
+            <strong>PrintWhatYouLike</strong> lets you print the good parts of any web page while skipping ads and other junk.
+          </p>
+          <button class="btn-demo-start" id="btn-hero-demo">Try The Demo</button>
+        </div>
+
+        <div class="hero-right">
+          <!-- Illustration banner block -->
+          <div class="how-it-works-banner">
+            <div class="banner-badge">IT'S EASY!</div>
+            <ol>
+              <li><span>1.</span> Enter a URL</li>
+              <li><span>2.</span> Edit the Page</li>
+              <li><span>3.</span> Print It!</li>
+            </ol>
+            <div class="printer-illustration">
+              <i class="fa-solid fa-print"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- URL Input Blue Ribbon -->
+      <section class="url-input-ribbon">
+        <span class="ribbon-arrow"><i class="fa-solid fa-arrow-turn-down"></i></span>
+        <label for="target-url">Enter a URL</label>
+        <div class="input-row">
+          <input type="text" id="target-url" placeholder="(ex: www.lifehacker.com)" value="">
+          <button id="btn-start-print" class="btn-start">START</button>
+        </div>
+        <div class="ribbon-right">
+          <a href="#" onclick="alert('북마크바에 드래그하여 사용하는 즐겨찾기 도구입니다!'); return false;" class="ribbon-link">Try the Bookmarklet</a>
+          <span class="share-save-mock"><i class="fa-solid fa-share-nodes"></i> Share / Save</span>
+        </div>
+      </section>
+
+      <!-- Bottom Info and Demos Grid -->
+      <section class="bottom-grid">
+        
+        <!-- Left Info list -->
+        <div class="grid-card text-info-card">
+          <h4>Bookmarklet: <span class="sub-txt">Add PrintWhatYouLike to your browser</span></h4>
+          <h4>Website Button: <span class="sub-txt">Create a printer friendly version of your website</span></h4>
+          
+          <div class="signup-intro">
+            <strong>Sign up</strong> for additional features:
+            <ul>
+              <li><i class="fa-solid fa-chevron-right text-green"></i> <strong>Change Sets:</strong> Save the changes you make to a page and automatically format other pages from the same site</li>
+              <li><i class="fa-solid fa-chevron-right text-green"></i> <strong>Clips:</strong> Save snippets of pages and compile them together in one document for printing</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Right mock video player -->
+        <div class="grid-card video-mock-card">
+          <div class="video-container">
+            <div class="video-overlay">
+              <div class="play-btn"><i class="fa-solid fa-play"></i></div>
+              <div class="logo-on-video">
+                <i class="fa-solid fa-leaf text-green"></i> PrintWhatYouLike<span>.com</span>
+              </div>
+            </div>
+            <div class="video-controls">
+              <i class="fa-solid fa-play"></i>
+              <div class="progress-bar-mock"></div>
+              <span class="video-time">1:48</span>
+              <i class="fa-solid fa-volume-high"></i>
+              <i class="fa-solid fa-expand"></i>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Demo selection Section -->
+      <section class="demo-selector-section glass-panel">
+        <h3><i class="fa-solid fa-wand-magic-sparkles text-green"></i> 편집 데모 웹사이트 불러오기</h3>
+        <p>인터넷 연결이 어렵거나 CORS 제약으로 외부 사이트 로드가 안 될 경우, 아래의 지저분한 사이트 시나리오 데모를 클릭해 즉석 편집해 보세요.</p>
+        <div class="demo-buttons-row">
+          <button class="btn btn-secondary demo-btn" data-demo="news">
+            <i class="fa-solid fa-newspaper text-red"></i>
+            <strong>1. 광고 뉴스 기사</strong>
+            <span>팝업과 측면 배너가 많은 신문고</span>
+          </button>
+          <button class="btn btn-secondary demo-btn" data-demo="blog">
+            <i class="fa-solid fa-mug-hot text-gold"></i>
+            <strong>2. 요리 블로그</strong>
+            <span>구독 유도창과 헤더가 거대한 블로그</span>
+          </button>
+          <button class="btn btn-secondary demo-btn" data-demo="wiki">
+            <i class="fa-solid fa-book-atlas text-blue"></i>
+            <strong>3. 대규모 위키</strong>
+            <span>좌측 사이드바 링크가 아주 빽빽한 문서</span>
+          </button>
+        </div>
+
+        <!-- Custom HTML code paste option -->
+        <div class="custom-html-paste">
+          <label for="custom-html-input"><i class="fa-solid fa-code text-cyan"></i> 또는 직접 HTML 코드/텍스트 붙여넣기</label>
+          <textarea id="custom-html-input" placeholder="여기에 가공하여 인쇄할 나만의 HTML 코드나 복사한 웹페이지 내용을 붙여넣으세요..."></textarea>
+          <button class="btn btn-primary btn-sm" id="btn-start-custom-html" style="margin-top: 0.5rem; float: right;">코드 편집 시작</button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ==========================================
+       3. INTERACTIVE PRINT EDITOR SPACE
+       ========================================== -->
+  <div class="editor-view hidden" id="editor-view">
+    
+    <!-- Left Formatter Sidebar Control Panel -->
+    <aside class="editor-sidebar" id="editor-sidebar">
+      
+      <!-- Small Logo branding -->
+      <div class="sidebar-logo">
+        <i class="fa-solid fa-leaf text-green"></i>
+        <span>PrintWhatYouLike</span>
+      </div>
+
+      <!-- Action Panel Buttons Row -->
+      <div class="sidebar-section">
+        <button class="btn btn-success btn-block btn-print-main" id="btn-trigger-print">
+          <i class="fa-solid fa-print"></i>
+          <span>프린트하기 (Print)</span>
+        </button>
+        <button class="btn btn-primary btn-block btn-pdf-main" id="btn-trigger-pdf">
+          <i class="fa-solid fa-file-pdf"></i>
+          <span>PDF로 저장</span>
+        </button>
+      </div>
+
+      <!-- History undo redo -->
+      <div class="sidebar-section history-row">
+        <button class="btn btn-secondary btn-sm" id="btn-editor-undo" disabled>
+          <i class="fa-solid fa-arrow-rotate-left"></i>
+          <span>실행 취소 (<span id="undo-count">0</span>)</span>
+        </button>
+        <button class="btn btn-secondary btn-sm" id="btn-editor-redo" disabled>
+          <i class="fa-solid fa-arrow-rotate-right"></i>
+          <span>다시 실행</span>
+        </button>
+      </div>
+
+      <!-- Format control configurations -->
+      <div class="sidebar-section">
+        <h4 class="section-title">포맷 옵션</h4>
+        
+        <div class="control-item">
+          <label>이미지 숨기기</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="toggle-hide-images">
+            <span class="slider-toggle"></span>
+          </label>
+        </div>
+
+        <div class="control-item">
+          <label>배경 색상 제거</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="toggle-strip-backgrounds" checked>
+            <span class="slider-toggle"></span>
+          </label>
+        </div>
+
+        <div class="control-item-col">
+          <label for="select-font-size">폰트 크기</label>
+          <select id="select-font-size" class="sidebar-select">
+            <option value="font-size-sm">작게 (Small)</option>
+            <option value="font-size-md" selected>보통 (Medium)</option>
+            <option value="font-size-lg">크게 (Large)</option>
+            <option value="font-size-xl">매우 크게 (X-Large)</option>
+          </select>
+        </div>
+
+        <div class="control-item-col">
+          <label for="select-font-family">폰트 스타일</label>
+          <select id="select-font-family" class="sidebar-select">
+            <option value="font-family-default" selected>기본 폰트</option>
+            <option value="font-family-serif">Serif (바탕체)</option>
+            <option value="font-family-sans">Sans-serif (돋움체)</option>
+            <option value="font-family-mono">Monospace (고딕체)</option>
+          </select>
+        </div>
+
+        <div class="control-item-col">
+          <label for="select-page-width">용지 정렬 너비</label>
+          <select id="select-page-width" class="sidebar-select">
+            <option value="page-width-compact">A4 슬림 (Compact)</option>
+            <option value="page-width-medium" selected>중간 너비 (Medium)</option>
+            <option value="page-width-full">가득 찬 너비 (Full)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- DOM Editing tool options -->
+      <div class="sidebar-section">
+        <h4 class="section-title">요소 직접 편집</h4>
+
+        <button class="btn btn-secondary btn-block btn-sm" id="btn-auto-clean" style="margin-bottom:0.75rem;">
+          <i class="fa-solid fa-broom"></i>
+          <span>광고/사이드바 자동 제거</span>
+        </button>
+
+        <div class="control-item">
+          <label><i class="fa-solid fa-trash-can text-red"></i> 클릭 삭제 활성화</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="toggle-click-delete" checked>
+            <span class="slider-toggle"></span>
+          </label>
+        </div>
+
+        <div class="control-item">
+          <label><i class="fa-solid fa-pen-to-square text-cyan"></i> 글자 직접 수정</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="toggle-direct-edit">
+            <span class="slider-toggle"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Close and go back -->
+      <div class="sidebar-footer">
+        <button class="btn btn-danger btn-block" id="btn-exit-editor">
+          <i class="fa-solid fa-circle-left"></i>
+          <span>편집 나가기</span>
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- Right Target Canvas Area -->
+    <section class="editor-canvas-container" id="canvas-container">
+      
+      <!-- Floating Hover Tooltip Toolbar for DOM elements -->
+      <div class="hover-toolbar hidden" id="hover-toolbar">
+        <div class="toolbar-tag" id="tt-tag-name">div</div>
+        <button class="btn-tool keep" id="btn-tool-isolate" title="이 부분만 남기고 모두 삭제"><i class="fa-solid fa-compress"></i> 독점</button>
+        <button class="btn-tool delete" id="btn-tool-delete" title="이 요소 삭제"><i class="fa-solid fa-trash-can"></i> 삭제</button>
+      </div>
+
+      <!-- Actual Editable Canvas Sandbox wrapper -->
+      <div class="sandbox-canvas-viewport page-width-medium font-size-md font-family-default" id="sandbox-canvas">
+        <!-- Fetched or loaded website HTML goes here -->
+      </div>
+
+    </section>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

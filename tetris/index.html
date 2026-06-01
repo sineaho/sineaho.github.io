@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>전설의 퍼즐 게임 - LEGENDARY BLOCK</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>웹앱 아이디어 창고</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="#">무료 앱 189종</a></li>
+        <li><a href="#" class="active">CineAHO</a></li>
+        <li><a href="#">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Tetris App Container -->
+  <main class="tetris-container">
+    
+    <!-- Title & Description Header -->
+    <section class="tetris-header-section">
+      <h1 class="main-title">
+        <i class="fa-solid fa-puzzle-piece text-red"></i> 전설의 퍼즐 게임
+      </h1>
+      <p class="subtitle-desc">
+        테트리스에서 영감을 받은 전설적인 퍼즐 게임. 다양한 모드, 커스터마이징, 모바일 지원 - 깰 수 있는 사람 없을 걸?
+      </p>
+      
+      <div class="tag-badges">
+        <span class="badge badge-tag">게임</span>
+        <span class="badge badge-tag">퍼즐</span>
+        <span class="badge badge-tag">블록</span>
+        <span class="badge badge-tag">전설</span>
+      </div>
+    </section>
+
+    <!-- Retro Big Title -->
+    <div class="retro-title-wrapper">
+      <h2 class="retro-title">LEGENDARY BLOCK</h2>
+    </div>
+
+    <!-- Score cards Dashboard (4 Grid columns) -->
+    <section class="score-cards-dashboard">
+      <!-- 1. 점수 -->
+      <div class="score-card glass-panel theme-purple">
+        <div class="card-meta">
+          <span>점수</span>
+          <h3 id="label-score">0</h3>
+        </div>
+      </div>
+      <!-- 2. 레벨 -->
+      <div class="score-card glass-panel theme-blue">
+        <div class="card-meta">
+          <span>레벨</span>
+          <h3 id="label-level">1</h3>
+          <div class="level-progress-bar"><div class="progress-fill" id="level-fill-bar" style="width: 0%;"></div></div>
+        </div>
+      </div>
+      <!-- 3. 줄 -->
+      <div class="score-card glass-panel theme-green">
+        <div class="card-meta">
+          <span>줄</span>
+          <h3 id="label-lines">0</h3>
+        </div>
+      </div>
+      <!-- 4. 콤보 -->
+      <div class="score-card glass-panel theme-orange">
+        <div class="card-meta">
+          <span>콤보</span>
+          <h3 id="label-combo">-</h3>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Game Workspace (3 Columns Grid layout) -->
+    <section class="tetris-workspace">
+      
+      <!-- Column 1: HOLD panel -->
+      <div class="sidebar-column">
+        <div class="hold-panel glass-panel">
+          <div class="sidebar-header">HOLD</div>
+          <div class="canvas-wrapper">
+            <canvas id="canvas-hold" width="100" height="100"></canvas>
+          </div>
+          <div class="hold-badge" id="badge-hold-state">사용 가능</div>
+        </div>
+      </div>
+
+      <!-- Column 2: Main Play Board Panel -->
+      <div class="main-board-column">
+        <div class="board-container glass-panel">
+          
+          <!-- The Main Game Board Canvas -->
+          <canvas id="canvas-board" width="250" height="500"></canvas>
+
+          <!-- Start Game Overlay -->
+          <div class="board-overlay" id="overlay-start">
+            <div class="overlay-title"><i class="fa-solid fa-play"></i> START</div>
+            <button class="btn btn-start" id="btn-start-game">
+              <i class="fa-solid fa-gamepad"></i> 게임 시작
+            </button>
+          </div>
+
+          <!-- Pause Overlay (Initially Hidden) -->
+          <div class="board-overlay" id="overlay-pause" style="display: none;">
+            <div class="overlay-title"><i class="fa-solid fa-pause"></i> PAUSED</div>
+            <p>P 키를 다시 누르면 게임이 재개됩니다.</p>
+          </div>
+
+          <!-- Game Over Overlay (Initially Hidden) -->
+          <div class="board-overlay" id="overlay-gameover" style="display: none;">
+            <div class="overlay-title text-red"><i class="fa-solid fa-skull"></i> GAME OVER</div>
+            <p id="label-gameover-msg">점수: 0</p>
+            <button class="btn btn-start" id="btn-restart-game">다시 시작</button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Column 3: NEXT panel -->
+      <div class="sidebar-column">
+        <div class="next-panel glass-panel">
+          <div class="sidebar-header">NEXT</div>
+          <div class="canvas-wrapper">
+            <canvas id="canvas-next" width="100" height="250"></canvas>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Bottom Controls & Shortcut bar -->
+    <section class="tetris-controls-bar">
+      <div class="controls-buttons glass-panel">
+        <button class="btn btn-action-reset" id="btn-reset"><i class="fa-solid fa-rotate"></i> 초기화</button>
+        <button class="btn btn-mode-toggle" id="btn-toggle-daily"><i class="fa-solid fa-calendar-days"></i> 데일리 OFF</button>
+        <button class="btn btn-mode-toggle" id="btn-toggle-hardcore"><i class="fa-solid fa-skull-crossbones"></i> 하드코어 OFF</button>
+        <button class="btn-settings-gear" id="btn-settings-toggle" title="게임 설정"><i class="fa-solid fa-gear"></i></button>
+      </div>
+
+      <div class="shortcut-guide-text">
+        ← → 이동 | ↑ Z 회전 | ↓ 하강 | Space 드롭 | C 홀드 | P 일시정지
+      </div>
+    </section>
+
+    <!-- Bottom Explanation Guide Board (9-part doc) -->
+    <section class="explanation-board-section">
+      <div class="board-header">
+        <i class="fa-solid fa-cubes text-purple"></i>
+        <div>
+          <h2>테트리스 완벽 가이드</h2>
+          <span>게임 플레이 방법과 자주 묻는 질문을 확인하세요</span>
+        </div>
+      </div>
+
+      <div class="explanation-layout">
+        <!-- 9-part Navigation List (Left Column) -->
+        <nav class="explanation-index-list">
+          <ul>
+            <li class="active" data-index="1"><span class="index-num">01</span> 테트리스의 역사</li>
+            <li data-index="2"><span class="index-num">02</span> 게임 소개</li>
+            <li data-index="3"><span class="index-num">03</span> 테트로미노 완벽 가이드</li>
+            <li data-index="4"><span class="index-num">04</span> 조작법 가이드</li>
+            <li data-index="5"><span class="index-num">05</span> 게임 플레이 방법</li>
+            <li data-index="6"><span class="index-num">06</span> 점수 시스템</li>
+            <li data-index="7"><span class="index-num">07</span> 고급 기술</li>
+            <li data-index="8"><span class="index-num">08</span> 전략 및 팁</li>
+            <li data-index="9"><span class="index-num">09</span> 자주 묻는 질문 (FAQ)</li>
+          </ul>
+        </nav>
+
+        <!-- Dynamic Content Board Display Box (Right Column) -->
+        <div class="explanation-display-box glass-panel">
+          <div class="display-content-inner" id="explanation-board-content">
+            <!-- Icon/Label on Top -->
+            <div class="display-top-badge">
+              <i class="fa-solid fa-circle-info text-purple"></i>
+              <span id="explanation-title-badge">가이드 01: 테트리스의 역사</span>
+            </div>
+            
+            <h3 id="explanation-display-title">테트리스의 역사</h3>
+            
+            <div class="display-text-body" id="explanation-display-text">
+              테트리스(Tetris)는 1984년 소비에트 연방의 과학자 알렉세이 파지트노프가 개발한 전 세계적인 퍼즐 블록 게임입니다.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Settings Dialog Modal (Initially Hidden) -->
+  <div class="modal-overlay" id="modal-settings" style="display: none;">
+    <div class="modal-content glass-panel">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-gear text-purple"></i> 테트리스 게임 설정</h3>
+        <button class="btn-close-modal" id="btn-close-settings"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="settings-options-list">
+          <label class="setting-toggle-item">
+            <div class="toggle-info">
+              <strong>가이드 고스트 블록</strong>
+              <span>현재 낙하하는 블록이 도달할 바닥 위치에 옅은 가이드 블록을 비춥니다.</span>
+            </div>
+            <input type="checkbox" id="chk-show-ghost" checked>
+          </label>
+          
+          <label class="setting-toggle-item">
+            <div class="toggle-info">
+              <strong>라인 제거 파티클 효과</strong>
+              <span>블록 줄이 제거될 때 화려한 불꽃 튀김 이펙트 효과를 렌더링합니다.</span>
+            </div>
+            <input type="checkbox" id="chk-show-particles" checked>
+          </label>
+
+          <label class="setting-toggle-item">
+            <div class="toggle-info">
+              <strong>레벨 스피드 부스팅</strong>
+              <span>레벨이 오름에 따라 블록 낙하 속도를 비약적으로 상승시켜 긴장감을 유도합니다.</span>
+            </div>
+            <input type="checkbox" id="chk-speed-boosting" checked>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Navigation Widget -->
+  <aside class="floating-navigator" id="floating-menu">
+    <div class="floating-buttons-col">
+      <button class="btn-float btn-scroll-top" id="btn-scroll-top" title="위로 이동"><i class="fa-solid fa-arrow-up"></i></button>
+      <button class="btn-float btn-scroll-bottom" id="btn-scroll-bottom" title="아래로 이동"><i class="fa-solid fa-arrow-down"></i></button>
+    </div>
+  </aside>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>

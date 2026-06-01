@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF 병합/분할 도구 Pro - 무료 온라인 PDF 편집기</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>웹앱 아이디어 창고</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="#">무료 앱 189종</a></li>
+        <li><a href="#" class="active">CineAHO</a></li>
+        <li><a href="#">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- PDF App Container -->
+  <main class="pdf-container">
+    
+    <!-- Title & Description Header -->
+    <section class="pdf-header-section">
+      <h1 class="main-title">
+        <i class="fa-solid fa-file-pdf text-blue"></i> PDF 병합/분할 도구 Pro <span>- 무료 온라인 PDF 편집기</span>
+      </h1>
+      <p class="subtitle-desc">
+        브라우저에서 직접 PDF를 병합하고 분할하는 고급 도구입니다. 드래그 앤 드롭으로 여러 PDF 파일을 한 번에 업로드하고, 페이지별 분할, 순서 재배열, 압축 최적화까지 모든 PDF 작업을 한 번에 해결합니다. 서버 없이 클라이언트에서 처리되어 개인정보가 완벽하게 보호됩니다.
+      </p>
+      
+      <div class="tag-badges">
+        <span class="badge badge-tag">PDF</span>
+        <span class="badge badge-tag">병합</span>
+        <span class="badge badge-tag">분할</span>
+        <span class="badge badge-tag">문서</span>
+        <span class="badge badge-tag">보안</span>
+      </div>
+    </section>
+
+    <!-- Navigation Tab Bar -->
+    <section class="pdf-nav-tabs">
+      <button class="btn-nav-tab active" data-tab="merge"><i class="fa-solid fa-code-merge"></i> PDF 병합</button>
+      <button class="btn-nav-tab" data-tab="split"><i class="fa-solid fa-scissors"></i> PDF 분할</button>
+      <button class="btn-nav-tab" data-tab="convert"><i class="fa-solid fa-file-image"></i> 변환</button>
+      <button class="btn-nav-tab" data-tab="advanced"><i class="fa-solid fa-wand-magic-sparkles"></i> 고급 편집</button>
+    </section>
+
+    <!-- Main Workspace (Upload & settings left, Preview lists right) -->
+    <section class="pdf-workspace">
+      
+      <!-- Left Column: Upload box & Settings Panel -->
+      <div class="workspace-left">
+        
+        <!-- Upload Drop Zone Box -->
+        <div class="glass-panel upload-card" id="drop-zone">
+          <input type="file" id="file-input" multiple accept=".pdf" style="display: none;">
+          <div class="upload-icon-circle">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+          </div>
+          <h3>PDF 파일 업로드</h3>
+          <p>드래그 앤 드롭으로 파일을 업로드하거나 클릭하여 선택하세요</p>
+          
+          <div class="upload-buttons-row">
+            <button class="btn btn-primary" id="btn-select-file">
+              <i class="fa-solid fa-file"></i> 파일 선택
+            </button>
+            <button class="btn btn-secondary" id="btn-settings-toggle">
+              <i class="fa-solid fa-gear"></i> 고급 설정
+            </button>
+          </div>
+
+          <div class="upload-meta-info">
+            <span><i class="fa-solid fa-circle-info"></i> 최대 500MB</span>
+            <span><i class="fa-solid fa-file-lines"></i> PDF 형식</span>
+            <span><i class="fa-solid fa-files"></i> 다중 파일 지원</span>
+          </div>
+        </div>
+
+        <!-- Privacy Guard Banner -->
+        <div class="glass-panel privacy-banner">
+          <i class="fa-solid fa-shield-halved text-green"></i>
+          <div class="privacy-text-box">
+            <strong>100% 브라우저 내 처리 - 완벽한 개인정보 보호</strong>
+            <span>모든 PDF 처리가 브라우저에서 직접 이루어집니다. 파일이 서버로 전송되지 않아 완벽한 프라이버시가 보장됩니다. 작업 완료 후 자동으로 메모리에서 삭제됩니다.</span>
+          </div>
+        </div>
+
+        <!-- Custom Tool Settings Area (Toggled or active based on tab) -->
+        <div class="glass-panel panel-box settings-card" id="settings-card">
+          <h3 class="panel-title" id="settings-title">병합 상세 옵션</h3>
+          
+          <!-- Tab-specific configurations form -->
+          <div class="tab-settings-form">
+            
+            <!-- Merge settings -->
+            <div class="setting-group-box active-settings" id="settings-merge">
+              <p class="settings-helper-text">업로드된 다중 PDF의 파일 병합 순서는 우측 대시보드 리스트에서 순서를 드래그하여 변경할 수 있습니다.</p>
+              <button class="btn btn-primary btn-large btn-action-trigger" id="btn-run-merge" disabled>
+                <i class="fa-solid fa-code-merge"></i> PDF 병합 실행
+              </button>
+            </div>
+
+            <!-- Split settings -->
+            <div class="setting-group-box" id="settings-split">
+              <div class="form-item">
+                <label for="split-mode-select">분할 방식</label>
+                <select id="split-mode-select" class="dropdown-select">
+                  <option value="range" selected>범위 분할 (지정 범위 추출)</option>
+                  <option value="fixed">균등 분할 (N페이지씩 절단)</option>
+                  <option value="all">개별 분할 (각 페이지를 별도 파일로)</option>
+                </select>
+              </div>
+
+              <!-- Range split input group -->
+              <div class="form-item" id="split-range-group">
+                <label for="split-range-input">페이지 범위 입력</label>
+                <input type="text" id="split-range-input" placeholder="예: 1-3, 5, 8-10">
+                <span class="field-info">쉼표와 하이픈을 사용하여 페이지 범위를 지정하세요.</span>
+              </div>
+
+              <!-- Fixed N pages split input group -->
+              <div class="form-item" id="split-fixed-group" style="display: none;">
+                <label for="split-fixed-input">분할 기준 페이지 수 (N)</label>
+                <input type="number" id="split-fixed-input" min="1" value="1">
+                <span class="field-info">몇 페이지씩 끊어서 분할할지 입력하세요.</span>
+              </div>
+
+              <button class="btn btn-primary btn-large btn-action-trigger" id="btn-run-split" disabled>
+                <i class="fa-solid fa-scissors"></i> PDF 분할 실행
+              </button>
+            </div>
+
+            <!-- Convert settings -->
+            <div class="setting-group-box" id="settings-convert">
+              <div class="form-item">
+                <label for="convert-format-select">저장 이미지 포맷</label>
+                <select id="convert-format-select" class="dropdown-select">
+                  <option value="png" selected>PNG 이미지 (기본)</option>
+                  <option value="jpeg">JPEG 이미지 (고압축)</option>
+                </select>
+              </div>
+
+              <div class="form-item">
+                <label for="convert-dpi-select">출력 해상도 (DPI)</label>
+                <select id="convert-dpi-select" class="dropdown-select">
+                  <option value="72">72 DPI (빠른 변환, 저용량)</option>
+                  <option value="150" selected>150 DPI (화면 판독용, 표준)</option>
+                  <option value="300">300 DPI (인쇄용, 고해상도)</option>
+                </select>
+              </div>
+
+              <button class="btn btn-primary btn-large btn-action-trigger" id="btn-run-convert" disabled>
+                <i class="fa-solid fa-file-image"></i> 이미지 변환 시작
+              </button>
+            </div>
+
+            <!-- Advanced Edit settings -->
+            <div class="setting-group-box" id="settings-advanced">
+              <div class="form-item">
+                <label for="adv-action-select">고급 편집 작업</label>
+                <select id="adv-action-select" class="dropdown-select">
+                  <option value="watermark" selected>텍스트 워터마크 추가</option>
+                  <option value="rotate">페이지 회전</option>
+                  <option value="extract">텍스트 본문 추출</option>
+                </select>
+              </div>
+
+              <!-- Watermark controls drawer -->
+              <div class="adv-sub-options" id="adv-watermark-options">
+                <div class="form-item">
+                  <label for="wm-text-input">워터마크 문구</label>
+                  <input type="text" id="wm-text-input" placeholder="CONFIDENTIAL" value="CONFIDENTIAL">
+                </div>
+                <div class="form-row">
+                  <div class="form-item">
+                    <label for="wm-size-input">글자 크기 (px)</label>
+                    <input type="number" id="wm-size-input" value="36" min="10" max="100">
+                  </div>
+                  <div class="form-item">
+                    <label for="wm-opacity-input">투명도 (0~1)</label>
+                    <input type="number" id="wm-opacity-input" value="0.3" min="0.1" max="1.0" step="0.1">
+                  </div>
+                </div>
+                <div class="form-item">
+                  <label>색상</label>
+                  <input type="color" id="wm-color-picker" value="#ff0000" style="width:100%; height:32px; border:none; border-radius:8px; cursor:pointer;">
+                </div>
+                <div class="form-item">
+                  <label>워터마크 위치</label>
+                  <div class="watermark-position-grid">
+                    <button class="btn-wm-pos" data-pos="TL">TL</button>
+                    <button class="btn-wm-pos" data-pos="TC">TC</button>
+                    <button class="btn-wm-pos" data-pos="TR">TR</button>
+                    <button class="btn-wm-pos" data-pos="ML">ML</button>
+                    <button class="btn-wm-pos active" data-pos="MC">MC</button>
+                    <button class="btn-wm-pos" data-pos="MR">MR</button>
+                    <button class="btn-wm-pos" data-pos="BL">BL</button>
+                    <button class="btn-wm-pos" data-pos="BC">BC</button>
+                    <button class="btn-wm-pos" data-pos="BR">BR</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rotate controls drawer -->
+              <div class="adv-sub-options" id="adv-rotate-options" style="display: none;">
+                <div class="form-item">
+                  <label for="rotate-angle-select">회전 각도</label>
+                  <select id="rotate-angle-select" class="dropdown-select">
+                    <option value="90" selected>우측으로 90도 시계방향</option>
+                    <option value="180">180도 뒤집기</option>
+                    <option value="270">좌측으로 90도 반시계방향</option>
+                  </select>
+                </div>
+                <div class="form-item">
+                  <label for="rotate-target-select">대상 페이지</label>
+                  <select id="rotate-target-select" class="dropdown-select">
+                    <option value="all" selected>전체 페이지 일괄 회전</option>
+                    <option value="selected">선택된 페이지만 회전</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Text extract controls drawer -->
+              <div class="adv-sub-options" id="adv-extract-options" style="display: none;">
+                <p class="settings-helper-text">PDF 문서 내부의 텍스트 레이어를 디코딩해 문자열만 추출합니다. 우측 미리보기 창에 실시간 출력됩니다.</p>
+              </div>
+
+              <button class="btn btn-primary btn-large btn-action-trigger" id="btn-run-advanced" disabled>
+                <i class="fa-solid fa-check"></i> 고급 작업 실행
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Visual Previews / Queues -->
+      <div class="workspace-right">
+        <div class="glass-panel preview-board">
+          <div class="preview-header-bar">
+            <h3 id="preview-board-title">PDF 병합 준비</h3>
+            <span class="badge-mini" id="lbl-file-count">업로드 대기 중</span>
+          </div>
+
+          <!-- Outer Dynamic Previews Containers -->
+          <div class="preview-viewport-content">
+            
+            <!-- Default Empty Placeholder State -->
+            <div class="preview-placeholder" id="preview-placeholder-box">
+              <div class="placeholder-icon-circle"><i class="fa-solid fa-file-circle-plus"></i></div>
+              <p id="placeholder-message">병합할 PDF 파일을 업로드하세요.<br>최소 2개의 파일이 필요합니다.</p>
+            </div>
+
+            <!-- Previews Container 1: Merge Files list (Re-orderable list) -->
+            <div class="merge-files-list-box" id="merge-list-box" style="display: none;">
+              <ul class="file-cards-ul" id="file-cards-ul">
+                <!-- Javascript populates list elements -->
+              </ul>
+            </div>
+
+            <!-- Previews Container 2: Page Thumbnails Grid (Used in Split/Convert/Advanced) -->
+            <div class="thumbnails-grid-box" id="thumbnails-grid-box" style="display: none;">
+              <!-- Dynamically rendered pages cards -->
+            </div>
+
+            <!-- Previews Container 3: Text Extraction Area -->
+            <div class="extracted-text-box" id="extracted-text-box" style="display: none;">
+              <div class="text-actions-bar">
+                <span>추출된 텍스트 내용</span>
+                <button class="btn btn-secondary" id="btn-copy-extracted-text"><i class="fa-solid fa-copy"></i> 복사</button>
+                <button class="btn btn-secondary" id="btn-download-txt-file"><i class="fa-solid fa-download"></i> 다운로드 (.txt)</button>
+              </div>
+              <textarea id="txt-extraction-area" readonly placeholder="텍스트 추출 진행 시 여기에 출력됩니다..."></textarea>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Bottom Features & Guide Intro Row -->
+    <section class="explanation-board-section">
+      <div class="board-header">
+        <i class="fa-solid fa-circle-question text-blue"></i>
+        <div>
+          <h2>PDF 병합/분할 도구 가이드</h2>
+          <span>브라우저에서 직접 PDF 파일을 병합, 분할, 변환, 편집할 수 있는 올인원 PDF 도구입니다. 모든 처리가 로컬에서 이루어져 개인정보가 안전하게 보호됩니다.</span>
+        </div>
+      </div>
+
+      <!-- Quick core guide cards -->
+      <div class="guide-quick-cards">
+        <div class="glass-panel guide-card">
+          <i class="fa-solid fa-shield-halved text-green"></i>
+          <strong>100% 로컬 처리</strong>
+          <span>파일이 외부 서버로 전혀 전송되지 않습니다.</span>
+        </div>
+        <div class="glass-panel guide-card">
+          <i class="fa-solid fa-gauge-high text-blue"></i>
+          <strong>빠른 처리 속도</strong>
+          <span>클라이언트 최적화 엔진 탑재.</span>
+        </div>
+        <div class="glass-panel guide-card">
+          <i class="fa-solid fa-wifi text-purple"></i>
+          <strong>오프라인 지원</strong>
+          <span>인터넷이 끊겨도 완벽히 정상 동작.</span>
+        </div>
+      </div>
+
+      <h3 class="core-features-section-title">핵심 기능 목록</h3>
+      
+      <div class="features-grid-cards">
+        <div class="glass-panel feature-card-item">
+          <strong>PDF 병합 (Merge)</strong>
+          <ul>
+            <li>드래그 앤 드롭으로 간편하게 파일 순서 변경</li>
+            <li>무제한 파일 개수 동시 병합 지원</li>
+            <li>실시간 페이지 수 및 예상 파일 크기 출력</li>
+            <li>병합 진행률 실시간 퍼센트 바 표시</li>
+          </ul>
+        </div>
+        
+        <div class="glass-panel feature-card-item">
+          <strong>PDF 분할 (Split)</strong>
+          <ul>
+            <li>범위 지정: 1-3, 5, 7-10 개별 페이지 분리</li>
+            <li>균등 분할: N페이지 크기별로 자동 분배</li>
+            <li>개별 분할: 전 페이지 1장씩 별도 파일 절단</li>
+            <li>부분 추출: 원하는 특정 썸네일 체크 추출</li>
+          </ul>
+        </div>
+
+        <div class="glass-panel feature-card-item">
+          <strong>이미지 변환 (Convert)</strong>
+          <ul>
+            <li>고품질 PNG 및 JPG 포맷 가변 출력</li>
+            <li>품질 1~100% 압축 최적화 비율 지정</li>
+            <li>해상도 72DPI, 150DPI, 300DPI 선택</li>
+            <li>일괄 이미지 변환 후 단일 ZIP 파일 패킹</li>
+          </ul>
+        </div>
+
+        <div class="glass-panel feature-card-item">
+          <strong>텍스트 추출 (Extract)</strong>
+          <ul>
+            <li>전체 문서 혹은 지정 범위 본문 디코딩</li>
+            <li>문서 메타데이터 자동 파싱</li>
+            <li>줄바꿈 서식 유지 클라이언트 연산</li>
+            <li>메모리 내 `.txt` 파일 가상 다운로드</li>
+          </ul>
+        </div>
+
+        <div class="glass-panel feature-card-item">
+          <strong>워터마크 (Watermark)</strong>
+          <ul>
+            <li>텍스트 기입: 폰트 사이즈, 색상, 투명도</li>
+            <li>9개 레이아웃 포지션 정밀 마운팅</li>
+            <li>배경 가림 없는 투명도 마스크 레이어</li>
+            <li>일괄 일점 혹은 다점 도장 찍기 오버레이</li>
+          </ul>
+        </div>
+
+        <div class="glass-panel feature-card-item">
+          <strong>페이지 회전 (Rotate)</strong>
+          <ul>
+            <li>90°, 180°, 270° 방향별 회전 설정</li>
+            <li>전체 페이지 혹은 썸네일 체크 일괄 가변</li>
+            <li>비파괴 회전 후 재정렬 세이브 기능</li>
+            <li>즉각적인 회전각 썸네일 실시간 동기화</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="explanation-layout">
+        <!-- 11-part Navigation List (Left Column) -->
+        <nav class="explanation-index-list">
+          <ul>
+            <li class="active" data-index="1"><span class="index-num">01</span> PDF 병합/분할 도구 개요</li>
+            <li data-index="2"><span class="index-num">02</span> PDF 포맷의 역사와 내부 구조</li>
+            <li data-index="3"><span class="index-num">03</span> 서버리스 로컬 처리와 보안성</li>
+            <li data-index="4"><span class="index-num">04</span> PDF 병합(Merge) 기술 가이드</li>
+            <li data-index="5"><span class="index-num">05</span> PDF 분할(Split) 및 추출 요령</li>
+            <li data-index="6"><span class="index-num">06</span> 이미지 변환(Convert) 품질 설정</li>
+            <li data-index="7"><span class="index-num">07</span> 워터마크(Watermark) 설계 기법</li>
+            <li data-index="8"><span class="index-num">08</span> 텍스트 추출(Extract)과 메타데이터</li>
+            <li data-index="9"><span class="index-num">09</span> 브라우저 렌더링 성능 최적화</li>
+            <li data-index="10"><span class="index-num">10</span> 스마트 사무 자동화의 기대 효과</li>
+            <li data-index="11"><span class="index-num">11</span> 자주 묻는 질문 (FAQ)</li>
+          </ul>
+        </nav>
+
+        <!-- Dynamic Content Board Display Box (Right Column) -->
+        <div class="explanation-display-box glass-panel">
+          <div class="display-content-inner" id="explanation-board-content">
+            <!-- Icon/Label on Top -->
+            <div class="display-top-badge">
+              <i class="fa-solid fa-circle-info text-blue"></i>
+              <span id="explanation-title-badge">가이드 01: PDF 개요</span>
+            </div>
+            
+            <h3 id="explanation-display-title">PDF 병합/분할 도구 개요</h3>
+            
+            <div class="display-text-body" id="explanation-display-text">
+              로딩 중...
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Floating Navigation Widget -->
+  <aside class="floating-navigator" id="floating-menu">
+    <div class="floating-buttons-col">
+      <button class="btn-float btn-scroll-top" id="btn-scroll-top" title="위로 이동"><i class="fa-solid fa-arrow-up"></i></button>
+      <button class="btn-float btn-scroll-bottom" id="btn-scroll-bottom" title="아래로 이동"><i class="fa-solid fa-arrow-down"></i></button>
+    </div>
+  </aside>
+
+  <!-- External Serverless Libraries CDN integration -->
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  
+  <script src="app.js"></script>
+</body>
+</html>

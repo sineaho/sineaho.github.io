@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO 복부비만도(WHR) 계산기 Pro - 내장지방 위험 분석</title>
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-orange"></div>
+  <div class="bg-glow bg-glow-red"></div>
+
+  <!-- ==========================================
+       1. PORTAL HEADER
+       ========================================== -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>웹앱 아이디어 창고</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="#">무료 앱 189종</a></li>
+        <li><a href="#" class="active">CineAHO</a></li>
+        <li><a href="#">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==========================================
+       2. MAIN CONTENT CONTAINER
+       ========================================== -->
+  <main class="whr-container">
+    
+    <!-- Sub-navigation Back Link -->
+    <div class="sub-nav-back">
+      <a href="../index.html" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>건강·영양 계산기로 돌아가기</span>
+      </a>
+    </div>
+
+    <!-- App Title Header Banner -->
+    <section class="app-banner glass-panel">
+      <div class="banner-info">
+        <span class="badge-capsule">신체지수(WHR) 계산기</span>
+        <h2>복부비만도(WHR) 계산기</h2>
+        <p>허리·엉덩이 둘레 비율로 내장비만 위험도 체크</p>
+      </div>
+      <div class="banner-decor">
+        <i class="fa-solid fa-arrows-left-right-to-line"></i>
+      </div>
+    </section>
+
+    <!-- Gender Selector Cards Row -->
+    <section class="gender-selector-section">
+      <div class="gs-title">
+        <i class="fa-solid fa-venus-mars text-orange"></i>
+        <span>성별 선택</span>
+      </div>
+      <div class="gender-cards">
+        
+        <div class="gender-card active" id="btn-gender-male">
+          <div class="gender-icon"><i class="fa-solid fa-mars"></i></div>
+          <div class="gender-desc">
+            <strong>남성</strong>
+            <span>WHR &ge; 0.90 = 복부비만</span>
+          </div>
+        </div>
+
+        <div class="gender-card" id="btn-gender-female">
+          <div class="gender-icon"><i class="fa-solid fa-venus"></i></div>
+          <div class="gender-desc">
+            <strong>여성</strong>
+            <span>WHR &ge; 0.85 = 복부비만</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Main Calculation Grid -->
+    <section class="calculator-grid">
+      
+      <!-- Left side Inputs panel -->
+      <div class="grid-col-input glass-panel">
+        <div class="panel-header">
+          <div class="title">
+            <i class="fa-solid fa-ruler-horizontal text-orange"></i>
+            <span>측정값 입력</span>
+          </div>
+          <button class="btn-reset" id="btn-reset-inputs" title="입력 초기화">
+            <i class="fa-solid fa-rotate-right"></i>
+          </button>
+        </div>
+
+        <!-- Waist circumference slider -->
+        <div class="slider-group">
+          <div class="slider-label-row">
+            <span class="label">허리둘레</span>
+            <span class="value-display text-orange"><strong id="txt-waist">85</strong> <span class="unit">cm</span></span>
+          </div>
+          <input type="range" id="slider-waist" min="50" max="130" value="85" class="range-slider">
+          <div class="range-bounds">
+            <span>50cm</span>
+            <span class="center-marker text-green" id="waist-standard-lbl">기준: 90cm</span>
+            <span>130cm</span>
+          </div>
+          
+          <!-- Quick buttons -->
+          <div class="quick-inner-bounds" id="quick-waist-container">
+            <button class="inner-btn" data-val="75">75</button>
+            <button class="inner-btn" data-val="80">80</button>
+            <button class="inner-btn active" data-val="85">85</button>
+            <button class="inner-btn" data-val="90">90</button>
+            <button class="inner-btn" data-val="95">95</button>
+            <button class="inner-btn" data-val="100">100</button>
+            <button class="inner-btn" data-val="105">105</button>
+            <button class="inner-btn" data-val="110">110</button>
+          </div>
+          <p class="slider-tip"><i class="fa-solid fa-circle-info"></i> 측정 위치: 갈비뼈 맨 아래와 골반 맨 위의 중간 지점 (배꼽 높이)</p>
+        </div>
+
+        <!-- Hip circumference slider -->
+        <div class="slider-group">
+          <div class="slider-label-row">
+            <span class="label">엉덩이둘레</span>
+            <span class="value-display text-orange"><strong id="txt-hip">95</strong> <span class="unit">cm</span></span>
+          </div>
+          <input type="range" id="slider-hip" min="70" max="140" value="95" class="range-slider">
+          <div class="range-bounds">
+            <span>70cm</span>
+            <span>140cm</span>
+          </div>
+          
+          <!-- Quick buttons -->
+          <div class="quick-inner-bounds" id="quick-hip-container">
+            <button class="inner-btn" data-val="85">85</button>
+            <button class="inner-btn" data-val="90">90</button>
+            <button class="inner-btn active" data-val="95">95</button>
+            <button class="inner-btn" data-val="100">100</button>
+            <button class="inner-btn" data-val="105">105</button>
+            <button class="inner-btn" data-val="110">110</button>
+            <button class="inner-btn" data-val="115">115</button>
+            <button class="inner-btn" data-val="120">120</button>
+          </div>
+          <p class="slider-tip"><i class="fa-solid fa-circle-info"></i> 측정 위치: 엉덩이에서 가장 돌출된 부위</p>
+        </div>
+
+      </div>
+
+      <!-- Right side Results panel -->
+      <div class="grid-col-results glass-panel">
+        
+        <!-- Results header with copy button -->
+        <div class="panel-header no-border">
+          <span class="title-sub">복부 비만 진단 리포트</span>
+          <button class="btn-copy" id="btn-copy-result" title="결과 복사">
+            <i class="fa-solid fa-copy"></i>
+          </button>
+        </div>
+
+        <!-- Large WHR value output -->
+        <div class="whr-output-display">
+          <span class="label">복부비만도 (WHR)</span>
+          <h1 id="result-whr-val">0.89</h1>
+          <h2 id="result-whr-class" class="text-green">정상</h2>
+          <p id="result-whr-desc" class="text-muted">건강한 허리-엉덩이 비율</p>
+        </div>
+
+        <!-- Interactive Gauge scale bar -->
+        <div class="whr-gauge-wrapper">
+          <div class="whr-gauge-bar">
+            <!-- Segments -->
+            <div class="gauge-sec normal" style="width: 25%;">정상</div>
+            <div class="gauge-sec caution" style="width: 25%;">주의</div>
+            <div class="gauge-sec obese" style="width: 25%;">복부비만</div>
+            <div class="gauge-sec high-risk" style="width: 25%;">고위험</div>
+            
+            <!-- Needle pointer -->
+            <div class="gauge-pointer" id="gauge-pointer-pin">
+              <div class="pointer-bubble" id="pointer-bubble-val">0.89</div>
+              <div class="pointer-arrow"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Secondary Cards Grid -->
+        <div class="results-cards-grid">
+          
+          <!-- Card 1: Health Risk Status -->
+          <div class="res-sub-card span-all warning-card" id="card-risk-status">
+            <div class="icon-wrap color-green" id="risk-status-icon">
+              <i class="fa-solid fa-heart-circle-check"></i>
+            </div>
+            <div class="card-info">
+              <span class="lbl">건강 위험도 평가</span>
+              <h3 id="risk-status-title">건강 위험도: 낮음</h3>
+              <p id="risk-status-desc">대사증후군 및 혈관 질환 위험 최저 범위</p>
+            </div>
+          </div>
+
+          <!-- Card 2: Waist Abs status -->
+          <div class="res-sub-card">
+            <div class="icon-wrap color-green" id="card-waist-abs-icon">
+              <i class="fa-solid fa-ruler"></i>
+            </div>
+            <div class="card-info">
+              <span class="lbl">허리둘레 기준</span>
+              <h3 id="waist-abs-status-val">정상</h3>
+              <p>기준: 남 90cm / 여 85cm</p>
+            </div>
+          </div>
+
+          <!-- Card 3: Target suggestion -->
+          <div class="res-sub-card">
+            <div class="icon-wrap color-cyan">
+              <i class="fa-solid fa-bullseye"></i>
+            </div>
+            <div class="card-info">
+              <span class="lbl">권장 허리둘레</span>
+              <h3 id="waist-target-val">90 cm 이하</h3>
+              <p>건강 복부 권장 기준치</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- Standards Classification Table side by side -->
+    <section class="standard-table-section glass-panel">
+      <h3><i class="fa-solid fa-table-list text-orange"></i> WHR 분류 기준표</h3>
+      <div class="tables-split-row">
+        
+        <!-- Male table -->
+        <div class="table-col-wrap">
+          <h4 class="table-title"><i class="fa-solid fa-mars text-blue"></i> 남성 기준</h4>
+          <div class="table-container">
+            <table class="whr-table" id="whr-male-table">
+              <thead>
+                <tr>
+                  <th>분류</th>
+                  <th>WHR 범위</th>
+                  <th>위험도</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-class="normal" class="row-normal">
+                  <td class="class-title"><span class="marker"></span>정상 <span class="check-icon">✓</span></td>
+                  <td>0.90 미만</td>
+                  <td>낮음</td>
+                </tr>
+                <tr data-class="caution" class="row-caution">
+                  <td class="class-title"><span class="marker"></span>주의</td>
+                  <td>0.90 ~ 0.95</td>
+                  <td>보통</td>
+                </tr>
+                <tr data-class="obese" class="row-obese">
+                  <td class="class-title"><span class="marker"></span>복부비만</td>
+                  <td>0.95 ~ 1.00</td>
+                  <td>높음</td>
+                </tr>
+                <tr data-class="high-risk" class="row-high-risk">
+                  <td class="class-title"><span class="marker"></span>고위험</td>
+                  <td>1.00 이상</td>
+                  <td>매우 높음</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Female table -->
+        <div class="table-col-wrap">
+          <h4 class="table-title"><i class="fa-solid fa-venus text-yellow"></i> 여성 기준</h4>
+          <div class="table-container">
+            <table class="whr-table" id="whr-female-table">
+              <thead>
+                <tr>
+                  <th>분류</th>
+                  <th>WHR 범위</th>
+                  <th>위험도</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-class="normal" class="row-normal">
+                  <td class="class-title"><span class="marker"></span>정상 <span class="check-icon">✓</span></td>
+                  <td>0.80 미만</td>
+                  <td>낮음</td>
+                </tr>
+                <tr data-class="caution" class="row-caution">
+                  <td class="class-title"><span class="marker"></span>주의</td>
+                  <td>0.80 ~ 0.85</td>
+                  <td>보통</td>
+                </tr>
+                <tr data-class="obese" class="row-obese">
+                  <td class="class-title"><span class="marker"></span>복부비만</td>
+                  <td>0.85 ~ 0.90</td>
+                  <td>높음</td>
+                </tr>
+                <tr data-class="high-risk" class="row-high-risk">
+                  <td class="class-title"><span class="marker"></span>고위험</td>
+                  <td>0.90 이상</td>
+                  <td>매우 높음</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+      <p class="table-footnote">※ WHO(세계보건기구) 기준이며, 아시아-한국인의 경우 대한비만학회 가이드인 절대 허리둘레 기준(남성 90cm, 여성 85cm)도 함께 참고하여 판단하는 것이 정확합니다.</p>
+    </section>
+
+    <!-- Action Plan: How to improve -->
+    <section class="action-plan-section glass-panel">
+      <h3><i class="fa-solid fa-heart-pulse text-green"></i> 복부비만 개선을 위한 3대 실천 가이드</h3>
+      <div class="action-cards-grid">
+        
+        <div class="action-card">
+          <div class="card-icon color-cyan"><i class="fa-solid fa-person-running"></i></div>
+          <div class="card-info">
+            <h4>적극적인 유산소 운동</h4>
+            <p>내장지방을 연소하기 위해서는 주 150분 이상의 중강도 유산소 운동(빠르게 걷기, 자전거, 수영 등) 또는 HIIT(고강도 인터벌 트레이닝)가 매우 효과적입니다. 근력 운동을 주 2~3회 병행하면 기초대사량을 지키며 효율이 배가됩니다.</p>
+          </div>
+        </div>
+
+        <div class="action-card">
+          <div class="card-icon color-orange"><i class="fa-solid fa-wheat-awn"></i></div>
+          <div class="card-info">
+            <h4>정제 탄수화물 제한 식단</h4>
+            <p>복부비만의 주범은 액상과당, 흰쌀, 흰 밀가루 등 정제 탄수화물입니다. 이들은 인슐린 분비를 급증시켜 에너지를 복부 내장지방으로 축적합니다. 통곡물, 채소류 식이섬유와 양질의 단백질 섭취 비중을 늘리십시오.</p>
+          </div>
+        </div>
+
+        <div class="action-card">
+          <div class="card-icon color-red"><i class="fa-solid fa-moon"></i></div>
+          <div class="card-info">
+            <h4>절주 및 숙면 습관</h4>
+            <p>알코올은 지방 연소를 방해하고 코르티솔 스트레스 호르몬 분비를 촉진해 복부에 지방을 밀어 넣습니다. 또한 수면이 6시간 미만으로 부족하면 식욕 호르몬 그렐린이 늘어나므로 7~8시간의 규칙적인 숙면을 확보해야 합니다.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Detailed WHR Guide Documents -->
+    <section class="guide-details-section glass-panel">
+      <h3><i class="fa-solid fa-graduation-cap text-purple"></i> 복부비만도(WHR) 완벽 가이드 - 내장지방 위험 체크</h3>
+      <p class="guide-intro">WHR(Waist-to-Hip Ratio, 허리-엉덩이 비율)은 복부 비만과 내장지방 축적 수준을 평가하는 가장 강력한 임상적 지표 중 하나입니다. 단순히 몸무게나 BMI(체질량지수)를 재는 것보다 대사증후군, 당뇨병, 고혈압, 심혈관 질환의 발병 위험을 훨씬 정확하게 예측합니다. 신체 하부보다 신체 중앙부에 지방이 집중되는 '사과형 비만'은 '배형 비만'보다 혈관 건강에 훨씬 더 해롭습니다.</p>
+
+      <div class="guide-grid">
+        
+        <!-- Usage -->
+        <div class="guide-card">
+          <h4><i class="fa-solid fa-circle-question"></i> WHR 계산기 사용법</h4>
+          <ol class="guide-list">
+            <li><span class="num">1</span> <strong>성별 선택</strong>: 남성과 여성은 호르몬 구성에 따른 정상 WHR 범위가 다르므로 성별 카드를 올바르게 선택합니다.</li>
+            <li><span class="num">2</span> <strong>측정 수치 입력</strong>: 허리둘레와 엉덩이둘레 슬라이더 또는 하단의 빠른 단축 버튼을 이용해 정확한 측정값을 입력합니다.</li>
+            <li><span class="num">3</span> <strong>진단서 확인</strong>: 실시간으로 나타나는 WHR 수치, 위험도 카드 및 분류표의 불빛 하이라이트를 통해 나의 신체 상태를 직관적으로 진단합니다.</li>
+          </ol>
+        </div>
+
+        <!-- Measurement detail -->
+        <div class="guide-card">
+          <h4><i class="fa-solid fa-tape"></i> 올바른 측정 방법</h4>
+          <div class="measurement-wrap">
+            <div class="measure-box">
+              <strong>허리둘레 측정법:</strong>
+              <p>편안하게 선 상태에서 숨을 가볍게 내쉰 뒤, 갈비뼈 최하단과 골반뼈 최상단의 중간 지점(대략 배꼽 위 1~2cm 부위)을 줄자가 수평이 되도록 하여 가볍게 측정합니다. (배를 억지로 집어넣거나 줄자를 팽팽히 당기지 않아야 합니다)</p>
+            </div>
+            <div class="measure-box">
+              <strong>엉덩이둘레 측정법:</strong>
+              <p>옆에서 바라보았을 때 엉덩이 근육 중 가장 뒤쪽으로 볼록하게 튀어나온 최대 돌출 부위를 수평으로 둘러 측정합니다.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Waist vs WHR explanation -->
+      <div class="guide-waist-vs-whr">
+        <h4><i class="fa-solid fa-circle-info"></i> 허리둘레 기준과 WHR 기준의 보완 관계</h4>
+        <p class="comparison-note">허리둘레 기준(남성 90cm, 여성 85cm 이상 시 복부비만)은 절대적인 복부 지방 축적량을 빠르게 스크리닝하는 데 탁월합니다. 하지만 골격이 매우 작거나 키가 작은 사람은 허리둘레 절대치로는 정상이어도 엉덩이에 비해 허리가 두꺼운 <strong>상대적 복부 비만(WHR 기준 초과)</strong> 상태일 수 있습니다. 반대로, 체구와 골격이 큰 사람은 허리둘레 기준을 살짝 넘어도 비율(WHR)은 아주 양호할 수 있습니다. 따라서 두 지표를 병행 확인하여 입체적인 체성분 관리를 이어가는 것이 최선입니다.</p>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       3. FLOATING TOOLBAR CONTROLS
+       ========================================== -->
+  <div class="floating-controls-panel">
+    <!-- Scroll position progress ring -->
+    <div class="progress-ring-wrap" id="scroll-progress-ring" title="스크롤 위치">
+      <svg class="progress-ring-svg" width="50" height="50">
+        <circle class="progress-ring-circle-bg" cx="25" cy="25" r="20" />
+        <circle class="progress-ring-circle-indicator" id="progress-circle-indicator" cx="25" cy="25" r="20" />
+      </svg>
+      <span class="progress-txt" id="scroll-percentage-lbl">0%</span>
+    </div>
+
+    <!-- Quick Scroll Top -->
+    <button class="floating-btn" id="btn-scroll-top" title="맨 위로 가기">
+      <i class="fa-solid fa-arrow-up"></i>
+    </button>
+    <!-- Quick Scroll Bottom -->
+    <button class="floating-btn" id="btn-scroll-bottom" title="맨 아래로 가기">
+      <i class="fa-solid fa-arrow-down"></i>
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <p>&copy; 2026 CineAHO Web Application Store. All rights reserved.</p>
+    <p class="footer-note">Cineaho 포털 하위에 여러 독립적인 웹 애플리케이션을 유연하게 마운트하여 관리할 수 있습니다.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

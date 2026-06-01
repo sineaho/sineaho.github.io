@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO 토익 단어 학습 앱 Pro</title>
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>웹앱 아이디어 창고</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="#">무료 앱 189종</a></li>
+        <li><a href="#" class="active">CineAHO</a></li>
+        <li><a href="#">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Word Learning Main Workspace Container -->
+  <main class="toeic-container">
+    
+    <!-- Title and Description -->
+    <section class="toeic-header-section">
+      <h1 class="main-title">
+        <i class="fa-solid fa-book-open-reader text-cyan"></i> 토익 단어 학습 앱
+      </h1>
+      <p class="subtitle-desc">
+        토익 빈출 어휘를 뜻, 발음기호, 품사, 예문과 함께 학습합니다. 플래시카드와 객관식 퀴즈, 진행도 저장, 사용자 데이터 가져오기를 지원하여 효율적인 어휘 암기를 돕습니다.
+      </p>
+      
+      <div class="tag-badges">
+        <span class="badge badge-tag">TOEIC</span>
+        <span class="badge badge-tag">어휘</span>
+        <span class="badge badge-tag">영어</span>
+        <span class="badge badge-tag">학습</span>
+      </div>
+    </section>
+
+    <!-- Progress Tracker & Data utility controls -->
+    <section class="progress-and-utils glass-panel">
+      <div class="progress-left">
+        <div class="progress-label-row">
+          <span>암기 진행률</span>
+          <strong id="progress-text-lbl">진행도: 0/1220 (0%)</strong>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progress-bar" style="width: 0%;"></div>
+        </div>
+      </div>
+      
+      <div class="utils-right">
+        <!-- Import / Export Actions -->
+        <button class="btn btn-secondary btn-sm" id="btn-import-trigger" title="JSON/CSV 어휘 데이터 추가">
+          <i class="fa-solid fa-file-import"></i>
+          <span>단어 가져오기</span>
+        </button>
+        <button class="btn btn-secondary btn-sm" id="btn-export-data" title="현재 진행도 및 어휘 내보내기">
+          <i class="fa-solid fa-file-export"></i>
+          <span>내보내기</span>
+        </button>
+        <button class="btn btn-danger btn-sm" id="btn-reset-progress" title="전체 진행도 초기화">
+          <i class="fa-solid fa-arrows-rotate"></i>
+          <span>초기화</span>
+        </button>
+        <input type="file" id="file-import-input" accept=".json,.csv" style="display: none;">
+      </div>
+    </section>
+
+    <!-- Tab navigation headers -->
+    <nav class="learning-tabs">
+      <button class="tab-btn active" data-tab="tab-list">1. 목록 전체</button>
+      <button class="tab-btn" data-tab="tab-flashcard">2. 플래시카드</button>
+      <button class="tab-btn" data-tab="tab-quiz">3. 퀴즈</button>
+      <button class="tab-btn" data-tab="tab-typing">4. 뜻 타이핑</button>
+      <button class="tab-btn" data-tab="tab-spelling">5. 철자 테스트</button>
+      <button class="tab-btn" data-tab="tab-matching">6. 매칭</button>
+    </nav>
+
+    <!-- Helper tooltip informational notice -->
+    <div class="instruction-box">
+      <p><i class="fa-solid fa-info-circle text-cyan"></i> 단어: 마우스를 올리면 미리보기 카드가 뜹니다. 클릭하면 네이버사전으로 이동합니다.</p>
+      <p><i class="fa-solid fa-circle-question text-purple"></i> 예문: 마우스를 올리면 밑줄이 나타나고, 클릭하면 파파고 번역으로 이동합니다.</p>
+    </div>
+
+    <!-- Active Content Workspace Board -->
+    <section class="learning-workspace glass-panel">
+      
+      <!-- ==========================================
+           TAB 1: 목록 전체 (All word lists table)
+           ========================================== -->
+      <div class="tab-content active" id="tab-list">
+        
+        <!-- Table Search and Filter Controls -->
+        <div class="table-controls">
+          <div class="search-bar-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="word-search" placeholder="영어 단어나 한글 뜻 검색...">
+          </div>
+          <div class="filter-box">
+            <select id="pos-filter" class="select-dropdown">
+              <option value="all">모든 품사</option>
+              <option value="명사">명사</option>
+              <option value="동사">동사</option>
+              <option value="형용사">형용사</option>
+              <option value="부사">부사</option>
+            </select>
+            <select id="memorized-filter" class="select-dropdown">
+              <option value="all">모든 단어</option>
+              <option value="unmemorized">미암기 단어</option>
+              <option value="memorized">암기 완료</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Word List Table wrapper -->
+        <div class="table-responsive">
+          <table class="vocab-table">
+            <thead>
+              <tr>
+                <th width="60">No</th>
+                <th width="80">암기</th>
+                <th width="150">단어</th>
+                <th>뜻</th>
+                <th width="140">발음기호</th>
+                <th width="110">품사</th>
+                <th>예문</th>
+                <th width="70">듣기</th>
+              </tr>
+            </thead>
+            <tbody id="vocab-table-body">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Controls footer -->
+        <div class="pagination-container" id="pagination-box">
+          <!-- Page buttons -->
+        </div>
+
+      </div>
+
+      <!-- ==========================================
+           TAB 2: 플래시카드 (3D CSS Flip cards)
+           ========================================== -->
+      <div class="tab-content" id="tab-flashcard">
+        
+        <div class="flashcard-layout">
+          <!-- Flashcard flip object -->
+          <div class="flashcard-container" id="flashcard-flip-obj">
+            <div class="flashcard-face card-front">
+              <div class="card-hint-badge">CLICK TO FLIP</div>
+              <h2 id="fc-word">resume</h2>
+              <div class="card-sound-row">
+                <button class="btn-voice-speaker" id="btn-fc-speak"><i class="fa-solid fa-volume-high"></i></button>
+              </div>
+            </div>
+            <div class="flashcard-face card-back">
+              <span class="card-pos-badge" id="fc-pos">명사, 동사</span>
+              <h3 id="fc-meaning">이력서; 재개하다</h3>
+              <div class="fc-phonetic" id="fc-phonetic">/rɪˈzuːm/</div>
+              <p class="fc-sentence" id="fc-sentence">Please submit your resume to the personnel department.</p>
+              <p class="fc-sentence-ko" id="fc-sentence-ko">인사 부서에 이력서를 제출해 주십시오.</p>
+            </div>
+          </div>
+
+          <!-- Bottom card selectors -->
+          <div class="card-controls-panel">
+            <button class="btn btn-secondary" id="btn-fc-prev"><i class="fa-solid fa-arrow-left"></i> 이전</button>
+            <div class="card-index-lbl" id="fc-index-lbl">1 / 1220</div>
+            <button class="btn btn-secondary" id="btn-fc-next">다음 <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+
+          <!-- Memorization action selectors -->
+          <div class="card-action-panel">
+            <button class="btn btn-danger btn-lg" id="btn-fc-unknown">
+              <i class="fa-solid fa-circle-xmark"></i>
+              <span>모름 (복습 필요)</span>
+            </button>
+            <button class="btn btn-success btn-lg" id="btn-fc-known">
+              <i class="fa-solid fa-circle-check"></i>
+              <span>알아봄 (암기 완료)</span>
+            </button>
+          </div>
+
+          <!-- Keyboard Shortcuts tip -->
+          <div class="shortcut-tip">
+            <p><kbd>Space</kbd> : 카드 뒤집기 | <kbd>←</kbd> <kbd>→</kbd> : 이전/다음 카드 | <kbd>1</kbd> : 모름 | <kbd>2</kbd> : 알아봄</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ==========================================
+           TAB 3: 퀴즈 (4지선다형 객관식)
+           ========================================== -->
+      <div class="tab-content" id="tab-quiz">
+        
+        <div class="quiz-layout">
+          <!-- Quiz Dashboard -->
+          <div class="quiz-dashboard">
+            <div class="quiz-stat-item">
+              <span>문제수</span>
+              <strong id="quiz-count-txt">1 / 10</strong>
+            </div>
+            <div class="quiz-stat-item">
+              <span>정답</span>
+              <strong id="quiz-correct-txt" class="text-green">0</strong>
+            </div>
+            <div class="quiz-stat-item">
+              <span>오답</span>
+              <strong id="quiz-wrong-txt" class="text-red">0</strong>
+            </div>
+          </div>
+
+          <!-- Quiz Question Card -->
+          <div class="quiz-question-box">
+            <div class="quiz-type-badge" id="quiz-type-lbl">뜻 고르기</div>
+            <h2 id="quiz-question-word">applicant</h2>
+            <div class="quiz-speaker-row" id="quiz-speaker-container">
+              <button class="btn-voice-speaker" id="btn-quiz-speak"><i class="fa-solid fa-volume-high"></i></button>
+            </div>
+          </div>
+
+          <!-- Quiz Choices Grid -->
+          <div class="quiz-choices-grid" id="quiz-choices-box">
+            <!-- 4 Choice buttons -->
+          </div>
+
+          <!-- Quiz feedback board -->
+          <div class="quiz-feedback-box hidden" id="quiz-feedback-panel">
+            <p id="quiz-feedback-msg">오답입니다!</p>
+            <span id="quiz-feedback-detail">정답은: 지원자, 신청자</span>
+            <button class="btn btn-primary" id="btn-quiz-next">다음 문제 <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ==========================================
+           TAB 4: 뜻 타이핑 (Meaning Typing test)
+           ========================================== -->
+      <div class="tab-content" id="tab-typing">
+        
+        <div class="typing-layout">
+          <div class="quiz-dashboard">
+            <div class="quiz-stat-item">
+              <span>현재 문제</span>
+              <strong id="type-count-txt">1 / 10</strong>
+            </div>
+            <div class="quiz-stat-item">
+              <span>점수</span>
+              <strong id="type-score-txt" class="text-cyan">0 / 10</strong>
+            </div>
+          </div>
+
+          <div class="typing-question-card">
+            <span class="quiz-type-badge">뜻 직접 타이핑</span>
+            <h2 id="type-question-word">requirement</h2>
+            <div class="quiz-speaker-row">
+              <button class="btn-voice-speaker" id="btn-type-speak"><i class="fa-solid fa-volume-high"></i></button>
+            </div>
+            <div class="type-hint-row" id="type-hint-box">
+              <button class="btn btn-secondary btn-xs" id="btn-show-hint">힌트 초성 보기</button>
+              <span id="type-hint-txt" class="hidden">ㅇㄱ, ㅍㅇㅈㄱ</span>
+            </div>
+          </div>
+
+          <!-- Form input slot -->
+          <div class="typing-input-bar">
+            <input type="text" id="type-input" placeholder="한국어 뜻을 입력하세요 (일치 시 정답)" autocomplete="off">
+            <button class="btn btn-primary" id="btn-type-submit">제출</button>
+          </div>
+
+          <!-- Typing result visual block -->
+          <div class="typing-feedback-box hidden" id="type-feedback-panel">
+            <h3 id="type-result-title">정답입니다!</h3>
+            <p>정답 뜻: <strong id="type-answer-txt" class="text-green">필요조건, 요건</strong></p>
+            <div class="type-sentence-box">
+              <p id="type-example-en">A driver's license is a requirement for this position.</p>
+              <span id="type-example-ko">운전면허증은 이 직책의 필요조건이다.</span>
+            </div>
+            <button class="btn btn-primary" id="btn-type-next" style="margin-top: 1rem;">다음 문제 <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ==========================================
+           TAB 5: 철자 테스트 (Spelling Listens)
+           ========================================== -->
+      <div class="tab-content" id="tab-spelling">
+        
+        <div class="spelling-layout">
+          <div class="quiz-dashboard">
+            <div class="quiz-stat-item">
+              <span>진행 문항</span>
+              <strong id="spell-count-txt">1 / 10</strong>
+            </div>
+            <div class="quiz-stat-item">
+              <span>맞힌 문항</span>
+              <strong id="spell-score-txt" class="text-green">0</strong>
+            </div>
+          </div>
+
+          <div class="spelling-question-card">
+            <span class="quiz-type-badge">발음 듣고 철자 적기</span>
+            <button class="btn-audio-listen" id="btn-spell-audio-play">
+              <i class="fa-solid fa-volume-high"></i>
+              <span>단어 발음 듣기 (TTS)</span>
+            </button>
+            <div class="spelling-meaning-lbl" id="spell-meaning-lbl">자격 있는, 적임의</div>
+          </div>
+
+          <!-- Char slot hints mapping -->
+          <div class="spelling-slots-container" id="spell-slots-box">
+            <!-- Render characters spaces -->
+          </div>
+
+          <div class="spelling-input-container">
+            <input type="text" id="spell-input" placeholder="스펠링을 입력하세요" maxlength="30" autocomplete="off">
+            <button class="btn btn-primary" id="btn-spell-submit">확인</button>
+          </div>
+
+          <!-- Spelling feedback result -->
+          <div class="spelling-feedback-box hidden" id="spell-feedback-panel">
+            <h3 id="spell-result-title">정답입니다!</h3>
+            <p>올바른 철자: <strong id="spell-correct-txt" class="text-cyan">qualified</strong></p>
+            <div class="type-sentence-box">
+              <p id="spell-example-en">We are looking for highly qualified candidates.</p>
+              <span id="spell-example-ko">우리는 고도로 자격을 갖춘 후보자들을 찾고 있습니다.</span>
+            </div>
+            <button class="btn btn-primary" id="btn-spell-next" style="margin-top: 1.25rem;">다음 단어 <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ==========================================
+           TAB 6: 매칭 (Memory Word Matching)
+           ========================================== -->
+      <div class="tab-content" id="tab-matching">
+        
+        <div class="matching-layout">
+          <!-- Game Header stats -->
+          <div class="matching-header">
+            <div class="match-stat">
+              <i class="fa-solid fa-stopwatch text-cyan"></i>
+              <span>경과 시간: <strong id="match-timer-txt">0.0초</strong></span>
+            </div>
+            <div class="match-stat">
+              <i class="fa-solid fa-trophy text-gold"></i>
+              <span>최고 기록: <strong id="match-best-txt">없음</strong></span>
+            </div>
+            <button class="btn btn-primary btn-sm" id="btn-match-restart"><i class="fa-solid fa-rotate-left"></i> 게임 시작 / 재시작</button>
+          </div>
+
+          <!-- Word cards grid split -->
+          <div class="matching-grid" id="match-cards-grid">
+            <!-- 10 Shuffle cards representing words and meanings -->
+            <div class="match-welcome-msg">
+              <h3>단어 매칭 게임</h3>
+              <p>시작 버튼을 누르면 영단어 5개와 뜻 5개가 무작위 배치됩니다. 짝이 맞는 카드를 연속해서 클릭하여 모두 없애보세요! 최단 시간을 달성해야 합니다.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Word Tooltip Preview Card layout container (Popup on hover list words) -->
+  <div class="word-preview-tooltip hidden" id="preview-tooltip">
+    <div class="tooltip-header">
+      <span class="tt-word" id="tt-word">candidate</span>
+      <span class="tt-pos" id="tt-pos">명사</span>
+    </div>
+    <div class="tooltip-body">
+      <div class="tt-phonetic" id="tt-phonetic">/ˈkændɪdət/</div>
+      <div class="tt-meaning" id="tt-meaning">(선거) 입후보자, (일자리) 지원자</div>
+    </div>
+    <div class="tooltip-footer">
+      <span>사전을 보려면 클릭하세요</span>
+      <i class="fa-solid fa-arrow-up-right-from-square"></i>
+    </div>
+  </div>
+
+  <!-- Audio synthesizers and learning app logic scripts -->
+  <script src="app.js"></script>
+</body>
+</html>

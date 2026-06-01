@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO 사주팔자 운세 분석 - AI 명리학 상담</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>웹앱 아이디어 창고</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="#">무료 앱 189종</a></li>
+        <li><a href="#" class="active">CineAHO</a></li>
+        <li><a href="#">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Saju Container -->
+  <main class="saju-container">
+    
+    <!-- Title & Description Header -->
+    <section class="saju-header-section">
+      <h1 class="main-title"><i class="fa-solid fa-wand-magic-sparkles text-purple"></i> 사주팔자 운세 분석 - <span>AI 기반 명리학 상담</span></h1>
+      <p class="subtitle-desc">
+        한국천문연구원 만세력 및 전통 사주(명리학) 산정을 바탕으로, 앱 내 절기 데이터와 출생지 기준 로컬 시간 보정을 적용한 사주팔자 계산 및 AI 운세 분석 웹앱입니다. 버튼식 인터페이스로 생년월일시를 입력하고, AI가 제공하는 종합 사주 분석, 연간 운세, 연애운, 재물운, 직업운, 건강운, 대운 흐름 등을 확인할 수 있습니다. 전통 명리학의 깊은 지혜와 현대적 해석을 융합한 전문 사주 상담을 제공합니다.
+      </p>
+      
+      <div class="tag-badges">
+        <span class="badge">사주</span>
+        <span class="badge">운세</span>
+        <span class="badge">명리학</span>
+        <span class="badge">AI</span>
+        <span class="badge">분석</span>
+        <span class="badge">데이터</span>
+        <span class="badge">전통</span>
+        <span class="badge">상담</span>
+      </div>
+    </section>
+
+    <!-- notice input label header -->
+    <div class="input-header-bar">
+      <span>입력</span>
+      <span class="birth-info-label">출생 정보</span>
+    </div>
+
+    <!-- Saju Form Panel -->
+    <section class="saju-form-panel glass-panel">
+      
+      <div class="form-title-box">
+        <i class="fa-regular fa-calendar-days"></i>
+        <h4>사주 정보 입력</h4>
+        <span>① 생년월일·성별 → ② 출생 시각·지역</span>
+      </div>
+
+      <!-- Part 1: Birthdate & Gender -->
+      <div class="form-section">
+        <div class="section-title">
+          <span class="step-num">①</span>
+          <span>생년월일 <span class="step-desc">양력·음력 및 성별</span></span>
+        </div>
+
+        <div class="form-row-top">
+          <!-- Solar/Lunar & Gender Selector -->
+          <div class="top-toggle-group">
+            <div class="toggle-buttons">
+              <button class="btn-toggle active" id="btn-solar-lunar" data-type="solar">
+                <i class="fa-solid fa-sun text-orange"></i> 양력
+              </button>
+              <button class="btn-toggle" id="btn-lunar" data-type="lunar">
+                <i class="fa-solid fa-moon text-blue"></i> 음력
+              </button>
+            </div>
+            <div class="toggle-buttons" style="margin-top: 0.75rem;">
+              <button class="btn-toggle active" id="btn-gender-m" data-type="male">
+                <i class="fa-solid fa-mars text-cyan"></i> 남성
+              </button>
+              <button class="btn-toggle" id="btn-gender-f" data-type="female">
+                <i class="fa-solid fa-venus text-red"></i> 여성
+              </button>
+            </div>
+          </div>
+
+          <!-- YMD Inputs -->
+          <div class="ymd-inputs-box">
+            <div class="ymd-header">
+              <span>연·월·일</span>
+              <span class="only-numbers-tip">숫자만 입력</span>
+            </div>
+            <div class="ymd-fields">
+              <div class="input-group">
+                <label>연도</label>
+                <input type="number" id="birth-year" value="1990" min="1930" max="2030">
+              </div>
+              <div class="input-group">
+                <label>월</label>
+                <input type="number" id="birth-month" placeholder="1-12" value="6" min="1" max="12">
+              </div>
+              <div class="input-group">
+                <label>일</label>
+                <input type="number" id="birth-day" placeholder="1-31" value="15" min="1" max="31">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Part 2: Time & Region -->
+      <div class="form-section">
+        <div class="section-title">
+          <span class="step-num">②</span>
+          <span>출생 시각 · 지역 <span class="step-desc">시·분 24시간제 · 초 없음</span></span>
+        </div>
+
+        <div class="time-region-box">
+          <div class="time-left-controls">
+            
+            <div class="time-unk-checkbox">
+              <label class="checkbox-container">
+                <input type="checkbox" id="chk-time-unknown">
+                <span class="checkmark"></span>
+                <span>시각 모름 (시주 생략)</span>
+              </label>
+            </div>
+
+            <!-- Time Inputs -->
+            <div class="time-fields-row" id="time-fields-row">
+              <div class="time-field-box">
+                <span>시</span>
+                <input type="number" id="birth-hour" value="12" min="0" max="23">
+              </div>
+              <span class="colon-divider">:</span>
+              <div class="time-field-box">
+                <span>분</span>
+                <input type="number" id="birth-minute" value="0" min="0" max="59">
+              </div>
+            </div>
+            <p class="time-input-tip">예: 11시 28분 = 시 11 · 분 28</p>
+          </div>
+
+          <!-- Base Settings -->
+          <div class="time-right-settings">
+            
+            <div class="setting-col">
+              <label>계산 기준 <span class="base-tip">비교용 기본값</span></label>
+              <div class="base-toggle-card">
+                <label class="radio-btn">
+                  <input type="radio" name="calc-base" value="standard" checked>
+                  <div class="radio-body">
+                    <span class="radio-indicator"></span>
+                    <div>
+                      <strong>표준 만세력</strong>
+                      <span class="tag-level">기본</span>
+                    </div>
+                  </div>
+                </label>
+                <label class="radio-btn">
+                  <input type="radio" name="calc-base" value="jintae">
+                  <div class="radio-body">
+                    <span class="radio-indicator"></span>
+                    <div>
+                      <strong>진태양시 정밀</strong>
+                      <span class="tag-level advanced">고급</span>
+                    </div>
+                  </div>
+                </label>
+              </div>
+              <span class="setting-desc-text">입력한 시각 기준으로 계산합니다.</span>
+            </div>
+
+            <div class="setting-col">
+              <label>자시법 (子時法)</label>
+              <div class="jasi-radio-group">
+                <label class="jasi-radio">
+                  <input type="radio" name="jasi-type" value="dong" checked>
+                  <span>동자시</span>
+                </label>
+                <label class="jasi-radio">
+                  <input type="radio" name="jasi-type" value="ya">
+                  <span>야자시</span>
+                </label>
+                <label class="jasi-radio">
+                  <input type="radio" name="jasi-type" value="jo">
+                  <span>조자시</span>
+                </label>
+              </div>
+              <span class="setting-desc-text">23:30부터 자시, 23:30 이후 일주를 다음날로 넘깁니다.</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 48 Quick Time buttons grid -->
+        <div class="quick-time-grid" id="quick-time-grid">
+          <!-- 48 time chips generated by JS -->
+        </div>
+
+      </div>
+
+      <!-- Submit button -->
+      <button class="btn btn-submit-saju" id="btn-submit-saju">
+        입력 완료 · 분석 진행
+      </button>
+
+    </section>
+
+    <!-- Saju Output Results Area (Initially Hidden) -->
+    <section class="saju-results-panel glass-panel" id="saju-results-panel" style="display: none;">
+      <div class="results-header">
+        <h3><i class="fa-solid fa-circle-nodes"></i> 사주 분석 결과 명식</h3>
+        <span class="result-badge">AI 명리 진단</span>
+      </div>
+
+      <div class="results-grid">
+        
+        <!-- Results Left: Saju Grid Table -->
+        <div class="results-left">
+          <div class="saju-table-wrapper">
+            <table class="saju-table">
+              <thead>
+                <tr>
+                  <th>시주 (時柱)</th>
+                  <th>일주 (日柱)</th>
+                  <th>월주 (月柱)</th>
+                  <th>연주 (年柱)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Row 1: 천간 (Heavenly Stems) -->
+                <tr class="tr-stems">
+                  <td id="stem-si">?</td>
+                  <td id="stem-il" class="ilgan-focus">?</td>
+                  <td id="stem-wol">?</td>
+                  <td id="stem-yeon">?</td>
+                </tr>
+                <!-- Row 2: 지지 (Earthly Branches) -->
+                <tr class="tr-branches">
+                  <td id="branch-si">?</td>
+                  <td id="branch-il">?</td>
+                  <td id="branch-wol">?</td>
+                  <td id="branch-yeon">?</td>
+                </tr>
+                <!-- Row 3: 십신 (Ten Gods) -->
+                <tr class="tr-gods">
+                  <td id="god-si">-</td>
+                  <td class="text-muted">일간(본원)</td>
+                  <td id="god-wol">-</td>
+                  <td id="god-yeon">-</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div class="ilgan-desc-box" id="ilgan-desc-box">
+            일간분석 로딩 중...
+          </div>
+        </div>
+
+        <!-- Results Right: 5 Elements Analysis -->
+        <div class="results-right">
+          <h4>오행(五行) 기운 분석</h4>
+          <div class="elements-stats-box">
+            <!-- 5 elements list -->
+            <div class="elem-row">
+              <span class="elem-name text-green"><i class="fa-solid fa-tree"></i> 木 (나무)</span>
+              <div class="elem-bar-wrapper"><div class="elem-bar bg-green" id="bar-wood" style="width: 0%;"></div></div>
+              <span class="elem-count" id="count-wood">0개</span>
+            </div>
+            <div class="elem-row">
+              <span class="elem-name text-red"><i class="fa-solid fa-fire"></i> 火 (불)</span>
+              <div class="elem-bar-wrapper"><div class="elem-bar bg-red" id="bar-fire" style="width: 0%;"></div></div>
+              <span class="elem-count" id="count-fire">0개</span>
+            </div>
+            <div class="elem-row">
+              <span class="elem-name text-gold"><i class="fa-solid fa-mountain"></i> 土 (흙)</span>
+              <div class="elem-bar-wrapper"><div class="elem-bar bg-gold" id="bar-earth" style="width: 0%;"></div></div>
+              <span class="elem-count" id="count-earth">0개</span>
+            </div>
+            <div class="elem-row">
+              <span class="elem-name text-grey"><i class="fa-solid fa-coins"></i> 金 (쇠)</span>
+              <div class="elem-bar-wrapper"><div class="elem-bar bg-grey" id="bar-metal" style="width: 0%;"></div></div>
+              <span class="elem-count" id="count-metal">0개</span>
+            </div>
+            <div class="elem-row">
+              <span class="elem-name text-blue"><i class="fa-solid fa-droplet"></i> 水 (물)</span>
+              <div class="elem-bar-wrapper"><div class="elem-bar bg-blue" id="bar-water" style="width: 0%;"></div></div>
+              <span class="elem-count" id="count-water">0개</span>
+            </div>
+          </div>
+
+          <div class="saju-strength-card" id="saju-strength-card">
+            사주 종합 기운 판정 중...
+          </div>
+        </div>
+
+      </div>
+
+      <!-- AI Saju Analysis Report tabs -->
+      <div class="ai-report-tabs-section">
+        <nav class="report-tabs-bar">
+          <button class="rep-tab-btn active" data-tab="summary"><i class="fa-solid fa-clipboard-list"></i> 종합 풀이</button>
+          <button class="rep-tab-btn" data-tab="wealth"><i class="fa-solid fa-coins"></i> 재물운</button>
+          <button class="rep-tab-btn" data-tab="job"><i class="fa-solid fa-briefcase"></i> 직업/적성운</button>
+          <button class="rep-tab-btn" data-tab="love"><i class="fa-solid fa-heart"></i> 연애/결혼운</button>
+          <button class="rep-tab-btn" data-tab="daeun"><i class="fa-solid fa-arrow-trend-up"></i> 대운 흐름</button>
+        </nav>
+        <div class="report-content-body" id="report-content-body">
+          <!-- Tab content text generated by app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Bottom 14 Index Guide (Accordion) -->
+    <section class="guide-panel glass-panel">
+      <div class="guide-header">
+        <i class="fa-solid fa-book-open text-purple"></i>
+        <div>
+          <h2>명리학 백과 및 사용법 목차</h2>
+          <span>사주 분석기의 원리와 운세 길라잡이를 접고 펼치며 확인해 보세요.</span>
+        </div>
+      </div>
+
+      <div class="accordion-container" id="guide-accordion">
+        <!-- 14 accordion items generated by JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Navigation Widget -->
+  <aside class="floating-navigator" id="floating-menu">
+    <div class="nav-overlay-menu glass-panel" id="nav-overlay-menu">
+      <h5>전체 앱 탐색 (189종)</h5>
+      <ul>
+        <li><i class="fa-solid fa-mobile-screen-button"></i> 앱 <span>63개</span></li>
+        <li class="active"><i class="fa-solid fa-calculator"></i> 계산기 <span>126개</span></li>
+      </ul>
+    </div>
+    
+    <div class="floating-buttons-col">
+      <div class="progress-badge">
+        <svg class="progress-ring" width="36" height="36">
+          <circle class="progress-ring__circle-bg" stroke="rgba(255,255,255,0.06)" stroke-width="3" fill="transparent" r="15" cx="18" cy="18"/>
+          <circle class="progress-ring__circle" stroke="#a855f7" stroke-width="3" fill="transparent" r="15" cx="18" cy="18"/>
+        </svg>
+        <span class="progress-text">0%</span>
+      </div>
+      
+      <button class="btn-float btn-scroll-top" id="btn-scroll-top" title="위로 이동"><i class="fa-solid fa-arrow-up"></i></button>
+      <button class="btn-float btn-scroll-bottom" id="btn-scroll-bottom" title="아래로 이동"><i class="fa-solid fa-arrow-down"></i></button>
+      <button class="btn-float btn-menu-trigger" id="btn-menu-trigger" title="전체 앱 탐색"><i class="fa-solid fa-list-ul"></i></button>
+    </div>
+  </aside>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>
