@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO 로또 번호 생성기 Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>웹앱 아이디어 창고</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="#">무료 앱 189종</a></li>
+        <li><a href="#" class="active">CineAHO</a></li>
+        <li><a href="#">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Lotto Container -->
+  <main class="lotto-container">
+    
+    <!-- Title & Description Header -->
+    <section class="lotto-header-section">
+      <h1 class="main-title"><i class="fa-solid fa-ticket"></i> 로또 번호 생성기 Pro - <span>통계 기반 분석 및 생성</span></h1>
+      <p class="subtitle-desc">
+        과거 당첨 번호 통계 분석을 기반으로 한 고도화된 로또 번호 분석기입니다. 빈도수 분석, 홀짝/고저 비율,<br>
+        연속번호 패턴, 구간별 분포, AI 기반 번호 추천, 개인 번호 관리, 당첨 확률 계산, 시뮬레이션 등 다양한<br>
+        기능을 제공합니다. 6+1 번호를 큼직하게 표시하고 직관적인 UI로 편리하게 사용할 수 있습니다.
+      </p>
+      
+      <div class="tag-badges">
+        <span class="badge">로또</span>
+        <span class="badge">통계</span>
+        <span class="badge">분석</span>
+        <span class="badge">번호 생성</span>
+        <span class="badge">AI</span>
+        <span class="badge">확률</span>
+      </div>
+    </section>
+
+    <!-- Notice Bar -->
+    <section class="notice-bar glass-panel">
+      <span class="notice-label"><i class="fa-solid fa-bullhorn"></i> 소식</span>
+      <p class="notice-text">2026년 2월 9일부터 PC에서만 되던 1회 5,000원 제한 구매가 모바일·휴대폰으로도 결제 및 구매 가능합니다.</p>
+    </section>
+
+    <!-- Lotto Generator Section -->
+    <section class="generator-panel glass-panel">
+      <div class="panel-header">
+        <h3><i class="fa-solid fa-wand-magic-sparkles"></i> 로또 번호 생성</h3>
+        <div class="game-select-box">
+          <label for="game-count">생성할 게임 수</label>
+          <div class="select-wrapper">
+            <select id="game-count">
+              <option value="1">1 게임</option>
+              <option value="2">2 게임</option>
+              <option value="3">3 게임</option>
+              <option value="4">4 게임</option>
+              <option value="5" selected>5 게임</option>
+            </select>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mode Quick Action Buttons -->
+      <div class="action-buttons-group">
+        <button class="btn-mode btn-ai" id="btn-mode-ai">
+          <i class="fa-solid fa-robot"></i> AI 추천 생성
+        </button>
+        <button class="btn-mode btn-frequency" id="btn-mode-freq">
+          <i class="fa-solid fa-chart-simple"></i> 빈도수 기반 생성
+        </button>
+        <button class="btn-mode btn-pattern" id="btn-mode-pattern">
+          <i class="fa-solid fa-magnifying-glass"></i> 패턴 기반 생성
+        </button>
+        <button class="btn-mode btn-random" id="btn-mode-random">
+          <i class="fa-solid fa-dice"></i> 랜덤 생성
+        </button>
+      </div>
+
+      <!-- Copy Action Button -->
+      <button class="btn-copy-all" id="btn-copy-all">
+        <i class="fa-solid fa-clipboard"></i> 생성된 번호 전체 복사
+      </button>
+
+      <!-- Results Display Board -->
+      <div class="lotto-results-board" id="lotto-results-board">
+        <!-- Generated games will be dynamically loaded here -->
+        <div class="empty-state">
+          <i class="fa-solid fa-calculator"></i>
+          <p>번호 생성 버튼을 누르면 추천 번호 조합이 이곳에 나타납니다.</p>
+        </div>
+      </div>
+
+      <!-- Bottom Card Tabs (Short Help Info) -->
+      <div class="info-tabs-row">
+        <div class="info-tab">
+          <i class="fa-solid fa-robot text-blue"></i>
+          <div>
+            <h5>AI 추천</h5>
+            <span>통계+패턴+연속미출현 분석</span>
+          </div>
+        </div>
+        <div class="info-tab">
+          <i class="fa-solid fa-chart-pie text-green"></i>
+          <div>
+            <h5>빈도수 기반</h5>
+            <span>과거 당첨번호 출현 빈도 분석</span>
+          </div>
+        </div>
+        <div class="info-tab">
+          <i class="fa-solid fa-magnifying-glass-chart text-purple"></i>
+          <div>
+            <h5>패턴 기반</h5>
+            <span>홀짝, 연속번호 등 수학적 패턴</span>
+          </div>
+        </div>
+        <div class="info-tab">
+          <i class="fa-solid fa-dice-six text-orange"></i>
+          <div>
+            <h5>랜덤 생성</h5>
+            <span>완전 무작위 번호 생성</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lotto 1st Place Simulator (Gimmick & Advanced Feature) -->
+    <section class="simulator-panel glass-panel">
+      <div class="sim-header">
+        <i class="fa-solid fa-gauge-high"></i>
+        <div>
+          <h2>로또 1등 당첨 모의 시뮬레이터</h2>
+          <span>내가 지정한 번호가 1등에 당첨될 때까지 가상 추첨을 고속(초당 1만회)으로 돌려봅니다.</span>
+        </div>
+      </div>
+
+      <div class="sim-grid">
+        
+        <!-- Simulator Left: Setup & Actions -->
+        <div class="sim-left-panel">
+          <div class="sim-target-box">
+            <h4>나의 도전 번호 (고정)</h4>
+            <div class="target-balls-row" id="sim-target-balls">
+              <span class="sim-ball ball-empty">?</span>
+              <span class="sim-ball ball-empty">?</span>
+              <span class="sim-ball ball-empty">?</span>
+              <span class="sim-ball ball-empty">?</span>
+              <span class="sim-ball ball-empty">?</span>
+              <span class="sim-ball ball-empty">?</span>
+            </div>
+            <p class="target-tip">위 생성판에서 번호를 생성하거나 직접 클릭하여 고정할 수 있습니다.</p>
+          </div>
+
+          <div class="sim-actions">
+            <button class="btn btn-sim-start" id="btn-sim-start" disabled>
+              <i class="fa-solid fa-play"></i> 시뮬레이터 가동
+            </button>
+            <button class="btn btn-sim-stop" id="btn-sim-stop" disabled>
+              <i class="fa-solid fa-pause"></i> 정지
+            </button>
+            <button class="btn btn-sim-reset" id="btn-sim-reset" disabled>
+              <i class="fa-solid fa-rotate-left"></i> 결과 초기화
+            </button>
+          </div>
+        </div>
+
+        <!-- Simulator Right: Stats Dashboard -->
+        <div class="sim-right-panel">
+          <div class="sim-stats-grid">
+            <div class="sim-stat-card">
+              <span class="stat-label">총 추첨 횟수 (구매 건수)</span>
+              <strong id="sim-total-draws">0회</strong>
+            </div>
+            <div class="sim-stat-card">
+              <span class="stat-label">누적 소모 비용</span>
+              <strong id="sim-total-cost">0원</strong>
+            </div>
+            <div class="sim-stat-card">
+              <span class="stat-label">가상 경과 시간</span>
+              <strong id="sim-time-spent">0년 0주</strong>
+            </div>
+            <div class="sim-stat-card">
+              <span class="stat-label">총 당첨금 및 수익률</span>
+              <strong id="sim-return-rate" class="text-red">0원 (0.00%)</strong>
+            </div>
+          </div>
+
+          <!-- Grade Stats Details -->
+          <div class="sim-grades-table">
+            <div class="grade-row">
+              <span class="grade-name text-gold"><i class="fa-solid fa-trophy"></i> 1등 (6개 일치)</span>
+              <span class="grade-reward">약 20억원</span>
+              <strong class="grade-count text-gold" id="sim-grade-1">0회</strong>
+            </div>
+            <div class="grade-row">
+              <span class="grade-name text-cyan"><i class="fa-solid fa-medal"></i> 2등 (5개 + 보너스 일치)</span>
+              <span class="grade-reward">약 5천만원</span>
+              <strong class="grade-count text-cyan" id="sim-grade-2">0회</strong>
+            </div>
+            <div class="grade-row">
+              <span class="grade-name text-blue"><i class="fa-solid fa-award"></i> 3등 (5개 일치)</span>
+              <span class="grade-reward">약 150만원</span>
+              <strong class="grade-count text-blue" id="sim-grade-3">0회</strong>
+            </div>
+            <div class="grade-row">
+              <span class="grade-name text-green"><i class="fa-solid fa-thumbs-up"></i> 4등 (4개 일치)</span>
+              <span class="grade-reward">50,000원 (고정)</span>
+              <strong class="grade-count text-green" id="sim-grade-4">0회</strong>
+            </div>
+            <div class="grade-row">
+              <span class="grade-name text-purple"><i class="fa-solid fa-handshake"></i> 5등 (3개 일치)</span>
+              <span class="grade-reward">5,000원 (고정)</span>
+              <strong class="grade-count text-purple" id="sim-grade-5">0회</strong>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast Notification -->
+  <div class="toast-notification" id="toast-notif">복사 완료!</div>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>
