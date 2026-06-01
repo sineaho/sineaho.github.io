@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>구슬 룰렛 시뮬레이터 Pro - 무료 온라인 구슬 레이스</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>웹앱 아이디어 창고</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="#">무료 앱 189종</a></li>
+        <li><a href="#" class="active">CineAHO</a></li>
+        <li><a href="#">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Marble App Container -->
+  <main class="marble-container">
+    
+    <!-- Title & Description Header -->
+    <section class="marble-header-section">
+      <h1 class="main-title">
+        <i class="fa-solid fa-circle-nodes text-purple"></i> 구슬 룰렛 시뮬레이터 <span>- 실시간 물리 레이스</span>
+      </h1>
+      <p class="subtitle-desc">
+        2D 물리 충돌 연산 엔진을 탑재하여 구슬들이 복잡한 장애물 선로를 따라 경주를 펼칩니다. 실시간으로 순위가 변동되며, 무작위 스킬 발동, 3종의 코스 디자인, 승패 판정(1등/꼴등) 규칙과 리더보드 순위 집계를 지원하는 방송/추첨 최적화 도구입니다.
+      </p>
+      
+      <div class="tag-badges">
+        <span class="badge badge-tag">구슬</span>
+        <span class="badge badge-tag">룰렛</span>
+        <span class="badge badge-tag">물리엔진</span>
+        <span class="badge badge-tag">추첨</span>
+        <span class="badge badge-tag">방송용</span>
+      </div>
+    </section>
+
+    <!-- Simulation Boards Split Grid Area -->
+    <section class="simulation-workspace">
+      
+      <!-- Column 1: Track Minimap -->
+      <div class="panel-column minimap-col">
+        <div class="glass-panel panel-card minimap-card">
+          <div class="panel-header">
+            <h4><i class="fa-solid fa-map"></i> 트랙 미니맵</h4>
+          </div>
+          <div class="canvas-container">
+            <canvas id="minimap-canvas"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Column 2: Main Focused Viewport -->
+      <div class="panel-column viewport-col">
+        <div class="glass-panel panel-card viewport-card">
+          <div class="panel-header">
+            <h4 id="lbl-active-map-name"><i class="fa-solid fa-compass"></i> 액티브 카메라 트래킹</h4>
+            <div class="viewport-info-bar">
+              <span id="lbl-marbles-count">구슬: 0개</span>
+              <span id="lbl-run-timer">경과: 0.0s</span>
+            </div>
+          </div>
+          <div class="canvas-container">
+            <canvas id="main-canvas"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Column 3: Realtime Leaderboard -->
+      <div class="panel-column leaderboard-col">
+        <div class="glass-panel panel-card leaderboard-card">
+          <div class="panel-header">
+            <h4><i class="fa-solid fa-ranking-star"></i> 실시간 리더보드</h4>
+          </div>
+          <div class="leaderboard-body">
+            <ul class="leaderboard-list" id="leaderboard-list">
+              <!-- Dynamically populated rank cards -->
+              <li class="empty-list-msg">레이스가 시작되면 여기에 실시간 순위가 표기됩니다.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Bottom Control Overlay Panel -->
+    <section class="control-overlay-section">
+      <div class="glass-panel control-panel-card">
+        
+        <!-- Textarea list column -->
+        <div class="control-col names-input-col">
+          <label for="names-input">참가자 명단 입력 (쉼표 또는 줄바꿈 구분)</label>
+          <textarea id="names-input" placeholder="인형, 피규어, 정계제, 그렇군, 안그래, 맞는거 같은데, 오호라, 즐거운대, 말던지, ㅋㅋㅋ, 블로그, 상품, 놀라움, 놀랍구먼, 암꺼나, 맞던지"></textarea>
+          <div class="control-row-buttons" style="margin-top: 0.5rem;">
+            <button class="btn btn-secondary" id="btn-shuffle"><i class="fa-solid fa-shuffle"></i> 셔플</button>
+            <button class="btn btn-primary" id="btn-start"><i class="fa-solid fa-play"></i> 레이스 시작</button>
+          </div>
+        </div>
+
+        <!-- Settings parameters column -->
+        <div class="control-col parameters-col">
+          
+          <div class="form-row">
+            <div class="form-item">
+              <label for="map-select">트랙 코스 선택</label>
+              <select id="map-select" class="dropdown-select">
+                <option value="fortune" selected>Wheel of Fortune (분기 선로)</option>
+                <option value="plinko">Plinko Board (핀 격자 낙하)</option>
+                <option value="zigzag">Zigzag Course (지그재그 슬라이드)</option>
+              </select>
+            </div>
+            
+            <div class="form-item" style="flex: 0.7;">
+              <label>녹화 시뮬레이션</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="toggle-recording">
+                <span class="slider-toggle"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-row" style="margin-top: 0.85rem;">
+            <div class="form-item">
+              <label for="winner-select">승리 판정 기준</label>
+              <div class="winner-selector-row">
+                <select id="winner-select" class="dropdown-select">
+                  <option value="first" selected>1등이 승리 (First)</option>
+                  <option value="last">꼴등이 승리 (Last)</option>
+                </select>
+                <input type="number" id="winner-count" min="1" max="10" value="1" title="우승자 수">
+              </div>
+            </div>
+
+            <div class="form-item" style="flex: 0.7;">
+              <label>랜덤 스킬 가동</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="toggle-skills" checked>
+                <span class="slider-toggle"></span>
+              </label>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Bottom Features & Guide Intro Row -->
+    <section class="explanation-board-section">
+      <div class="board-header">
+        <i class="fa-solid fa-circle-question text-purple"></i>
+        <div>
+          <h2>구슬 룰렛 시뮬레이터 완벽 가이드</h2>
+          <span>물리 엔진의 기하학적 연산 원리부터 다양한 레이스 룰 및 방송/이벤트 활용 팁을 소개합니다.</span>
+        </div>
+      </div>
+
+      <!-- Quick core guide cards -->
+      <div class="guide-quick-cards">
+        <div class="glass-panel guide-card">
+          <i class="fa-solid fa-circle-nodes text-purple"></i>
+          <strong>물리 콜리전</strong>
+          <span>2D 물리 기하 법칙에 기반한 탄성 충돌 연산 처리</span>
+        </div>
+        <div class="glass-panel guide-card">
+          <i class="fa-solid fa-gauge-high text-blue"></i>
+          <strong>스킬 시스템</strong>
+          <span>대시, 질량 변화, 유령화 등 변수 만점의 특수 스킬 탑재</span>
+        </div>
+        <div class="glass-panel guide-card">
+          <i class="fa-solid fa-sliders text-green"></i>
+          <strong>커스텀 조건</strong>
+          <span>승리 조건(First/Last) 및 3종 맵 자유 선택</span>
+        </div>
+      </div>
+
+      <!-- Explanation Layout -->
+      <div class="explanation-layout">
+        <!-- 12-part Navigation List (Left Column) -->
+        <nav class="explanation-index-list">
+          <ul>
+            <li class="active" data-index="1"><span class="index-num">01</span> 구슬 룰렛 개요</li>
+            <li data-index="2"><span class="index-num">02</span> 원형체 탄성 충돌 물리 법칙</li>
+            <li data-index="3"><span class="index-num">03</span> 트랙 선분 및 핀 충돌 벡터 연산</li>
+            <li data-index="4"><span class="index-num">04</span> 3종 트랙 선로 노드 설계 스펙</li>
+            <li data-index="5"><span class="index-num">05</span> 4대 랜덤 스킬 속성 및 효과</li>
+            <li data-index="6"><span class="index-num">06</span> 실시간 카메라 추적 (Y-Lerp) 알고리즘</li>
+            <li data-index="7"><span class="index-num">07</span> 승패 조건(First vs Last)과 인센티브</li>
+            <li data-index="8"><span class="index-num">08</span> 실시간 순위 리더보드 정렬 원리</li>
+            <li data-index="9"><span class="index-num">09</span> 시뮬레이션 브라우저 가비지 컬렉션</li>
+            <li data-index="10"><span class="index-num">10</span> 방송 및 커뮤니티 이벤트 활용 요령</li>
+            <li data-index="11"><span class="index-num">11</span> 사운드 칩튠 Procedural 합성 기술</li>
+            <li data-index="12"><span class="index-num">12</span> 자주 묻는 질문 (FAQ)</li>
+          </ul>
+        </nav>
+
+        <!-- Dynamic Content Board Display Box (Right Column) -->
+        <div class="explanation-display-box glass-panel">
+          <div class="display-content-inner" id="explanation-board-content">
+            <div class="display-top-badge">
+              <i class="fa-solid fa-circle-info text-purple"></i>
+              <span id="explanation-title-badge">가이드 01: 개요</span>
+            </div>
+            
+            <h3 id="explanation-display-title">구슬 룰렛 개요</h3>
+            
+            <div class="display-text-body" id="explanation-display-text">
+              로딩 중...
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Floating Navigation Widget -->
+  <aside class="floating-navigator" id="floating-menu">
+    <div class="floating-buttons-col">
+      <button class="btn-float btn-scroll-top" id="btn-scroll-top" title="위로 이동"><i class="fa-solid fa-arrow-up"></i></button>
+      <button class="btn-float btn-scroll-bottom" id="btn-scroll-bottom" title="아래로 이동"><i class="fa-solid fa-arrow-down"></i></button>
+    </div>
+  </aside>
+
+  <script src="app.js"></script>
+</body>
+</html>
