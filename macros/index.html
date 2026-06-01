@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO 영양소(탄단지) 비율 계산기 Pro</title>
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-green"></div>
+  <div class="bg-glow bg-glow-emerald"></div>
+
+  <!-- ==========================================
+       1. PORTAL HEADER
+       ========================================== -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>웹앱 아이디어 창고</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="#">무료 앱 189종</a></li>
+        <li><a href="#" class="active">CineAHO</a></li>
+        <li><a href="#">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==========================================
+       2. MAIN CONTENT CONTAINER
+       ========================================== -->
+  <main class="macros-container">
+    
+    <!-- Sub-navigation Back Link -->
+    <div class="sub-nav-back">
+      <a href="../index.html" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>건강·영양 계산기로 돌아가기</span>
+      </a>
+    </div>
+
+    <!-- App Title Header Banner -->
+    <section class="app-banner glass-panel">
+      <div class="banner-info">
+        <span class="badge-capsule">영양소·식단 계산기</span>
+        <h2>영양소(탄단지) 비율 계산기</h2>
+        <p>하루 목표 칼로리 대비 영양소 비율 설정</p>
+      </div>
+      <div class="banner-decor">
+        <i class="fa-solid fa-carrot"></i>
+      </div>
+    </section>
+
+    <!-- Diet Preset Selector Section -->
+    <section class="preset-selector-section">
+      <div class="gs-title-row">
+        <div class="gs-title">
+          <i class="fa-solid fa-plate-wheat text-green"></i>
+          <span>식단 유형 선택</span>
+        </div>
+        
+        <!-- Custom toggle button -->
+        <label class="custom-toggle-wrap">
+          <input type="checkbox" id="chk-custom-mode">
+          <span class="toggle-btn-custom">커스텀 모드</span>
+        </label>
+      </div>
+      
+      <div class="preset-cards" id="preset-cards-container">
+        
+        <div class="preset-card active" data-preset="balanced" id="btn-preset-balanced">
+          <div class="preset-icon color-balanced"><i class="fa-solid fa-scale-balanced"></i></div>
+          <div class="preset-desc">
+            <strong>균형 잡힌 식단</strong>
+            <span>50:20:30 | 일반 건강 유지</span>
+          </div>
+        </div>
+
+        <div class="preset-card" data-preset="muscle" id="btn-preset-muscle">
+          <div class="preset-icon color-muscle"><i class="fa-solid fa-dumbbell"></i></div>
+          <div class="preset-desc">
+            <strong>근성장/운동</strong>
+            <span>40:40:20 | 근육 증가, 운동인</span>
+          </div>
+        </div>
+
+        <div class="preset-card" data-preset="low-carb" id="btn-preset-low-carb">
+          <div class="preset-icon color-low-carb"><i class="fa-solid fa-feather-pointed"></i></div>
+          <div class="preset-desc">
+            <strong>저탄수화물</strong>
+            <span>30:35:35 | 체중 감량, 혈당 조절</span>
+          </div>
+        </div>
+
+        <div class="preset-card" data-preset="keto" id="btn-preset-keto">
+          <div class="preset-icon color-keto"><i class="fa-solid fa-avocado"></i><i class="fa-solid fa-oil-can" style="font-size: 0.8em; margin-left: -4px;"></i></div>
+          <div class="preset-desc">
+            <strong>키토/저탄고지</strong>
+            <span>5:25:70 | 케톤체 형성, 빠른 감량</span>
+          </div>
+        </div>
+
+        <div class="preset-card" data-preset="high-protein" id="btn-preset-high-protein">
+          <div class="preset-icon color-high-protein"><i class="fa-solid fa-egg"></i></div>
+          <div class="preset-desc">
+            <strong>고단백</strong>
+            <span>35:45:20 | 다이어트 유지, 식욕 조절</span>
+          </div>
+        </div>
+
+        <div class="preset-card" data-preset="endurance" id="btn-preset-endurance">
+          <div class="preset-icon color-endurance"><i class="fa-solid fa-person-running"></i></div>
+          <div class="preset-desc">
+            <strong>지구력 운동</strong>
+            <span>60:15:25 | 마라톤, 사이클</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Main Calculation Grid -->
+    <section class="calculator-grid">
+      
+      <!-- Left side Inputs panel -->
+      <div class="grid-col-input glass-panel">
+        <div class="panel-header">
+          <div class="title">
+            <i class="fa-solid fa-sliders text-green"></i>
+            <span>칼로리 & 체중 입력</span>
+          </div>
+          <button class="btn-reset" id="btn-reset-inputs" title="입력 초기화">
+            <i class="fa-solid fa-rotate-right"></i>
+          </button>
+        </div>
+
+        <!-- Target Calories slider -->
+        <div class="slider-group">
+          <div class="slider-label-row">
+            <span class="label">하루 목표 칼로리</span>
+            <span class="value-display text-green"><strong id="txt-calories">2000</strong> <span class="unit">kcal</span></span>
+          </div>
+          <input type="range" id="slider-calories" min="1200" max="4000" step="50" value="2000" class="range-slider">
+          <div class="range-bounds">
+            <span>1200 kcal</span>
+            <span>4000 kcal</span>
+          </div>
+          
+          <!-- Quick buttons -->
+          <div class="quick-inner-bounds" id="quick-calories-container">
+            <button class="inner-btn" data-val="1200">1200</button>
+            <button class="inner-btn" data-val="1500">1500</button>
+            <button class="inner-btn" data-val="1800">1800</button>
+            <button class="inner-btn active" data-val="2000">2000</button>
+            <button class="inner-btn" data-val="2200">2200</button>
+            <button class="inner-btn" data-val="2500">2500</button>
+            <button class="inner-btn" data-val="2800">2800</button>
+            <button class="inner-btn" data-val="3000">3000</button>
+          </div>
+        </div>
+
+        <!-- Weight slider -->
+        <div class="slider-group">
+          <div class="slider-label-row">
+            <span class="label">체중 (단백질 기준용)</span>
+            <span class="value-display text-green"><strong id="txt-weight">70</strong> <span class="unit">kg</span></span>
+          </div>
+          <input type="range" id="slider-weight" min="40" max="120" value="70" class="range-slider">
+          <div class="range-bounds">
+            <span>40 kg</span>
+            <span>120 kg</span>
+          </div>
+          
+          <!-- Quick buttons -->
+          <div class="quick-inner-bounds" id="quick-weight-container">
+            <button class="inner-btn" data-val="50">50kg</button>
+            <button class="inner-btn" data-val="55">55kg</button>
+            <button class="inner-btn" data-val="60">60kg</button>
+            <button class="inner-btn" data-val="65">65kg</button>
+            <button class="inner-btn active" data-val="70">70kg</button>
+            <button class="inner-btn" data-val="75">75kg</button>
+            <button class="inner-btn" data-val="80">80kg</button>
+            <button class="inner-btn" data-val="85">85kg</button>
+            <button class="inner-btn" data-val="90">90kg</button>
+          </div>
+        </div>
+
+        <!-- Custom Ratio sliders group (shown ONLY when custom mode is checked) -->
+        <div class="custom-sliders-panel" id="custom-ratio-sliders" style="display: none;">
+          <div class="panel-subtitle-row">
+            <span class="sub-title"><i class="fa-solid fa-gears"></i> 영양소 비율 커스텀 조절</span>
+            <span class="ratio-sum text-green" id="txt-ratio-sum">합계: 100%</span>
+          </div>
+
+          <!-- Carb slider -->
+          <div class="custom-slider-row">
+            <div class="sl-labels">
+              <span>탄수화물 비율</span>
+              <span class="percent text-carb" id="lbl-carb-ratio">50%</span>
+            </div>
+            <input type="range" id="slider-carb-ratio" min="0" max="100" value="50" class="range-slider slider-carb">
+          </div>
+
+          <!-- Protein slider -->
+          <div class="custom-slider-row">
+            <div class="sl-labels">
+              <span>단백질 비율</span>
+              <span class="percent text-protein" id="lbl-protein-ratio">20%</span>
+            </div>
+            <input type="range" id="slider-protein-ratio" min="0" max="100" value="20" class="range-slider slider-protein">
+          </div>
+
+          <!-- Fat slider -->
+          <div class="custom-slider-row">
+            <div class="sl-labels">
+              <span>지방 비율</span>
+              <span class="percent text-fat" id="lbl-fat-ratio">30%</span>
+            </div>
+            <input type="range" id="slider-fat-ratio" min="0" max="100" value="30" class="range-slider slider-fat">
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right side Results panel -->
+      <div class="grid-col-results glass-panel">
+        
+        <!-- Results header with copy button -->
+        <div class="panel-header no-border">
+          <span class="title-sub" id="result-header-title">하루 2000kcal 기준 권장 섭취량</span>
+          <button class="btn-copy" id="btn-copy-result" title="결과 복사">
+            <i class="fa-solid fa-copy"></i>
+          </button>
+        </div>
+
+        <!-- Three-color distribution progress bar -->
+        <div class="macros-distribution-bar">
+          <div class="bar-segment seg-carb" id="bar-seg-carb" style="width: 50%;" title="탄수화물"></div>
+          <div class="bar-segment seg-protein" id="bar-seg-protein" style="width: 20%;" title="단백질"></div>
+          <div class="bar-segment seg-fat" id="bar-seg-fat" style="width: 30%;" title="지방"></div>
+        </div>
+
+        <!-- Detailed nutrient cards row -->
+        <div class="nutrient-cards-grid">
+          
+          <!-- Card 1: Carbohydrate -->
+          <div class="nut-card border-carb">
+            <div class="nut-header">
+              <span class="lbl"><i class="fa-solid fa-wheat-awn text-carb"></i> 탄수화물</span>
+              <span class="percent text-carb" id="card-carb-percent">50%</span>
+            </div>
+            <div class="nut-main">
+              <h3><strong id="card-carb-grams">250</strong> <span class="unit">g</span></h3>
+              <p id="card-carb-kcal">1000 kcal</p>
+            </div>
+          </div>
+
+          <!-- Card 2: Protein -->
+          <div class="nut-card border-protein">
+            <div class="nut-header">
+              <span class="lbl"><i class="fa-solid fa-egg text-protein"></i> 단백질</span>
+              <span class="percent text-protein" id="card-protein-percent">20%</span>
+            </div>
+            <div class="nut-main">
+              <h3><strong id="card-protein-grams">100</strong> <span class="unit">g</span></h3>
+              <p id="card-protein-kcal">400 kcal</p>
+            </div>
+          </div>
+
+          <!-- Card 3: Fat -->
+          <div class="nut-card border-fat">
+            <div class="nut-header">
+              <span class="lbl"><i class="fa-solid fa-oil-well text-fat"></i> 지방</span>
+              <span class="percent text-fat" id="card-fat-percent">30%</span>
+            </div>
+            <div class="nut-main">
+              <h3><strong id="card-fat-grams">67</strong> <span class="unit">g</span></h3>
+              <p id="card-fat-kcal">600 kcal</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Protein body-weight evaluation card -->
+        <div class="protein-evaluation-card warning-card">
+          <div class="eval-icon">
+            <i class="fa-solid fa-circle-info"></i>
+          </div>
+          <div class="eval-info">
+            <span class="lbl">체중 대비 단백질 섭취량</span>
+            <h2><strong id="lbl-protein-ratio-val">1.4g</strong> <span class="unit">/ kg 체중</span></h2>
+            <div class="eval-badge" id="badge-protein-eval">일반인 추천</div>
+            <p class="eval-desc">가이드: 일반인 1.0~1.2g, 다이어트 1.5~1.8g, 운동인 1.6~2.0g / kg 체중 비율</p>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- Food Examples Section -->
+    <section class="food-examples-section glass-panel">
+      <h3><i class="fa-solid fa-bowl-food text-green"></i> 영양소별 음식 예시 (하루 목표 도달용)</h3>
+      <p class="examples-intro">각 영양소별 필요한 목표 그람 수치에 맞추어 실제로 하루에 얼마나 음식을 먹어야 하는지 직관적으로 환산한 수치입니다. (아래 수량은 단일 음식으로 하루 전체 요구량을 충족할 때 기준입니다)</p>
+      
+      <div class="food-grid">
+        
+        <!-- Carbs food col -->
+        <div class="food-col border-carb">
+          <h4 class="col-title text-carb" id="food-target-title-carb">탄수화물 (250g 필요)</h4>
+          <ul class="food-list">
+            <li>
+              <span class="name"><i class="fa-solid fa-bowl-rice"></i> 밥 1공기 (탄수화물 65g)</span>
+              <span class="amount text-carb" id="food-amount-rice">약 3.8공기 분량</span>
+            </li>
+            <li>
+              <span class="name"><i class="fa-solid fa-cubes"></i> 고구마 중간 1개 (탄수화물 30g)</span>
+              <span class="amount text-carb" id="food-amount-potato">약 8.3개 분량</span>
+            </li>
+            <li>
+              <span class="name"><i class="fa-solid fa-lemon"></i> 바나나 1개 (탄수화물 27g)</span>
+              <span class="amount text-carb" id="food-amount-banana">약 9.3개 분량</span>
+            </li>
+            <li>
+              <span class="name"><i class="fa-solid fa-bread-slice"></i> 식빵 2장 (탄수화물 26g)</span>
+              <span class="amount text-carb" id="food-amount-bread">약 9.6회 (19.2장) 분량</span>
+            </li>
+            <li>
+              <span class="name"><i class="fa-solid fa-cookie"></i> 오트밀 1컵 (탄수화물 27g)</span>
+              <span class="amount text-carb" id="food-amount-oatmeal">약 9.3컵 분량</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Protein food col -->
+        <div class="food-col border-protein">
+          <h4 class="col-title text-protein" id="food-target-title-protein">단백질 (100g 필요)</h4>
+          <ul class="food-list">
+            <li>
+              <span class="name"><i class="fa-solid fa-drumstick-bite"></i> 닭가슴살 1팩 100g (단백질 31g)</span>
+              <span class="amount text-protein" id="food-amount-chicken">약 3.2팩 분량</span>
+            </li>
+            <li>
+              <span class="name"><i class="fa-solid fa-egg"></i> 계란 2개 (단백질 12g)</span>
+              <span class="amount text-protein" id="food-amount-egg">약 8.3회 (16.6개) 분량</span>
+            </li>
+            <li>
+              <span class="name"><i class="fa-solid fa-cubes"></i> 두부 반모 (단백질 15g)</span>
+              <span class="amount text-protein" id="food-amount-tofu">약 6.7회 분량</span>
+            </li>
+            <li>
+              <span class="name"><i class="fa-solid fa-fish"></i> 연어 100g (단백질 25g)</span>
+              <span class="amount text-protein" id="food-amount-salmon">약 4.0팩 분량</span>
+            </li>
+            <li>
+              <span class="name"><i class="fa-solid fa-glass-water"></i> 우유 200ml (단백질 7g)</span>
+              <span class="amount text-protein" id="food-amount-milk">약 14.3팩 분량</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Fat food col -->
+        <div class="food-col border-fat">
+          <h4 class="col-title text-fat" id="food-target-title-fat">지방 (67g) 필요</h4>
+          <ul class="food-list">
+            <li>
+              <span class="name"><i class="fa-solid fa-seedling"></i> 아보카도 반개 (지방 15g)</span>
+              <span class="amount text-fat" id="food-amount-avocado">약 4.5회 분량</span>
+            </li>
+            <li>
+              <span class="name"><i class="fa-solid fa-carrot"></i> 아몬드 10알 (지방 6g)</span>
+              <span class="amount text-fat" id="food-amount-almond">약 11.2회 (112알) 분량</span>
+            </li>
+            <li>
+              <span class="name"><i class="fa-solid fa-bottle-droplet"></i> 올리브유 1T (지방 14g)</span>
+              <span class="amount text-fat" id="food-amount-olive">약 4.8스푼 분량</span>
+            </li>
+            <li>
+              <span class="name"><i class="fa-solid fa-cheese"></i> 체다 치즈 1장 (지방 5g)</span>
+              <span class="amount text-fat" id="food-amount-cheese">약 13.4장 분량</span>
+            </li>
+            <li>
+              <span class="name"><i class="fa-solid fa-bacon"></i> 삼겹살 100g (지방 30g)</span>
+              <span class="amount text-fat" id="food-amount-pork">약 2.2회 (220g) 분량</span>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Detailed Macros Guide Documents -->
+    <section class="guide-details-section glass-panel">
+      <h3><i class="fa-solid fa-graduation-cap text-purple"></i> 탄단지(매크로) 비율 완벽 가이드</h3>
+      <p class="guide-intro">탄단지는 3대 다량영양소(Macronutrients: Carbohydrates, Protein, Fats)의 줄임말로, 인체에 에너지를 공급하는 핵심 성분입니다. 단순히 칼로리 섭취량만 줄이는 다이어트는 근육 손실과 신진대사 저하를 유발합니다. 목표(체중 감량, 근육 성장, 체력 향상 등)에 맞추어 탄단지 비율(Macro Ratio)을 올바르게 세팅하는 것이 체성분 개선의 핵심 열쇠입니다.</p>
+
+      <div class="guide-grid">
+        
+        <!-- Usage -->
+        <div class="guide-card">
+          <h4><i class="fa-solid fa-circle-question"></i> 탄단지 비율 계산기 사용법</h4>
+          <ol class="guide-list">
+            <li><span class="num">1</span> <strong>식단 유형 선택</strong>: 자신의 목표에 적합한 프리셋 카드 중 하나를 선택합니다. 혹은 상단 우측의 '커스텀 모드'를 켜서 원하는 비율을 직접 세팅할 수도 있습니다.</li>
+            <li><span class="num">2</span> <strong>칼로리 & 체중 입력</strong>: 하루 섭취 목표 칼로리와 자신의 체중을 입력합니다. (BMR/TDEE 계산기를 통해 사전에 도출된 칼로리를 입력하면 더욱 좋습니다)</li>
+            <li><span class="num">3</span> <strong>결과 리포트 분석</strong>: 탄단지 각각의 하루 권장 그람(g)수치와 3색 가로형 프로그레스바, 그리고 단백질 섭취 비율 진단 배지를 통해 신체 공급 전략을 수립합니다.</li>
+            <li><span class="num">4</span> <strong>실제 음식 적용</strong>: 하단의 음식 환산표를 확인하여, 실제로 하루 동안 섭취할 밥 공기나 닭가슴살 팩 수량 등을 가늠해 보십시오.</li>
+          </ol>
+        </div>
+
+        <!-- Nutrient Calorific table -->
+        <div class="guide-card">
+          <h4><i class="fa-solid fa-bolt"></i> 영양소별 칼로리 에너지량 계산 공식</h4>
+          <div class="nut-calculation-box">
+            <div class="n-cal-item border-carb">
+              <strong>탄수화물 (Carbohydrate):</strong>
+              <p>1g = 4 kcal 에너지 방출. 뇌와 적혈구의 주 에너지원이며 근육 운동 시 글리코겐 형태로 가장 먼저 동원되는 핵심 연료입니다.</p>
+            </div>
+            <div class="n-cal-item border-protein">
+              <strong>단백질 (Protein):</strong>
+              <p>1g = 4 kcal 에너지 방출. 근육 구조물 생성, 상처 치유, 면역 글로불린 형성 및 효소 합성의 재료가 되는 신체 벽돌입니다.</p>
+            </div>
+            <div class="n-cal-item border-fat">
+              <strong>지방 (Fat):</strong>
+              <p>1g = 9 kcal 고밀도 에너지 방출. 지용성 비타민 흡수 유도, 세포막 구성, 뇌 신경 전달 보조 및 체온 유지를 위해 필수적인 영양소입니다.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Presets and Ratios Table -->
+      <div class="presets-comparison-table-wrap">
+        <h4><i class="fa-solid fa-list-check text-green"></i> 목적별 권장 탄단지 비율 목록</h4>
+        <div class="table-container">
+          <table class="presets-table">
+            <thead>
+              <tr>
+                <th>식단 유형</th>
+                <th>비율 (탄:단:지)</th>
+                <th>목적 및 주요 특징</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="tbl-row-balanced">
+                <td class="td-title"><i class="fa-solid fa-scale-balanced text-green"></i> 균형 잡힌 식단</td>
+                <td class="ratio-val">50 : 20 : 30</td>
+                <td>보편적인 건강 유지 및 WHO(세계보건기구) 권장 일반 식단</td>
+              </tr>
+              <tr id="tbl-row-muscle">
+                <td class="td-title"><i class="fa-solid fa-dumbbell text-green"></i> 근성장/운동</td>
+                <td class="ratio-val">40 : 40 : 20</td>
+                <td>근육 합성 극대화, 헬스 트레이닝 및 피트니스 웨이트 단계를 위한 비율</td>
+              </tr>
+              <tr id="tbl-row-low-carb">
+                <td class="td-title"><i class="fa-solid fa-feather-pointed text-green"></i> 저탄수화물</td>
+                <td class="ratio-val">30 : 35 : 35</td>
+                <td>인슐린 감수성 개선, 과체중인의 혈당 안정 및 점진적인 체중 감량</td>
+              </tr>
+              <tr id="tbl-row-keto">
+                <td class="td-title"><i class="fa-solid fa-avocado text-green"></i> 키토/저탄고지</td>
+                <td class="ratio-val">5 : 25 : 70</td>
+                <td>신체를 지방 연소 상태(Ketosis)로 전환하는 초저탄수화물 고지방 식이요법</td>
+              </tr>
+              <tr id="tbl-row-high-protein">
+                <td class="td-title"><i class="fa-solid fa-egg text-green"></i> 고단백</td>
+                <td class="ratio-val">35 : 45 : 20</td>
+                <td>체중 감량 후 요요 현상 예방, 포만감 호르몬 분비 유도로 식욕을 억제</td>
+              </tr>
+              <tr id="tbl-row-endurance">
+                <td class="td-title"><i class="fa-solid fa-person-running text-green"></i> 지구력 운동</td>
+                <td class="ratio-val">60 : 15 : 25</td>
+                <td>마라톤, 수영, 자전거 등 고강도 유산소 훈련 시 신체 글리코겐 비축량을 최대 유지</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       3. FLOATING TOOLBAR CONTROLS
+       ========================================== -->
+  <div class="floating-controls-panel">
+    <!-- Scroll position progress ring -->
+    <div class="progress-ring-wrap" id="scroll-progress-ring" title="스크롤 위치">
+      <svg class="progress-ring-svg" width="50" height="50">
+        <circle class="progress-ring-circle-bg" cx="25" cy="25" r="20" />
+        <circle class="progress-ring-circle-indicator" id="progress-circle-indicator" cx="25" cy="25" r="20" />
+      </svg>
+      <span class="progress-txt" id="scroll-percentage-lbl">0%</span>
+    </div>
+
+    <!-- Quick Scroll Top -->
+    <button class="floating-btn" id="btn-scroll-top" title="맨 위로 가기">
+      <i class="fa-solid fa-arrow-up"></i>
+    </button>
+    <!-- Quick Scroll Bottom -->
+    <button class="floating-btn" id="btn-scroll-bottom" title="맨 아래로 가기">
+      <i class="fa-solid fa-arrow-down"></i>
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <p>&copy; 2026 CineAHO Web Application Store. All rights reserved.</p>
+    <p class="footer-note">Cineaho 포털 하위에 여러 독립적인 웹 애플리케이션을 유연하게 마운트하여 관리할 수 있습니다.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
