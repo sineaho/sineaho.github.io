@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>스페이스 워리어 - 갤러그 아케이드 슈팅</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>웹앱 아이디어 창고</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="#">무료 앱 189종</a></li>
+        <li><a href="#" class="active">CineAHO</a></li>
+        <li><a href="#">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Galaga App Container -->
+  <main class="galaga-container">
+    
+    <!-- Title & Description Header -->
+    <section class="galaga-header-section">
+      <h1 class="main-title">
+        🚀 스페이스 워리어 🚀
+      </h1>
+      <p class="subtitle-desc">
+        갤러그에서 영감을 받은 완전히 새로운 슈팅 게임. <span class="highlight-purple">듀얼 파이터 시스템</span>과 <span class="highlight-blue">보스 적의 트랙터 빔</span>을 경험하세요!
+      </p>
+      
+      <div class="tag-badges">
+        <span class="badge badge-tag">고전 아케이드</span>
+        <span class="badge badge-tag">슈팅 게임</span>
+        <span class="badge badge-tag">무한 모드</span>
+      </div>
+    </section>
+
+    <!-- Stat Dashboard Cards Row -->
+    <section class="stat-dashboard-cards">
+      <div class="glass-panel stat-card">
+        <div class="stat-icon yellow"><i class="fa-solid fa-trophy"></i> 점수</div>
+        <div class="stat-value" id="lbl-score">0</div>
+      </div>
+      <div class="glass-panel stat-card">
+        <div class="stat-icon purple"><i class="fa-solid fa-medal"></i> 최고 점수</div>
+        <div class="stat-value" id="lbl-best-score">0</div>
+      </div>
+      <div class="glass-panel stat-card">
+        <div class="stat-icon blue"><i class="fa-solid fa-crosshairs"></i> 스테이지</div>
+        <div class="stat-value" id="lbl-stage">1</div>
+      </div>
+      <div class="glass-panel stat-card">
+        <div class="stat-icon red"><i class="fa-solid fa-heart"></i> 생명</div>
+        <div class="stat-value hearts-row" id="lbl-lives">
+          <i class="fa-solid fa-heart text-red"></i>
+          <i class="fa-solid fa-heart text-red"></i>
+          <i class="fa-solid fa-heart text-red"></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Workspace (Screen Canvas + Mobile Gamepad) -->
+    <section class="galaga-workspace">
+      
+      <!-- Play screen panel -->
+      <div class="screen-panel glass-panel">
+        <div class="canvas-wrapper">
+          <canvas id="game-canvas" width="480" height="640"></canvas>
+          
+          <!-- Start/Retry Overlay -->
+          <div class="canvas-overlay" id="overlay-screen">
+            <div class="overlay-inner">
+              <h2 class="overlay-title">스페이스 워리어</h2>
+              <p class="overlay-subtitle">고전 아케이드 슈팅 게임</p>
+              <button class="btn btn-primary btn-large" id="btn-overlay-start">
+                <i class="fa-solid fa-play"></i> 시작
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Touch Gamepad Controller (Below screen) -->
+      <div class="mobile-gamepad glass-panel" id="mobile-gamepad">
+        <div class="gamepad-direction">
+          <button class="btn-gamepad-arrow" id="btn-left-arrow"><i class="fa-solid fa-caret-left"></i></button>
+          <button class="btn-gamepad-arrow" id="btn-right-arrow"><i class="fa-solid fa-caret-right"></i></button>
+        </div>
+        <div class="gamepad-actions">
+          <button class="btn-gamepad-action auto-fire" id="btn-autofire-toggle">
+            <i class="fa-solid fa-bolt"></i> 자동발사 <span>OFF</span>
+          </button>
+          <button class="btn-gamepad-action shoot" id="btn-shoot-action">
+            <i class="fa-solid fa-fire"></i> 발사
+          </button>
+        </div>
+      </div>
+
+      <!-- Bottom Controls panel -->
+      <div class="controls-panel glass-panel">
+        <div class="controls-header-row">
+          <h3><i class="fa-solid fa-gamepad"></i> 게임 컨트롤</h3>
+          <div class="controls-header-actions">
+            <button class="btn btn-primary" id="btn-action-start">
+              <i class="fa-solid fa-play"></i> 게임 시작
+            </button>
+            <button class="btn-icon-circle" id="btn-sound-toggle" title="음향 ON/OFF">
+              <i class="fa-solid fa-volume-high"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="controls-details-grid">
+          <div class="control-col">
+            <h4><i class="fa-solid fa-keyboard"></i> 키보드 조작</h4>
+            <ul>
+              <li><strong>← , →</strong> : 좌우 이동</li>
+              <li><strong>스페이스바</strong> : 미사일 발사</li>
+              <li><strong>P</strong> : 일시정지</li>
+              <li><strong>R</strong> : 게임 재시작</li>
+            </ul>
+          </div>
+          <div class="control-col">
+            <h4><i class="fa-solid fa-mobile-screen"></i> 모바일 조작</h4>
+            <p>화면 하단의 터치 컨트롤을 사용하여 게임을 조작하세요. 좌우 이동 버튼과 자동 발사 버튼이 제공됩니다.</p>
+          </div>
+          <div class="control-col">
+            <h4><i class="fa-solid fa-star"></i> 게임 특징</h4>
+            <ul>
+              <li><strong>듀얼 파이터 시스템</strong>: 보스에 캡처된 아군을 복원하여 화력 2배 강화</li>
+              <li><strong>보스 적 트랙터 빔</strong>: 적 보스의 빔에 포획되어 인질이 되는 정밀 로직</li>
+              <li><strong>챌린징 스테이지</strong>: 매 5단계마다 보너스 적 편대 보너스 획득 스테이지</li>
+              <li><strong>255스테이지 무한 모드</strong>: 난이도가 순환 상승하는 무한 아케이드 챌린지</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Bottom Guide Board (11-part document viewer) -->
+    <section class="explanation-board-section">
+      <div class="board-header">
+        <i class="fa-solid fa-book text-blue"></i>
+        <div>
+          <h2>스페이스 워리어 백과사전</h2>
+          <span>듀얼 파이터 조인 기법, 트랙터 빔 회피 요령 및 챌린징 스테이지 공략 백서입니다.</span>
+        </div>
+      </div>
+
+      <div class="explanation-layout">
+        <!-- 11-part Navigation List (Left Column) -->
+        <nav class="explanation-index-list">
+          <ul>
+            <li class="active" data-index="1"><span class="index-num">01</span> 스페이스 워리어란?</li>
+            <li data-index="2"><span class="index-num">02</span> 갤러그와 슈팅의 역사</li>
+            <li data-index="3"><span class="index-num">03</span> 게임 기본 규칙</li>
+            <li data-index="4"><span class="index-num">04</span> 핵심 조작법 (PC/모바일)</li>
+            <li data-index="5"><span class="index-num">05</span> 듀얼 파이터 & 트랙터 빔</li>
+            <li data-index="6"><span class="index-num">06</span> 적 기체 유형 및 패턴</li>
+            <li data-index="7"><span class="index-num">07</span> 챌린징 스테이지 공략</li>
+            <li data-index="8"><span class="index-num">08</span> 스코어링 & 난이도</li>
+            <li data-index="9"><span class="index-num">09</span> 고득점 실전 팁</li>
+            <li data-index="10"><span class="index-num">10</span> 반사 신경 발달 효과</li>
+            <li data-index="11"><span class="index-num">11</span> 자주 묻는 질문 (FAQ)</li>
+          </ul>
+        </nav>
+
+        <!-- Dynamic Content Board Display Box (Right Column) -->
+        <div class="explanation-display-box glass-panel">
+          <div class="display-content-inner" id="explanation-board-content">
+            <!-- Icon/Label on Top -->
+            <div class="display-top-badge">
+              <i class="fa-solid fa-circle-info text-blue"></i>
+              <span id="explanation-title-badge">가이드 01: 개요</span>
+            </div>
+            
+            <h3 id="explanation-display-title">스페이스 워리어란?</h3>
+            
+            <div class="display-text-body" id="explanation-display-text">
+              로딩 중...
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Floating Navigation Widget -->
+  <aside class="floating-navigator" id="floating-menu">
+    <div class="floating-buttons-col">
+      <button class="btn-float btn-scroll-top" id="btn-scroll-top" title="위로 이동"><i class="fa-solid fa-arrow-up"></i></button>
+      <button class="btn-float btn-scroll-bottom" id="btn-scroll-bottom" title="아래로 이동"><i class="fa-solid fa-arrow-down"></i></button>
+    </div>
+  </aside>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>
