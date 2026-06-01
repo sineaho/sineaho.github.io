@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>모니터 불량화소 검사기 Pro - 무료 온라인 디스플레이 테스터</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>웹앱 아이디어 창고</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="#">무료 앱 189종</a></li>
+        <li><a href="#" class="active">CineAHO</a></li>
+        <li><a href="#">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Monitor App Container -->
+  <main class="monitor-container" id="app-container">
+    
+    <!-- Title & Description Header -->
+    <section class="monitor-header-section" id="title-section">
+      <h1 class="main-title">
+        <i class="fa-solid fa-desktop text-blue"></i> 모니터 불량 화소 검사기 <span>- 정밀 디스플레이 진단</span>
+      </h1>
+      <p class="subtitle-desc">
+        모니터와 디스플레이의 불량 화소(데드 픽셀, 스턱 픽셀, 핫 픽셀) 및 빛샘, 잔상을 정밀하게 검사하는 전문 도구입니다. 100% 브라우저 내에서 안전하게 동작하며, 클릭으로 불량 위치를 기록하고 레포트로 추출할 수 있습니다.
+      </p>
+      
+      <div class="tag-badges">
+        <span class="badge badge-tag">모니터</span>
+        <span class="badge badge-tag">화소</span>
+        <span class="badge badge-tag">검사</span>
+        <span class="badge badge-tag">디스플레이</span>
+        <span class="badge badge-tag">품질</span>
+        <span class="badge badge-tag">진단</span>
+      </div>
+    </section>
+
+    <!-- Workspace Area (Settings panel left, Test Canvas right) -->
+    <section class="monitor-workspace" id="workspace-section">
+      
+      <!-- Left Column: Control Panel / Selectors -->
+      <div class="workspace-left" id="panel-controls">
+        
+        <!-- Pixel Tester Glass Box -->
+        <div class="glass-panel control-card">
+          <div class="control-header-bar">
+            <h3>픽셀 테스터</h3>
+            <i class="fa-solid fa-sliders"></i>
+          </div>
+
+          <!-- Navigation Tab Bar -->
+          <div class="control-nav-tabs">
+            <button class="btn-control-tab active" data-tab="color"><i class="fa-solid fa-palette"></i> 색상</button>
+            <button class="btn-control-tab" data-tab="pattern"><i class="fa-solid fa-border-all"></i> 패턴</button>
+            <button class="btn-control-tab" data-tab="tool"><i class="fa-solid fa-gears"></i> 도구</button>
+          </div>
+
+          <!-- Active Test Status Card -->
+          <div class="active-status-card" id="status-card">
+            <div class="status-color-preview" id="status-preview-box" style="background-color: #ffffff;"></div>
+            <div class="status-details">
+              <strong id="lbl-active-name">흰색 (White)</strong>
+              <span id="lbl-active-index">색상 1 / 27</span>
+              <p id="lbl-active-desc">데드 픽셀 (검은 점) 검출에 최적화된 화면입니다.</p>
+            </div>
+          </div>
+
+          <!-- Tab-specific configurations form -->
+          <div class="tab-options-area">
+            
+            <!-- Tab 1: Colors selection -->
+            <div class="option-tab-content active-content" id="tab-color-options">
+              
+              <div class="nav-control-buttons">
+                <button class="btn btn-secondary" id="btn-prev-color">
+                  <i class="fa-solid fa-chevron-left"></i> 이전
+                </button>
+                <button class="btn btn-secondary" id="btn-next-color">
+                  다음 <i class="fa-solid fa-chevron-right"></i>
+                </button>
+              </div>
+
+              <div class="option-group">
+                <label>기본 색상</label>
+                <div class="color-grid" id="basic-colors-grid">
+                  <!-- JS dynamically populates -->
+                </div>
+              </div>
+
+              <div class="option-group">
+                <label>회색 계열</label>
+                <div class="color-grid" id="gray-colors-grid">
+                  <!-- JS dynamically populates -->
+                </div>
+              </div>
+
+              <div class="option-group">
+                <label>그라데이션</label>
+                <div class="gradient-grid" id="gradients-grid">
+                  <!-- JS dynamically populates -->
+                </div>
+              </div>
+
+              <div class="option-group">
+                <label>커스텀 색상</label>
+                <div class="custom-color-row">
+                  <input type="color" id="custom-color-picker" value="#ff0000">
+                  <button class="btn btn-primary" id="btn-add-custom-color">
+                    <i class="fa-solid fa-plus"></i> 추가
+                  </button>
+                </div>
+                <div class="color-grid" id="custom-colors-grid" style="margin-top: 0.5rem; display: none;">
+                  <!-- Dynamic user custom colors -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 2: Patterns selection -->
+            <div class="option-tab-content" id="tab-pattern-options">
+              
+              <div class="nav-control-buttons">
+                <button class="btn btn-secondary" id="btn-prev-pattern">
+                  <i class="fa-solid fa-chevron-left"></i> 이전
+                </button>
+                <button class="btn btn-secondary" id="btn-next-pattern">
+                  다음 <i class="fa-solid fa-chevron-right"></i>
+                </button>
+              </div>
+
+              <div class="option-group">
+                <label>기본 테스트 패턴</label>
+                <div class="pattern-list-grid" id="patterns-grid">
+                  <!-- JS dynamically populates patterns -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 3: Tools selection -->
+            <div class="option-tab-content" id="tab-tool-options">
+              <div class="option-group">
+                <label>스틸 잔상 복구 (Pixel Repairer)</label>
+                <p class="settings-helper-text">액정 소자가 물리적으로 강제 구동되도록 매우 빠른 고주파 깜빡임을 가하여 고착된 스턱 픽셀 복구를 시도합니다.</p>
+                <div class="tool-action-row">
+                  <button class="btn btn-primary" id="btn-toggle-repairer">
+                    <i class="fa-solid fa-bolt"></i> 잔상 복구기 재생
+                  </button>
+                  <select id="repair-mode-select" class="dropdown-select" style="margin-top: 0.5rem;">
+                    <option value="flicker" selected>고주파 흑백 플리커링</option>
+                    <option value="color">고주파 RGB 플리커링</option>
+                    <option value="noise">임의 노이즈 화면</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="option-group">
+                <label>빛샘(Bleed) 측정 도구</label>
+                <p class="settings-helper-text">화면 전체를 완전한 검은색으로 고정하고 외곽선 안내 표시를 오버레이하여 패널 모서리 부분의 빛샘 현상을 측정합니다.</p>
+                <button class="btn btn-secondary" id="btn-run-bleed">
+                  <i class="fa-solid fa-sun"></i> 빛샘 측정 모드 시작
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bottom Control actions -->
+          <div class="control-footer-actions">
+            <button class="btn btn-primary btn-large" id="btn-run-fullscreen">
+              <i class="fa-solid fa-expand"></i> 전체화면 검사 (F)
+            </button>
+            <div class="action-grid-buttons">
+              <button class="btn btn-secondary" id="btn-log-undetermined" title="체크 취소">
+                <i class="fa-solid fa-question"></i> 미정 (M)
+              </button>
+              <button class="btn btn-danger" id="btn-log-bad" title="불량화소 좌표 기록">
+                <i class="fa-solid fa-circle-xmark"></i> 불량 (O)
+              </button>
+            </div>
+            <div class="action-grid-buttons" style="margin-top: 0.5rem;">
+              <button class="btn btn-secondary" id="btn-toggle-guide" title="도움말">
+                <i class="fa-solid fa-circle-question"></i> 도움말
+              </button>
+              <button class="btn btn-secondary" id="btn-reset-session" title="세션 초기화">
+                <i class="fa-solid fa-rotate-left"></i> 초기화
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Visual Test Area -->
+      <div class="workspace-right" id="display-controls">
+        <div class="glass-panel canvas-board">
+          
+          <!-- Canvas header spec options bar -->
+          <div class="canvas-header-bar">
+            <button class="btn btn-success" id="btn-start-autoscan">
+              <i class="fa-solid fa-play"></i> <span id="lbl-scan-btn">새 세션 시작</span>
+            </button>
+            
+            <div class="specs-indicator" id="specs-panel">
+              <span id="spec-resolution"><i class="fa-solid fa-crop"></i> 3840 x 2160</span>
+              <span id="spec-dpr"><i class="fa-solid fa-display"></i> DPR: 1.0</span>
+              <span id="spec-ratio"><i class="fa-solid fa-arrows-left-right"></i> 16:9</span>
+              <span id="spec-ppi"><i class="fa-solid fa-calculator"></i> ~96 PPI</span>
+            </div>
+
+            <!-- Inch calculator config popup/row -->
+            <div class="inch-calculator-row">
+              <label for="input-monitor-inch">인치: </label>
+              <input type="number" id="input-monitor-inch" min="10" max="100" value="27" step="0.5">
+              <input type="range" id="slider-monitor-inch" min="10" max="100" value="27" step="0.5">
+            </div>
+
+            <!-- Actions downloads -->
+            <div class="report-actions-row">
+              <button class="btn btn-secondary" id="btn-export-json" disabled title="JSON 내보내기">
+                <i class="fa-solid fa-file-code"></i> JSON
+              </button>
+              <button class="btn btn-secondary" id="btn-export-csv" disabled title="CSV 내보내기">
+                <i class="fa-solid fa-file-csv"></i> CSV
+              </button>
+              <button class="btn btn-secondary" id="btn-capture-screenshot" title="불량화소 기록 스크린샷 저장">
+                <i class="fa-solid fa-camera"></i> 스크린샷
+              </button>
+            </div>
+          </div>
+
+          <!-- Main Canvas viewport screen -->
+          <div class="test-screen-wrapper" id="test-screen-wrapper">
+            <canvas id="test-screen-canvas"></canvas>
+            
+            <!-- Floating overlay instruction inside fullscreen -->
+            <div class="fullscreen-overlay-instruction" id="fs-overlay" style="display: none;">
+              <p>전체화면 검사 진행 중</p>
+              <span>좌우 방향키: 색상/패턴 전환 | 마우스 클릭: 불량화소 좌표 기록 | ESC/더블클릭: 이전화면 복귀</span>
+            </div>
+          </div>
+
+          <!-- Specs footer bar details -->
+          <div class="canvas-footer-bar">
+            <div class="current-indicators">
+              <span id="footer-lbl-color">색상: 1 / 27</span>
+              <span id="footer-lbl-pattern" style="margin-left: 1rem;">패턴: 0 / 12</span>
+              <span id="footer-lbl-badpixels" class="bad-count-badge" style="display: none; margin-left: 1rem;">
+                <i class="fa-solid fa-triangle-exclamation"></i> 불량화소 발견: <strong id="lbl-badpixel-count">0</strong>개
+              </span>
+            </div>
+            <div class="shortcuts-instructions">
+              <span>단축키: F(전체화면) | A(자동스캔) | M(미정) | +/-(색상) | */(패턴) | Space(일시정지)</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Bottom Features & Guide Intro Row -->
+    <section class="explanation-board-section" id="guide-section">
+      <div class="board-header">
+        <i class="fa-solid fa-book-open text-blue"></i>
+        <div>
+          <h2>모니터 불량 화소 완벽 가이드</h2>
+          <span>새 모니터 구매부터 불량 화소 테스트, 교환/환불 정책까지 소비자가 꼭 알아야 할 필수 가이드라인입니다.</span>
+        </div>
+      </div>
+
+      <!-- Quick core guide cards -->
+      <div class="guide-quick-cards">
+        <div class="glass-panel guide-card">
+          <i class="fa-solid fa-circle-exclamation text-red"></i>
+          <strong>데드 픽셀 (Dead)</strong>
+          <span>빛을 내지 못하고 상시 어두운 점으로 표현되는 불량 화소</span>
+        </div>
+        <div class="glass-panel guide-card">
+          <i class="fa-solid fa-circle-check text-green"></i>
+          <strong>스턱 픽셀 (Stuck)</strong>
+          <span>액정이 고착되어 특정 단색(R/G/B)으로 고정된 불량 화소</span>
+        </div>
+        <div class="glass-panel guide-card">
+          <i class="fa-solid fa-circle text-purple"></i>
+          <strong>핫 픽셀 (Hot)</strong>
+          <span>모든 소자가 과발광하여 흰색 점으로 표현되는 불량 화소</span>
+        </div>
+      </div>
+
+      <!-- Explanation Layout -->
+      <div class="explanation-layout">
+        <!-- 12-part Navigation List (Left Column) -->
+        <nav class="explanation-index-list">
+          <ul>
+            <li class="active" data-index="1"><span class="index-num">01</span> 불량 화소란 무엇인가?</li>
+            <li data-index="2"><span class="index-num">02</span> 불량 화소의 종류</li>
+            <li data-index="3"><span class="index-num">03</span> 불량 화소가 생기는 원인</li>
+            <li data-index="4"><span class="index-num">04</span> 불량 화소 테스트 방법</li>
+            <li data-index="5"><span class="index-num">05</span> 정확한 검사를 위한 팁</li>
+            <li data-index="6"><span class="index-num">06</span> 제조사별 불량 화소 정책</li>
+            <li data-index="7"><span class="index-num">07</span> 모니터 구매 시 체크리스트</li>
+            <li data-index="8"><span class="index-num">08</span> 교환/환불 완벽 가이드</li>
+            <li data-index="9"><span class="index-num">09</span> 불량 화소 자가 복구 시도</li>
+            <li data-index="10"><span class="index-num">10</span> 불량 화소 예방법</li>
+            <li data-index="11"><span class="index-num">11</span> 기기별 특수 사항</li>
+            <li data-index="12"><span class="index-num">12</span> 자주 묻는 질문 (FAQ)</li>
+          </ul>
+        </nav>
+
+        <!-- Dynamic Content Board Display Box (Right Column) -->
+        <div class="explanation-display-box glass-panel">
+          <div class="display-content-inner" id="explanation-board-content">
+            <div class="display-top-badge">
+              <i class="fa-solid fa-circle-info text-blue"></i>
+              <span id="explanation-title-badge">가이드 01: 개요</span>
+            </div>
+            
+            <h3 id="explanation-display-title">불량 화소란 무엇인가?</h3>
+            
+            <div class="display-text-body" id="explanation-display-text">
+              로딩 중...
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Floating Navigation Widget -->
+  <aside class="floating-navigator" id="floating-menu">
+    <div class="floating-buttons-col">
+      <button class="btn-float btn-scroll-top" id="btn-scroll-top" title="위로 이동"><i class="fa-solid fa-arrow-up"></i></button>
+      <button class="btn-float btn-scroll-bottom" id="btn-scroll-bottom" title="아래로 이동"><i class="fa-solid fa-arrow-down"></i></button>
+    </div>
+  </aside>
+
+  <script src="app.js"></script>
+</body>
+</html>
