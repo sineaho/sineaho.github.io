@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>사과게임+ (Apple Game+) - 무료 온라인 퍼즐 게임</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>웹앱 아이디어 창고</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="#">무료 앱 189종</a></li>
+        <li><a href="#" class="active">CineAHO</a></li>
+        <li><a href="#">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Yellow Announcement Bar -->
+  <div class="announcement-bar">
+    계정 관련 기능이 아직 제대로 작동하지 않습니다. 곧 제대로 작동하면 따로 공지드리겠습니다. 감사합니다.
+  </div>
+
+  <!-- Main Container -->
+  <main class="game-wrapper">
+    
+    <!-- LOBBY VIEW -->
+    <section class="lobby-view" id="lobby-view">
+      <h1 class="lobby-title">사과게임<sup>+</sup></h1>
+      
+      <!-- Mini Tabs -->
+      <nav class="lobby-sub-nav">
+        <a href="#" class="lobby-tab-link" data-modal="notice">공지</a>
+        <span class="dot-separator">.</span>
+        <a href="#" class="lobby-tab-link" data-modal="intro">소개</a>
+        <span class="dot-separator">.</span>
+        <a href="#" class="lobby-tab-link" data-modal="community">커뮤니티</a>
+      </nav>
+
+      <!-- Center Apple Illustration -->
+      <div class="lobby-apple-illustration">
+        <svg viewBox="0 0 100 100" class="lobby-apple-svg">
+          <!-- Apple Body -->
+          <path d="M50,22 C40,22 30,28 30,42 C30,60 42,78 50,78 C58,78 70,60 70,42 C70,28 60,22 50,22 Z" fill="#ff3838"></path>
+          <!-- Highlights -->
+          <path d="M35,35 C32,40 32,48 35,53" stroke="#ffffff" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.8"></path>
+          <!-- Stem -->
+          <path d="M50,23 C52,18 56,15 56,12" stroke="#795548" stroke-width="4" stroke-linecap="round" fill="none"></path>
+          <!-- Leaf -->
+          <path d="M54,16 C58,16 62,12 60,8 C56,8 52,12 54,16 Z" fill="#4caf50"></path>
+        </svg>
+      </div>
+
+      <p class="lobby-subtitle">합이 10이 되도록 드래그하세요!</p>
+
+      <!-- Primary Action Buttons -->
+      <div class="lobby-actions">
+        <div class="primary-row">
+          <button class="btn-lobby btn-green" id="btn-mode-classic">혼자 하기</button>
+          <button class="btn-lobby btn-purple" id="btn-mode-aimatch">
+            랜덤 매치
+            <span class="badge-beta">BETA</span>
+          </button>
+        </div>
+        
+        <div class="divider-text">
+          <span>또는 다른 사람과 함께</span>
+        </div>
+
+        <div class="secondary-row">
+          <button class="btn-lobby btn-blue" id="btn-mode-room">방 만들기</button>
+          <div class="lobby-invite-box">
+            <input type="text" id="invite-code-input" placeholder="초대코드 입력" maxlength="6">
+            <button class="btn-lobby-join" id="btn-lobby-join">참여</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CLASSIC PLAY VIEW -->
+    <section class="play-view" id="play-view" style="display: none;">
+      <!-- Title & Toolbar -->
+      <div class="play-header">
+        <h2 class="lobby-title-small">사과게임<sup>+</sup></h2>
+        <div class="play-toolbar">
+          <button class="btn-tool-icon" id="btn-goto-lobby" title="로비로 이동"><i class="fa-solid fa-house"></i></button>
+          <button class="btn-tool-icon" id="btn-toggle-grid" title="그리드 보기"><i class="fa-solid fa-border-all"></i></button>
+          <button class="btn-tool-icon" id="btn-toggle-sound" title="효과음 켜기/끄기"><i class="fa-solid fa-volume-high"></i></button>
+          <span class="zoom-indicator">100%</span>
+          <button class="btn-reset" id="btn-reset-game">초기화</button>
+        </div>
+      </div>
+
+      <!-- Score & Timer Banner -->
+      <div class="scoreboard-banner">
+        <div class="score-display">
+          <span>점수</span>
+          <strong id="lbl-classic-score">0</strong>
+          <span class="max-score">/ 170</span>
+        </div>
+        <div class="timer-display">
+          <i class="fa-regular fa-clock"></i>
+          <span id="lbl-classic-timer">02:00</span>
+        </div>
+      </div>
+
+      <!-- Play board Area -->
+      <div class="board-container">
+        <div class="canvas-wrapper">
+          <canvas id="classic-canvas"></canvas>
+        </div>
+      </div>
+
+      <p class="board-helper-text">
+        마우스로 보드를 드래그해서 숫자의 합이 10이 되도록 만드는 퍼즐 게임입니다. <a href="#guide-section" class="guide-scroll-link">게임 방법</a>
+      </p>
+    </section>
+
+    <!-- AI BATTLE VIEW (Split Screen) -->
+    <section class="battle-view" id="battle-view" style="display: none;">
+      <!-- Title & Toolbar -->
+      <div class="play-header">
+        <h2 class="lobby-title-small">사과게임<sup>+</sup> 대결 모드</h2>
+        <div class="play-toolbar">
+          <button class="btn-tool-icon" id="btn-battle-goto-lobby" title="로비로 이동"><i class="fa-solid fa-house"></i></button>
+          <button class="btn-reset" id="btn-reset-battle">대결 재시작</button>
+        </div>
+      </div>
+
+      <!-- Split Screen Boards Grid -->
+      <div class="battle-split-grid">
+        
+        <!-- Left Side: Player -->
+        <div class="battle-column player-col">
+          <div class="battle-user-header">
+            <span class="user-badge badge-player"><i class="fa-solid fa-user"></i> 나 (플레이어)</span>
+            <div class="battle-score">
+              <span>점수: </span><strong id="lbl-battle-player-score">0</strong>
+            </div>
+          </div>
+          <div class="board-container">
+            <div class="canvas-wrapper">
+              <canvas id="battle-player-canvas"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: AI -->
+        <div class="battle-column ai-col">
+          <div class="battle-user-header">
+            <span class="user-badge badge-ai"><i class="fa-solid fa-robot"></i> 상대 (가상 AI 봇)</span>
+            <div class="battle-score">
+              <span>점수: </span><strong id="lbl-battle-ai-score">0</strong>
+            </div>
+          </div>
+          <div class="board-container">
+            <div class="canvas-wrapper">
+              <canvas id="battle-ai-canvas"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Common Timer -->
+      <div class="battle-timer-bar">
+        <div class="timer-display">
+          <i class="fa-regular fa-clock"></i>
+          <span id="lbl-battle-timer">02:00</span>
+        </div>
+      </div>
+
+      <p class="board-helper-text">
+        AI 봇보다 먼저 더 많은 사과를 합 10으로 제거해야 합니다! 실시간으로 상대의 판과 드래그 흔적이 공유됩니다.
+      </p>
+    </section>
+
+    <!-- MODAL OVERLAYS (Notice, Intro, Community) -->
+    <div class="modal-overlay" id="lobby-modal" style="display: none;">
+      <div class="glass-panel modal-card">
+        <div class="modal-header">
+          <h3 id="modal-title">공지사항</h3>
+          <button class="btn-close-modal" id="btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body" id="modal-content">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Features & Guide Intro Row -->
+    <section class="explanation-board-section" id="guide-section">
+      <div class="board-header">
+        <i class="fa-solid fa-circle-question text-red"></i>
+        <div>
+          <h2>사과게임+ 완벽 가이드</h2>
+          <span>합이 10이 되는 수학적 규칙을 통해 누구나 쉽게 두뇌 회전을 즐길 수 있는 퍼즐 가이드입니다.</span>
+        </div>
+      </div>
+
+      <!-- Quick core guide cards -->
+      <div class="guide-quick-cards">
+        <div class="glass-panel guide-card">
+          <i class="fa-solid fa-apple-whole text-red"></i>
+          <strong>드래그 선택</strong>
+          <span>마우스로 직사각형 영역을 드래그해 사과들을 선택합니다.</span>
+        </div>
+        <div class="glass-panel guide-card">
+          <i class="fa-solid fa-plus text-green"></i>
+          <strong>합계는 10</strong>
+          <span>선택된 영역 안에 적힌 모든 숫자들의 합이 정확히 10이어야 합니다.</span>
+        </div>
+        <div class="glass-panel guide-card">
+          <i class="fa-solid fa-stopwatch text-purple"></i>
+          <strong>120초 제한시간</strong>
+          <span>제한 시간 내에 170개 사과 중 최대한 많은 사과를 제거하세요.</span>
+        </div>
+      </div>
+
+      <!-- Explanation Layout -->
+      <div class="explanation-layout">
+        <!-- 12-part Navigation List (Left Column) -->
+        <nav class="explanation-index-list">
+          <ul>
+            <li class="active" data-index="1"><span class="index-num">01</span> 사과게임이란 무엇인가?</li>
+            <li data-index="2"><span class="index-num">02</span> 게임 기본 규칙 및 조작법</li>
+            <li data-index="3"><span class="index-num">03</span> 숫자의 합 '10'을 만드는 수학적 요령</li>
+            <li data-index="4"><span class="index-num">04</span> 고득점 달성을 위한 시각 인지 팁</li>
+            <li data-index="5"><span class="index-num">05</span> 황금비율 배치와 난이도 가중치</li>
+            <li data-index="6"><span class="index-num">06</span> 1대1 실시간 AI 배틀 공략</li>
+            <li data-index="7"><span class="index-num">07</span> 로컬 Co-op 방 만들기 및 규칙</li>
+            <li data-index="8"><span class="index-num">08</span> 브라우저 게임 루프와 렌더링 원리</li>
+            <li data-index="9"><span class="index-num">09</span> 효과음 Procedural 신디사이징 기술</li>
+            <li data-index="10"><span class="index-num">10</span> 사과게임의 역사와 모태 게임</li>
+            <li data-index="11"><span class="index-num">11</span> 두뇌 발달 및 인지 기능 강화 효과</li>
+            <li data-index="12"><span class="index-num">12</span> 자주 묻는 질문 (FAQ)</li>
+          </ul>
+        </nav>
+
+        <!-- Dynamic Content Board Display Box (Right Column) -->
+        <div class="explanation-display-box glass-panel">
+          <div class="display-content-inner" id="explanation-board-content">
+            <div class="display-top-badge">
+              <i class="fa-solid fa-circle-info text-red"></i>
+              <span id="explanation-title-badge">가이드 01: 개요</span>
+            </div>
+            
+            <h3 id="explanation-display-title">사과게임이란 무엇인가?</h3>
+            
+            <div class="display-text-body" id="explanation-display-text">
+              로딩 중...
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Floating Navigation Widget -->
+  <aside class="floating-navigator" id="floating-menu">
+    <div class="floating-buttons-col">
+      <button class="btn-float btn-scroll-top" id="btn-scroll-top" title="위로 이동"><i class="fa-solid fa-arrow-up"></i></button>
+      <button class="btn-float btn-scroll-bottom" id="btn-scroll-bottom" title="아래로 이동"><i class="fa-solid fa-arrow-down"></i></button>
+    </div>
+  </aside>
+
+  <script src="app.js"></script>
+</body>
+</html>
