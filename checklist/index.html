@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>체크리스트 정보 관리기</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-color: #060913;
+      --panel-bg: rgba(14, 20, 38, 0.65);
+      --panel-border: rgba(255, 255, 255, 0.05);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent-color: #a855f7;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3rem 1.5rem;
+    }
+    
+    .app-container {
+      width: 100%;
+      max-width: 600px;
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+    }
+    
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+    }
+    
+    .back-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: .3s;
+    }
+    
+    .back-link:hover { color: var(--text-main); }
+    
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    h1 i { color: var(--accent-color); }
+    
+    .input-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    input {
+      flex-grow: 1;
+      padding: 0.85rem 1.25rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background-color: rgba(0,0,0,0.2);
+      color: var(--text-main);
+      outline: none;
+      font-size: 0.9rem;
+    }
+    
+    input:focus { border-color: var(--accent-color); }
+    
+    button {
+      padding: 0.85rem 1.5rem;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%);
+      color: white;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .3s;
+    }
+    
+    button:hover { filter: brightness(1.1); transform: translateY(-2px); }
+    
+    ul { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+    
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1.25rem;
+      border-radius: 12px;
+      background-color: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.04);
+      transition: .3s;
+    }
+    
+    li.checked {
+      background-color: rgba(168, 85, 247, 0.05);
+      border-color: rgba(168, 85, 247, 0.15);
+      opacity: 0.7;
+    }
+    
+    li.checked span { text-decoration: line-through; color: var(--text-muted); }
+    
+    .item-left { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; }
+    
+    .chk-icon { color: var(--text-dark); font-size: 1.1rem; }
+    
+    li.checked .chk-icon { color: var(--accent-color); }
+    
+    .btn-delete {
+      background: transparent;
+      border: none;
+      color: var(--text-dark);
+      cursor: pointer;
+      transition: .3s;
+      padding: 0.25rem;
+    }
+    
+    .btn-delete:hover { color: #f43f5e; transform: scale(1.1); }
+    
+    .empty-state {
+      text-align: center;
+      padding: 3rem 0;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+    
+    .empty-state i { font-size: 2.5rem; display: block; margin-bottom: 0.75rem; opacity: 0.3; }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <header>
+      <h1><i class="fa-solid fa-clipboard-list"></i> 체크리스트</h1>
+      <a href="../index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> 대시보드로 가기</a>
+    </header>
+
+    <div class="input-row">
+      <input type="text" id="todo-input" placeholder="새로운 체크 항목을 추가하세요...">
+      <button id="add-btn">추가</button>
+    </div>
+
+    <ul id="todo-list">
+      <!-- Dynamic list -->
+    </ul>
+    
+    <div class="empty-state" id="empty-view">
+      <i class="fa-solid fa-folder-open"></i>
+      등록된 체크리스트가 없습니다. 항목을 추가해 보세요!
+    </div>
+  </div>
+
+  <script>
+    const todoInput = document.getElementById('todo-input');
+    const addBtn = document.getElementById('add-btn');
+    const todoList = document.getElementById('todo-list');
+    const emptyView = document.getElementById('empty-view');
+    
+    let todos = JSON.parse(localStorage.getItem('cineaho-todos')) || [];
+    
+    function saveTodos() {
+      localStorage.setItem('cineaho-todos', JSON.stringify(todos));
+      renderTodos();
+    }
+    
+    function renderTodos() {
+      todoList.innerHTML = '';
+      if (todos.length === 0) {
+        emptyView.style.display = 'block';
+      } else {
+        emptyView.style.display = 'none';
+        todos.forEach((todo, idx) => {
+          const li = document.createElement('li');
+          if (todo.checked) li.className = 'checked';
+          
+          li.innerHTML = `
+            <div class="item-left" onclick="toggleTodo(${idx})">
+              <i class="${todo.checked ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle'} chk-icon"></i>
+              <span>${todo.text}</span>
+            </div>
+            <button class="btn-delete" onclick="deleteTodo(${idx})"><i class="fa-solid fa-trash-can"></i></button>
+          `;
+          todoList.appendChild(li);
+        });
+      }
+    }
+    
+    window.toggleTodo = function(idx) {
+      todos[idx].checked = !todos[idx].checked;
+      saveTodos();
+    };
+    
+    window.deleteTodo = function(idx) {
+      todos.splice(idx, 1);
+      saveTodos();
+    };
+    
+    addBtn.addEventListener('click', () => {
+      const text = todoInput.value.trim();
+      if (text) {
+        todos.push({ text, checked: false });
+        todoInput.value = '';
+        saveTodos();
+      }
+    });
+    
+    todoInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') addBtn.click();
+    });
+    
+    renderTodos();
+  </script>
+</body>
+</html>
