@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO KOSIS 실시간 물가 통계</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>웹앱 아이디어 창고</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="#">무료 앱 189종</a></li>
+        <li><a href="#" class="active">CineAHO</a></li>
+        <li><a href="#">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Kosis Container -->
+  <main class="kosis-container">
+    
+    <!-- Title & Description Header -->
+    <section class="kosis-header-section">
+      <h1 class="main-title"><i class="fa-solid fa-chart-line text-blue"></i> KOSIS <span>물가 통계</span></h1>
+      <p class="subtitle-desc">
+        KOSIS 국가통계포털의 소비자물가지수, 생산자물가지수, 신선식품지수 등 모든 물가 통계를 실시간으로<br>
+        조회하고 분석할 수 있는 전문 도구입니다. 차트 비교, 데이터 내보내기, 트렌드 분석 기능을 제공합니다.
+      </p>
+      
+      <div class="tag-badges">
+        <span class="badge">KOSIS</span>
+        <span class="badge">물가</span>
+        <span class="badge">통계</span>
+        <span class="badge">경제</span>
+        <span class="badge">분석</span>
+        <span class="badge">데이터</span>
+        <span class="badge">차트</span>
+      </div>
+    </section>
+
+    <!-- Main Dashboard Panel -->
+    <section class="dashboard-panel glass-panel">
+      
+      <!-- Dashboard Title Area -->
+      <div class="db-title-bar">
+        <div>
+          <h3>물가 통계 대시보드</h3>
+          <span>KOSIS 국가통계포털 실시간 데이터</span>
+        </div>
+        <button class="btn btn-refresh" id="btn-refresh-data" title="데이터 새로고침">
+          <i class="fa-solid fa-rotate"></i> 새로고침
+        </button>
+      </div>
+
+      <!-- 6 Category Cards Grid -->
+      <div class="category-cards-grid">
+        <button class="cat-card active" data-category="cpi">
+          <span class="card-dot"></span>
+          <i class="fa-solid fa-cart-shopping card-icon text-blue"></i>
+          <span class="card-title">소비자물가</span>
+        </button>
+        <button class="cat-card" data-category="fresh">
+          <i class="fa-solid fa-leaf card-icon text-green"></i>
+          <span class="card-title">신선식품</span>
+        </button>
+        <button class="cat-card" data-category="living">
+          <i class="fa-solid fa-house card-icon text-orange"></i>
+          <span class="card-title">생활물가</span>
+        </button>
+        <button class="cat-card" data-category="region">
+          <i class="fa-solid fa-map card-icon text-cyan"></i>
+          <span class="card-title">시도별</span>
+        </button>
+        <button class="cat-card" data-category="core">
+          <i class="fa-solid fa-chart-column card-icon text-purple"></i>
+          <span class="card-title">근원물가</span>
+        </button>
+        <button class="cat-card" data-category="rate">
+          <i class="fa-solid fa-chart-area card-icon text-red"></i>
+          <span class="card-title">등락률</span>
+        </button>
+      </div>
+
+      <!-- Settings Filter Box -->
+      <div class="filter-panel glass-panel">
+        <div class="filter-row">
+          <div class="input-group">
+            <label for="sub-index-select" id="select-label">세부 지수 선택</label>
+            <div class="select-wrapper">
+              <select id="sub-index-select">
+                <!-- Dynamically populated -->
+              </select>
+              <i class="fa-solid fa-chevron-down"></i>
+            </div>
+            <span class="index-desc-text" id="index-desc-text">전체 소비자물가지수 - 가계가 구입하는 상품·서비스 가격 변동</span>
+          </div>
+
+          <div class="range-group">
+            <div class="range-header">
+              <label>조회 기간</label>
+              <span class="range-date-label" id="range-date-label">2024년 1월 ~ 2026년 4월</span>
+            </div>
+            <div class="range-buttons" id="range-buttons-row">
+              <button class="btn-range" data-years="1">1년</button>
+              <button class="btn-range" data-years="2">2년</button>
+              <button class="btn-range active" data-years="3">3년</button>
+              <button class="btn-range" data-years="5">5년</button>
+              <button class="btn-range" data-years="10">10년</button>
+              <button class="btn-range" data-years="20">20년</button>
+              <button class="btn-range" data-years="30">30년</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Analysis Tabbing Area -->
+      <div class="analysis-tabs-container">
+        
+        <!-- Tab Navigation -->
+        <nav class="analysis-tabs-bar">
+          <button class="tab-btn active" data-tab="chart"><i class="fa-solid fa-chart-line"></i> 차트</button>
+          <button class="tab-btn" data-tab="compare"><i class="fa-solid fa-scale-balanced"></i> 비교</button>
+          <button class="tab-btn" data-tab="analysis"><i class="fa-solid fa-magnifying-glass-chart"></i> 분석</button>
+          <button class="tab-btn" data-tab="data"><i class="fa-solid fa-database"></i> 데이터</button>
+          <button class="tab-btn" data-tab="info"><i class="fa-solid fa-circle-info"></i> 정보</button>
+        </nav>
+
+        <!-- Tab Bodies -->
+        <div class="tab-body-wrapper">
+          
+          <!-- 1) Info Banner (Common Header inside body) -->
+          <div class="info-alert-banner" id="info-alert-banner">
+            <span class="info-bulb"><i class="fa-solid fa-lightbulb"></i></span>
+            <div class="info-text-box">
+              <h5>이 통계는?</h5>
+              <p id="info-alert-desc">소비자물가지수(CPI)는 도시 가계가 소비하는 상품과 서비스의 평균 가격 변동을 측정합니다. 인플레이션의 핵심 지표로 금리 정책에 직접적 영향을 미칩니다.</p>
+            </div>
+          </div>
+
+          <!-- 2) Main Chart Area -->
+          <div class="tab-content active" id="tab-content-chart">
+            <div class="chart-canvas-wrapper">
+              <canvas id="inflation-chart" width="850" height="380"></canvas>
+              <!-- Tooltip element -->
+              <div class="chart-tooltip" id="chart-tooltip"></div>
+            </div>
+          </div>
+
+          <!-- 3) Compare Area -->
+          <div class="tab-content" id="tab-content-compare">
+            <div class="compare-control-box">
+              <h5>비교할 지표 선택 (다중 선택 가능)</h5>
+              <div class="compare-checkbox-grid" id="compare-checkbox-grid">
+                <!-- Checkboxes will be populated here -->
+              </div>
+            </div>
+            <div class="chart-canvas-wrapper" style="margin-top: 1.5rem;">
+              <canvas id="compare-chart" width="850" height="300"></canvas>
+            </div>
+          </div>
+
+          <!-- 4) Statistical Analysis Area -->
+          <div class="tab-content" id="tab-content-analysis">
+            <div class="analysis-summary-grid">
+              <div class="analysis-card">
+                <span>조회 기간 전체 상승률</span>
+                <strong id="anal-total-rate" class="text-red">0.0%</strong>
+              </div>
+              <div class="analysis-card">
+                <span>연평균 상승률 (CAGR)</span>
+                <strong id="anal-cagr-rate">0.0%</strong>
+              </div>
+              <div class="analysis-card">
+                <span>최고 물가 기록 시점</span>
+                <strong id="anal-max-point">2026년 4월</strong>
+              </div>
+              <div class="analysis-card">
+                <span>최저 물가 기록 시점</span>
+                <strong id="anal-min-point">2020년 1월</strong>
+              </div>
+            </div>
+
+            <div class="analysis-editorial-box" style="margin-top: 1.5rem;">
+              <h5>💡 트렌드 리포트 및 경제 분석</h5>
+              <p id="analysis-report-text">데이터를 불러오는 중입니다...</p>
+            </div>
+          </div>
+
+          <!-- 5) Raw Data Table Area -->
+          <div class="tab-content" id="tab-content-data">
+            <div class="data-table-header">
+              <h5>시계열 세부 데이터 시트</h5>
+              <button class="btn btn-export-csv" id="btn-export-csv">
+                <i class="fa-solid fa-file-csv"></i> Excel/CSV 다운로드
+              </button>
+            </div>
+            <div class="table-scroll-area">
+              <table class="kosis-data-table" id="kosis-data-table">
+                <thead>
+                  <tr>
+                    <th>연월 (Time)</th>
+                    <th>지수 (Index)</th>
+                    <th>전월대비 등락률 (%)</th>
+                    <th>전년동월대비 등락률 (%)</th>
+                  </tr>
+                </thead>
+                <tbody id="kosis-table-body">
+                  <!-- Data rows populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 6) Info Document Tab -->
+          <div class="tab-content" id="tab-content-info">
+            <div class="info-document-panel">
+              <h4>지표 해석 및 상세 설명</h4>
+              <div class="info-doc-section" id="info-doc-section">
+                <!-- Rich Info Doc loaded dynamically -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Navigation Widget -->
+  <aside class="floating-navigator" id="floating-menu">
+    <div class="nav-overlay-menu glass-panel" id="nav-overlay-menu">
+      <h5>전체 앱 탐색 (189종)</h5>
+      <ul>
+        <li><i class="fa-solid fa-mobile-screen-button"></i> 앱 <span>63개</span></li>
+        <li class="active"><i class="fa-solid fa-calculator"></i> 계산기 <span>126개</span></li>
+      </ul>
+    </div>
+    
+    <div class="floating-buttons-col">
+      <div class="progress-badge">
+        <svg class="progress-ring" width="36" height="36">
+          <circle class="progress-ring__circle-bg" stroke="rgba(255,255,255,0.06)" stroke-width="3" fill="transparent" r="15" cx="18" cy="18"/>
+          <circle class="progress-ring__circle" stroke="#2563eb" stroke-width="3" fill="transparent" r="15" cx="18" cy="18"/>
+        </svg>
+        <span class="progress-text">0%</span>
+      </div>
+      
+      <button class="btn-float btn-scroll-top" id="btn-scroll-top" title="위로 이동"><i class="fa-solid fa-arrow-up"></i></button>
+      <button class="btn-float btn-scroll-bottom" id="btn-scroll-bottom" title="아래로 이동"><i class="fa-solid fa-arrow-down"></i></button>
+      <button class="btn-float btn-menu-trigger" id="btn-menu-trigger" title="전체 앱 탐색"><i class="fa-solid fa-list-ul"></i></button>
+    </div>
+  </aside>
+
+  <!-- Toast Copy Notification -->
+  <div class="toast-notification" id="kosis-toast">CSV 파일이 생성되었습니다.</div>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>
