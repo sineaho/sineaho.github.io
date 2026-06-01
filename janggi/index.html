@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO 천하제일 장기 대국실</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>웹앱 아이디어 창고</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="#">무료 앱 189종</a></li>
+        <li><a href="#" class="active">CineAHO</a></li>
+        <li><a href="#">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Janggi Container -->
+  <main class="janggi-container">
+    
+    <!-- Title & Description Header -->
+    <section class="janggi-header-section">
+      <h1 class="main-title"><i class="fa-solid fa-chess-knight"></i> 장기 - <span>세계 최고급 AI 대국 엔진</span></h1>
+      <p class="subtitle-desc">
+        알파베타 탐색과 딥러닝 기반 평가를 갖춘 상용급 장기 엔진. 사람 대 사람, 사람 대 AI, AI 관전 모드 지원.<br>
+        9x10 보드, 한자/한글 기물 표시, 고급 규칙(장군, 포, 차, 마, 상, 사, 졸) 완벽 구현.
+      </p>
+      
+      <div class="tag-badges">
+        <span class="badge">게임</span>
+        <span class="badge">보드</span>
+        <span class="badge">장기</span>
+        <span class="badge">AI</span>
+        <span class="badge">알파베타</span>
+        <span class="badge">한국 전통</span>
+      </div>
+    </section>
+
+    <!-- Top Action Control Bar -->
+    <section class="control-action-bar glass-panel">
+      <div class="control-logo-box">
+        <i class="fa-solid fa-crown"></i>
+      </div>
+      <div class="control-buttons">
+        <button class="btn btn-start-game" id="btn-start"><i class="fa-solid fa-play"></i> 게임 시작</button>
+        <button class="btn btn-action-icon" id="btn-pause" title="일시 정지"><i class="fa-solid fa-pause"></i></button>
+        <button class="btn btn-action-icon" id="btn-sound" title="소리 켜기/끄기"><i class="fa-solid fa-volume-high"></i></button>
+      </div>
+    </section>
+
+    <!-- 5 Cards Info Grid -->
+    <section class="info-cards-grid">
+      
+      <!-- Card 1: Game Settings -->
+      <div class="info-card glass-panel">
+        <h4><i class="fa-solid fa-gears"></i> 게임 설정</h4>
+        <div class="setting-item">
+          <label for="game-mode">게임 모드</label>
+          <div class="select-wrapper">
+            <select id="game-mode">
+              <option value="pve" selected>사람 vs AI</option>
+              <option value="pvp">사람 vs 사람</option>
+              <option value="eve">AI vs AI (관전)</option>
+            </select>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+        </div>
+        <div class="setting-item">
+          <label>AI 레벨: <strong id="ai-level-val">3</strong></label>
+          <input type="range" id="ai-level-slider" min="1" max="5" value="3">
+          <div class="slider-labels">
+            <span>초급</span>
+            <span>중급</span>
+            <span>고급</span>
+            <span>마스터</span>
+            <span>그랜드마스터</span>
+          </div>
+        </div>
+        <div class="setting-item flex-row-item">
+          <label>좌표 표시</label>
+          <label class="switch">
+            <input type="checkbox" id="chk-coords" checked>
+            <span class="slider-toggle"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Card 2: Theme Settings -->
+      <div class="info-card glass-panel">
+        <h4><i class="fa-solid fa-palette"></i> 테마</h4>
+        <div class="setting-item">
+          <label for="board-theme">스킨 테마</label>
+          <div class="select-wrapper">
+            <select id="board-theme">
+              <option value="classic" selected>클래식 (전통 목재)</option>
+              <option value="neon">사이버 네온</option>
+              <option value="minimal">미니멀 그레이</option>
+            </select>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Game Statistics -->
+      <div class="info-card glass-panel">
+        <h4><i class="fa-solid fa-chart-simple"></i> 게임 통계</h4>
+        <div class="stats-table">
+          <div class="stats-row">
+            <div class="stat-col">
+              <span class="label">경과 시간</span>
+              <strong id="timer-text">00:00</strong>
+            </div>
+            <div class="stat-col">
+              <span class="label">총 수</span>
+              <strong id="move-count-text">0</strong>
+            </div>
+          </div>
+          <div class="stats-row">
+            <div class="stat-col">
+              <span class="label">장군 횟수</span>
+              <strong id="check-count-text" class="text-orange">0 : 0</strong>
+            </div>
+            <div class="stat-col">
+              <span class="label">평균 수 시간</span>
+              <strong id="avg-time-text">0.0초</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4: Captured Pieces Status -->
+      <div class="info-card glass-panel">
+        <h4><i class="fa-solid fa-skull"></i> 포로 현황</h4>
+        <div class="captured-box">
+          <div class="captured-group">
+            <span class="camp-label text-blue">한(漢) 포로</span>
+            <strong id="han-score" class="text-blue">0점</strong>
+            <p id="han-captured-list" class="captured-items">없음</p>
+          </div>
+          <div class="captured-group">
+            <span class="camp-label text-red">초(楚) 포로</span>
+            <strong id="cho-score" class="text-red">0점</strong>
+            <p id="cho-captured-list" class="captured-items">없음</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5: Real-time Scores -->
+      <div class="info-card glass-panel">
+        <h4><i class="fa-solid fa-scale-balanced"></i> 현재 점수</h4>
+        <div class="scores-box">
+          <div class="score-bar-wrapper">
+            <div class="score-progress" id="score-balance-bar" style="width: 50%;"></div>
+          </div>
+          <div class="score-row">
+            <div class="score-col text-blue">
+              <span>한(漢) 점수</span>
+              <strong id="han-total-score">73.5점</strong>
+            </div>
+            <div class="score-col text-red" style="text-align: right;">
+              <span>초(楚) 점수</span>
+              <strong id="cho-total-score">72.0점</strong>
+            </div>
+          </div>
+          <div class="score-tip">한(漢)의 후수 덤 1.5점 자동 합산</div>
+        </div>
+      </div>
+      
+    </section>
+
+    <!-- Janggi Grid Board Area -->
+    <section class="janggi-board-panel glass-panel">
+      <div class="turn-status-badge" id="janggi-turn-badge">
+        <span class="badge-dot dot-blue"></span>
+        <span class="badge-text">한(漢) 차례 [파란색]</span>
+      </div>
+
+      <div class="board-viewport">
+        <canvas id="janggi-canvas" width="680" height="740"></canvas>
+      </div>
+
+      <!-- Board Toolbar -->
+      <div class="board-toolbar">
+        <button class="btn btn-tool" id="btn-undo" disabled><i class="fa-solid fa-reply"></i> 무르기</button>
+        <button class="btn btn-tool" id="btn-reset"><i class="fa-solid fa-rotate-left"></i> 대국 초기화</button>
+        <button class="btn btn-tool" id="btn-draw-claim"><i class="fa-solid fa-handshake"></i> 무승부 요청</button>
+        <button class="btn btn-tool" id="btn-resign"><i class="fa-solid fa-flag"></i> 기권</button>
+      </div>
+    </section>
+
+    <!-- Bottom Information Area (Janggi Guide) -->
+    <section class="guide-panel glass-panel">
+      <div class="guide-header">
+        <i class="fa-solid fa-book-open"></i>
+        <div>
+          <h2>장기 대국실 프로 완벽 가이드</h2>
+          <span>전통 장기 기물 행마법 및 덤 규칙 가이드</span>
+        </div>
+      </div>
+      
+      <div class="guide-content-row">
+        <div class="guide-card">
+          <h4>1. 궁성과 기물 행마 기초</h4>
+          <p>궁(왕)과 사(仕)는 궁성 내 격자 선 위에서만 한 칸씩 이동합니다. 차(車)는 막힘이 없다면 전후좌우 직선으로 무제한 이동하며 궁성 대각선 통과도 가능합니다.</p>
+        </div>
+        <div class="guide-card">
+          <h4>2. 포(包)와 마/상 행마 규칙</h4>
+          <p>포는 반드시 다른 기물 하나를 뛰어넘어야 전진/포획 가능합니다. 마(馬)는 멱이 막히지 않은 날일(日)자, 상(象)은 쓸용(用)자 궤적으로 움직입니다.</p>
+        </div>
+        <div class="guide-card">
+          <h4>3. 덤 규칙 및 기물 점수제</h4>
+          <p>선공인 초(楚)의 절대 선수를 보정하기 위해, 후공인 한(漢)에게 덤 1.5점을 부여합니다. 기물 점수는 차 13점, 포 7점, 마 5점, 상 3점, 사 3점, 졸 2점입니다.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Winner Dialog overlay -->
+  <div class="winner-modal-overlay" id="janggi-winner-modal">
+    <div class="winner-box glass-panel">
+      <div class="trophy-icon"><i class="fa-solid fa-crown"></i></div>
+      <h2 id="win-title">한(漢) 승리!</h2>
+      <p id="win-detail">외통수로 상대 궁을 제압하였습니다.</p>
+      <button class="btn btn-win-close" id="btn-win-close">대국실 복귀</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>
