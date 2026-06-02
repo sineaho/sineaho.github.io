@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>모든 도구 - Cineaho</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8fafc;
+      color: #1e293b;
+      font-family: 'Inter', 'Noto Sans KR', sans-serif;
+      line-height: 1.7;
+      padding: 0;
+      margin: 0;
+    }
+    
+    /* Top Dark Banner */
+    .top-banner {
+      background-color: #060913;
+      color: #ffffff;
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .top-banner h1 {
+      font-size: 36px;
+      font-weight: 800;
+      margin: 0 0 16px 0;
+      letter-spacing: -0.5px;
+    }
+    .top-banner p {
+      font-size: 15px;
+      color: #94a3b8;
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .main-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    /* Back Button */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #64748b;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 32px;
+      transition: color 0.2s;
+    }
+    .back-btn:hover {
+      color: #0f172a;
+    }
+    .back-btn svg {
+      vertical-align: middle;
+    }
+
+    /* Tabs Layout */
+    .tabs-wrapper {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-size: 14.5px;
+      font-weight: 700;
+      border: 1px solid #e2e8f0;
+      background-color: #f8fafc;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background-color: #ffffff;
+      color: #2563eb;
+      border-color: #2563eb;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+    }
+    .tab-count {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+    .tab-btn.active .tab-count {
+      background-color: #ebf8ff;
+      color: #2b6cb0;
+    }
+    .tab-btn:not(.active) .tab-count {
+      background-color: #e2e8f0;
+      color: #4a5568;
+    }
+
+    /* Grid Layout */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 20px;
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+
+    /* Card Styles */
+    .tool-card {
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+    .tool-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+      border-color: #2563eb;
+    }
+    .card-top {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .card-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-title-row .app-icon {
+      font-size: 24px;
+    }
+    .card-title-row h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0;
+      line-height: 1.4;
+    }
+    .badge-row {
+      display: flex;
+      gap: 6px;
+    }
+    .badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .badge-level {
+      color: #10b981;
+      background-color: #ecfdf5;
+    }
+    .badge-level.badge-adv {
+      color: #8b5cf6;
+      background-color: #f5f3ff;
+    }
+    .badge-time {
+      color: #64748b;
+      background-color: #f1f5f9;
+    }
+    .card-desc {
+      font-size: 13px;
+      color: #64748b;
+      margin: 0;
+      line-height: 1.5;
+    }
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .tag {
+      font-size: 11px;
+      color: #64748b;
+      background-color: #f1f5f9;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    
+    @media (max-width: 900px) {
+      .tools-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    @media (max-width: 600px) {
+      .tools-grid {
+        grid-template-columns: 1fr;
+      }
+      .tabs-wrapper {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Banner -->
+  <div class="top-banner">
+    <h1>모든 도구</h1>
+    <p>원본 웹앱 레지스트리 63종을 먼저 실제 링크로 복원하고, 계산기 컬렉션은 카테고리 단위로 이어서 이식합니다.</p>
+  </div>
+
+  <div class="main-container">
+    <a href="index.html" class="back-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      <span>CineAHO 홈으로</span>
+    </a>
+
+    <!-- Tabs -->
+    <div class="tabs-wrapper">
+      <button class="tab-btn active" id="tab-web-apps">
+        <span>💻 웹 애플리케이션</span>
+        <span class="tab-count">63</span>
+      </button>
+      <button class="tab-btn" id="tab-calculators">
+        <span>🧮 전문 계산기</span>
+        <span class="tab-count">42허브</span>
+      </button>
+    </div>
+
+    <!-- Web Apps Grid (Tab 1) -->
+    <div class="tools-grid" id="grid-web-apps">
+      
+      <!-- Card 1 -->
+      <a href="coming-soon.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">👻</span>
+            <h3>고스트 헌터 - 미로 액션 게임</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">추억의 팩맨에서 영감을 받은 완전히 새로운 미로 액션 게임. 4마리 유령의 개별 AI 패턴, 파워 펠릿 시스템, 보너스 과일,...</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#게임</span>
+          <span class="tag">#미로</span>
+          <span class="tag">#아케이드</span>
+        </div>
+      </a>
+
+      <!-- Card 2 -->
+      <a href="./galaga/index.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">🚀</span>
+            <h3>스페이스 워리어 - 고전 아케이드 슈팅 게임</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">갤러그에서 영감을 받은 완전히 새로운 슈팅 게임. 듀얼 파이터 시스템, 보스 적 트랙터 빔, 챌린징 스테이지, 255스테이...</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#게임</span>
+          <span class="tag">#슈팅</span>
+          <span class="tag">#아케이드</span>
+        </div>
+      </a>
+
+      <!-- Card 3 -->
+      <a href="./janggi/index.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">♟️</span>
+            <h3>장기 - 세계 최고급 AI 대국 엔진</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">알파베타 탐색과 딥러닝 기반 평가를 갖춘 상용급 장기 엔진. 사람 대 사람, 사람 대 AI, AI 관전 모드 지원. 9x10 보드, 한자/한...</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#게임</span>
+          <span class="tag">#보드</span>
+          <span class="tag">#장기</span>
+        </div>
+      </a>
+
+      <!-- Card 4 -->
+      <a href="coming-soon.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">🎴</span>
+            <h3>7포커 - 세븐 오디 스터드 (세계 최고급)</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">한국식 세븐 오디 포커(Seven-card stud 변형). 7장 카드, 입/다운카드 공개 규칙, 몬테카를로 기반 AI, 박진감 있는...</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#게임</span>
+          <span class="tag">#카드</span>
+          <span class="tag">#포커</span>
+        </div>
+      </a>
+
+      <!-- Card 5 -->
+      <a href="coming-soon.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">🥗</span>
+            <h3>음식/재료 칼로리 계산기</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level">초급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">음식/재료별 영양정보(100g 기준)와 1회 제공량 프리셋으로 총 칼로리를 빠르게 계산. 세션ID만 사용, 개인정보 미수집.</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#건강</span>
+          <span class="tag">#칼로리</span>
+          <span class="tag">#영양</span>
+        </div>
+      </a>
+
+      <!-- Card 6 -->
+      <a href="./omok/index.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">⚫</span>
+            <h3>오목 프로 - 상용급 대국 엔진</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">알파베타 탐색과 패턴 평가를 갖춘 상용급 오목 엔진. 사람 대 사람, 사람 대 AI, AI 관전 모드 지원. 15/19 보드, 선공 선택,...</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#게임</span>
+          <span class="tag">#보드</span>
+          <span class="tag">#오목</span>
+        </div>
+      </a>
+
+      <!-- Card 7 -->
+      <a href="coming-soon.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">🎴</span>
+            <h3>포카드 - 4장 포커 월드클래스</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">세계 최고 수준 4장 포커(포카드) 엔진. 4장 조합 평가(스트레이트 플러시~하이카드), 간결한 UX, 개인정보 수집 없이 Sessio...</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#게임</span>
+          <span class="tag">#카드</span>
+          <span class="tag">#포커</span>
+        </div>
+      </a>
+
+      <!-- Card 8 -->
+      <a href="coming-soon.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">🃏</span>
+            <h3>Card Games - 포커 (AI 대결, 초고난이도)</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">상용 수준 엔진 지향. 헤즈업 텍사스 홀덤 베팅 라운드/핸드 평가/세션 로깅/리더보드 기반. AI 대결 초고난이도 모드 제공(추후...</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#게임</span>
+          <span class="tag">#보드</span>
+          <span class="tag">#카드</span>
+        </div>
+      </a>
+
+      <!-- Card 9 -->
+      <a href="./sudoku/index.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">🧩</span>
+            <h3>스도쿠 Pro - 상용급 퍼즐 엔진</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">유일해 보장 생성기, 난이도(5단계), 연필/메모, 자동 메모/제거, 스마트 하이라이트, 실수 표시, 실행취소/다시실행,...</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#게임</span>
+          <span class="tag">#퍼즐</span>
+          <span class="tag">#보드</span>
+        </div>
+      </a>
+
+      <!-- Card 10 -->
+      <a href="coming-soon.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">💬</span>
+            <h3>워드 퍼즐 - 하루 한 번 5글자 맞추기</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">매일 1판</span>
+          </div>
+          <p class="card-desc">워들에서 영감을 받은 하루 한 번 6번의 기회로 5글자 단어를 맞추는 중독성 퍼즐. 키보드/모바일 입력, 색각 배려 색상 테마,...</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#게임</span>
+          <span class="tag">#퍼즐</span>
+          <span class="tag">#단어</span>
+        </div>
+      </a>
+
+      <!-- Card 11 -->
+      <a href="./2048/index.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">🔢</span>
+            <h3>2048 - 숫자 타일 합치기 (세계 최고급)</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">되돌리기(최대 20), AI 힌트, 하드 모드(4 생성 확률+), 저장/복원, 보드 크기(3~6) 커스터마이징까지 지원하는 상용급 204...</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#게임</span>
+          <span class="tag">#퍼즐</span>
+          <span class="tag">#2048</span>
+        </div>
+      </a>
+
+      <!-- Card 12 -->
+      <a href="coming-soon.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">🧠</span>
+            <h3>메모리 게임 - 카드 짝 맞추기 (세계 최고급)</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">힌트, 관전(자동 풀기), 데일리 시드, 시드 공유, 접근성, 난이도/테마, 반응형까지 모두 갖춘 최상급 메모리 게임.</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#게임</span>
+          <span class="tag">#퍼즐</span>
+          <span class="tag">#기억력</span>
+        </div>
+      </a>
+
+      <!-- Card 13 -->
+      <a href="coming-soon.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">💣</span>
+            <h3>지상 최고의 지뢰찾기</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level">초급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">첫 클릭 안전, 프리셋-커스텀 보드, 깃발 모드, 타이머, 썰 크기 조절까지. 고전 감성에 현대 UX를 더한 최강 지뢰찾기!...</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#게임</span>
+          <span class="tag">#퍼즐</span>
+          <span class="tag">#지뢰</span>
+        </div>
+      </a>
+
+      <!-- Card 14 -->
+      <a href="coming-soon.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">🎨</span>
+            <h3>컬러 랩 - 대비·팔레트·그라데이션</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">WCAG 대비 계산, 이미지에서 팔레트 추출(K-means-CIELAB), Lab 기반 그라데이션 설계까지 한번에. 디자이너...</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#색상</span>
+          <span class="tag">#접근성</span>
+          <span class="tag">#디자인</span>
+        </div>
+      </a>
+
+      <!-- Card 15 -->
+      <a href="coming-soon.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">🏮</span>
+            <h3>중국어 단어 학습 앱 - HSK 1급~4급 단어 목록</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level">초급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">중국어 HSK 1급~4급 단어 목록 기반 학습 앱입니다. 한자/병음/뜻/품사/복사/예문(한자-병음-해석)을 표로 한눈에...</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#중국어</span>
+          <span class="tag">#한자</span>
+          <span class="tag">#어휘</span>
+        </div>
+      </a>
+
+      <!-- Card 16 -->
+      <a href="./toeic/index.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">📘</span>
+            <h3>토익 단어 학습 앱</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">토익 빈출 어휘를 뜻, 발음기호, 품사, 예문과 함께 학습합니다. 플래시카드와 객관식 퀴즈, 진행도 저장, 사용자 데이터...</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#TOEIC</span>
+          <span class="tag">#어휘</span>
+          <span class="tag">#영어</span>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- Professional Calculators Grid (Tab 2) -->
+    <div class="tools-grid hidden" id="grid-calculators">
+      
+      <!-- Calc 1 -->
+      <a href="./calculator/index.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">🧮</span>
+            <h3>궁극의 계산기 프로 울티메이트</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">표준, 공학용, 프로그래머, 단위변환, 금융, 행렬, 통계, 그래프 계산을 지원하는 올인원 통합 계산 도구입니다.</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#계산기</span>
+          <span class="tag">#유틸리티</span>
+          <span class="tag">#수학</span>
+        </div>
+      </a>
+
+      <!-- Calc 2 -->
+      <a href="./bmi/index.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">⚖️</span>
+            <h3>BMI 비만도 계산기</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level">초급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">키와 몸무게를 입력하여 체질량지수(BMI)를 계산하고, 아시아-한국 기준 비만도 분류, 이상적 체중 및 조절 권장량 등을 도출합니다.</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#건강</span>
+          <span class="tag">#BMI</span>
+          <span class="tag">#체중</span>
+        </div>
+      </a>
+
+      <!-- Calc 3 -->
+      <a href="./bmr/index.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">🔥</span>
+            <h3>BMR/TDEE 계산기</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level">초급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">성별, 나이, 키, 체중 및 일상 활동량을 고려하여 하루에 소비되는 기초대사량(BMR)과 총 에너지 소비량(TDEE)을 정밀 산출합니다.</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#건강</span>
+          <span class="tag">#칼로리</span>
+          <span class="tag">#식단</span>
+        </div>
+      </a>
+
+      <!-- Calc 4 -->
+      <a href="./whr/index.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">📏</span>
+            <h3>복부비만도(WHR) 계산기</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level">초급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">허리둘레와 엉덩이둘레의 비율(WHR)을 통해 복부 비만 상태 및 내장지방 축적으로 인한 건강 위험도를 자가 진단합니다.</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#건강</span>
+          <span class="tag">#복부비만</span>
+          <span class="tag">#다이어트</span>
+        </div>
+      </a>
+
+      <!-- Calc 5 -->
+      <a href="./thr/index.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">❤️</span>
+            <h3>목표 심박수(THR) 계산기</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level">초급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">카르보넨 공식을 기반으로 사용자의 나이와 안정시 심박수를 통해 최적의 운동 강도별 목표 심박수 구간을 실시간으로 도출합니다.</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#건강</span>
+          <span class="tag">#심박수</span>
+          <span class="tag">#운동</span>
+        </div>
+      </a>
+
+      <!-- Calc 6 -->
+      <a href="./macros/index.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">🥕</span>
+            <h3>영양소(탄단지) 비율 계산기</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level">초급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">하루 목표 칼로리와 체중을 입력하고 식단 유형 프리셋 혹은 커스텀 조절을 선택하여 최적의 탄수화물, 단백질, 지방 비율을 도출합니다.</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#건강</span>
+          <span class="tag">#탄단지</span>
+          <span class="tag">#식단</span>
+        </div>
+      </a>
+
+      <!-- Calc 7 -->
+      <a href="./youtube-hub/index.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">💵</span>
+            <h3>유튜브 수익 계산기</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level">초급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">CPM/RPM 기반 유튜브 동영상 예상 수익 계산. 롱폼/숏폼 선택 및 세전 월 광고 수익 예측을 지원합니다.</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#유튜브</span>
+          <span class="tag">#수익</span>
+          <span class="tag">#계산기</span>
+        </div>
+      </a>
+
+      <!-- Calc 8 -->
+      <a href="./youtube-hub/index.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">📈</span>
+            <h3>제휴마케팅 수익 계산기</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level">초급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">쿠팡 파트너스 등 제휴 링크 클릭율(CTR)과 구매 전환율(CVR)에 따른 목표 달성용 트래픽 역계산 도구입니다.</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#마케팅</span>
+          <span class="tag">#제휴</span>
+          <span class="tag">#계산기</span>
+        </div>
+      </a>
+
+    </div>
+
+  </div>
+
+  <!-- Interactive Script -->
+  <script>
+    const tabWebApps = document.getElementById('tab-web-apps');
+    const tabCalculators = document.getElementById('tab-calculators');
+    const gridWebApps = document.getElementById('grid-web-apps');
+    const gridCalculators = document.getElementById('grid-calculators');
+
+    tabWebApps.addEventListener('click', () => {
+      tabWebApps.classList.add('active');
+      tabCalculators.classList.remove('active');
+      gridWebApps.classList.remove('hidden');
+      gridCalculators.classList.add('hidden');
+    });
+
+    tabCalculators.addEventListener('click', () => {
+      tabCalculators.classList.add('active');
+      tabWebApps.classList.remove('active');
+      gridCalculators.classList.remove('hidden');
+      gridWebApps.classList.add('hidden');
+    });
+  </script>
+
+</body>
+</html>

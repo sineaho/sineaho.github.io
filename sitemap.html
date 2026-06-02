@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>사이트맵 - Cineaho</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      background-color: #060913;
+      color: #f1f5f9;
+      font-family: 'Inter', 'Noto Sans KR', sans-serif;
+      line-height: 1.6;
+      padding: 60px 20px;
+      margin: 0;
+    }
+    .sitemap-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 40px;
+      transition: color 0.2s;
+    }
+    .back-btn:hover {
+      color: #ffffff;
+    }
+    .back-btn svg {
+      vertical-align: middle;
+    }
+    
+    /* Header Section */
+    .sitemap-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    .sitemap-header .map-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .sitemap-header h1 {
+      font-size: 36px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 16px 0;
+      letter-spacing: -0.5px;
+    }
+    .sitemap-header p {
+      font-size: 16px;
+      color: #94a3b8;
+      margin: 4px 0;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    /* Section Styles */
+    .sitemap-section {
+      margin-bottom: 60px;
+    }
+    .section-title-wrapper {
+      margin-bottom: 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 16px;
+    }
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 8px 0;
+    }
+    .section-desc {
+      font-size: 14px;
+      color: #94a3b8;
+      margin: 0;
+    }
+    
+    /* Cards Grid */
+    .cards-grid {
+      display: grid;
+      gap: 20px;
+    }
+    .grid-4-cols {
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    }
+    .grid-3-cols {
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    }
+    
+    /* Card Styles */
+    .sitemap-card {
+      background-color: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .sitemap-card:hover {
+      border-color: rgba(99, 102, 241, 0.5);
+      transform: translateY(-4px);
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+    }
+    .card-desc {
+      font-size: 13.5px;
+      color: #94a3b8;
+      margin: 0;
+      line-height: 1.5;
+      min-height: 40px;
+    }
+    .card-btn {
+      align-self: flex-start;
+      background-color: #ffffff;
+      color: #0f172a;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .card-btn:hover {
+      opacity: 0.9;
+    }
+    
+    /* Responsive adjustment */
+    @media (max-width: 768px) {
+      .grid-4-cols, .grid-3-cols {
+        grid-template-columns: 1fr;
+      }
+      .sitemap-header h1 {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient background glow effects matching dashboard -->
+  <div class="bg-glow bg-glow-purple" style="top: 10%; left: -10%;"></div>
+  <div class="bg-glow bg-glow-blue" style="top: 50%; right: -10%;"></div>
+
+  <div class="sitemap-container">
+    <a href="index.html" class="back-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      <span>CineAHO 홈으로</span>
+    </a>
+
+    <!-- Header -->
+    <div class="sitemap-header">
+      <span class="map-icon">🗺️</span>
+      <h1>사이트맵</h1>
+      <p>Cineaho의 모든 웹앱, 도구, 페이지를 한눈에 확인하세요.</p>
+      <p>검색 봇과 방문자 모두가 쉽게 탐색할 수 있도록 체계적으로 구성했습니다.</p>
+    </div>
+
+    <!-- Section 1: YouTube Hub -->
+    <section class="sitemap-section">
+      <div class="section-title-wrapper">
+        <h2 class="section-title">🎯 유튜브 채널 분석기 (최우선)</h2>
+        <p class="section-desc">181,981개 채널을 실시간으로 분석하는 고급 분석 도구</p>
+      </div>
+
+      <div class="cards-grid grid-4-cols">
+        <!-- Card 1 -->
+        <div class="sitemap-card">
+          <h3 class="card-title">📺 유튜브 채널 분석기</h3>
+          <p class="card-desc">181,981개 채널 실시간 분석</p>
+          <a href="./youtube-hub/index.html" class="card-btn">분석 시작하기</a>
+        </div>
+        <!-- Card 2 -->
+        <div class="sitemap-card">
+          <h3 class="card-title">💰 유튜브 수익 계산기</h3>
+          <p class="card-desc">RPM 기반 수익 예측 시스템</p>
+          <a href="./youtube-hub/index.html" class="card-btn">수익 계산하기</a>
+        </div>
+        <!-- Card 3 -->
+        <div class="sitemap-card">
+          <h3 class="card-title">📰 실시간 뉴스 속보</h3>
+          <p class="card-desc">42개 방송사 뉴스 분석</p>
+          <a href="./youtube-hub/index.html" class="card-btn">뉴스 보기</a>
+        </div>
+        <!-- Card 4 -->
+        <div class="sitemap-card">
+          <h3 class="card-title">📈 트렌딩 비디오</h3>
+          <p class="card-desc">실시간 트렌딩 분석</p>
+          <a href="./youtube-hub/index.html" class="card-btn">트렌드 보기</a>
+        </div>
+        <!-- Card 5 -->
+        <div class="sitemap-card">
+          <h3 class="card-title">🏆 유튜버 순위 랭킹 TOP 1200</h3>
+          <p class="card-desc">전세계 유튜버 순위 실시간 확인</p>
+          <a href="./youtube-hub/index.html" class="card-btn">랭킹 보기</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Creator Tools -->
+    <section class="sitemap-section">
+      <div class="section-title-wrapper">
+        <h2 class="section-title">🛠️ 크리에이터 툴</h2>
+        <p class="section-desc">AI 프롬프트 생성, 마케팅 도구, 콘텐츠 제작 도구</p>
+      </div>
+
+      <div class="cards-grid grid-3-cols">
+        <!-- Card 1 -->
+        <div class="sitemap-card">
+          <h3 class="card-title">🎨 AI 이미지 갤러리</h3>
+          <p class="card-desc">다양한 AI 엔진 이미지</p>
+          <a href="./youtube-hub/index.html" class="card-btn">갤러리 보기</a>
+        </div>
+        <!-- Card 2 -->
+        <div class="sitemap-card">
+          <h3 class="card-title">🎵 AI 음악 감상실</h3>
+          <p class="card-desc">다양한 AI 음악 서비스</p>
+          <a href="./youtube-hub/index.html" class="card-btn">감상실 보기</a>
+        </div>
+        <!-- Card 3 -->
+        <div class="sitemap-card">
+          <h3 class="card-title">📦 크리에이터 데이터 허브</h3>
+          <p class="card-desc">통합 도구 플랫폼</p>
+          <a href="./youtube-hub/index.html" class="card-btn">허브 보기</a>
+        </div>
+        <!-- Card 4 -->
+        <div class="sitemap-card">
+          <h3 class="card-title">🤖 AI 에이전트 for 크리에이터</h3>
+          <p class="card-desc">Cineaho Insight AI 멘토</p>
+          <a href="coming-soon.html" class="card-btn">AI 멘토와 채팅하기</a>
+        </div>
+        <!-- Card 5 -->
+        <div class="sitemap-card">
+          <h3 class="card-title">📚 SNS 온라인 부업 백과사전</h3>
+          <p class="card-desc">다양한 온라인 부업 정보</p>
+          <a href="coming-soon.html" class="card-btn">백과사전 보기</a>
+        </div>
+        <!-- Card 6 -->
+        <div class="sitemap-card">
+          <h3 class="card-title">📘 바이브 코딩 용어 사전</h3>
+          <p class="card-desc">AI-바이브 코딩 용어 검색</p>
+          <a href="coming-soon.html" class="card-btn">용어 검색하기</a>
+        </div>
+        <!-- Card 7 -->
+        <div class="sitemap-card">
+          <h3 class="card-title">💻 바이브 코딩 개발 명령어 백과사전</h3>
+          <p class="card-desc">786개 개발 명령어</p>
+          <a href="coming-soon.html" class="card-btn">명령어 보기</a>
+        </div>
+        <!-- Card 8 -->
+        <div class="sitemap-card">
+          <h3 class="card-title">💬 AI 프롬프트/페르소나 큐레이터</h3>
+          <p class="card-desc">다양한 프롬프트와 페르소나 검색 및 복사</p>
+          <a href="prompt.html" class="card-btn">프롬프트 보기</a>
+        </div>
+        <!-- Card 9 -->
+        <div class="sitemap-card">
+          <h3 class="card-title">💰 제휴마케팅 수익 계산기</h3>
+          <p class="card-desc">쿠팡 파트너스 수익 계산</p>
+          <a href="./youtube-hub/index.html" class="card-btn">수익 계산하기</a>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+</body>
+</html>

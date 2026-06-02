@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ - Cineaho</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8fafc;
+      color: #1e293b;
+      font-family: 'Inter', 'Noto Sans KR', sans-serif;
+      line-height: 1.7;
+      padding: 40px 20px;
+      margin: 0;
+    }
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      border: 1px solid #e2e8f0;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #475569;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      transition: color 0.2s;
+    }
+    .back-btn:hover {
+      color: #0f172a;
+    }
+    .back-btn svg {
+      vertical-align: middle;
+    }
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-top: 0;
+      margin-bottom: 24px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 12px;
+    }
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .faq-card {
+      border: 1.5px solid #0f172a;
+      border-radius: 8px;
+      padding: 20px;
+      background-color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .faq-q {
+      font-size: 15px;
+      font-weight: 700;
+      color: #2563eb;
+      margin-bottom: 8px;
+      display: flex;
+      gap: 8px;
+    }
+    .faq-a {
+      font-size: 13.5px;
+      color: #64748b;
+      margin-left: 22px;
+      line-height: 1.6;
+    }
+    .contact-section {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 30px;
+      text-align: center;
+      margin-top: 40px;
+    }
+    .contact-section p {
+      font-size: 14px;
+      color: #64748b;
+      margin-bottom: 16px;
+    }
+    .contact-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #0f172a;
+      color: #ffffff;
+      padding: 10px 24px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .contact-btn:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <a href="index.html" class="back-btn">
+      <!-- Back Arrow SVG -->
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      <span>CineAHO 홈으로</span>
+    </a>
+
+    <h1>자주 묻는 질문 (FAQ)</h1>
+
+    <div class="faq-list">
+      
+      <!-- FAQ 1 -->
+      <div class="faq-card">
+        <div class="faq-q">
+          <span>Q.</span>
+          <span>모든 도구는 정말 무료인가요?</span>
+        </div>
+        <div class="faq-a">
+          A. 네, 모든 도구는 무료로 제공됩니다. 사용 횟수나 시간 제한 없이 바로 사용할 수 있습니다.
+        </div>
+      </div>
+
+      <!-- FAQ 2 -->
+      <div class="faq-card">
+        <div class="faq-q">
+          <span>Q.</span>
+          <span>회원가입이 필요한가요?</span>
+        </div>
+        <div class="faq-a">
+          A. 아니요. 현재 공개 도구는 회원가입 없이 사용할 수 있습니다.
+        </div>
+      </div>
+
+      <!-- FAQ 3 -->
+      <div class="faq-card">
+        <div class="faq-q">
+          <span>Q.</span>
+          <span>내가 입력한 데이터는 안전한가요?</span>
+        </div>
+        <div class="faq-a">
+          A. 대부분의 도구는 브라우저 안에서 처리됩니다. 저장 기능이 붙는 도구는 신규 Cloudflare D1/R2 연결 이후 별도 고지를 붙입니다.
+        </div>
+      </div>
+
+      <!-- FAQ 4 -->
+      <div class="faq-card">
+        <div class="faq-q">
+          <span>Q.</span>
+          <span>모바일에서도 사용할 수 있나요?</span>
+        </div>
+        <div class="faq-a">
+          A. 네, 주요 페이지와 도구는 모바일/태블릿/데스크톱 반응형 화면을 기준으로 구성합니다.
+        </div>
+      </div>
+
+      <!-- FAQ 5 -->
+      <div class="faq-card">
+        <div class="faq-q">
+          <span>Q.</span>
+          <span>새로운 도구는 언제 추가되나요?</span>
+        </div>
+        <div class="faq-a">
+          A. 도구는 단계적으로 이식하며, 업데이트 페이지와 사이트맵에서 변경 내역을 확인할 수 있습니다.
+        </div>
+      </div>
+
+      <!-- FAQ 6 -->
+      <div class="faq-card">
+        <div class="faq-q">
+          <span>Q.</span>
+          <span>도구에 문제가 있을 때는 어떻게 해야 하나요?</span>
+        </div>
+        <div class="faq-a">
+          A. 버그 신고 또는 문의하기 페이지의 안내에 따라 문제 상황을 보내주세요.
+        </div>
+      </div>
+
+      <!-- FAQ 7 -->
+      <div class="faq-card">
+        <div class="faq-q">
+          <span>Q.</span>
+          <span>특정 도구를 요청할 수 있나요?</span>
+        </div>
+        <div class="faq-a">
+          A. 문의하기에서 필요한 도구명과 사용 목적을 알려주시면 검토 대상에 올릴 수 있습니다.
+        </div>
+      </div>
+
+      <!-- FAQ 8 -->
+      <div class="faq-card">
+        <div class="faq-q">
+          <span>Q.</span>
+          <span>광고가 있나요?</span>
+        </div>
+        <div class="faq-a">
+          A. 운영비와 무료 앱 개발을 위해 광고/파트너스 링크가 있을 수 있으며, 상단 고지로 안내합니다.
+        </div>
+      </div>
+
+      <!-- FAQ 9 -->
+      <div class="faq-card">
+        <div class="faq-q">
+          <span>Q.</span>
+          <span>API를 제공하나요?</span>
+        </div>
+        <div class="faq-a">
+          A. 현재는 웹 화면 중심이며, 공개 API는 Cloudflare Worker/Hono 보안 정책 이후 검토합니다.
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Contact Button Section -->
+    <div class="contact-section">
+      <p>더 궁금한 점이 있으시나요?</p>
+      <a href="mailto:growplant@gmail.com" class="contact-btn">문의하기</a>
+    </div>
+
+  </div>
+
+</body>
+</html>

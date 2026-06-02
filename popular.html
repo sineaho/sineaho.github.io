@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>인기 도구 - Cineaho</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      background-color: #f8fafc;
+      color: #1e293b;
+      font-family: 'Inter', 'Noto Sans KR', sans-serif;
+      line-height: 1.7;
+      padding: 0;
+      margin: 0;
+    }
+    
+    /* Top dark banner */
+    .popular-banner {
+      background-color: #060913;
+      color: #ffffff;
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .popular-banner .trending-badge {
+      display: inline-block;
+      background: rgba(244, 63, 94, 0.1);
+      color: #f43f5e;
+      border: 1px solid rgba(244, 63, 94, 0.2);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      letter-spacing: 0.5px;
+    }
+    .popular-banner h1 {
+      font-size: 36px;
+      font-weight: 800;
+      margin: 0 0 12px 0;
+      letter-spacing: -0.5px;
+    }
+    .popular-banner p {
+      font-size: 15px;
+      color: #94a3b8;
+      margin: 0;
+    }
+
+    .main-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    /* Back Button */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #64748b;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 32px;
+      transition: color 0.2s;
+    }
+    .back-btn:hover {
+      color: #0f172a;
+    }
+    .back-btn svg {
+      vertical-align: middle;
+    }
+
+    /* Featured Big Card */
+    .featured-card {
+      background-color: #0c1220;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 40px;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 40px;
+      margin-bottom: 60px;
+      color: #ffffff;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+    .featured-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 20px;
+    }
+    .featured-badge {
+      display: inline-block;
+      align-self: flex-start;
+      background-color: rgba(99, 102, 241, 0.15);
+      color: #818cf8;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+    .featured-left h2 {
+      font-size: 28px;
+      font-weight: 800;
+      margin: 0;
+      line-height: 1.3;
+    }
+    .featured-left h2 a {
+      color: #ffffff;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .featured-left h2 a:hover {
+      color: #818cf8;
+    }
+    .featured-left p {
+      font-size: 14.5px;
+      color: #94a3b8;
+      margin: 0;
+      line-height: 1.6;
+    }
+    .featured-capsules {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .capsule {
+      font-size: 12px;
+      color: #cbd5e1;
+      background-color: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 4px 12px;
+      border-radius: 6px;
+    }
+    
+    .featured-right {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .metric-card {
+      background-color: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+    }
+    .metric-val {
+      font-size: 20px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+    .metric-label {
+      font-size: 12.5px;
+      color: #94a3b8;
+    }
+
+    /* Recommended Section Header */
+    .recom-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 16px;
+      margin-bottom: 32px;
+    }
+    .recom-title-area h2 {
+      font-size: 24px;
+      font-weight: 800;
+      color: #1e293b;
+      margin: 0 0 6px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .recom-title-area p {
+      font-size: 13.5px;
+      color: #64748b;
+      margin: 0;
+    }
+    .view-all-btn {
+      background-color: #ffffff;
+      color: #0f172a;
+      border: 1px solid #e2e8f0;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .view-all-btn:hover {
+      background-color: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    /* Grid layout for recommended tools */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 20px;
+    }
+    .tool-card {
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+    .tool-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+      border-color: #2563eb;
+    }
+    .card-top {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .card-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-title-row .app-icon {
+      font-size: 24px;
+    }
+    .card-title-row h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0;
+      line-height: 1.4;
+    }
+    .badge-row {
+      display: flex;
+      gap: 6px;
+    }
+    .badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .badge-level {
+      color: #10b981;
+      background-color: #ecfdf5;
+    }
+    .badge-level.badge-adv {
+      color: #8b5cf6;
+      background-color: #f5f3ff;
+    }
+    .badge-time {
+      color: #64748b;
+      background-color: #f1f5f9;
+    }
+    .card-desc {
+      font-size: 13px;
+      color: #64748b;
+      margin: 0;
+      line-height: 1.5;
+    }
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .tag {
+      font-size: 11px;
+      color: #64748b;
+      background-color: #f1f5f9;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    
+    @media (max-width: 900px) {
+      .featured-card {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding: 30px;
+      }
+      .tools-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    @media (max-width: 600px) {
+      .tools-grid {
+        grid-template-columns: 1fr;
+      }
+      .recom-header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      .view-all-btn {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top dark banner -->
+  <div class="popular-banner">
+    <span class="trending-badge">🔥 TRENDING NOW</span>
+    <h1>인기 도구</h1>
+    <p>가장 많은 사랑을 받고 있는 인기 웹 도구들을 만나보세요.</p>
+  </div>
+
+  <div class="main-container">
+    <a href="index.html" class="back-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      <span>CineAHO 홈으로</span>
+    </a>
+
+    <!-- Featured Section -->
+    <div class="featured-card">
+      <div class="featured-left">
+        <span class="featured-badge">✨ FEATURED</span>
+        <h2><a href="./youtube-hub/index.html">YouTube 채널 분석 Pro</a></h2>
+        <p>채널 데이터 분석, A1~C3 등급 분류, 성장률 추적, 지역별 통계 등 크리에이터 인사이트를 제공하는 핵심 Cineaho 코너입니다.</p>
+        <div class="featured-capsules">
+          <span class="capsule">실시간 데이터</span>
+          <span class="capsule">등급 정밀 분석</span>
+          <span class="capsule">엑셀 내보내기</span>
+          <span class="capsule">성장률 트래킹</span>
+        </div>
+      </div>
+      
+      <div class="featured-right">
+        <div class="metric-card">
+          <span class="metric-val">168K+</span>
+          <span class="metric-label">채널 데이터</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-val">A1 ~ C3</span>
+          <span class="metric-label">등급 분류</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-val">Real-time</span>
+          <span class="metric-label">실시간 분석</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-val">Export</span>
+          <span class="metric-label">데이터 추출</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommended Section Header -->
+    <div class="recom-header-row">
+      <div class="recom-title-area">
+        <h2>🎲 오늘의 추천 도구</h2>
+        <p>원본 앱 레지스트리의 featured 도구를 기준으로 먼저 표시합니다. 방문 통계 정렬은 D1 통계 집계와 연결합니다.</p>
+      </div>
+      <a href="all-tools.html" class="view-all-btn">모든 도구 보기</a>
+    </div>
+
+    <!-- Grid Section 2: Recommended Tools -->
+    <div class="tools-grid">
+      
+      <!-- Card 1 -->
+      <a href="coming-soon.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">👻</span>
+            <h3>고스트 헌터 - 미로 액션 게임</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">추억의 팩맨에서 영감을 받은 완전히 새로운 미로 액션 게임. 4마리 유령의 개별 AI 패턴, 파워 펠릿 시스템, 보너스 과일,...</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#게임</span>
+          <span class="tag">#미로</span>
+          <span class="tag">#아케이드</span>
+        </div>
+      </a>
+
+      <!-- Card 2 -->
+      <a href="./galaga/index.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">🚀</span>
+            <h3>스페이스 워리어 - 고전 아케이드 슈팅 게임</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">갤러그에서 영감을 받은 완전히 새로운 슈팅 게임. 듀얼 파이터 시스템, 보스 적 트랙터 빔, 챌린징 스테이지, 255스테이...</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#게임</span>
+          <span class="tag">#슈팅</span>
+          <span class="tag">#아케이드</span>
+        </div>
+      </a>
+
+      <!-- Card 3 -->
+      <a href="./janggi/index.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">♟️</span>
+            <h3>장기 - 세계 최고급 AI 대국 엔진</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">알파베타 탐색과 딥러닝 기반 평가를 갖춘 상용급 장기 엔진. 사람 대 사람, 사람 대 AI, AI 관전 모드 지원. 9x10 보드, 한자/한...</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#게임</span>
+          <span class="tag">#보드</span>
+          <span class="tag">#장기</span>
+        </div>
+      </a>
+
+      <!-- Card 4 -->
+      <a href="coming-soon.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">🎴</span>
+            <h3>7포커 - 세븐 오디 스터드 (세계 최고급)</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">한국식 세븐 오디 포커(Seven-card stud 변형). 7장 카드, 입/다운카드 공개 규칙, 몬테카를로 기반 AI, 박진감 있는...</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#게임</span>
+          <span class="tag">#카드</span>
+          <span class="tag">#포커</span>
+        </div>
+      </a>
+
+      <!-- Card 5 -->
+      <a href="coming-soon.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">🥗</span>
+            <h3>음식/재료 칼로리 계산기</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level">초급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">음식/재료별 영양정보(100g 기준)와 1회 제공량 프리셋으로 총 칼로리를 빠르게 계산. 세션ID만 사용, 개인정보 미수집.</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#건강</span>
+          <span class="tag">#칼로리</span>
+          <span class="tag">#영양</span>
+        </div>
+      </a>
+
+      <!-- Card 6 -->
+      <a href="./omok/index.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">⚫</span>
+            <h3>오목 프로 - 상용급 대국 엔진</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">알파베타 탐색과 패턴 평가를 갖춘 상용급 오목 엔진. 사람 대 사람, 사람 대 AI, AI 관전 모드 지원. 15/19 보드, 선공 선택,...</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#게임</span>
+          <span class="tag">#보드</span>
+          <span class="tag">#오목</span>
+        </div>
+      </a>
+
+      <!-- Card 7 -->
+      <a href="coming-soon.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">🎴</span>
+            <h3>포카드 - 4장 포커 월드클래스</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">세계 최고 수준 4장 포커(포카드) 엔진. 4장 조합 평가(스트레이트 플러시~하이카드), 간결한 UX, 개인정보 수집 없이 Sessio...</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#게임</span>
+          <span class="tag">#카드</span>
+          <span class="tag">#포커</span>
+        </div>
+      </a>
+
+      <!-- Card 8 -->
+      <a href="coming-soon.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">🃏</span>
+            <h3>Card Games - 포커 (AI 대결, 초고난이도)</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">상용 수준 엔진 지향. 헤즈업 텍사스 홀덤 베팅 라운드/핸드 평가/세션 로깅/리더보드 기반. AI 대결 초고난이도 모드 제공(추후...</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#게임</span>
+          <span class="tag">#보드</span>
+          <span class="tag">#카드</span>
+        </div>
+      </a>
+
+      <!-- Card 9 -->
+      <a href="./sudoku/index.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">🧩</span>
+            <h3>스도쿠 Pro - 상용급 퍼즐 엔진</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">유일해 보장 생성기, 난이도(5단계), 연필/메모, 자동 메모/제거, 스마트 하이라이트, 실수 표시, 실행취소/다시실행,...</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#게임</span>
+          <span class="tag">#퍼즐</span>
+          <span class="tag">#보드</span>
+        </div>
+      </a>
+
+      <!-- Card 10 -->
+      <a href="coming-soon.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">💬</span>
+            <h3>워드 퍼즐 - 하루 한 번 5글자 맞추기</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">매일 1판</span>
+          </div>
+          <p class="card-desc">워들에서 영감을 받은 하루 한 번 6번의 기회로 5글자 단어를 맞추는 중독성 퍼즐. 키보드/모바일 입력, 색각 배려 색상 테마,...</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#게임</span>
+          <span class="tag">#퍼즐</span>
+          <span class="tag">#단어</span>
+        </div>
+      </a>
+
+      <!-- Card 11 -->
+      <a href="./2048/index.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">🔢</span>
+            <h3>2048 - 숫자 타일 합치기 (세계 최고급)</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">되돌리기(최대 20), AI 힌트, 하드 모드(4 생성 확률+), 저장/복원, 보드 크기(3~6) 커스터마이징까지 지원하는 상용급 204...</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#게임</span>
+          <span class="tag">#퍼즐</span>
+          <span class="tag">#2048</span>
+        </div>
+      </a>
+
+      <!-- Card 12 -->
+      <a href="coming-soon.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">🧠</span>
+            <h3>메모리 게임 - 카드 짝 맞추기 (세계 최고급)</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">힌트, 관전(자동 풀기), 데일리 시드, 시드 공유, 접근성, 난이도/테마, 반응형까지 모두 갖춘 최상급 메모리 게임.</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#게임</span>
+          <span class="tag">#퍼즐</span>
+          <span class="tag">#기억력</span>
+        </div>
+      </a>
+
+    </div>
+
+  </div>
+
+</body>
+</html>
