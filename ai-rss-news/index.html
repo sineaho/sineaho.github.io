@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Tech News RSS Feeds Dashboard - CineAHO</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- App Header & Toolbar Toolbar -->
+  <header class="main-header">
+    <div class="header-left">
+      <!-- Back to CineAHO Portal Home -->
+      <a href="../index.html" class="action-btn" style="background-color: rgba(255,255,255,0.05); border: 1px solid var(--border-color); text-decoration: none; display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 6px; color: var(--text-main); margin-right: 8px;" title="CineAHO 홈으로 이동">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      </a>
+      
+      <div class="app-logo">AI Tech News RSS Feeds</div>
+      <div class="search-box-container">
+        <!-- Search Icon -->
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="search-input" placeholder="검색: 제목·번역·소스명">
+      </div>
+      <span class="subtext-mute">스크롤 시 열당 20건씩 추가 로드</span>
+    </div>
+
+    <!-- Filters & Settings Bar -->
+    <div class="header-right">
+      <!-- RSS Manager Button -->
+      <button class="action-btn rss-btn" id="btn-toggle-rss-drawer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:4px;"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        <span>RSS 피드 관리</span>
+      </button>
+
+      <!-- Period Filter Dropdown -->
+      <select class="select-filter" id="filter-period">
+        <option value="all">전체기간</option>
+        <option value="24h">24시간</option>
+        <option value="7d">7일</option>
+        <option value="30d">30일</option>
+      </select>
+
+      <!-- Publisher filter dropdown -->
+      <select class="select-filter" id="filter-source">
+        <option value="all">전체 언론사</option>
+      </select>
+
+      <div class="action-btn-group">
+        <button class="action-btn active" id="btn-sort-latest">최신순</button>
+        <button class="action-btn" id="btn-sort-source">소스명</button>
+        <button class="action-btn active" id="btn-toggle-translation">번역표시</button>
+        <button class="action-btn" id="btn-toggle-duplicate">중복묶기OFF</button>
+        <button class="action-btn" id="btn-reset">초기화</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Categories Filter Navigation Bar -->
+  <nav class="categories-bar">
+    <div class="categories-container" id="category-filters">
+      <button class="category-btn active" data-category="all">주요카테고리 전체</button>
+      <button class="category-btn" data-category="일반/AI">일반/AI</button>
+      <button class="category-btn" data-category="코딩·도구/AI">코딩·도구/AI</button>
+      <button class="category-btn" data-category="비즈니스·투자/AI">비즈니스·투자/AI</button>
+      <button class="category-btn" data-category="연구·논문/AI">연구·논문/AI</button>
+      <button class="category-btn" data-category="정책·규제/AI">정책·규제/AI</button>
+      <button class="category-btn" data-category="보안·프라이버시/AI">보안·프라이버시/AI</button>
+      <button class="category-btn" data-category="로봇/AI">로봇/AI</button>
+      <button class="category-btn" data-category="칩·하드웨어/AI">칩·하드웨어/AI</button>
+    </div>
+  </nav>
+
+  <!-- RSS Manager Drawer -->
+  <aside class="rss-drawer" id="rss-drawer">
+    <div class="drawer-header">
+      <h2>RSS 피드 소스 관리</h2>
+      <button class="drawer-close" id="rss-drawer-close">&times;</button>
+    </div>
+    
+    <div class="drawer-content">
+      <!-- Add RSS Form -->
+      <form class="rss-form" id="add-rss-form">
+        <h3>새로운 RSS 주소 등록</h3>
+        <div class="form-group">
+          <label for="feed-url">RSS URL 주소</label>
+          <input type="url" id="feed-url" placeholder="https://example.com/feed.xml" required>
+        </div>
+        <div class="form-group">
+          <label for="feed-name">피드 이름 (언론사/채널명)</label>
+          <input type="text" id="feed-name" placeholder="예: MIT 테크리뷰 AI" required>
+        </div>
+        <div class="form-group-row">
+          <div class="form-group flex-1">
+            <label for="feed-column">대상 열 그룹</label>
+            <select id="feed-column">
+              <option value="1">한국 (국내 매체)</option>
+              <option value="2">외국 ① (테크/과학 미디어)</option>
+              <option value="3">외국 ② (커뮤니티/블로그)</option>
+            </select>
+          </div>
+          <div class="form-group flex-1">
+            <label for="feed-category">기본 카테고리</label>
+            <select id="feed-category">
+              <option value="일반/AI">일반/AI</option>
+              <option value="코딩·도구/AI">코딩·도구/AI</option>
+              <option value="비즈니스·투자/AI">비즈니스·투자/AI</option>
+              <option value="연구·논문/AI">연구·논문/AI</option>
+              <option value="정책·규제/AI">정책·규제/AI</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="submit-btn">RSS 등록 및 즉시 수집</button>
+      </form>
+
+      <div class="feed-list-section">
+        <h3>등록된 RSS 소스 목록</h3>
+        <ul class="feed-list" id="feed-sources-list">
+          <!-- Dynamic sources populated here -->
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Feed Status Overlay (Loading/Success/Error feedback) -->
+  <div class="status-overlay" id="status-overlay">
+    <div class="status-spinner"></div>
+    <div class="status-message" id="status-message">RSS 데이터를 수집하고 파싱하는 중...</div>
+  </div>
+
+  <!-- Main 3-Column Content Layout -->
+  <main class="news-columns-container">
+    
+    <!-- COLUMN 1: 한국 -->
+    <section class="news-column" id="col-korea">
+      <div class="column-header">
+        <div class="column-title">한국 <span class="col-count-badge" id="col-k-count">총 0건 · 0건 표시</span></div>
+        <div class="column-subtitle">국내 매체 RSS</div>
+      </div>
+      <div class="column-cards-wrapper" id="col-k-content">
+        <!-- Cards loaded here -->
+      </div>
+    </section>
+
+    <!-- COLUMN 2: 외국 ① -->
+    <section class="news-column" id="col-foreign-1">
+      <div class="column-header">
+        <div class="column-title">외국 ① <span class="col-count-badge" id="col-f1-count">총 0건 · 0건 표시</span></div>
+        <div class="column-subtitle">빅테크·연구기관·주요 테크/과학 미디어</div>
+      </div>
+      <div class="column-cards-wrapper" id="col-f1-content">
+        <!-- Cards loaded here -->
+      </div>
+    </section>
+
+    <!-- COLUMN 2: 외국 ② -->
+    <section class="news-column" id="col-foreign-2">
+      <div class="column-header">
+        <div class="column-title">외국 ② <span class="col-count-badge" id="col-f2-count">총 0건 · 0건 표시</span></div>
+        <div class="column-subtitle">뉴스레터·교육·딥러닝·개인 블로그·커뮤니티</div>
+      </div>
+      <div class="column-cards-wrapper" id="col-f2-content">
+        <!-- Cards loaded here -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Floating Utility controls -->
+  <div class="floating-utilities">
+    <div class="scroll-progress-widget" id="scroll-progress">0%</div>
+    <button class="floating-btn" id="btn-scroll-top" title="맨 위로 스크롤">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+    </button>
+    <button class="floating-btn" id="btn-scroll-bottom" title="맨 아래로 스크롤">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+  </div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
