@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>당구3D - 프리미엄 3D 당구 시뮬레이터</title>
+  <meta name="description" content="웹 브라우저에서 즐기는 리얼한 3D 당구 게임. 8볼 포켓볼과 3쿠션 캐롬 모드, 정교한 물리 연산 및 가이드 라인 시스템을 제공합니다.">
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Ambient background glow effects -->
+  <div class="bg-glow bg-glow-green"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-panel">
+    <div class="header-left">
+      <a href="../index.html" class="back-btn" id="btn-back-home" title="CineAHO 홈으로 이동">
+        <i class="fa-solid fa-chevron-left"></i>
+      </a>
+      <div class="app-logo">
+        <i class="fa-solid fa-circle-dot logo-icon"></i>
+        <h1 class="logo-text">당구<span>3D</span></h1>
+      </div>
+      <span class="app-version">v1.2 Commercial</span>
+    </div>
+    <div class="header-right">
+      <div class="mode-capsule" id="current-mode-badge">
+        <span class="pulse-dot"></span>
+        <span id="mode-text">대기 중</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Game Container -->
+  <main class="game-container">
+    
+    <!-- Scoreboard and Turn Indicator -->
+    <section class="scoreboard-section glass-panel" id="scoreboard">
+      <div class="player-card active" id="player1-card">
+        <div class="player-info">
+          <div class="avatar"><i class="fa-solid fa-user-tie"></i></div>
+          <div class="meta">
+            <span class="player-name" id="p1-name">플레이어 1</span>
+            <span class="player-status" id="p1-status">내 차례</span>
+          </div>
+        </div>
+        <div class="player-score" id="p1-score">0</div>
+        <div class="pocketed-tray" id="p1-tray">
+          <!-- Pocketed balls will render here dynamically -->
+        </div>
+      </div>
+
+      <div class="game-status-center">
+        <div class="round-indicator" id="game-status-msg">게임을 시작하세요</div>
+        <div class="game-options-compact">
+          <button class="mode-select-btn active" id="btn-mode-practice" data-mode="practice"><i class="fa-solid fa-graduation-cap"></i> 연습모드</button>
+          <button class="mode-select-btn" id="btn-mode-8ball" data-mode="8ball"><i class="fa-solid fa-circle-notch"></i> 8볼 포켓볼</button>
+          <button class="mode-select-btn" id="btn-mode-3cushion" data-mode="3cushion"><i class="fa-solid fa-circle"></i> 3쿠션 캐롬</button>
+        </div>
+      </div>
+
+      <div class="player-card" id="player2-card">
+        <div class="player-score" id="p2-score">0</div>
+        <div class="player-info">
+          <div class="meta align-right">
+            <span class="player-name" id="p2-name">플레이어 2</span>
+            <span class="player-status" id="p2-status">대기</span>
+          </div>
+          <div class="avatar"><i class="fa-solid fa-user-ninja"></i></div>
+        </div>
+        <div class="pocketed-tray" id="p2-tray">
+          <!-- Pocketed balls will render here dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 3D Viewport Area -->
+    <section class="viewport-section glass-panel">
+      <!-- 3D Canvas container -->
+      <div id="three-canvas-container">
+        <!-- Canvas will be appended here by Three.js -->
+        <div id="loading-overlay">
+          <div class="loader"></div>
+          <p>3D 물리 테이블 및 당구장 로드 중...</p>
+        </div>
+        
+        <!-- Overhead cushion indicators (shown in 3cushion mode) -->
+        <div class="cushion-bounce-counter" id="cushion-counter-display" style="display: none;">
+          <span class="cushion-count-label">쿠션 충돌</span>
+          <span class="cushion-count-val" id="cushion-count-num">0</span>
+        </div>
+      </div>
+
+      <!-- Live Overhead Camera Mini-Map Toggle or Help Buttons -->
+      <div class="viewport-overlay-controls">
+        <button class="overlay-btn" id="btn-cam-free" title="자유 시점 (우클릭 드래그로 회전)"><i class="fa-solid fa-camera"></i> 자유시점</button>
+        <button class="overlay-btn" id="btn-cam-overhead" title="오버헤드 뷰 (탑다운)"><i class="fa-solid fa-border-all"></i> 오버헤드</button>
+        <button class="overlay-btn" id="btn-cam-cue" title="큐대 조준 시점"><i class="fa-solid fa-crosshairs"></i> 조준시점</button>
+      </div>
+    </section>
+
+    <!-- Controls Panel -->
+    <section class="controls-section glass-panel">
+      
+      <!-- Primary Action Buttons Row -->
+      <div class="action-buttons-group">
+        <button class="control-action-btn primary" id="btn-shoot">
+          <i class="fa-solid fa-bolt"></i>
+          <span>타격하기 (SHOOT)</span>
+        </button>
+        <button class="control-action-btn secondary" id="btn-reset-cue">
+          <i class="fa-solid fa-rotate-left"></i>
+          <span>큐대 재배치</span>
+        </button>
+        <button class="control-action-btn danger" id="btn-restart">
+          <i class="fa-solid fa-arrows-rotate"></i>
+          <span>새게임 시작</span>
+        </button>
+      </div>
+
+      <!-- Fine Tuning Sliders -->
+      <div class="fine-tuning-grid">
+        
+        <!-- Aim Angle Slider -->
+        <div class="control-item">
+          <div class="control-label-row">
+            <span class="label"><i class="fa-solid fa-compass"></i> 조준 방향 (Aim Angle)</span>
+            <span class="value" id="val-aim">0°</span>
+          </div>
+          <div class="slider-wrapper">
+            <button class="adjust-step-btn" id="btn-aim-dec"><i class="fa-solid fa-minus"></i></button>
+            <input type="range" id="slider-aim" min="0" max="360" step="0.5" value="0">
+            <button class="adjust-step-btn" id="btn-aim-inc"><i class="fa-solid fa-plus"></i></button>
+          </div>
+          <span class="control-desc">마우스로 당구대 베드를 좌우 드래그해도 방향 조준이 가능합니다.</span>
+        </div>
+
+        <!-- Shooting Power Slider -->
+        <div class="control-item">
+          <div class="control-label-row">
+            <span class="label"><i class="fa-solid fa-gauge-high"></i> 타격 세기 (Power)</span>
+            <span class="value" id="val-power">40%</span>
+          </div>
+          <div class="slider-wrapper">
+            <button class="adjust-step-btn" id="btn-power-dec"><i class="fa-solid fa-minus"></i></button>
+            <input type="range" id="slider-power" min="5" max="100" step="1" value="40">
+            <button class="adjust-step-btn" id="btn-power-inc"><i class="fa-solid fa-plus"></i></button>
+          </div>
+          <span class="control-desc">파워가 높을수록 공이 빠르게 나아가며 쿠션 반사각이 예리해집니다.</span>
+        </div>
+
+        <!-- Spin/English Control Pad -->
+        <div class="control-item spin-control-item">
+          <div class="control-label-row">
+            <span class="label"><i class="fa-solid fa-basketball"></i> 수구 회전 (Spin / English)</span>
+            <span class="value" id="val-spin">중앙 (0.00, 0.00)</span>
+          </div>
+          <div class="spin-selector-container">
+            <div class="spin-pad-back">
+              <div class="spin-grid-line hor"></div>
+              <div class="spin-grid-line ver"></div>
+              <div class="spin-circle-boundary"></div>
+              <div class="spin-cursor" id="spin-indicator"></div>
+            </div>
+            <div class="spin-hints">
+              <span class="hint-lbl top">밀어치기 (Follow)</span>
+              <span class="hint-lbl bottom">끌어치기 (Draw)</span>
+              <span class="hint-lbl left">좌회전 (Left)</span>
+              <span class="hint-lbl right">우회전 (Right)</span>
+              <button class="btn-spin-reset" id="btn-reset-spin">초기화</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Comprehensive Guide Section -->
+    <section class="guide-section glass-panel">
+      <div class="guide-header">
+        <i class="fa-solid fa-book-open"></i>
+        <h2>당구 3D 완벽 가이드</h2>
+      </div>
+      
+      <!-- Table of Contents -->
+      <div class="guide-toc">
+        <h3>목차 (TOC)</h3>
+        <ol>
+          <li><a href="#guide-history">당구의 역사 및 유래</a></li>
+          <li><a href="#guide-intro">게임 소개 및 주요 사양</a></li>
+          <li><a href="#guide-modes">게임 모드 특징 (8볼 vs 3쿠션)</a></li>
+          <li><a href="#guide-controls">조작법 가이드 및 시점 제어</a></li>
+          <li><a href="#guide-physics">정교한 2.5D 물리 시뮬레이션 기술</a></li>
+          <li><a href="#guide-spin">기교 플레이 비법 (회전/시네루 적용법)</a></li>
+          <li><a href="#guide-rules">점수 계산 및 파울 규칙</a></li>
+          <li><a href="#guide-tips">우승을 위한 실전 전략 팁</a></li>
+          <li><a href="#guide-faq">자주 묻는 질문 (FAQ)</a></li>
+        </ol>
+      </div>
+
+      <!-- Guide Content -->
+      <div class="guide-content-wrapper">
+        
+        <!-- 1. History -->
+        <article class="guide-article" id="guide-history">
+          <h3>1. 당구의 역사 및 유래</h3>
+          <p>
+            당구(Billiards)의 기원은 기원전 그리스 또는 고대 이집트까지 거슬러 올라가지만, 현대적인 형태의 테이블 게임은 14~15세기 유럽(주로 영국과 프랑스)에서 탄생했습니다. 초기에는 잔디 위에서 행해지던 크로케(Croquet) 스타일의 실외 게임을 왕실과 귀족들이 날씨에 구애받지 않고 실내에서 즐기기 위해 테이블 위로 옮겨온 데서 시작되었습니다.
+          </p>
+          <p>
+            19세기 산업혁명을 거치며 고무 쿠션의 발명과 초크의 도입, 가죽 팁의 개발로 예술구와 스핀 샷이 가능해졌으며, 오늘날 전 세계 수천만 명의 동호인이 즐기는 멘탈 및 기하학 스포츠로 발전했습니다.
+          </p>
+        </article>
+
+        <!-- 2. Intro -->
+        <article class="guide-article" id="guide-intro">
+          <h3>2. 게임 소개 및 주요 사양</h3>
+          <p>
+            <strong>당구3D</strong>는 최신 WebGL 그래픽 기술과 정밀 물리 충돌 연산 엔진을 내장한 프리미엄 당구 시뮬레이터입니다. 브라우저 환경에서 추가 설치 없이 60FPS 이상의 매끄러운 3D 그래픽을 렌더링하며, 오차 없는 탄성 충돌 연산으로 실제 당구대에서 게임을 하는 듯한 사실감을 선사합니다.
+          </p>
+          <ul>
+            <li><strong>엔진 사양:</strong> Three.js (r128) WebGL API, OrbitControls 반응형 카메라 제어</li>
+            <li><strong>물리 엔진:</strong> 볼-볼 탄성 충돌 임펄스 모델, 쿠션 댐핑 반발력 및 회전 전이 모델</li>
+            <li><strong>그래픽스:</strong> 당구 테이블 섀도우 맵, 당구 천(Felt) 질감 렌더링, 번호판 볼 텍스처 매핑</li>
+          </ul>
+        </article>
+
+        <!-- 3. Modes -->
+        <article class="guide-article" id="guide-modes">
+          <h3>3. 게임 모드 특징</h3>
+          <div class="mode-info-grid">
+            <div class="mode-card-info">
+              <h4><i class="fa-solid fa-circle-notch"></i> 8볼 포켓볼 (8-Ball Pool)</h4>
+              <p>
+                총 15개의 번호공과 1개의 백색 수구(Cue Ball)를 사용합니다. 플레이어 중 한 명은 단색 공(Solid, 1~7번), 다른 플레이어는 줄무늬 공(Stripe, 9~15번)을 그룹으로 가집니다. 자신의 그룹 공을 모두 포켓에 집어넣은 뒤, 마지막으로 8번 검은색 공을 지정된 포켓에 넣으면 승리합니다.
+              </p>
+            </div>
+            <div class="mode-card-info">
+              <h4><i class="fa-solid fa-circle"></i> 3쿠션 캐롬 (3-Cushion)</h4>
+              <p>
+                포켓이 없는 당구대에서 백색 공, 황색 공, 적색 공 총 3개로 진행됩니다. 플레이어 1은 백색 공, 플레이어 2는 황색 공을 수구로 지정합니다. 수구를 쳐서 적색 공과 상대방의 수구(나머지 공 2개)를 모두 맞춰야 하는데, 두 번째 공에 닿기 전에 **최소 3번 이상 당구대 쿠션(쿠션 레일)**에 부딪혀야만 유효한 득점으로 인정됩니다.
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <!-- 4. Controls -->
+        <article class="guide-article" id="guide-controls">
+          <h3>4. 조작법 가이드 및 시점 제어</h3>
+          <p>
+            키보드, 마우스, 터치 입력을 모두 조화롭게 활용하여 조준을 수행할 수 있습니다.
+          </p>
+          <div class="controls-list-box">
+            <ul>
+              <li><strong>방향 조준:</strong> 하단의 [조준 방향] 슬라이더를 조작하거나, 3D 화면의 당구대 바닥을 클릭 후 좌우로 드래그하면 직관적으로 조준 선이 회전합니다. 슬라이더 양쪽의 -, + 버튼으로 0.5° 단위 미세조정이 가능합니다.</li>
+              <li><strong>세기 조절:</strong> [타격 세기] 슬라이더를 끌어서 5%에서 100%까지 힘을 조절합니다.</li>
+              <li><strong>스핀 제어:</strong> 수구 그림이 그려진 패드를 마우스로 클릭 및 드래그하여 수구의 타격 지점(당점)을 선택합니다.</li>
+              <li><strong>카메라 시점 변경:</strong>
+                <ul>
+                  <li><strong>자유 시점:</strong> 마우스 왼쪽 버튼 드래그로 각도를 360° 공중 회전시키고 마우스 휠로 줌인/줌아웃할 수 있습니다.</li>
+                  <li><strong>오버헤드:</strong> 당구대 바로 위에서 바닥을 수직으로 내려다보는 2D 투영 형태의 뷰로 변환되어 경로를 정밀 계산하기 좋습니다.</li>
+                  <li><strong>조준 시점:</strong> 큐대 뒤쪽에서 수구를 향해 시선이 일치하여 실제 타격 각도를 확인하기 유리합니다.</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- 5. Physics -->
+        <article class="guide-article" id="guide-physics">
+          <h3>5. 정교한 2.5D 물리 시뮬레이션 기술</h3>
+          <p>
+            본 게임은 구체의 강체 역학 및 선형 대수학 공식을 실시간 계산 루프에 적용했습니다.
+          </p>
+          <div class="formula-box">
+            <p><strong>구체간 충돌 물리 공식:</strong></p>
+            <code>v1_final = v1 - (2 * m2 / (m1 + m2)) * (dot(v1 - v2, x1 - x2) / ||x1 - x2||^2) * (x1 - x2)</code>
+            <p>질량이 동일한 구체($m1 = m2$)이므로 전달되는 임펄스는 충돌 단면의 노멀 벡터 성분 방향으로 100% 교환되며, 마찰력 감쇄($F_{friction} = -\mu \cdot v$)에 의해 자연스럽게 굴러가다 멈춥니다.</p>
+          </div>
+          <p>
+            쿠션과의 충돌 시에는 단순 반사각(기하학적 반사) 외에도 쿠션의 고무 탄성 계수($e \approx 0.75$)에 의해 속도가 감쇄되며, 공의 스핀 값에 따른 회전 마찰력이 가해져 입사각과 반사각이 동적으로 왜곡되는 물리 현상을 시뮬레이트합니다.
+          </p>
+        </article>
+
+        <!-- 6. Spin -->
+        <article class="guide-article" id="guide-spin">
+          <h3>6. 기교 플레이 비법 (회전/시네루 적용법)</h3>
+          <p>
+            수구의 타격 지점인 당점(Spin Offset)을 미세조정하여 물리 법칙을 뛰어넘는 화려한 샷을 시도하세요:
+          </p>
+          <div class="spin-strategies">
+            <div class="strategy-row">
+              <strong>밀어치기 (Oshioshi / Follow):</strong>
+              <span>당점을 중앙 위쪽으로 배치합니다. 수구가 목적구를 타격한 후에도 멈추지 않고 앞방향으로 전진 전지 회전을 가지며 계속 전진합니다.</span>
+            </div>
+            <div class="strategy-row">
+              <strong>끌어치기 (Hikiki / Draw):</strong>
+              <span>당점을 중앙 아래쪽으로 배치합니다. 수구가 목적구를 맞춘 순간 역회전에 의해 뒤쪽으로 튕겨 돌아옵니다. 장애물 너머의 공을 노릴 때 필수적입니다.</span>
+            </div>
+            <div class="strategy-row">
+              <strong>옆회전 (English / Side Spin):</strong>
+              <span>당점을 좌/우측으로 밀어줍니다. 목적구를 맞출 때의 각도 변화는 적지만, 쿠션에 부딪히는 순간 회전 방향에 따라 극적으로 반사 각도가 좁아지거나 넓어집니다. 3쿠션 모드의 고득점을 위한 핵심 기술입니다.</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 7. Rules -->
+        <article class="guide-article" id="guide-rules">
+          <h3>7. 점수 계산 및 파울 규칙</h3>
+          <p>
+            엄격한 공식 경기 규칙을 소프트웨어 알고리즘으로 자동 판정합니다:
+          </p>
+          <ul>
+            <li><strong>8볼 파울 (Foul):</strong> 수구가 아무 공도 맞추지 못하거나, 상대방 그룹의 공을 먼저 맞춘 경우 파울이 선언됩니다. 또한 수구(흰색 공)가 포켓에 빠지는 **스크래치(Scratch)**가 발생하면 상대편에게 기회가 넘어가며 수구를 프리볼 형태로 원하는 곳에 재배치하여 칠 수 있는 기회가 제공됩니다.</li>
+            <li><strong>3쿠션 득점 판정:</strong> 수구 발사 후 3회 이상의 쿠션 터치 조건이 누적 체크된 상태에서 두 번째 적구를 맞추는 경우 성공 메시지와 함께 즉시 1점이 누적되며 차례를 계속 유지합니다. 득점에 실패하거나 쿠션 개수가 부족한 채로 두 공을 맞추면 득점 없이 상대방의 차례로 넘어갑니다.</li>
+          </ul>
+        </article>
+
+        <!-- 8. Tips -->
+        <article class="guide-article" id="guide-tips">
+          <h3>8. 우승을 위한 실전 전략 팁</h3>
+          <p>
+            1. **조준선(Prediction Guide) 적극 활용:** 수구에서 목적구로 이어지는 궤적 가이드를 눈여겨보세요. 두 공이 충돌하는 접점 분리 각도는 항상 약 90° 각도로 벌어집니다.<br>
+            2. **쿠션 반사경로 암기:** 3쿠션에서 수구의 궤적은 파이브 앤 하프(Five & Half) 시스템 계산법에 부합합니다. 수구 지점값에서 1쿠션 지점값을 빼면 3쿠션 도달 지점값을 얻을 수 있습니다.<br>
+            3. **스핀 조절의 절제:** 과도한 스핀은 공의 직진 경로를 굴절(스쿼트 현상)시켜 얇게 맞거나 빗나가는 원인이 됩니다. 초보자는 팁 반경 내에서 1~2팁 정도의 약한 회전부터 감을 잡는 것을 추천합니다.
+          </p>
+        </article>
+
+        <!-- 9. FAQ -->
+        <article class="guide-article" id="guide-faq">
+          <h3>9. 자주 묻는 질문 (FAQ)</h3>
+          <div class="faq-item">
+            <strong>Q. 공이 당구대 밖으로 튕겨 나갈 수도 있나요?</strong>
+            <p>A. 본 시뮬레이터는 안정적인 2.5D 충돌 경계면 락킹 기술을 갖춰 공이 레일을 넘어가 분실되거나 튕겨 나가는 오류를 원천 차단했습니다. 안심하고 100% 최대 파워 샷을 날려보세요.</p>
+          </div>
+          <div class="faq-item">
+            <strong>Q. 큐대 조준 가이드 선이 표시되지 않아요.</strong>
+            <p>A. 모든 공이 완전히 정지된 상태(속도 = 0)에서만 큐대와 조준선이 다시 렌더링됩니다. 공이 움직이는 중에는 타격 조작이 잠금 처리됩니다.</p>
+          </div>
+          <div class="faq-item">
+            <strong>Q. 스마트폰이나 태블릿에서도 플레이 가능한가요?</strong>
+            <p>A. 네, 모바일 환경의 터치 반응형 렌더링 및 가로/세로 오토 피팅을 지원하므로 모바일 기기에서도 매우 쾌적하게 3D 당구를 플레이할 수 있습니다.</p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- External CDN Libraries (Three.js and OrbitControls) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

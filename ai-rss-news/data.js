@@ -50,7 +50,7 @@ const prePopulatedArticles = [
   {
     id: "c1-1",
     title: "EU, 클라우드 조달 기준 강화 추진...美 클라우드 배제 가능성",
-    link: "http://www.digitaltoday.co.kr/news/articleView.html?idxno=520101",
+    link: "https://www.digitaltoday.co.kr/news/articleView.html?idxno=671150",
     source: "디지털투데이 - IT·AI·금융·크립토 종합 뉴스",
     category: "정책·규제/AI",
     pubDate: "2026-06-02T02:25:00.000Z",
@@ -58,8 +58,8 @@ const prePopulatedArticles = [
   },
   {
     id: "c1-2",
-    title: "앤트로픽, EU에도 고성능 AI 모델 '미토스' 접근 허용",
-    link: "http://www.digitaltoday.co.kr/news/articleView.html?idxno=520098",
+    title: "앤트로픽 \"미토스 도입 두 달도 안 돼 고위험 취약점 1만건 넘게 찾아\"",
+    link: "https://www.digitaltoday.co.kr/news/articleView.html?idxno=668864",
     source: "디지털투데이 - IT·AI·금융·크립토 종합 뉴스",
     category: "일반/AI",
     pubDate: "2026-06-02T02:09:00.000Z",
@@ -68,7 +68,7 @@ const prePopulatedArticles = [
   {
     id: "c1-3",
     title: "앤트로픽, 美 SEC IPO 증권신고서 비공개 제출... 오픈AI보다 먼저",
-    link: "http://www.digitaltoday.co.kr/news/articleView.html?idxno=520095",
+    link: "https://www.digitaltoday.co.kr/news/articleView.html?idxno=671148",
     source: "디지털투데이 - IT·AI·금융·크립토 종합 뉴스",
     category: "비즈니스·투자/AI",
     pubDate: "2026-06-02T02:04:00.000Z",
@@ -77,7 +77,7 @@ const prePopulatedArticles = [
   {
     id: "c1-4",
     title: "데이터 플랫폼으로 큰 스노우플레이크, 기업AI에이전트 첫 진입로 노린다",
-    link: "http://www.digitaltoday.co.kr/news/articleView.html?idxno=520090",
+    link: "https://www.digitaltoday.co.kr/news/articleView.html?idxno=671147",
     source: "디지털투데이 - IT·AI·금융·크립토 종합 뉴스",
     category: "코딩·도구/AI",
     pubDate: "2026-06-02T01:58:00.000Z",
@@ -85,8 +85,8 @@ const prePopulatedArticles = [
   },
   {
     id: "c1-5",
-    title: "Show GN: Codexplain: Codex를 Claude Code처럼 말하게 하기 프로젝트",
-    link: "https://news.hada.io/topic?id=18491",
+    title: "Codexplain: Codex를 Claude Code처럼 말하게 하기 프로젝트",
+    link: "https://news.hada.io/topic?id=30079",
     source: "GeekNews (긱뉴스) - 개발·AI·테크 커뮤니티",
     category: "코딩·도구/AI",
     pubDate: "2026-06-02T01:32:00.000Z",
@@ -95,7 +95,7 @@ const prePopulatedArticles = [
   {
     id: "c1-6",
     title: "\"이란, 美와 협상 중단하고 호르무즈 완전 봉쇄\"...유가 급등",
-    link: "https://www.bloter.net/news/articleView.html?idxno=618291",
+    link: "https://www.bloter.net/news/articleView.html?idxno=664160",
     source: "블로터 - 디지털 경제·테크 뉴스",
     category: "정책·규제/AI",
     pubDate: "2026-06-02T00:46:00.000Z",
@@ -104,8 +104,8 @@ const prePopulatedArticles = [
   {
     id: "c1-7",
     title: "Chuwi Minibook X - 극도로 컴팩트한 미니 노트북 사용기",
-    link: "https://news.hada.io/topic?id=18490",
-    source: "GeekNews (긱뉴스) - 개발·AI·테크 커뮤기",
+    link: "https://news.hada.io/topic?id=30078",
+    source: "GeekNews (긱뉴스) - 개발·AI·테크 커뮤니티",
     category: "일반/AI",
     pubDate: "2026-06-02T00:39:00.000Z",
     column: 1
@@ -113,7 +113,7 @@ const prePopulatedArticles = [
   {
     id: "c1-8",
     title: "젠슨 황 CEO \"AI는 생성형 AI에서 에이전트 AI로 넘어갔다\"",
-    link: "http://www.digitaltoday.co.kr/news/articleView.html?idxno=520081",
+    link: "https://www.digitaltoday.co.kr/news/articleView.html?idxno=671144",
     source: "디지털투데이 - IT·AI·금융·크립토 종합 뉴스",
     category: "일반/AI",
     pubDate: "2026-06-02T00:15:00.000Z",
@@ -121,8 +121,8 @@ const prePopulatedArticles = [
   },
   {
     id: "c1-9",
-    title: "구글, AI 오버뷰 한국 적용 시작...검색 환경의 지각변동 예고",
-    link: "https://www.bloter.net/news/articleView.html?idxno=618288",
+    title: "엔비디아, PC용 AI 칩 출시…인텔·AMD에 도전장",
+    link: "https://www.bloter.net/news/articleView.html?idxno=664161",
     source: "블로터 - 디지털 경제·테크 뉴스",
     category: "일반/AI",
     pubDate: "2026-06-01T23:45:00.000Z",
@@ -130,8 +130,8 @@ const prePopulatedArticles = [
   },
   {
     id: "c1-10",
-    title: "LLM 경량화 솔루션 개발 스타트업 '파이오니어AI', 50억 프리A 투자 유치",
-    link: "https://news.hada.io/topic?id=18485",
+    title: "$300/월 AI 비용을 절반으로 줄인 OSS — claude-ns-hub",
+    link: "https://news.hada.io/topic?id=30069",
     source: "GeekNews (긱뉴스) - 개발·AI·테크 커뮤니티",
     category: "비즈니스·투자/AI",
     pubDate: "2026-06-01T22:12:00.000Z",
@@ -142,7 +142,7 @@ const prePopulatedArticles = [
   {
     id: "c2-1",
     title: "Anthropic Files Confidentially for US IPO as AI Boom Tests Public Markets",
-    link: "https://www.theguardian.com/technology/2026/jun/01/anthropic-ipo-confidential-filing",
+    link: "https://www.theguardian.com/technology/2026/jun/01/anthropic-ai-ipo",
     source: "The Guardian - Artificial Intelligence",
     category: "비즈니스·투자/AI",
     pubDate: "2026-06-02T03:12:00.000Z",
@@ -182,7 +182,7 @@ const prePopulatedArticles = [
   {
     id: "c2-5",
     title: "Secure AI Agents with Policy and Lambda Interceptors in Amazon Bedrock AgentCore",
-    link: "https://aws.amazon.com/blogs/machine-learning/secure-agents-bedrock/",
+    link: "https://aws.amazon.com/blogs/machine-learning/secure-ai-agents-with-policy-and-lambda-interceptors-in-amazon-bedrock-agentcore-gateway/",
     source: "AWS Machine Learning Blog",
     category: "보안·프라이버시/AI",
     pubDate: "2026-06-02T02:54:00.000Z",

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>바이오·의학 논문 트렌드 분석기 - CineAHO</title>
+  <meta name="description" content="최신 유명 바이오 및 의학 논문들을 분석하여 인용수, 키워드, 학술지 지표를 바탕으로 연구 트렌드를 시각화하고 미래 기술 예측 시뮬레이션을 제공합니다.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>SandBox</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="../index.html#tools-section">무료 앱</a></li>
+        <li><a href="https://blog.naver.com/sineaho" target="_blank" rel="noopener noreferrer" class="active">CineAHO</a></li>
+        <li><a href="../prompt.html">프롬프트</a></li>
+        <li><a href="../coming-soon.html">칼럼</a></li>
+        <li><a href="../coming-soon.html">PPT</a></li>
+        <li><a href="../coming-soon.html">위키</a></li>
+        <li><a href="../coming-soon.html">엔터테인먼트</a></li>
+        <li><a href="../coming-soon.html">AI 이미지</a></li>
+        <li><a href="../coming-soon.html">AI 툴</a></li>
+        <li><a href="../coming-soon.html">프로그램</a></li>
+        <li><a href="../coming-soon.html">쇼핑 핫딜</a></li>
+        <li><a href="../coming-soon.html">부업 백과</a></li>
+        <li><a href="../coming-soon.html">RSS</a></li>
+        <li><a href="../coming-soon.html">개발</a></li>
+        <li><a href="../coming-soon.html">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button id="theme-toggle" class="btn-theme">
+        <i class="fa-solid fa-sun"></i>
+        <span>라이트</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="hub-container bio-page-container">
+    
+    <!-- Hero Header -->
+    <section class="bio-hero-section glass-panel">
+      <div class="hero-left-info">
+        <div class="badge-capsule">
+          <span class="pulse-dot"></span>
+          <span>CineAHO Bio-Medical Trend Analysis Engine v1.0</span>
+        </div>
+        <h2 class="hero-bio-title">바이오·의학 연구 논문 트렌드 분석기</h2>
+        <p>글로벌 최정상 학술지(Nature, Science, Cell 등)의 논문 평가지표와 인용수, 키워드 데이터를 분석하고 시뮬레이션합니다.</p>
+      </div>
+      <div class="hero-right-action">
+        <div class="bio-tabs-wrapper">
+          <button class="bio-tab-btn active" data-target="tab-dashboard"><i class="fa-solid fa-chart-pie"></i> 트렌드 분석</button>
+          <button class="bio-tab-btn" data-target="tab-explorer"><i class="fa-solid fa-folder-open"></i> 논문 탐색기</button>
+          <button class="bio-tab-btn" data-target="tab-simulator"><i class="fa-solid fa-wand-magic-sparkles"></i> 트렌드 시뮬레이터</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPI Dashboard Summary -->
+    <section class="bio-kpi-grid">
+      <div class="kpi-card glass-panel">
+        <div class="kpi-icon icon-purple"><i class="fa-solid fa-quote-right"></i></div>
+        <div class="kpi-data">
+          <span class="kpi-label">평균 논문 인용수</span>
+          <h3 class="kpi-value" id="kpi-avg-citations">412회</h3>
+        </div>
+      </div>
+      <div class="kpi-card glass-panel">
+        <div class="kpi-icon icon-red"><i class="fa-solid fa-fire"></i></div>
+        <div class="kpi-data">
+          <span class="kpi-label">최고 연구 핫토픽</span>
+          <h3 class="kpi-value" id="kpi-top-topic">AI 신약개발</h3>
+        </div>
+      </div>
+      <div class="kpi-card glass-panel">
+        <div class="kpi-icon icon-blue"><i class="fa-solid fa-star"></i></div>
+        <div class="kpi-data">
+          <span class="kpi-label">최고 학술지 Impact Factor</span>
+          <h3 class="kpi-value" id="kpi-max-if">158.5 (NEJM)</h3>
+        </div>
+      </div>
+      <div class="kpi-card glass-panel">
+        <div class="kpi-icon icon-green"><i class="fa-solid fa-dna"></i></div>
+        <div class="kpi-data">
+          <span class="kpi-label">분석 대상 논문 수</span>
+          <h3 class="kpi-value" id="kpi-total-papers">16편</h3>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 1: Trend Dashboard Panel -->
+    <section id="tab-dashboard" class="bio-tab-panel active">
+      <div class="dashboard-grid">
+        
+        <!-- Radar Chart: Topic Hotness -->
+        <article class="chart-card glass-panel">
+          <div class="chart-header">
+            <h3><i class="fa-solid fa-chart-simple text-purple"></i> 분야별 키워드 빈도 및 연구 핫니스</h3>
+            <span>CRISPR, AI 신약, 노화방지 등 주제별 가중치 레이아웃</span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="chart-radar-topics"></canvas>
+          </div>
+        </article>
+
+        <!-- Line Chart: Timeline Impact -->
+        <article class="chart-card glass-panel">
+          <div class="chart-header">
+            <h3><i class="fa-solid fa-chart-line text-blue"></i> 연도별 평균 인용수 영향력 트렌드</h3>
+            <span>최근 4개년(2023-2026) 연구 성과물들의 축적된 인용 흐름</span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="chart-line-citations"></canvas>
+          </div>
+        </article>
+
+        <!-- Doughnut Chart: Journal Shares -->
+        <article class="chart-card glass-panel">
+          <div class="chart-header">
+            <h3><i class="fa-solid fa-chart-pie text-green"></i> 저널별 논문 등재 점유율</h3>
+            <span>Nature, Cell, Science, NEJM 등 최고 인용 등급 학술지 분포</span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="chart-doughnut-journals"></canvas>
+          </div>
+        </article>
+
+        <!-- Top Keywords Tags cloud -->
+        <article class="chart-card glass-panel">
+          <div class="chart-header">
+            <h3><i class="fa-solid fa-tags text-orange"></i> 실시간 연구 키워드 클라우드</h3>
+            <span>인용 가중치 기반 핵심 연구 단어 분포</span>
+          </div>
+          <div class="keywords-cloud" id="kws-cloud-container">
+            <!-- Dynamically populated tags -->
+          </div>
+        </article>
+
+        <!-- Card 5: Data Sources & Update Schedule -->
+        <article class="chart-card glass-panel" style="grid-column: span 2;">
+          <div class="chart-header">
+            <h3><i class="fa-solid fa-clock text-green"></i> 데이터 수집 스케줄 및 조사 저널 사이트 정보</h3>
+            <span>실시간 데이터 수집 일정 및 학술지 연동 현황</span>
+          </div>
+          <div class="data-sources-grid">
+            <div class="schedule-block">
+              <h4><i class="fa-solid fa-calendar-days text-purple"></i> 정기 업데이트 스케줄</h4>
+              <p>
+                본 분석 엔진은 매일 <strong>오전 9시(09:00)</strong> 및 <strong>오후 9시(21:00)</strong> 하루 두 번 글로벌 학술 데이터베이스를 크롤링하여 최신 등재 논문 및 인용 지표 데이터를 수집·동기화하고 트렌드를 갱신합니다.
+              </p>
+              <div class="update-badge">
+                <span class="pulse-dot"></span>
+                <span>동작 상태: 대기중 (오전 9시 / 오후 9시 자동 가동)</span>
+              </div>
+              <div style="margin-top: 12px; display: flex; align-items: center; gap: 10px;">
+                <button class="btn" id="btn-sync-bio-trends" style="background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); color: #d8b4fe; font-family: inherit;">
+                  <i class="fa-solid fa-arrows-rotate"></i>
+                  <span>실시간 논문 데이터 수집 및 갱신</span>
+                </button>
+                <span id="bio-sync-time-label" style="font-size: 11px; color: var(--text-muted);">최근 갱신: 대기중</span>
+              </div>
+            </div>
+            
+            <div class="sources-block">
+              <h4><i class="fa-solid fa-book-open text-blue"></i> 조사 대상 논문 사이트 (Data Sources)</h4>
+              <div class="sources-list">
+                <a href="https://www.nature.com" target="_blank" class="source-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Nature (nature.com)</a>
+                <a href="https://www.science.org" target="_blank" class="source-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Science (science.org)</a>
+                <a href="https://www.cell.com" target="_blank" class="source-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Cell (cell.com)</a>
+                <a href="https://www.nejm.org" target="_blank" class="source-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> NEJM (nejm.org)</a>
+                <a href="https://www.thelancet.com" target="_blank" class="source-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Lancet (thelancet.com)</a>
+                <a href="https://jamanetwork.com" target="_blank" class="source-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> JAMA (jamanetwork.com)</a>
+                <a href="https://pubmed.ncbi.nlm.nih.gov" target="_blank" class="source-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> PubMed (pubmed.gov)</a>
+                <a href="https://scholar.google.com" target="_blank" class="source-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Google Scholar</a>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Papers Explorer Panel -->
+    <section id="tab-explorer" class="bio-tab-panel">
+      
+      <!-- Table Filters Toolbar -->
+      <div class="explorer-toolbar glass-panel">
+        <div class="search-box-wrapper">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="paper-search-input" placeholder="논문 제목, 저자, 키워드 검색...">
+        </div>
+        
+        <div class="select-filters-wrapper">
+          <select id="filter-subfield" class="bio-select">
+            <option value="all">전체 분야</option>
+            <option value="AI Drug Discovery">AI 신약개발</option>
+            <option value="CRISPR Gene Editing">유전자 교정</option>
+            <option value="mRNA Tech">mRNA 백신</option>
+            <option value="Immunotherapy">면역 항암치료</option>
+            <option value="Neural Interfaces">뇌-컴퓨터 인터페이스</option>
+            <option value="Longevity">노화 방지</option>
+            <option value="Microbiome">마이크로바이옴</option>
+            <option value="Genomics">유전체학</option>
+          </select>
+
+          <select id="filter-journal" class="bio-select">
+            <option value="all">전체 학술지</option>
+            <option value="Nature">Nature</option>
+            <option value="Science">Science</option>
+            <option value="Cell">Cell</option>
+            <option value="NEJM">NEJM</option>
+            <option value="Lancet">Lancet</option>
+            <option value="JAMA">JAMA</option>
+          </select>
+
+          <select id="filter-year" class="bio-select">
+            <option value="all">전체 연도</option>
+            <option value="2026">2026년</option>
+            <option value="2025">2025년</option>
+            <option value="2024">2024년</option>
+            <option value="2023">2023년</option>
+          </select>
+          
+          <button class="btn btn-reset-filters" id="btn-reset-explorer"><i class="fa-solid fa-rotate-left"></i> 초기화</button>
+        </div>
+      </div>
+
+      <!-- Papers Table Wrapper -->
+      <div class="papers-table-wrapper glass-panel">
+        <div class="table-scroll-container">
+          <table class="papers-table">
+            <thead>
+              <tr>
+                <th class="sortable" data-sort="id">순위 <i class="fa-solid fa-sort"></i></th>
+                <th>논문 제목</th>
+                <th>대표 저자</th>
+                <th>학술지(Journal)</th>
+                <th class="sortable" data-sort="year">연도 <i class="fa-solid fa-sort"></i></th>
+                <th class="sortable" data-sort="citations">인용수 <i class="fa-solid fa-sort"></i></th>
+                <th class="sortable" data-sort="if">Impact Factor <i class="fa-solid fa-sort"></i></th>
+                <th class="sortable" data-sort="altmetric">Altmetric <i class="fa-solid fa-sort"></i></th>
+                <th>상세</th>
+              </tr>
+            </thead>
+            <tbody id="papers-table-body">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+        <div class="papers-table-footer">
+          <span>조건에 검색된 논문수: <strong id="explorer-match-count">0</strong>편</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Tab 3: Future Trend Simulator Panel -->
+    <section id="tab-simulator" class="bio-tab-panel">
+      <div class="simulator-layout">
+        
+        <!-- Left Slider Controls -->
+        <div class="simulator-controls-panel glass-panel">
+          <div class="panel-header">
+            <h3><i class="fa-solid fa-sliders text-pink"></i> 연구 환경 변수 시뮬레이터</h3>
+            <p>다양한 환경 요인을 조정하여 향후 10년(2026-2036) 바이오·의학 세부 분야의 트렌드 예측 곡선을 시뮬레이션합니다.</p>
+          </div>
+          
+          <div class="slider-group">
+            <div class="slider-label-row">
+              <span>🔬 연구 개발 예산 (R&D Funding)</span>
+              <span class="slider-value" id="val-slider-budget">50%</span>
+            </div>
+            <input type="range" class="bio-slider" id="slider-budget" min="10" max="100" value="50">
+            <span class="slider-hint">임상 시험 진행 속도 및 면역/알츠하이머 치료제 가속도 증가</span>
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-label-row">
+              <span>💻 컴퓨팅 파워 (Computing power - AI)</span>
+              <span class="slider-value" id="val-slider-compute">50%</span>
+            </div>
+            <input type="range" class="bio-slider" id="slider-compute" min="10" max="100" value="50">
+            <span class="slider-hint">AI 구조 예측, 약물 탐색 알고리즘 성능 향상</span>
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-label-row">
+              <span>🧪 임상 실험 성공률 (Clinical Success)</span>
+              <span class="slider-value" id="val-slider-success">50%</span>
+            </div>
+            <input type="range" class="bio-slider" id="slider-success" min="10" max="100" value="50">
+            <span class="slider-hint">FDA 승인 통과 비중 확대 및 유전자/신약 보급성 증가</span>
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-label-row">
+              <span>🌐 글로벌 협동 수준 (Global Cooperation)</span>
+              <span class="slider-value" id="val-slider-coop">50%</span>
+            </div>
+            <input type="range" class="bio-slider" id="slider-coop" min="10" max="100" value="50">
+            <span class="slider-hint">논문 공동 등재 비중 증가, 유전체/질병 데이터 공유 가속</span>
+          </div>
+          
+          <button class="btn-reset-simulator" id="btn-reset-sim-params"><i class="fa-solid fa-rotate"></i> 초기 조건으로 리셋</button>
+        </div>
+
+        <!-- Right Forecast Chart -->
+        <div class="simulator-chart-panel glass-panel">
+          <div class="panel-header">
+            <h3><i class="fa-solid fa-chart-line text-green"></i> 향후 10년 바이오·의학 분야 트렌드 예측 (2026-2036)</h3>
+            <span>조정된 R&D 환경 하에 계산된 상대적 연구 빈도 가중치</span>
+          </div>
+          <div class="simulator-canvas-wrapper">
+            <canvas id="chart-sim-forecast"></canvas>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Detailed Paper Viewer Modal -->
+  <div class="modal-overlay" id="paper-details-modal">
+    <div class="modal-box glass-panel">
+      <button class="modal-close" id="btn-close-modal">&times;</button>
+      <div class="modal-header">
+        <span class="journal-badge" id="modal-journal">Nature</span>
+        <h3 id="modal-title">AlphaFold 3 paper title</h3>
+        <p class="modal-authors" id="modal-authors">John Doe, Jane Smith et al.</p>
+      </div>
+      <div class="modal-body">
+        
+        <!-- KPI specs in modal -->
+        <div class="modal-specs-grid">
+          <div class="spec-item">
+            <span class="spec-label">인용수 (Citations)</span>
+            <strong class="spec-val" id="modal-citations">1,240회</strong>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Impact Factor (IF)</span>
+            <strong class="spec-val text-blue" id="modal-if">64.8</strong>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Altmetric Score</span>
+            <strong class="spec-val text-orange" id="modal-altmetric">4,520</strong>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">분야 (Subfield)</span>
+            <strong class="spec-val text-purple" id="modal-subfield">AI Drug Discovery</strong>
+          </div>
+        </div>
+
+        <!-- Abstract snippet -->
+        <div class="modal-section">
+          <h4>초록 요약 (Abstract Summary)</h4>
+          <p id="modal-abstract">This paper presents AlphaFold 3, a revolutionary deep learning architecture...</p>
+        </div>
+
+        <!-- Keywords tags -->
+        <div class="modal-section">
+          <h4>연구 주요 키워드</h4>
+          <div class="modal-keywords-wrapper" id="modal-keywords-container">
+            <!-- Injected tags -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="rich-footer">
+    <div class="footer-top-grid">
+
+      <!-- Footer Left: Branding & Visitor Stats -->
+      <div class="footer-left-brand">
+        <div class="brand-title">
+          <span class="cdb-badge">CDB</span>
+          <h2>Cineaho's SandBox</h2>
+        </div>
+
+        <div class="brand-links">
+          <span>🧰 웹앱</span>
+          <span class="divider-dot">•</span>
+          <span>💻 Cineaho</span>
+          <span class="divider-dot">•</span>
+          <span>📝 이슈트래커</span>
+          <span class="divider-dot">•</span>
+          <span>📄 기타 페이지를 한 곳에서. 모든 도구를 쉽고 빠르게 사용하세요.</span>
+        </div>
+
+        <div class="visitor-stats">
+          <div class="stat-group">
+            <h4>사이트 방문</h4>
+            <p>전체 <span id="site-visit-total">0</span> · 오늘 <span id="site-visit-today">0</span> · 고유 전체 <span id="site-visit-utotal">0</span> · 고유 오늘 <span id="site-visit-utoday">0</span></p>
+          </div>
+          <div class="stat-group">
+            <h4>이 앱 방문</h4>
+            <p>전체 <span id="apps-visit-total">0</span> · 오늘 <span id="apps-visit-today">0</span> · 고유 전체 <span id="apps-visit-utotal">0</span> · 고유 오늘 <span id="apps-visit-utoday">0</span></p>
+          </div>
+          <a href="#" class="stats-link">방문 통계 / 인기 앱 순위 보러 가기 &rarr;</a>
+        </div>
+      </div>
+
+      <!-- Footer Right: Columns -->
+      <div class="footer-right-columns">
+        <div class="footer-col">
+          <h3>제품</h3>
+          <ul>
+            <li><a href="../all-tools.html">모든 도구</a></li>
+            <li><a href="../category.html">카테고리</a></li>
+            <li><a href="../popular.html">인기 도구</a></li>
+            <li><a href="../new-tools.html">새로운 도구</a></li>
+            <li><a href="../sitemap.html">사이트맵</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3>지원</h3>
+          <ul>
+            <li><a href="../coming-soon.html">통계</a></li>
+            <li><a href="../updates.html">업데이트</a></li>
+            <li><a href="../help.html">도움말</a></li>
+            <li><a href="mailto:growplant@gmail.com">문의하기</a></li>
+            <li><a href="mailto:growplant@gmail.com?subject=CineAHO%20%EB%B2%85%EA%B7%B8%20%EC%8B%A0%EA%B3%A0">버그 신고</a>
+            </li>
+            <li><a href="../faq.html">FAQ</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3>법적 고지</h3>
+          <ul>
+            <li><a href="../privacy.html" style="color: var(--text-main); font-weight: 500;">개인정보처리방침</a></li>
+            <li><a href="../terms.html">이용약관</a></li>
+            <li><a href="../cookie-policy.html">쿠키 정책</a></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer Bottom Bar -->
+    <div class="footer-bottom-bar">
+      <div class="footer-copyright">
+        CineAHO's SandBox - 모든 도구를 한 곳에서 &copy; 2025 Cineaho. All right reserved.
+      </div>
+      <div class="footer-built-with">
+        Built on Cloudflare Pages, Workers, D1, R2 and Turso
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>혈압 단계 확인기 및 위험도 계산기 - CineAHO</title>
+  <meta name="description" content="사용자의 수축기 및 이완기 혈압을 기반으로 미국심장학회(ACC/AHA) 기준 혈압 단계를 확인하고 평균동맥압, 맥압 위험도 진단 및 혈압 관리 가이드를 제공합니다.">
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Ambient background glow effects -->
+  <div class="bg-glow bg-glow-blue"></div>
+  <div class="bg-glow bg-glow-purple"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-panel">
+    <div class="header-left">
+      <a href="../index.html" class="back-btn" id="btn-back-home" title="CineAHO 홈으로 이동">
+        <i class="fa-solid fa-chevron-left"></i>
+      </a>
+      <div class="app-logo">
+        <i class="fa-solid fa-heart-pulse logo-icon"></i>
+        <h1 class="logo-text">혈압 단계 <span>확인기</span></h1>
+      </div>
+      <span class="app-version">v1.0 Premium</span>
+    </div>
+    <div class="header-right">
+      <button class="header-action-btn" id="btn-reset-inputs" title="입력값 초기화">
+        <i class="fa-solid fa-rotate-left"></i> 초기화
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Blood Pressure Calculator Container -->
+  <main class="calculator-container">
+    
+    <div class="calculator-grid">
+      
+      <!-- Left Panel: Blood Pressure Inputs -->
+      <section class="input-section glass-panel">
+        <div class="panel-header">
+          <h2><i class="fa-solid fa-gauge-simple-high"></i> 혈압 측정값 입력</h2>
+          <p>가정용 혈압계로 측정한 수축기 및 이완기 혈압 수치를 입력해 주세요.</p>
+        </div>
+
+        <!-- Systolic Slider -->
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="range-systolic"><i class="fa-solid fa-heart text-red"></i> 수축기 (최고) 혈압</label>
+            <span class="value-display bg-red-opacity"><strong id="val-systolic">120</strong> mmHg</span>
+          </div>
+          <div class="slider-wrapper">
+            <input type="range" id="range-systolic" min="70" max="220" value="120" class="styled-slider systolic-slider">
+          </div>
+          <div class="preset-buttons" id="presets-systolic">
+            <button type="button" class="btn-preset" data-value="100">100</button>
+            <button type="button" class="btn-preset" data-value="110">110</button>
+            <button type="button" class="btn-preset" data-value="115">115</button>
+            <button type="button" class="btn-preset" data-value="120">120</button>
+            <button type="button" class="btn-preset" data-value="125">125</button>
+            <button type="button" class="btn-preset" data-value="130">130</button>
+            <button type="button" class="btn-preset" data-value="135">135</button>
+            <button type="button" class="btn-preset" data-value="140">140</button>
+            <button type="button" class="btn-preset" data-value="150">150</button>
+            <button type="button" class="btn-preset" data-value="160">160</button>
+          </div>
+        </div>
+
+        <!-- Diastolic Slider -->
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="range-diastolic"><i class="fa-solid fa-heart text-blue"></i> 이완기 (최저) 혈압</label>
+            <span class="value-display bg-blue-opacity"><strong id="val-diastolic">80</strong> mmHg</span>
+          </div>
+          <div class="slider-wrapper">
+            <input type="range" id="range-diastolic" min="40" max="140" value="80" class="styled-slider diastolic-slider">
+          </div>
+          <div class="preset-buttons" id="presets-diastolic">
+            <button type="button" class="btn-preset" data-value="60">60</button>
+            <button type="button" class="btn-preset" data-value="70">70</button>
+            <button type="button" class="btn-preset" data-value="75">75</button>
+            <button type="button" class="btn-preset" data-value="80">80</button>
+            <button type="button" class="btn-preset" data-value="85">85</button>
+            <button type="button" class="btn-preset" data-value="90">90</button>
+            <button type="button" class="btn-preset" data-value="95">95</button>
+            <button type="button" class="btn-preset" data-value="100">100</button>
+          </div>
+        </div>
+
+        <!-- Quick BP Guidelines tip -->
+        <div class="quick-measure-guide">
+          <h4><i class="fa-solid fa-circle-check"></i> 정확한 측정을 위한 팁</h4>
+          <ul>
+            <li>측정 전 5분간 편안한 자세로 안정을 취합니다.</li>
+            <li>측정 전 30분 동안 흡연, 커피, 운동을 금지합니다.</li>
+            <li>등받이가 있는 의자에 등을 기대고 똑바로 앉아 측정합니다.</li>
+            <li>커프를 심장 높이와 맞추고 측정 중 말을 하거나 움직이지 않습니다.</li>
+            <li>2~3회 측정하여 평균값을 사용하는 것이 바람직합니다.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Right Panel: Calculation Results -->
+      <section class="result-section">
+        
+        <!-- Blood Pressure Stage Display Banner -->
+        <div class="result-card glass-panel" id="bp-result-banner">
+          <div class="status-indicator-dot" id="status-glow"></div>
+          <div class="result-display-content">
+            <span class="result-title">혈압 분석 단계</span>
+            <span class="result-status-text" id="bp-stage-name">정상 혈압</span>
+            <span class="result-value-text"><span id="display-bp">120 / 80</span> <small>mmHg</small></span>
+            <span class="result-risk-badge" id="bp-risk-level">위험도: 최저</span>
+          </div>
+          
+          <!-- Specific Action Plan Box -->
+          <div class="action-plan-box" id="bp-action-box">
+            <h4><i class="fa-solid fa-clipboard-check"></i> 권장 조치 사항</h4>
+            <p id="bp-action-desc">현재 혈압이 건강한 범위 내에 있습니다. 이 혈압을 계속 유지할 수 있도록 꾸준히 식습관 및 건강 관리를 진행해 주세요.</p>
+          </div>
+        </div>
+
+        <!-- Secondary Calculated Metrics Cards -->
+        <div class="metrics-grid">
+          <!-- Pulse Pressure -->
+          <div class="metric-card glass-panel">
+            <div class="metric-header">
+              <h3>맥압 (Pulse Pressure)</h3>
+              <span class="metric-icon"><i class="fa-solid fa-wave-square"></i></span>
+            </div>
+            <div class="metric-body">
+              <span class="metric-value" id="val-pulse-pressure">40 <small>mmHg</small></span>
+              <span class="metric-status status-normal" id="status-pulse-pressure">정상</span>
+            </div>
+            <div class="metric-footer">
+              <span>수축기 혈압과 이완기 혈압의 차이 (정상 범주: 35~45 mmHg)</span>
+            </div>
+          </div>
+
+          <!-- Mean Arterial Pressure -->
+          <div class="metric-card glass-panel">
+            <div class="metric-header">
+              <h3>평균동맥압 (MAP)</h3>
+              <span class="metric-icon"><i class="fa-solid fa-heart-pulse"></i></span>
+            </div>
+            <div class="metric-body">
+              <span class="metric-value" id="val-map">93 <small>mmHg</small></span>
+              <span class="metric-status status-normal" id="status-map">정상</span>
+            </div>
+            <div class="metric-footer">
+              <span>심장 주기 동안의 평균 혈압 수치 (정상 범주: 70~100 mmHg)</span>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+    <!-- Blood Pressure Classification Standard Table (ACC/AHA Guidelines) -->
+    <section class="classification-section glass-panel">
+      <div class="section-title-wrapper">
+        <h2><i class="fa-solid fa-table"></i> 혈압 분류 기준표 (미국심장학회 ACC/AHA)</h2>
+        <p>수축기 혈압 또는 이완기 혈압 중 어느 하나라도 더 높은 범주에 해당하면 그 단계로 진단됩니다.</p>
+      </div>
+
+      <div class="table-container">
+        <table class="bp-class-table">
+          <thead>
+            <tr>
+              <th>분류</th>
+              <th>수축기 혈압 (최고)</th>
+              <th>이완기 혈압 (최저)</th>
+              <th>위험도</th>
+              <th>조치 사항 가이드라인</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="row-hypo">
+              <td><span class="status-badge badge-blue">저혈압</span></td>
+              <td>&lt; 90 mmHg</td>
+              <td>&lt; 60 mmHg</td>
+              <td>낮음</td>
+              <td>원인 확인, 기립 시 천천히 일어나기, 충분한 수분 섭취 권장</td>
+            </tr>
+            <tr class="row-normal">
+              <td><span class="status-badge badge-green">정상 혈압</span></td>
+              <td>&lt; 120 mmHg</td>
+              <td><span class="conjunction-and">그리고</span> &lt; 80 mmHg</td>
+              <td>최저</td>
+              <td>현재 생활 습관 지속 유지, 주기적인 혈압 모니터링</td>
+            </tr>
+            <tr class="row-elevated">
+              <td><span class="status-badge badge-yellow">주의 혈압</span></td>
+              <td>120 - 129 mmHg</td>
+              <td><span class="conjunction-and">그리고</span> &lt; 80 mmHg</td>
+              <td>낮음</td>
+              <td>나트륨 섭취 조절 등 식습관 및 체중 조절, 유산소 운동 추가</td>
+            </tr>
+            <tr class="row-stage1">
+              <td><span class="status-badge badge-orange">고혈압 1기</span></td>
+              <td>130 - 139 mmHg</td>
+              <td><span class="conjunction-or">또는</span> 80 - 89 mmHg</td>
+              <td>보통</td>
+              <td>전문의와 약물 치료 필요성 조율, 생활습관 대폭 개선 조치</td>
+            </tr>
+            <tr class="row-stage2">
+              <td><span class="status-badge badge-red">고혈압 2기</span></td>
+              <td>&ge; 140 mmHg</td>
+              <td><span class="conjunction-or">또는</span> &ge; 90 mmHg</td>
+              <td>높음</td>
+              <td>의사와의 신속한 상담 및 처방 약 복용, 생활습관 밀착 모니터링</td>
+            </tr>
+            <tr class="row-crisis">
+              <td><span class="status-badge badge-purple pulse-alert">고혈압 위기</span></td>
+              <td>&ge; 180 mmHg</td>
+              <td><span class="conjunction-or">또는</span> &ge; 120 mmHg</td>
+              <td>매우 높음</td>
+              <td>⚠️ 즉시 병원 방문 또는 119 구급차 호출 (응급 치료 필요)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Lifestyle habits panel grid -->
+    <section class="habits-section glass-panel">
+      <div class="section-title-wrapper">
+        <h2><i class="fa-solid fa-apple-whole"></i> 혈압 조절을 위한 생활 수칙</h2>
+        <p>생활 습관의 작은 변화가 혈압 수치에 큰 긍정적 효과를 가져옵니다.</p>
+      </div>
+
+      <div class="habits-grid">
+        <div class="habit-card">
+          <div class="habit-icon-box diet-icon">
+            <i class="fa-solid fa-utensils"></i>
+          </div>
+          <h3>식단 관리 (DASH 식단)</h3>
+          <ul>
+            <li>하루 나트륨 섭취량을 2,000mg 이하로 제한</li>
+            <li>채소, 과일, 통곡물, 생선 중심의 DASH 식단 실천</li>
+            <li>포화지방 및 단 음료, 가공육 섭취 축소</li>
+            <li>바나나, 시금치 등에 많은 칼륨 수시 섭취 (나트륨 배출)</li>
+          </ul>
+        </div>
+
+        <div class="habit-card">
+          <div class="habit-icon-box exercise-icon">
+            <i class="fa-solid fa-person-running"></i>
+          </div>
+          <h3>유산소 운동 요령</h3>
+          <ul>
+            <li>주당 최소 150분 이상의 중강도 유산소 운동 실시</li>
+            <li>빠르게 걷기, 조깅, 실내 자전거, 수영 추천</li>
+            <li>한 번에 몰아서 하기보다 주 4~5회 규칙적 배분</li>
+            <li>고혈압 환자는 아침 추운 시간 급작스러운 근력 운동 제한</li>
+          </ul>
+        </div>
+
+        <div class="habit-card">
+          <div class="habit-icon-box lifestyle-icon">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <h3>일상 습관 개선</h3>
+          <ul>
+            <li>흡연은 즉각적인 혈관 수축을 유발하므로 절대 금연</li>
+            <li>하루 알코올 섭취량 최소화 (남성 2잔, 여성 1잔 이하)</li>
+            <li>명상, 깊은 호흡을 통한 스트레스 요인 통제</li>
+            <li>하루 7~8시간의 충분한 수면 확보</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Detailed Guide Panel -->
+    <section class="guide-section glass-panel">
+      <div class="guide-header">
+        <h2><i class="fa-solid fa-book-open"></i> 혈압 단계 완벽 가이드</h2>
+        <p>혈압에 대해 꼭 알아두어야 할 전문 의학 기초 상식을 모았습니다.</p>
+      </div>
+
+      <div class="guide-grid">
+        <!-- 1. Calculation Details / How to use -->
+        <div class="guide-card">
+          <h3><i class="fa-solid fa-circle-question"></i> 수축기 vs 이완기 혈압이란?</h3>
+          <div class="info-content-box">
+            <p><strong>수축기 혈압 (Systolic Blood Pressure)</strong></p>
+            <p class="desc-text">심장이 수축하며 피를 혈관으로 밀어낼 때 혈관벽이 받는 최고 압력입니다. 대개 동맥경화나 노화, 심장의 펌핑 능력에 크게 영향을 받으며 뇌졸중이나 심장질환 위험도를 판단하는 주요 지표가 됩니다.</p>
+            <hr class="card-line">
+            <p><strong>이완기 혈압 (Diastolic Blood Pressure)</strong></p>
+            <p class="desc-text">심장이 수축을 끝내고 다시 피를 채우며 이완(휴식)할 때 혈관벽에 남아있는 최저 압력입니다. 말초 혈관의 저항력이 강하거나 피로할 때 오르며, 젊은 층에서 상승하기 쉬운 특징이 있습니다.</p>
+          </div>
+        </div>
+
+        <!-- 2. MAP & Pulse Pressure explanation -->
+        <div class="guide-card">
+          <h3><i class="fa-solid fa-magnifying-glass-chart"></i> 평균동맥압(MAP)과 맥압의 의미</h3>
+          <div class="info-content-box">
+            <p><strong>맥압 (Pulse Pressure)</strong></p>
+            <p class="desc-text">수축기 혈압에서 이완기 혈압을 뺀 수치입니다. 맥압이 너무 큰 경우(60mmHg 이상) 동맥의 탄력이 줄고 경직도가 높아졌음을 뜻하여 심근경색이나 뇌동맥 질환 위험이 증가합니다.</p>
+            <hr class="card-line">
+            <p><strong>평균동맥압 (Mean Arterial Pressure, MAP)</strong></p>
+            <p class="desc-text">심장 박동 주기 동안 동맥 내에 가해지는 평균적인 압력입니다. 장기와 조직으로 혈액이 얼마나 잘 도달하는지(관류) 평가하며, 정상치(70~100mmHg) 아래로 지나치게 떨어질 경우 저산소 장기 손상이 유발될 수 있습니다.</p>
+          </div>
+        </div>
+
+        <!-- 3. Dehydration / Accurate Measurement details -->
+        <div class="guide-card">
+          <h3><i class="fa-solid fa-hourglass-start"></i> 혈압 측정 시 가장 많이 범하는 실수</h3>
+          <ul class="steps-checklist">
+            <li><strong>화장실을 다녀오지 않음:</strong> 방광이 가득 차면 교감신경 자극으로 혈압이 10~15mmHg가량 급상승할 수 있습니다.</li>
+            <li><strong>측정 중 대화:</strong> 다른 사람과 대화하거나 스마트폰 통화를 하면 혈압이 약 10mmHg 가량 높게 관찰됩니다.</li>
+            <li><strong>다리를 꼬고 앉음:</strong> 다리를 꼬면 하지 혈액 순환을 막아 수축기 혈압이 최고 8mmHg 정도 비정상적으로 높게 산정됩니다.</li>
+            <li><strong>소매를 두껍게 걷어 올림:</strong> 걷어 올린 셔츠가 팔을 압박하여 혈관을 과도하게 조이면 정맥 저류로 인해 수치 변동이 발생합니다. 얇은 티셔츠 한 장 위나 맨팔에 커프를 감아야 합니다.</li>
+          </ul>
+        </div>
+
+        <!-- 4. Frequently Asked Questions (FAQ) -->
+        <div class="guide-card">
+          <h3><i class="fa-solid fa-circle-nodes"></i> 혈압 관련 FAQ</h3>
+          <div class="faq-accordion">
+            <div class="faq-qa">
+              <span class="faq-q">Q. 병원에만 가면 혈압이 높게 나옵니다. 왜 그런가요?</span>
+              <span class="faq-a">A. 이를 **'백의 고혈압(White Coat Hypertension)'**이라고 합니다. 병원이나 의료진을 마주했을 때 긴장이나 불안감으로 일시적으로 혈압이 상승하는 현상입니다. 따라서 평소 가정에서 편안할 때 측정한 수치 기록을 모아 전문의 진료 시 함께 제출하시는 것이 정확한 진단에 결정적 도움이 됩니다.</span>
+            </div>
+            
+            <div class="faq-qa">
+              <span class="faq-q">Q. 아침과 저녁 중 언제 측정하는 것이 정확한가요?</span>
+              <span class="faq-a">A. 혈압은 생체 리듬에 따라 수시로 변하므로 두 시간대 모두 측정하는 것이 좋습니다. 아침에는 기상 후 1시간 이내(소변을 본 뒤, 약물 복용 전, 식사 전), 저녁에는 취침 전 각각 1~2분 간격으로 2회씩 측정하여 기록하는 것을 권장합니다.</span>
+            </div>
+
+            <div class="faq-qa">
+              <span class="faq-q">Q. 저혈압도 고혈압만큼 위험한가요?</span>
+              <span class="faq-a">A. 단순 저혈압 환자는 특별한 증상이 없다면 치료를 요하지 않습니다. 다만, 어지럼증, 실신, 이명, 두통 등의 혈류부족 증상을 동반하거나 심부전, 혈액 부족 등에 의한 병적 저혈압의 경우 중증 장기 손상이나 뇌 혈류 정체로 위험해질 수 있어 원인 감별 진단이 필수적입니다.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Emergency Warning Segment -->
+      <div class="emergency-alert-card" id="emergency-alert" style="display: none;">
+        <div class="alert-icon-left"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <div class="alert-content-right">
+          <h4>⚠️ 고혈압 위기 (Hypertensive Crisis) 경고 상황</h4>
+          <p>현재 입력하신 수치는 혈관 파열이나 뇌졸중 등 심혈관 손상을 야기할 수 있는 극단적인 고혈압 임계값입니다. 가슴 통증, 호흡 곤란, 심한 두통, 시야 흐림, 마비 또는 말하기 곤란 등의 증상이 동반된다면 <strong>즉시 119에 연락하거나 가까운 대형 병원 응급실로 방문하셔야 합니다.</strong> 증상이 없더라도 조속히 휴식을 취하며 5분 뒤 다시 측정하시고 수치가 지속되면 즉각 의료 조치를 취하십시오.</p>
+        </div>
+      </div>
+
+      <!-- Medical Precaution Notice Disclaimer -->
+      <div class="medical-disclaimer">
+        <h4><i class="fa-solid fa-circle-exclamation"></i> 의학적 면책 고지 및 경고</h4>
+        <p>본 혈압 단계 확인기 및 계산기에서 도출되는 모든 분석 결과와 생활 수칙 조언 정보는 미국심장학회(ACC/AHA) 지침 가이드를 기반으로 한 보편적 정보 제공 목적에 한하며, <strong>실제 개별 의학적 진단 및 치료를 대체할 수 없습니다.</strong> 자가 진단만을 근거로 복용 중인 고혈압 의약품을 중단하거나 용량을 임의 조절하는 행동은 매우 위험하므로, 치료 방침 변경은 반드시 담당 주치의 등 자격을 갖춘 의료 전문가와 심층 상담을 통해 결정하시기 바랍니다.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer copyright bar -->
+  <footer class="calculator-footer">
+    <div class="footer-inner">
+      <p>CineAHO's SandBox - 혈압 위험도 계산기 Pro &copy; 2026 CineAHO. All right reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>

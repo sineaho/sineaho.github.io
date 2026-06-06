@@ -19,14 +19,14 @@
   --color-success: #10b981;
   --color-error: #ef4444;
   
-  --badge-general: #38bdf8;
-  --badge-coding: #f59e0b;
-  --badge-business: #84cc16;
-  --badge-research: #a855f7;
-  --badge-policy: #f97316;
-  --badge-security: #ec4899;
-  --badge-robot: #06b6d4;
-  --badge-chip: #8b5cf6;
+  --badge-general: #0369a1;
+  --badge-coding: #b45309;
+  --badge-business: #4d7c0f;
+  --badge-research: #7e22ce;
+  --badge-policy: #c2410c;
+  --badge-security: #be185d;
+  --badge-robot: #0e7490;
+  --badge-chip: #6d28d9;
   
   --font-family: 'Inter', 'Noto Sans KR', sans-serif;
 }
@@ -138,19 +138,25 @@ body {
 }
 
 .select-filter {
-  background-color: rgba(255, 255, 255, 0.05);
-  color: var(--text-main);
-  border: 1px solid var(--border-color);
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid rgba(0, 0, 0, 0.15);
   padding: 8px 12px;
   border-radius: 6px;
   outline: none;
   font-size: 12px;
   cursor: pointer;
   min-width: 110px;
+  font-weight: 500;
 }
 
 .select-filter:hover {
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: #f1f5f9;
+}
+
+.select-filter option {
+  background-color: #ffffff;
+  color: #000000;
 }
 
 .action-btn-group {
@@ -302,8 +308,8 @@ body {
 
 /* News Cards */
 .news-card {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 8px;
   padding: 14px;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -312,13 +318,14 @@ body {
   gap: 8px;
   cursor: pointer;
   position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .news-card:hover {
-  background-color: var(--bg-card-hover);
-  border-color: var(--border-glow);
+  background-color: #f8fafc;
+  border-color: rgba(56, 189, 248, 0.5);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(56, 189, 248, 0.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 }
 
 .card-top {
@@ -330,7 +337,7 @@ body {
 
 .card-source {
   font-size: 11px;
-  color: var(--text-secondary);
+  color: #475569; /* Slate 600 */
   font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -359,22 +366,23 @@ body {
 .card-title {
   font-size: 13px;
   font-weight: 600;
-  color: var(--color-primary);
+  color: #1e3a8a; /* Dark Blue */
   line-height: 1.4;
   text-decoration: none;
   word-break: keep-all;
 }
 
 .card-title:hover {
+  color: #2563eb; /* Primary Blue */
   text-decoration: underline;
 }
 
 .card-translation {
   font-size: 12px;
-  color: #e2e8f0;
+  color: #334155; /* Slate 700 */
   font-weight: 500;
   line-height: 1.4;
-  border-top: 1px dashed rgba(255, 255, 255, 0.05);
+  border-top: 1px dashed rgba(0, 0, 0, 0.08);
   padding-top: 6px;
   margin-top: 2px;
   word-break: keep-all;
@@ -382,7 +390,7 @@ body {
 
 .card-date {
   font-size: 10px;
-  color: var(--text-muted);
+  color: #64748b; /* Slate 500 */
   font-family: 'Inter', sans-serif;
   margin-top: 4px;
 }

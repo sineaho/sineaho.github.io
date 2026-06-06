@@ -49,6 +49,10 @@
 body {
   font-family: var(--font-main);
   background-color: var(--bg-color);
+  background-image: radial-gradient(circle at center, rgba(10, 16, 32, 0.45) 0%, rgba(4, 7, 18, 0.9) 100%), url('image/bg.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   color: var(--text-main);
   min-height: 100vh;
   position: relative;

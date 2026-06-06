@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO Game News & Free Games Aggregator</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div style="position: fixed; top: -10%; left: -10%; width: 50%; height: 50%; border-radius: 50%; background: radial-gradient(circle, rgba(168,85,247,0.1) 0%, rgba(0,0,0,0) 70%); z-index: -1; pointer-events: none;"></div>
+  <div style="position: fixed; bottom: -10%; right: -10%; width: 50%; height: 50%; border-radius: 50%; background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, rgba(0,0,0,0) 70%); z-index: -1; pointer-events: none;"></div>
+
+  <!-- Header -->
+  <header class="main-header">
+    <div class="header-left">
+      <!-- Back to CineAHO Portal Home -->
+      <a href="../index.html" class="action-btn" style="background-color: rgba(255,255,255,0.05); border: 1px solid var(--border-color); text-decoration: none; display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 6px; color: var(--text-main); margin-right: 8px;" title="CineAHO 홈으로 이동">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      </a>
+      <div class="app-logo">
+        <i class="fa-solid fa-gamepad"></i> CineAHO Game Aggregator
+      </div>
+    </div>
+    <div class="header-right" style="display: flex; align-items: center; gap: 16px;">
+      <!-- Real-time Update Button -->
+      <button class="action-btn" id="btn-refresh-news" style="background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.3); color: #93c5fd;" title="국내외 게임 언론사 및 스팀/에픽 API로부터 실시간으로 뉴스를 수집합니다.">
+        <i class="fa-solid fa-arrows-rotate"></i> 실시간 업데이트
+      </button>
+      <div class="action-btn" style="background: rgba(255,255,255,0.02); cursor: default;">
+        <i class="fa-solid fa-users" style="color: var(--color-primary);"></i>
+        <span style="font-size: 11px; margin-left: 4px;">조회수: <strong id="app-counter">0</strong></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- 1. Top Section: Free Games Deals (Steam, Epic Games, GOG) -->
+    <section class="glass-panel">
+      <h3 class="glass-panel-title">
+        <i class="fa-solid fa-gift" style="color: var(--color-warning);"></i> 실시간 무료 배포 게임 (Steam, Epic, GOG)
+      </h3>
+      <div class="free-games-container" id="free-games-container">
+        <!-- Dynamically populated free game cards -->
+      </div>
+    </section>
+
+    <!-- 2. Bottom Section: Two-Column Layout -->
+    <div class="grid-2col">
+
+      <!-- Left Column: News Feed -->
+      <section class="glass-panel" style="display: flex; flex-direction: column; gap: 16px;">
+        <div class="news-feed-header">
+          <div class="feed-tabs">
+            <button class="feed-tab-btn active" data-feed="all">
+              <i class="fa-solid fa-list"></i> 전체 뉴스
+            </button>
+            <button class="feed-tab-btn" data-feed="mobile">
+              <i class="fa-solid fa-mobile-screen-button"></i> 모바일 게임
+            </button>
+            <button class="feed-tab-btn" data-feed="console">
+              <i class="fa-solid fa-gamepad"></i> 콘솔 게임
+            </button>
+            <button class="feed-tab-btn" data-feed="retro">
+              <i class="fa-solid fa-compact-disc"></i> 고전/레트로
+            </button>
+          </div>
+          
+          <div class="search-bar">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="news-search" placeholder="뉴스 키워드 검색...">
+          </div>
+        </div>
+
+        <!-- News Cards list -->
+        <div class="news-list" id="news-list">
+          <!-- Dynamically populated news cards -->
+        </div>
+      </section>
+
+      <!-- Right Column: Sidebar Widgets -->
+      <aside class="sidebar">
+
+        <!-- Widget 1: Hot Keywords -->
+        <section class="glass-panel">
+          <h4 class="widget-title">실시간 게임 검색 키워드</h4>
+          <div class="keyword-cloud" id="keyword-cloud">
+            <!-- Dynamically populated tags -->
+          </div>
+        </section>
+
+        <!-- Widget 2: Upcoming Releases & Events -->
+        <section class="glass-panel">
+          <h4 class="widget-title">게임 출시 & 이벤트 일정</h4>
+          <div class="event-list" id="event-list">
+            <!-- Dynamically populated events -->
+          </div>
+        </section>
+
+        <!-- Widget 3: Bookmarks -->
+        <section class="glass-panel">
+          <h4 class="widget-title">북마크 보관함</h4>
+          <div class="bookmark-list-container" id="bookmark-list">
+            <!-- Dynamically populated bookmark links -->
+          </div>
+        </section>
+
+      </aside>
+
+    </div>
+
+  </main>
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="detail-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span class="badge-tag news-badge" id="modal-badge">Category</span>
+        <button class="modal-close" id="btn-modal-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-content">
+        <h2 id="modal-title">News Title</h2>
+        <div class="modal-meta">
+          <span>출처: <strong id="modal-source">-</strong></span>
+          <span>작성일자: <strong id="modal-date">-</strong></span>
+        </div>
+        <p class="modal-desc" id="modal-desc">
+          News full description goes here.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="action-btn" id="btn-modal-bookmark"><i class="fa-regular fa-bookmark"></i> 북마크 저장</button>
+        <a href="#" target="_blank" class="btn-claim" id="btn-modal-link" style="padding: 8px 16px;"><i class="fa-solid fa-arrow-up-right-from-square"></i> 원문 링크</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status Overlay (Spinner) -->
+  <div class="status-overlay" id="status-overlay">
+    <div class="status-spinner"></div>
+    <div class="status-message" id="status-message">국내외 모바일 뉴스 및 무료 배포 정보를 집계하고 있습니다...</div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-message" id="toast-message">클립보드에 복사되었습니다!</div>
+
+  <script src="app.js"></script>
+</body>
+</html>

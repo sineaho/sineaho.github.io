@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO 음식 사진 영양성분 분석기 - 푸드 AI 스캐너 & 일일 권장 섭취량 계산</title>
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-green"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- ==========================================
+       1. PORTAL HEADER
+       ========================================== -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>SandBox</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="../index.html#tools-section">무료 앱</a></li>
+        <li><a href="https://blog.naver.com/sineaho" target="_blank" rel="noopener noreferrer" class="active">CineAHO</a></li>
+        <li><a href="../prompt.html">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==========================================
+       2. MAIN CONTENT CONTAINER
+       ========================================== -->
+  <main class="calculator-container">
+    
+    <!-- Sub-navigation Back Link -->
+    <div class="sub-nav-back">
+      <a href="../index.html" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>건강·영양 계산기로 돌아가기</span>
+      </a>
+    </div>
+
+    <!-- App Title Header Banner -->
+    <section class="app-banner glass-panel">
+      <div class="banner-info">
+        <span class="badge-capsule">푸드 AI 영양 진단 및 플래너</span>
+        <h2>음식 사진 영양성분 분석기</h2>
+        <p>음식 사진을 업로드하여 실시간 칼로리와 5대 영양성분을 예측하고 나이·성별 맞춤 권장 섭취비율을 분석합니다.</p>
+      </div>
+      <div class="banner-decor">
+        <i class="fa-solid fa-camera-retro"></i>
+      </div>
+    </section>
+
+    <!-- Grid Column: Inputs vs Results -->
+    <section class="calculator-grid">
+      
+      <!-- Left side inputs & scanner -->
+      <div class="grid-col-input glass-panel">
+        <div class="panel-header">
+          <div class="title">
+            <i class="fa-solid fa-user-gear text-green"></i>
+            <span>사용자 정보 및 사진 등록</span>
+          </div>
+        </div>
+
+        <!-- Dynamic Profile Input Grid -->
+        <div class="profile-section-grid">
+          <!-- Gender -->
+          <div class="form-group">
+            <label for="profile-gender"><i class="fa-solid fa-venus-mars"></i> 성별</label>
+            <select id="profile-gender" class="form-select">
+              <option value="male">남성</option>
+              <option value="female" selected>여성</option>
+            </select>
+          </div>
+          <!-- Age Group -->
+          <div class="form-group">
+            <label for="profile-age"><i class="fa-solid fa-cake-candles"></i> 연령대</label>
+            <select id="profile-age" class="form-select">
+              <option value="1-2">1~2세 (유아)</option>
+              <option value="3-5">3~5세 (유아)</option>
+              <option value="6-8">6~8세 (아동)</option>
+              <option value="9-11">9~11세 (아동)</option>
+              <option value="12-14">12~14세 (청소년)</option>
+              <option value="15-18">15~18세 (청소년)</option>
+              <option value="19-29" selected>19~29세 (청년)</option>
+              <option value="30-49">30-49세 (중년)</option>
+              <option value="50-64">50-64세 (장년)</option>
+              <option value="65-74">65-74세 (노년)</option>
+              <option value="75+">75세 이상</option>
+            </select>
+          </div>
+          <!-- Activity Level -->
+          <div class="form-group">
+            <label for="profile-activity"><i class="fa-solid fa-person-walking"></i> 활동량</label>
+            <select id="profile-activity" class="form-select">
+              <option value="sedentary">가벼운 활동 (비활동적)</option>
+              <option value="moderate" selected>보통 활동 (좌식 + 활동)</option>
+              <option value="active">많은 활동 (운동/육체노동)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Target Summary Box -->
+        <div class="daily-targets-banner">
+          <span>나의 1일 영양소 권장량:</span>
+          <span>하루 권장 칼로리: <strong id="lbl-target-kcal">2,000</strong> kcal</span>
+        </div>
+
+        <!-- Photo Upload Box -->
+        <div class="photo-upload-section">
+          <span class="upload-label"><i class="fa-solid fa-cloud-arrow-up text-green"></i> 음식 사진 등록</span>
+          <div class="upload-drop-zone" id="drop-zone">
+            <!-- Simulated elements -->
+            <i class="fa-solid fa-image upload-icon" id="drop-zone-icon"></i>
+            <div class="upload-text" id="drop-zone-text">
+              음식 사진을 드래그하거나 <strong>이 영역을 클릭하여 업로드</strong>하세요.
+              <br><span style="font-size:11px;opacity:0.6;margin-top:4px;display:block;">(스캔 데모 파일명 매칭: 'pizza', 'salad', 'burger', 'kimbap' 등)</span>
+            </div>
+            
+            <!-- Hidden inputs -->
+            <input type="file" id="file-input" accept="image/*" style="display: none;">
+            
+            <!-- Scan effects -->
+            <img class="preview-image" id="preview-img" src="#" alt="Food Preview">
+            <div class="scan-line" id="scan-line-bar"></div>
+            <div class="scan-overlay-glow" id="scan-overlay"></div>
+          </div>
+        </div>
+
+        <!-- Mock Presets Selector (For Testing) -->
+        <div class="mock-presets-block">
+          <div class="mock-presets-title">📸 빠른 사진 선택 (시뮬레이터 샘플)</div>
+          <div class="presets-grid">
+            <button class="preset-btn" data-food="bibimbap" data-img="presets_bibimbap">🍚 비빔밥</button>
+            <button class="preset-btn" data-food="pizza" data-img="presets_pizza">🍕 피자</button>
+            <button class="preset-btn" data-food="salad" data-img="presets_salad">🥗 닭가슴살 샐러드</button>
+            <button class="preset-btn" data-food="burger" data-img="presets_burger">🍔 햄버거 세트</button>
+            <button class="preset-btn" data-food="tteokbokki" data-img="presets_tteokbokki">🌶️ 떡볶이</button>
+          </div>
+        </div>
+
+        <!-- Scanning Console Outputs -->
+        <div class="scanning-console" id="log-console">
+          <!-- Log lines printed by JS -->
+        </div>
+
+        <!-- Refine / Search / Custom entry selection -->
+        <div class="refine-food-section">
+          <div class="refine-label-row">
+            <span class="refine-label"><i class="fa-solid fa-magnifying-glass text-green"></i> 인식 결과 보정</span>
+            <span style="font-size:11px;color:var(--text-muted);">AI 예측에 오차가 있다면 아래에서 보정하세요.</span>
+          </div>
+          <div class="search-container">
+            <i class="fa-solid fa-magnifying-glass search-icon-pos"></i>
+            <input type="text" id="search-food" class="form-input refine-search-input" placeholder="음식 이름을 검색해 보세요 (예: 미역국, 김치찌개, 삼겹살...)">
+            <div class="autocomplete-results" id="search-results-box">
+              <!-- Autocomplete items -->
+            </div>
+          </div>
+
+          <!-- Serving Size Selector Multiplier -->
+          <div class="serving-group">
+            <span class="serving-title"><i class="fa-solid fa-scale-unbalanced-stroke"></i> 섭취 1인분 분량 설정</span>
+            <div class="serving-selector">
+              <button class="serving-btn" data-mult="0.5">0.5인분</button>
+              <button class="serving-btn active" data-mult="1.0">1.0인분</button>
+              <button class="serving-btn" data-mult="1.5">1.5인분</button>
+              <button class="serving-btn" data-mult="2.0">2.0인분</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right side analysis results -->
+      <div class="grid-col-results glass-panel">
+        
+        <!-- Radial Gauge for Calorie percentage -->
+        <div class="radial-calorie-panel">
+          <div class="panel-header no-border" style="width:100%;">
+            <span class="title-sub">AI 영양 분석 결과</span>
+          </div>
+
+          <div class="food-details-badge">
+            <span id="lbl-scanned-food-name">비빔밥</span>
+            <span class="serving-txt" id="lbl-scanned-food-serving">(1.0인분 기준)</span>
+          </div>
+
+          <!-- Circular SVG Ring -->
+          <div class="gauge-container">
+            <svg class="radial-svg">
+              <circle class="gauge-bg" cx="90" cy="90" r="75" />
+              <circle class="gauge-indicator" id="gauge-progress" cx="90" cy="90" r="75" stroke-dasharray="471.24" stroke-dashoffset="471.24" />
+            </svg>
+            <div class="gauge-center-txt">
+              <span class="gauge-val" id="lbl-food-kcal">585<span class="kcal-lbl"> kcal</span></span>
+              <span class="gauge-pct" id="lbl-kcal-pct">29.3%</span>
+            </div>
+          </div>
+
+          <!-- Alert Badges (Sodium, Fat warning etc) -->
+          <div class="alert-badges-row">
+            <span class="alert-badge red" id="badge-high-sodium"><i class="fa-solid fa-triangle-exclamation"></i> 나트륨 과다 경보</span>
+            <span class="alert-badge yellow" id="badge-high-fat"><i class="fa-solid fa-triangle-exclamation"></i> 고지방 주의</span>
+            <span class="alert-badge green" id="badge-healthy"><i class="fa-solid fa-heart"></i> 건강식 균형 권장</span>
+          </div>
+        </div>
+
+        <!-- Macronutrient detailed progress bars -->
+        <div class="nutrition-breakdown-section">
+          
+          <!-- Carbs -->
+          <div class="nutr-bar-group">
+            <div class="nutr-label-row carbs">
+              <span class="name"><i class="fa-solid fa-wheat-awn text-blue"></i> 탄수화물</span>
+              <span class="val"><strong id="val-carbs">95.0</strong>g / <span id="target-carbs">300</span>g</span>
+              <span class="pct" id="pct-carbs">31.7%</span>
+            </div>
+            <div class="bar-container">
+              <div class="bar-indicator carbs" id="bar-carbs"></div>
+            </div>
+          </div>
+
+          <!-- Protein -->
+          <div class="nutr-bar-group">
+            <div class="nutr-label-row protein">
+              <span class="name"><i class="fa-solid fa-egg text-green"></i> 단백질</span>
+              <span class="val"><strong id="val-protein">18.5</strong>g / <span id="target-protein">65</span>g</span>
+              <span class="pct" id="pct-protein">28.5%</span>
+            </div>
+            <div class="bar-container">
+              <div class="bar-indicator protein" id="bar-protein"></div>
+            </div>
+          </div>
+
+          <!-- Fat -->
+          <div class="nutr-bar-group">
+            <div class="nutr-label-row fat">
+              <span class="name"><i class="fa-solid fa-bacon text-orange"></i> 지방</span>
+              <span class="val"><strong id="val-fat">14.0</strong>g / <span id="target-fat">55</span>g</span>
+              <span class="pct" id="pct-fat">25.5%</span>
+            </div>
+            <div class="bar-container">
+              <div class="bar-indicator fat" id="bar-fat"></div>
+            </div>
+          </div>
+
+          <!-- Sodium -->
+          <div class="nutr-bar-group">
+            <div class="nutr-label-row sodium">
+              <span class="name"><i class="fa-solid fa-bottle-droplet text-purple"></i> 나트륨</span>
+              <span class="val"><strong id="val-sodium">1,020</strong>mg / <span id="target-sodium">2,000</span>mg</span>
+              <span class="pct" id="pct-sodium">51.0%</span>
+            </div>
+            <div class="bar-container">
+              <div class="bar-indicator sodium" id="bar-sodium"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Activity Burn-off Equivalencies (reusing METs formulas) -->
+        <div class="burn-off-section">
+          <h4><i class="fa-solid fa-fire-flame-curved text-green"></i> 칼로리 연소 소모 소요 시간</h4>
+          <div class="burn-grid">
+            <div class="burn-card glass-panel-inner">
+              <i class="fa-solid fa-person-running"></i>
+              <span class="lbl">조깅 (8.0 METs)</span>
+              <span class="time" id="burn-jogging">60분</span>
+            </div>
+            <div class="burn-card glass-panel-inner">
+              <i class="fa-solid fa-person-walking"></i>
+              <span class="lbl">걷기 (3.5 METs)</span>
+              <span class="time" id="burn-walking">137분</span>
+            </div>
+            <div class="burn-card glass-panel-inner">
+              <i class="fa-solid fa-person-swimming"></i>
+              <span class="lbl">수영 (6.0 METs)</span>
+              <span class="time" id="burn-swimming">80분</span>
+            </div>
+            <div class="burn-card glass-panel-inner">
+              <i class="fa-solid fa-bicycle"></i>
+              <span class="lbl">자전거 (5.5 METs)</span>
+              <span class="time" id="burn-cycling">87분</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Meal Logger button -->
+        <div class="log-meal-btn-wrapper" style="margin-top:2rem;">
+          <button class="btn-primary-action" id="btn-log-meal">
+            <i class="fa-solid fa-circle-plus"></i>
+            <span>오늘 식사 일지에 추가하기</span>
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- Daily Log Diary Panel -->
+    <section class="diary-section glass-panel" id="diary-container">
+      <h3><i class="fa-solid fa-calendar-check text-green"></i> 오늘 섭취 영양 일지 (식단 모니터링)</h3>
+      
+      <!-- Summary stats cards -->
+      <div class="diary-summary-grid">
+        
+        <!-- Left cumulative circle -->
+        <div class="diary-summary-left">
+          <div class="summary-cal-circle">
+            <svg class="svg-wrap">
+              <circle class="gauge-bg" cx="50" cy="50" r="42" />
+              <circle class="gauge-indicator" id="diary-cal-progress" cx="50" cy="50" r="42" stroke-dasharray="263.89" stroke-dashoffset="263.89" />
+            </svg>
+            <div class="summary-cal-txt">
+              <span class="val" id="lbl-diary-total-kcal">0</span>
+              <span class="lbl">kcal</span>
+            </div>
+          </div>
+          <div class="summary-cal-info-meta">
+            <h4>오늘 총 칼로리 섭취</h4>
+            <p>목표량 <span id="lbl-diary-target-kcal">2,000</span> kcal 중 <span id="lbl-diary-total-pct">0.0%</span> 달성</p>
+            <p>남은 칼로리: <strong id="lbl-diary-remain-kcal">2,000</strong> kcal</p>
+          </div>
+        </div>
+
+        <!-- Right macros stats indicators -->
+        <div class="diary-summary-right">
+          <!-- Carbs -->
+          <div class="macro-progress-box">
+            <span class="lbl"><i class="fa-solid fa-wheat-awn text-blue"></i> 탄수화물</span>
+            <span class="total-val" id="lbl-diary-carbs">0g</span>
+            <span class="target-val">목표: <span id="lbl-diary-target-carbs">300</span>g</span>
+            <div class="bar-container" style="width:80%;height:4px;">
+              <div class="bar-indicator carbs" id="bar-diary-carbs" style="width:0%;"></div>
+            </div>
+          </div>
+          
+          <!-- Protein -->
+          <div class="macro-progress-box">
+            <span class="lbl"><i class="fa-solid fa-egg text-green"></i> 단백질</span>
+            <span class="total-val" id="lbl-diary-protein">0g</span>
+            <span class="target-val">목표: <span id="lbl-diary-target-protein">65</span>g</span>
+            <div class="bar-container" style="width:80%;height:4px;">
+              <div class="bar-indicator protein" id="bar-diary-protein" style="width:0%;"></div>
+            </div>
+          </div>
+
+          <!-- Fat -->
+          <div class="macro-progress-box">
+            <span class="lbl"><i class="fa-solid fa-bacon text-orange"></i> 지방</span>
+            <span class="total-val" id="lbl-diary-fat">0g</span>
+            <span class="target-val">목표: <span id="lbl-diary-target-fat">55</span>g</span>
+            <div class="bar-container" style="width:80%;height:4px;">
+              <div class="bar-indicator fat" id="bar-diary-fat" style="width:0%;"></div>
+            </div>
+          </div>
+
+          <!-- Sodium -->
+          <div class="macro-progress-box">
+            <span class="lbl"><i class="fa-solid fa-bottle-droplet text-purple"></i> 나트륨</span>
+            <span class="total-val" id="lbl-diary-sodium">0mg</span>
+            <span class="target-val">목표: <span id="lbl-diary-target-sodium">2,000</span>mg</span>
+            <div class="bar-container" style="width:80%;height:4px;">
+              <div class="bar-indicator sodium" id="bar-diary-sodium" style="width:0%;"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Logged meals list table -->
+      <div class="logged-meals-wrapper">
+        <table class="diary-table" id="diary-table-el">
+          <thead>
+            <tr>
+              <th>섭취 식단</th>
+              <th>분량</th>
+              <th>칼로리</th>
+              <th>탄수화물</th>
+              <th>단백질</th>
+              <th>지방</th>
+              <th>나트륨</th>
+              <th style="width: 50px;">삭제</th>
+            </tr>
+          </thead>
+          <tbody id="diary-table-body">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+        <div class="empty-diary-msg" id="diary-empty-msg">오늘 섭취한 음식 기록이 없습니다. 상단에서 음식을 촬영/추가해 보세요!</div>
+      </div>
+    </section>
+
+    <!-- Comprehensive Guide Section -->
+    <section class="guide-details-section glass-panel">
+      <h3><i class="fa-solid fa-graduation-cap text-green"></i> 음식 스캔 & 영양 성분 완벽 가이드</h3>
+      <p class="guide-intro">본 프로그램은 보건복지부 및 한국영양학회가 공표한 **2020 한국인 영양소 섭취기준 (KDRIs)** 및 식품의약품안전처 영양 성분 데이터베이스를 기준으로 맞춤 가이드를 산출합니다.</p>
+
+      <div class="guide-grid">
+        
+        <!-- Usage Card -->
+        <div class="guide-card">
+          <h4><i class="fa-solid fa-circle-question"></i> 음식 사진 인식기 사용법</h4>
+          <ul class="guide-list">
+            <li><span class="num">1</span> <strong>개인 프로필 설정</strong>: 상단 드롭다운에서 본인의 성별, 연령, 활동 등급을 선택하여 1일 목표 권장 섭취 기준을 수립합니다.</li>
+            <li><span class="num">2</span> <strong>음식 촬영 및 업로드</strong>: 스마트폰으로 촬영한 음식 사진이나 다운로드한 사진을 박스에 드래그하거나 터치하여 업로드합니다.</li>
+            <li><span class="num">3</span> <strong>AI 스캔 및 보정</strong>: 이미지 스캔 후 자동 식별된 음식 결과를 확인하고, 오차가 있다면 검색창에 직접 이름을 검색하여 변경할 수 있습니다.</li>
+            <li><span class="num">4</span> <strong>섭취량 조절 및 저장</strong>: 섭취한 양(예: 0.5인분 또는 2인분 등)을 조절하여 칼로리 및 영양 비율을 산출하고, '식단 일지 추가' 버튼을 눌러 하루 영양 섭취량을 체계적으로 누적 추적합니다.</li>
+          </ul>
+        </div>
+
+        <!-- Target Info Card -->
+        <div class="guide-card">
+          <h4><i class="fa-solid fa-circle-info"></i> 영양 성분 분석 메커니즘</h4>
+          <div class="formula-box">
+            <span class="formula">1일 에너지 요구량(EER) 계산 원리:</span>
+            <span class="example">기초 대사량(BMR) × 활동 계수(Physical Activity Coefficient)</span>
+          </div>
+          <p class="formula-desc">개인의 성별과 연령, 활동 지수에 따라 에너지 요구량이 매일 다릅니다. 또한 3대 영양소의 에너지를 낼 수 있는 적정 비율(탄수화물: 55~65%, 단백질: 7~20%, 지방: 15~30%)을 바탕으로 1일 권장 섭취 질량(g)을 설정하여, 섭취 음식이 이를 충족하는지 실시간 분석해 줍니다.</p>
+        </div>
+
+      </div>
+
+      <!-- KDRIs Reference Matrix -->
+      <div class="kdr-explanation-wrap">
+        <h4><i class="fa-solid fa-table"></i> 성별·연령별 1일 에너지 권장량 및 단백질 기준표 (KDRIs 2020)</h4>
+        <div class="kdr-table-container">
+          <table class="kdr-table">
+            <thead>
+              <tr>
+                <th rowspan="2">연령대구분</th>
+                <th colspan="2">하루 권장 칼로리 (kcal)</th>
+                <th colspan="2">하루 단백질 권장량 (g)</th>
+                <th colspan="2">나트륨 충분 섭취량 (mg)</th>
+              </tr>
+              <tr>
+                <th>남성</th>
+                <th>여성</th>
+                <th>남성</th>
+                <th>여성</th>
+                <th>남성</th>
+                <th>여성</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1 ~ 2 세</td>
+                <td colspan="2">900</td>
+                <td colspan="2">20</td>
+                <td colspan="2">810</td>
+              </tr>
+              <tr>
+                <td>3 ~ 5 세</td>
+                <td colspan="2">1,400</td>
+                <td colspan="2">25</td>
+                <td colspan="2">1,000</td>
+              </tr>
+              <tr>
+                <td>6 ~ 8 세</td>
+                <td>1,700</td>
+                <td>1,500</td>
+                <td>35</td>
+                <td>35</td>
+                <td colspan="2">1,200</td>
+              </tr>
+              <tr>
+                <td>9 ~ 11 세</td>
+                <td>2,000</td>
+                <td>1,800</td>
+                <td>50</td>
+                <td>45</td>
+                <td colspan="2">1,500</td>
+              </tr>
+              <tr>
+                <td>12 ~ 14 세</td>
+                <td>2,500</td>
+                <td>2,000</td>
+                <td>60</td>
+                <td>55</td>
+                <td colspan="2">1,500</td>
+              </tr>
+              <tr>
+                <td>15 ~ 18 세</td>
+                <td>2,700</td>
+                <td>2,000</td>
+                <td>65</td>
+                <td>55</td>
+                <td colspan="2">1,500</td>
+              </tr>
+              <tr>
+                <td>19 ~ 29 세</td>
+                <td>2,600</td>
+                <td>2,000</td>
+                <td>65</td>
+                <td>55</td>
+                <td colspan="2">1,500 (권장 상한: 2,000)</td>
+              </tr>
+              <tr>
+                <td>30 ~ 49 세</td>
+                <td>2,500</td>
+                <td>1,900</td>
+                <td>65</td>
+                <td>50</td>
+                <td colspan="2">1,500 (권장 상한: 2,000)</td>
+              </tr>
+              <tr>
+                <td>50 ~ 64 세</td>
+                <td>2,200</td>
+                <td>1,700</td>
+                <td>65</td>
+                <td>50</td>
+                <td colspan="2">1,500 (권장 상한: 2,000)</td>
+              </tr>
+              <tr>
+                <td>65 세 이상</td>
+                <td>2,000</td>
+                <td>1,600</td>
+                <td>60</td>
+                <td>50</td>
+                <td colspan="2">1,100 ~ 1,300</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Warnings/Disclaimer Section -->
+      <div class="guide-disclaimer">
+        <h4><i class="fa-solid fa-triangle-exclamation text-yellow"></i> 임상적 주의사항 및 식생활 지침</h4>
+        <ul class="disclaimer-bullets">
+          <li>음식 스캔 결과 수치는 식품 데이터베이스의 표준 규격을 적용한 <strong>대략적 예측 통계치</strong>입니다. 실제 조리법(양념 세기, 가열 시간, 조미료 사용 유무 등)에 따라 다소 편차가 존재할 수 있습니다.</li>
+          <li>나트륨 섭취량이 하루 2,000mg을 초과하는 고염도 식단(국물 요리, 가공육, 라면 등)은 혈압 상승 및 위장 질환의 원인이 되므로, 경보 발생 시 칼륨이 풍부한 채소(오이, 토마토, 바나나) 등을 함께 드시면 좋습니다.</li>
+          <li>체중 감량을 위해 지나치게 칼로리를 제한하면(초저열량식) 근감소증 및 탈모, 생리 불순을 유발할 수 있으므로 권장 칼로리의 최소 70% 이상 섭취하는 균형 있는 다이어트를 지향해 주십시오.</li>
+        </ul>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       3. FLOATING TOOLBAR CONTROLS
+       ========================================== -->
+  <div class="floating-controls-panel">
+    <!-- Scroll position progress ring -->
+    <div class="progress-ring-wrap" id="scroll-progress-ring" title="스크롤 위치">
+      <svg class="progress-ring-svg" width="50" height="50">
+        <circle class="progress-ring-circle-bg" cx="25" cy="25" r="20" />
+        <circle class="progress-ring-circle-indicator" id="progress-circle-indicator" cx="25" cy="25" r="20" />
+      </svg>
+      <span class="progress-txt" id="scroll-percentage-lbl">0%</span>
+    </div>
+
+    <!-- Quick Scroll Top -->
+    <button class="floating-btn" id="btn-scroll-top" title="맨 위로 가기">
+      <i class="fa-solid fa-arrow-up"></i>
+    </button>
+    <!-- Quick Scroll Bottom -->
+    <button class="floating-btn" id="btn-scroll-bottom" title="맨 아래로 가기">
+      <i class="fa-solid fa-arrow-down"></i>
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <p>&copy; 2026 CineAHO's SandBox. All rights reserved.</p>
+    <p class="footer-note">Cineaho 포털 하위에 여러 독립적인 웹 애플리케이션을 유연하게 마운트하여 관리할 수 있습니다.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO 운동 칼로리 소모 계산기 - 운동 시간별 칼로리 계산</title>
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-orange"></div>
+  <div class="bg-glow bg-glow-purple"></div>
+
+  <!-- ==========================================
+       1. PORTAL HEADER
+       ========================================== -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>SandBox</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="../index.html#tools-section">무료 앱</a></li>
+        <li><a href="https://blog.naver.com/sineaho" target="_blank" rel="noopener noreferrer" class="active">CineAHO</a></li>
+        <li><a href="../prompt.html">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==========================================
+       2. MAIN CONTENT CONTAINER
+       ========================================== -->
+  <main class="calculator-container">
+    
+    <!-- Sub-navigation Back Link -->
+    <div class="sub-nav-back">
+      <a href="../index.html" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>건강·영양 계산기로 돌아가기</span>
+      </a>
+    </div>
+
+    <!-- App Title Header Banner -->
+    <section class="app-banner glass-panel">
+      <div class="banner-info">
+        <span class="badge-capsule">활동 및 다이어트 계산기</span>
+        <h2>운동 칼로리 소모 계산기</h2>
+        <p>선택하신 운동 종류와 시간, 본인의 체중을 기준으로 소모되는 정확한 칼로리를 계산합니다.</p>
+      </div>
+      <div class="banner-decor">
+        <i class="fa-solid fa-person-running"></i>
+      </div>
+    </section>
+
+    <!-- Grid Column: Inputs vs Results -->
+    <section class="calculator-grid">
+      
+      <!-- Left side inputs -->
+      <div class="grid-col-input glass-panel">
+        <div class="panel-header">
+          <div class="title">
+            <i class="fa-solid fa-sliders text-orange"></i>
+            <span>운동 정보 입력</span>
+          </div>
+          <button class="btn-reset" id="btn-reset-inputs" title="입력 초기화">
+            <i class="fa-solid fa-rotate-right"></i>
+          </button>
+        </div>
+
+        <!-- Weight Slider -->
+        <div class="slider-group">
+          <div class="slider-label-row">
+            <span class="label"><i class="fa-solid fa-weight-scale text-orange"></i> 체중</span>
+            <span class="value-display"><strong id="txt-weight">70</strong> <span class="unit">kg</span></span>
+          </div>
+          <input type="range" id="slider-weight" min="30" max="150" value="70" class="range-slider">
+          <div class="range-bounds">
+            <span>30kg</span>
+            <span>150kg</span>
+          </div>
+          <div class="quick-buttons-row" id="quick-weight-buttons">
+            <button class="qs-btn" data-val="50">50kg</button>
+            <button class="qs-btn" data-val="55">55kg</button>
+            <button class="qs-btn" data-val="60">60kg</button>
+            <button class="qs-btn" data-val="65">65kg</button>
+            <button class="qs-btn active" data-val="70">70kg</button>
+            <button class="qs-btn" data-val="75">75kg</button>
+            <button class="qs-btn" data-val="80">80kg</button>
+            <button class="qs-btn" data-val="85">85kg</button>
+            <button class="qs-btn" data-val="90">90kg</button>
+          </div>
+        </div>
+
+        <!-- Duration Slider -->
+        <div class="slider-group">
+          <div class="slider-label-row">
+            <span class="label"><i class="fa-solid fa-clock text-orange"></i> 운동 시간</span>
+            <span class="value-display"><strong id="txt-duration">30</strong> <span class="unit">분</span></span>
+          </div>
+          <input type="range" id="slider-duration" min="10" max="180" value="30" class="range-slider">
+          <div class="range-bounds">
+            <span>10분</span>
+            <span>180분</span>
+          </div>
+          <div class="quick-buttons-row" id="quick-duration-buttons">
+            <button class="qs-btn" data-val="10">10분</button>
+            <button class="qs-btn" data-val="15">15분</button>
+            <button class="qs-btn active" data-val="30">30분</button>
+            <button class="qs-btn" data-val="45">45분</button>
+            <button class="qs-btn" data-val="60">60분</button>
+            <button class="qs-btn" data-val="90">90분</button>
+            <button class="qs-btn" data-val="120">120분</button>
+          </div>
+        </div>
+
+        <!-- Exercise Category Header -->
+        <div class="exercise-section-header">
+          <i class="fa-solid fa-dumbbell text-orange"></i>
+          <span>운동 종류 선택</span>
+        </div>
+
+        <!-- Exercise Grid Grouped by Intensity -->
+        <div class="exercise-intensity-group">
+          
+          <!-- Low Intensity -->
+          <div class="intensity-block">
+            <span class="intensity-label low"><span class="dot"></span> 저강도 (3.0 METs 미만)</span>
+            <div class="exercise-buttons-grid" id="grid-low-intensity">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Moderate Intensity -->
+          <div class="intensity-block">
+            <span class="intensity-label moderate"><span class="dot"></span> 중강도 (3.0 ~ 6.0 METs)</span>
+            <div class="exercise-buttons-grid" id="grid-moderate-intensity">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- High Intensity -->
+          <div class="intensity-block">
+            <span class="intensity-label high"><span class="dot"></span> 고강도 (6.0 METs 초과)</span>
+            <div class="exercise-buttons-grid" id="grid-high-intensity">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Right side results -->
+      <div class="grid-col-results glass-panel">
+        
+        <!-- Results header with copy button -->
+        <div class="panel-header no-border">
+          <span class="title-sub">소모 칼로리 결과</span>
+          <button class="btn-copy" id="btn-copy-result" title="결과 복사">
+            <i class="fa-solid fa-copy"></i>
+          </button>
+        </div>
+
+        <!-- Large Calorie value output -->
+        <div class="calorie-output-display">
+          <div class="exercise-title-badge">
+            <span id="txt-selected-exercise-name">조깅/러닝</span>
+            <span class="duration" id="txt-selected-exercise-duration">(30분)</span>
+          </div>
+          <h1 id="result-calories">294<span class="unit">kcal</span></h1>
+          
+          <!-- Three Sub-Stats Row -->
+          <div class="sub-stats-grid">
+            <div class="sub-stat-box">
+              <span class="lbl">METs</span>
+              <h3 id="stat-mets-val">8.0</h3>
+              <p id="stat-mets-level">고강도 운동</p>
+            </div>
+            <div class="sub-stat-box">
+              <span class="lbl">지방 연소량</span>
+              <h3 id="stat-fat-val">38.2g</h3>
+              <p>몸무게 기준 환산</p>
+            </div>
+            <div class="sub-stat-box">
+              <span class="lbl">밥 공기 환산</span>
+              <h3 id="stat-rice-val">1.0공기</h3>
+              <p>1공기 300kcal 기준</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Weight Loss analysis card -->
+        <div class="weight-loss-analysis-card glass-panel-inner">
+          <div class="card-header-row">
+            <i class="fa-solid fa-circle-question text-orange"></i>
+            <span>체중 감량 연구소</span>
+          </div>
+          <p class="analysis-txt" id="txt-weight-loss-proj">이 운동을 매일 수행한다면, 약 <strong>26일</strong> 후 체지방 1kg(7,700kcal) 감량이 가능합니다!</p>
+        </div>
+
+        <!-- Food Calorie Substitutions section -->
+        <div class="food-substitution-section">
+          <h4><i class="fa-solid fa-utensils text-orange"></i> 위 소모 칼로리 = 푸드 대치</h4>
+          <div class="food-grid">
+            
+            <div class="food-item glass-panel-inner">
+              <span class="food-icon">🍚</span>
+              <span class="food-name">밥</span>
+              <span class="food-val" id="food-rice">1.0공기</span>
+              <span class="food-cal">300kcal</span>
+            </div>
+
+            <div class="food-item glass-panel-inner">
+              <span class="food-icon">🍌</span>
+              <span class="food-name">바나나</span>
+              <span class="food-val" id="food-banana">2.9개</span>
+              <span class="food-cal">100kcal</span>
+            </div>
+
+            <div class="food-item glass-panel-inner">
+              <span class="food-icon">🥛</span>
+              <span class="food-name">우유</span>
+              <span class="food-val" id="food-milk">2.5잔</span>
+              <span class="food-cal">120kcal</span>
+            </div>
+
+            <div class="food-item glass-panel-inner">
+              <span class="food-icon">🍫</span>
+              <span class="food-name">초콜릿</span>
+              <span class="food-val" id="food-chocolate">1.2개</span>
+              <span class="food-cal">250kcal</span>
+            </div>
+
+            <div class="food-item glass-panel-inner">
+              <span class="food-icon">🥤</span>
+              <span class="food-name">탄산음료</span>
+              <span class="food-val" id="food-soda">2.1캔</span>
+              <span class="food-cal">140kcal</span>
+            </div>
+
+            <div class="food-item glass-panel-inner">
+              <span class="food-icon">☕</span>
+              <span class="food-name">아메리카노</span>
+              <span class="food-val" id="food-coffee">29.4잔</span>
+              <span class="food-cal">10kcal</span>
+            </div>
+
+            <div class="food-item glass-panel-inner">
+              <span class="food-icon">🍶</span>
+              <span class="food-name">소주</span>
+              <span class="food-val" id="food-soju">0.7병</span>
+              <span class="food-cal">400kcal</span>
+            </div>
+
+            <div class="food-item glass-panel-inner">
+              <span class="food-icon">🍺</span>
+              <span class="food-name">맥주</span>
+              <span class="food-val" id="food-beer">2.0잔</span>
+              <span class="food-cal">150kcal</span>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- Dynamic Exercise Calories Comparison Table Section -->
+    <section class="comparison-table-section glass-panel">
+      <h3><i class="fa-solid fa-table-list text-orange"></i> 운동별 칼로리 소모 비교 (<span id="tbl-header-weight">70</span>kg, <span id="tbl-header-duration">30</span>분 기준)</h3>
+      <div class="table-container">
+        <table class="calories-table" id="comparison-calories-table">
+          <thead>
+            <tr>
+              <th>운동 종류</th>
+              <th>METs</th>
+              <th id="tbl-col-duration-val">30분 소모량</th>
+              <th>60분 소모량</th>
+              <th>강도 등급</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Rendered via JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Comprehensive Guide Section -->
+    <section class="guide-details-section glass-panel">
+      <h3><i class="fa-solid fa-graduation-cap text-orange"></i> 운동 칼로리 소모량 완벽 가이드</h3>
+      <p class="guide-intro">운동 칼로리 소모량 계산기는 과학적 기준인 METs(Metabolic Equivalent of Task, 대사당량)를 활용하여 계산됩니다. METs는 신체 활동 시 대사율을 휴식 상태의 대사율로 나눈 수치로, 개인의 체중과 결합하여 실질적인 에너지 소비량을 산출합니다.</p>
+
+      <div class="guide-grid">
+        
+        <!-- Usage Card -->
+        <div class="guide-card">
+          <h4><i class="fa-solid fa-circle-question"></i> 운동 칼로리 계산기 사용법</h4>
+          <ol class="guide-list">
+            <li><span class="num">1</span> <strong>체중 입력</strong>: 슬라이더나 상단 빠른 선택 버튼을 이용해 본인의 체중(kg)을 입력합니다.</li>
+            <li><span class="num">2</span> <strong>운동 시간 선택</strong>: 운동을 진행할 예상 시간(분)을 설정합니다.</li>
+            <li><span class="num">3</span> <strong>운동 종류 선택</strong>: 저강도, 중강도, 고강도로 분류된 항목 중 원하는 운동을 클릭합니다.</li>
+            <li><span class="num">4</span> <strong>결과 확인</strong>: 실시간으로 계산되는 소모 칼로리 수치와 지방 연소량, 다양한 음식과의 비교, 운동 비교표를 확인합니다. 복사 기능을 이용해 결과를 저장할 수 있습니다.</li>
+          </ol>
+        </div>
+
+        <!-- Formula Card -->
+        <div class="guide-card">
+          <h4><i class="fa-solid fa-compass-drafting"></i> 칼로리 소모 계산 공식</h4>
+          <div class="formula-box">
+            <span class="formula">소모 칼로리(kcal) = METs × 3.5 × 체중(kg) × 시간(분) ÷ 200</span>
+            <span class="example">예시: 조깅(8.0 METs) / 체중 70kg / 30분 운동 = 8.0 × 3.5 × 70 × 30 ÷ 200 = 294 kcal</span>
+          </div>
+          <p class="formula-desc">이 공식은 1L의 산소를 소모할 때 약 5 kcal의 열량이 연소된다는 생리학적 기준에 기반을 두고 있습니다. 산소 섭취량($VO_2$)을 환산한 대사당량(METs) 계산법은 스포츠 과학에서 칼로리를 분석할 때 공인된 국제 표준 방식입니다.</p>
+        </div>
+
+      </div>
+
+      <!-- METs Explanation Section -->
+      <div class="mets-explanation-wrap">
+        <h4><i class="fa-solid fa-heart-pulse"></i> METs (대사당량)이란 무엇인가요?</h4>
+        <div class="mets-split">
+          <div class="mets-block low-mets">
+            <span class="range">1.0 ~ 3.0 METs</span>
+            <h5>저강도 활동</h5>
+            <p>가벼운 일상 활동이나 가만히 있는 상태의 3배 이하 에너지를 소비합니다. 심박수 상승이 경미하며 땀이 나지 않습니다.</p>
+            <span class="ex-badge">스트레칭, 가벼운 산책, 요가</span>
+          </div>
+          <div class="mets-block moderate-mets">
+            <span class="range">3.0 ~ 6.0 METs</span>
+            <h5>중강도 활동</h5>
+            <p>휴식 상태 대비 3~6배의 에너지를 소비합니다. 대화를 나눌 수 있으나 노래를 부르기엔 숨이 차는 정도의 강도입니다.</p>
+            <span class="ex-badge">자전거(보통), 배드민턴, 수영, 필라테스</span>
+          </div>
+          <div class="mets-block high-mets">
+            <span class="range">6.0 METs 이상</span>
+            <h5>고강도 활동</h5>
+            <p>휴식 상태 대비 6배 이상의 에너지를 대량 소모합니다. 대화가 뚝뚝 끊길 정도로 숨이 차며 땀이 나기 시작합니다.</p>
+            <span class="ex-badge">조깅/러닝, 줄넘기, 테니스, 축구, 복싱</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Exercise Strategies -->
+      <div class="guide-strategy">
+        <h4><i class="fa-solid fa-chart-line text-green"></i> 다이어트 및 운동 효과 극대화 전략</h4>
+        <div class="strategy-grid">
+          <div class="strategy-card glass-panel-inner">
+            <h5><i class="fa-solid fa-fire text-orange"></i> EPOC (운동 후 초과 산소 소모) 효과</h5>
+            <p>고강도 운동(인터벌 트레이닝, 러닝 등)을 수행하면 운동이 끝난 후에도 신체가 회복되는 과정에서 최대 24~48시간 동안 평소보다 더 많은 칼로리를 계속 소모합니다.</p>
+          </div>
+          <div class="strategy-card glass-panel-inner">
+            <h5><i class="fa-solid fa-dumbbell text-blue"></i> 근력 운동(무산소)의 중요성</h5>
+            <p>유산소 운동은 칼로리를 직접 태우는 데 효과적이지만, 근력 운동을 병행하여 근육량을 늘리면 '기초대사량'이 상승해 일상생활에서도 살이 덜 찌는 체질로 개선됩니다.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="guide-faq">
+        <h4><i class="fa-solid fa-lightbulb"></i> 자주 묻는 질문 (FAQ)</h4>
+        <ul class="faq-list">
+          <li>
+            <strong>Q. 체중이 많이 나갈수록 왜 칼로리가 더 많이 소모되나요?</strong>
+            <p>A. 무거운 물체를 이동시키는 데 더 많은 물리적 에너지가 들듯, 체중이 무거울수록 동일한 움직임에도 골격근과 심혈관계가 극복해야 하는 저항이 커져 산소 소비량과 에너지가 늘어나기 때문입니다.</p>
+          </li>
+          <li>
+            <strong>Q. 운동할 때 땀을 흘리는 양과 칼로리 소모량은 비례하나요?</strong>
+            <p>A. 직접적으로 비례하지는 않습니다. 땀은 체온 조절을 위해 수분을 방출하는 생리 현상으로, 기온이나 개별 땀샘 분포에 영향이 큽니다. 칼로리는 땀의 양이 아니라 심박수와 근육 수축 등 산소 소모량에 비례합니다.</p>
+          </li>
+          <li>
+            <strong>Q. 스마트워치 측정 칼로리와 이 계산기의 수치가 다른 이유는 무엇인가요?</strong>
+            <p>A. 스마트워치는 실시간 심박수(HR)와 가속도 센서를 조합하여 개개인의 현재 심폐 활동량을 추가 가중해 계산합니다. 본 계산기는 국제 표준 METs 통계 모델을 기준으로 하여 산출하므로 워치보다 일반적인 기준 값을 나타냅니다.</p>
+          </li>
+          <li>
+            <strong>Q. 공복 유산소 운동이 정말 다이어트에 더 효과적인가요?</strong>
+            <p>A. 아침 공복 상태에서는 혈중 포도당 농도가 낮아 지방이 보다 빠르게 연소 원료로 사용되는 경향이 있습니다. 그러나 근육 손실 위험도 함께 증가하고 강도 높은 유지가 어려우므로 본인의 피로도에 맞추는 것이 좋습니다.</p>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Warnings/Disclaimer Section -->
+      <div class="guide-disclaimer">
+        <h4><i class="fa-solid fa-triangle-exclamation text-yellow"></i> 주의사항 및 한계</h4>
+        <ul class="disclaimer-bullets">
+          <li>본 계산기의 결과 수치는 표준 통계치에 기초한 <strong>참고용 데이터</strong>입니다. 개개인의 신체 성분(근육량 vs 지방량), 운동 숙련도, 실제 움직임 강도 및 유전적 대사 성향에 따라 실 소모량은 차이가 발생할 수 있습니다.</li>
+          <li>체중 감량을 위해 하루 1000kcal 이상의 무리한 유산소 운동을 지속하거나 지나친 식이 제한을 강행할 경우 면역력 저하 및 골다공증, 만성 피로의 원인이 될 수 있습니다.</li>
+          <li>관절염, 심혈관계 질환 등의 지병이 있을 경우 고강도 운동(조깅, 줄넘기, 복싱 등)은 부상이나 쇼크를 유발할 수 있으므로 가벼운 저신체 활동부터 전문가 상담 하에 조절해야 합니다.</li>
+        </ul>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       3. FLOATING TOOLBAR CONTROLS
+       ========================================== -->
+  <div class="floating-controls-panel">
+    <!-- Scroll position progress ring -->
+    <div class="progress-ring-wrap" id="scroll-progress-ring" title="스크롤 위치">
+      <svg class="progress-ring-svg" width="50" height="50">
+        <circle class="progress-ring-circle-bg" cx="25" cy="25" r="20" />
+        <circle class="progress-ring-circle-indicator" id="progress-circle-indicator" cx="25" cy="25" r="20" />
+      </svg>
+      <span class="progress-txt" id="scroll-percentage-lbl">0%</span>
+    </div>
+
+    <!-- Quick Scroll Top -->
+    <button class="floating-btn" id="btn-scroll-top" title="맨 위로 가기">
+      <i class="fa-solid fa-arrow-up"></i>
+    </button>
+    <!-- Quick Scroll Bottom -->
+    <button class="floating-btn" id="btn-scroll-bottom" title="맨 아래로 가기">
+      <i class="fa-solid fa-arrow-down"></i>
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <p>&copy; 2026 CineAHO's SandBox. All rights reserved.</p>
+    <p class="footer-note">Cineaho 포털 하위에 여러 독립적인 웹 애플리케이션을 유연하게 마운트하여 관리할 수 있습니다.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

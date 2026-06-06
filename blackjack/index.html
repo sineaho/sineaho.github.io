@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlackJack 3D – CineAHO</title>
+  <meta name="description" content="Three.js 기반 프리미엄 3D 블랙잭 게임. 리얼한 카지노 테이블과 카드 애니메이션, 1-6 카드 무한 데크.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Ambient background orbs -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-gold"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-panel">
+    <div class="header-left">
+      <a href="../index.html" class="back-btn" id="btn-back-home" title="CineAHO 홈으로 이동">
+        <i class="fa-solid fa-chevron-left"></i>
+      </a>
+      <div class="app-logo">
+        <i class="fa-solid fa-diamond logo-icon"></i>
+        <h1 class="logo-text">BlackJack<span>3D</span></h1>
+      </div>
+      <span class="app-version">v2.0</span>
+    </div>
+    <div class="header-right">
+      <div class="chip-display" id="chip-display">
+        <i class="fa-solid fa-coins"></i>
+        <span id="chip-count">1000</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Game Container -->
+  <main class="game-container">
+
+    <!-- 3D Viewport -->
+    <section class="viewport-section glass-panel">
+      <div id="three-canvas-container">
+        <div id="loading-overlay">
+          <div class="loader"></div>
+          <p>3D 카지노 테이블 로딩 중...</p>
+        </div>
+      </div>
+
+      <!-- HUD Overlay on 3D Canvas -->
+      <div class="hud-overlay">
+        <!-- Dealer Info -->
+        <div class="hud-hand dealer-hud" id="dealer-hud">
+          <div class="hud-label"><i class="fa-solid fa-user-secret"></i> 딜러</div>
+          <div class="hud-total" id="dealer-total-hud">-</div>
+        </div>
+
+        <!-- Result Banner -->
+        <div class="result-banner" id="result-banner" style="display:none;"></div>
+
+        <!-- Player Info -->
+        <div class="hud-hand player-hud" id="player-hud">
+          <div class="hud-label"><i class="fa-solid fa-user"></i> 플레이어</div>
+          <div class="hud-total" id="player-total-hud">-</div>
+        </div>
+      </div>
+
+      <!-- Camera Controls -->
+      <div class="viewport-overlay-controls">
+        <button class="overlay-btn active" id="btn-cam-default" title="기본 시점"><i class="fa-solid fa-camera"></i> 기본</button>
+        <button class="overlay-btn" id="btn-cam-overhead" title="오버헤드 뷰"><i class="fa-solid fa-border-all"></i> 탑뷰</button>
+        <button class="overlay-btn" id="btn-cam-close" title="클로즈업 뷰"><i class="fa-solid fa-magnifying-glass"></i> 클로즈업</button>
+      </div>
+    </section>
+
+    <!-- Controls Panel -->
+    <section class="controls-section glass-panel">
+      <!-- Betting Section -->
+      <div class="betting-section" id="betting-section">
+        <h3 class="section-title"><i class="fa-solid fa-coins"></i> 베팅</h3>
+        <div class="bet-chips">
+          <button class="bet-chip" data-amount="10">10</button>
+          <button class="bet-chip" data-amount="25">25</button>
+          <button class="bet-chip active" data-amount="50">50</button>
+          <button class="bet-chip" data-amount="100">100</button>
+          <button class="bet-chip" data-amount="250">250</button>
+        </div>
+        <div class="current-bet">
+          <span>현재 베팅:</span>
+          <span class="bet-value" id="current-bet-value">50</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons-group">
+        <button class="control-action-btn primary" id="btn-deal">
+          <i class="fa-solid fa-play"></i>
+          <span>딜 (Deal)</span>
+        </button>
+        <button class="control-action-btn secondary" id="btn-hit" disabled>
+          <i class="fa-solid fa-plus"></i>
+          <span>히트 (Hit)</span>
+        </button>
+        <button class="control-action-btn secondary" id="btn-stand" disabled>
+          <i class="fa-solid fa-hand"></i>
+          <span>스탠드 (Stand)</span>
+        </button>
+        <button class="control-action-btn danger" id="btn-new-game" style="display:none;">
+          <i class="fa-solid fa-arrows-rotate"></i>
+          <span>새 게임</span>
+        </button>
+      </div>
+
+      <!-- Game Stats -->
+      <div class="game-stats">
+        <div class="stat-item">
+          <span class="stat-label">승리</span>
+          <span class="stat-value win" id="stat-wins">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">패배</span>
+          <span class="stat-value lose" id="stat-losses">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">무승부</span>
+          <span class="stat-value tie" id="stat-ties">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">연승</span>
+          <span class="stat-value streak" id="stat-streak">0</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Guide Section -->
+    <section class="guide-section glass-panel">
+      <div class="guide-header">
+        <i class="fa-solid fa-book-open"></i>
+        <h2>블랙잭 3D 게임 가이드</h2>
+      </div>
+      <div class="guide-content-wrapper">
+        <article class="guide-article">
+          <h3>게임 규칙</h3>
+          <p>1~6 숫자 카드로 <strong>21점</strong>에 가장 가깝게 도달하세요. 21을 초과하면 <strong>버스트(Bust)</strong>로 패배합니다.</p>
+          <ul>
+            <li><strong>카드 값:</strong> 1~6의 숫자가 그대로 점수가 됩니다.</li>
+            <li><strong>딜:</strong> 플레이어와 딜러 모두 2장씩 받습니다. 딜러의 첫 번째 카드는 뒤집어져 있습니다.</li>
+            <li><strong>히트:</strong> 카드를 한 장 더 받습니다.</li>
+            <li><strong>스탠드:</strong> 더 이상 카드를 받지 않고 딜러에게 턴을 넘깁니다.</li>
+            <li><strong>딜러 AI:</strong> 딜러는 자신의 합이 17 이상이 될 때까지 계속 카드를 뽑습니다.</li>
+          </ul>
+        </article>
+        <article class="guide-article">
+          <h3>3D 카지노 테이블</h3>
+          <p>Three.js로 렌더링된 프리미엄 카지노 테이블에서 플레이하세요. 카드가 3D로 날아오는 애니메이션과 함께 실감나는 블랙잭을 즐길 수 있습니다.</p>
+          <ul>
+            <li><strong>기본 시점:</strong> 테이블을 대각선 위에서 바라보는 기본 카메라 앵글</li>
+            <li><strong>탑뷰:</strong> 테이블을 위에서 바라보는 뷰</li>
+            <li><strong>클로즈업:</strong> 카드를 가까이서 볼 수 있는 뷰</li>
+            <li><strong>마우스 드래그:</strong> 좌클릭 드래그로 카메라 회전, 마우스 휠로 줌</li>
+          </ul>
+        </article>
+        <article class="guide-article">
+          <h3>베팅 시스템</h3>
+          <p>게임 시작 시 <strong>1,000 칩</strong>을 보유합니다. 매 라운드 베팅 금액을 설정한 후 딜을 시작하세요.</p>
+          <ul>
+            <li><strong>승리:</strong> 베팅 금액의 2배 획득</li>
+            <li><strong>패배:</strong> 베팅 금액 차감</li>
+            <li><strong>무승부:</strong> 베팅 금액 그대로 반환</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="rich-footer">
+    <div class="footer-top-grid">
+      <div class="footer-left-brand">
+        <div class="brand-title">
+          <span class="cdb-badge">CDB</span>
+          <h2>CineAHO's SandBox</h2>
+        </div>
+        <div class="brand-links">
+          <span>🧰 웹앱</span><span class="divider-dot">•</span><span>💻 Cineaho</span><span class="divider-dot">•</span><span>📝 이슈트래커</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom-bar">
+      <div class="footer-copyright">CineAHO's SandBox &copy; 2025 Cineaho. All right reserved.</div>
+    </div>
+  </footer>
+
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

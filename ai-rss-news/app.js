@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnToggleTranslation = document.getElementById("btn-toggle-translation");
   const btnToggleDuplicate = document.getElementById("btn-toggle-duplicate");
   const btnReset = document.getElementById("btn-reset");
+  const btnRefresh = document.getElementById("btn-refresh");
   
   // RSS Drawer
   const btnToggleRssDrawer = document.getElementById("btn-toggle-rss-drawer");
@@ -86,14 +87,33 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("custom_rss_articles", JSON.stringify(customArticles));
   }
 
-  // --- XML Parser and Fetching Logic ---
   async function fetchAndParseRSS(feedSource) {
-    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(feedSource.url)}`;
-    
-    const response = await fetch(proxyUrl);
-    if (!response.ok) throw new Error("CORS Proxy fetch failed");
-    
-    const xmlText = await response.text();
+    let xmlText = "";
+    let localFetchError = null;
+
+    try {
+      // 1. Try local server proxy with cache-buster parameter
+      const localProxyUrl = `/api/rss-proxy?url=${encodeURIComponent(feedSource.url)}&_t=${Date.now()}`;
+      const response = await fetch(localProxyUrl);
+      if (!response.ok) {
+        throw new Error(`Local proxy response status: ${response.status}`);
+      }
+      xmlText = await response.text();
+    } catch (err) {
+      localFetchError = err;
+      console.warn(`Local proxy failed for ${feedSource.name}, falling back to public CORS proxy:`, err.message);
+      
+      // 2. Fallback to public CORS proxy (api.allorigins.win) with cache-busting on the target URL
+      const targetUrlWithCacheBuster = feedSource.url + (feedSource.url.includes('?') ? '&' : '?') + `_t=${Date.now()}`;
+      const publicProxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrlWithCacheBuster)}`;
+      
+      const response = await fetch(publicProxyUrl);
+      if (!response.ok) {
+        throw new Error(`Fallback proxy failed: ${response.statusText} (local error: ${localFetchError.message})`);
+      }
+      xmlText = await response.text();
+    }
+
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xmlText, "application/xml");
     
@@ -101,15 +121,73 @@ document.addEventListener("DOMContentLoaded", () => {
     const parseError = xmlDoc.querySelector("parsererror");
     if (parseError) throw new Error("XML Parsing error");
     
-    // Parse RSS items
-    const items = xmlDoc.querySelectorAll("item");
+    // Parse RSS items or Atom entries
+    const items = xmlDoc.querySelectorAll("item, entry");
     const parsedArticles = [];
     
+    // Helper to search child elements by localName (ignoring namespaces)
+    function getElementTextByLocalName(element, name) {
+      if (!element) return "";
+      const children = Array.from(element.children || element.childNodes).filter(n => n.nodeType === 1);
+      const child = children.find(c => c.localName === name);
+      if (child) return child.textContent?.trim() || "";
+      
+      // If not found in immediate children, search descendants (depth first)
+      const allDescendants = element.getElementsByTagName("*");
+      for (let i = 0; i < allDescendants.length; i++) {
+        if (allDescendants[i].localName === name) {
+          return allDescendants[i].textContent?.trim() || "";
+        }
+      }
+      return "";
+    }
+    
     items.forEach(item => {
-      const title = item.querySelector("title")?.textContent || "제목 없음";
-      const link = item.querySelector("link")?.textContent || "#";
-      const pubDateStr = item.querySelector("pubDate")?.textContent || item.querySelector("date")?.textContent || "";
-      const description = item.querySelector("description")?.textContent || "";
+      const title = getElementTextByLocalName(item, "title") || "제목 없음";
+      
+      let link = "#";
+      // Find all child elements of item
+      const children = Array.from(item.children || item.childNodes).filter(n => n.nodeType === 1);
+      
+      // Look for elements with localName "link"
+      const linkEls = children.filter(child => child.localName === "link");
+      for (const linkEl of linkEls) {
+        const href = linkEl.getAttribute("href");
+        const rel = linkEl.getAttribute("rel");
+        
+        if (href) {
+          if (!rel || rel === "alternate") {
+            link = href;
+            break;
+          }
+        } else if (linkEl.textContent?.trim()) {
+          const text = linkEl.textContent.trim();
+          if (text.startsWith("http://") || text.startsWith("https://") || text !== "") {
+            link = text;
+            break;
+          }
+        }
+      }
+      
+      if (link === "#" || link === "") {
+        // Fallback: look for localName "guid" or "id"
+        const guidEl = children.find(child => child.localName === "guid" || child.localName === "id");
+        if (guidEl) {
+          const guidText = guidEl.textContent.trim();
+          if (guidText.startsWith("http://") || guidText.startsWith("https://")) {
+            link = guidText;
+          }
+        }
+      }
+      
+      if (link === "#" || link === "") {
+        link = feedSource.url;
+      }
+      
+      const pubDateStr = getElementTextByLocalName(item, "pubDate") || 
+                         getElementTextByLocalName(item, "date") || 
+                         getElementTextByLocalName(item, "updated") || 
+                         getElementTextByLocalName(item, "published") || "";
       
       let pubDate = new Date();
       if (pubDateStr) {
@@ -122,8 +200,12 @@ document.addEventListener("DOMContentLoaded", () => {
       // Auto-translate for English titles
       const translation = translateTitle(title);
       
+      // Generate a unique ID using a stable URL hash
+      const cleanLink = link.replace(/[\/\?#&]/g, "_");
+      const linkHash = cleanLink.substring(Math.max(0, cleanLink.length - 24));
+      
       parsedArticles.push({
-        id: `rss-${feedSource.id}-${link.substring(link.length - 12)}`,
+        id: `rss-${feedSource.id}-${linkHash}`,
         title,
         link,
         source: feedSource.name,
@@ -501,6 +583,11 @@ document.addEventListener("DOMContentLoaded", () => {
     btnToggleDuplicate.classList.toggle("active", consolidateDuplicates);
     btnToggleDuplicate.textContent = consolidateDuplicates ? "중복묶기ON" : "중복묶기OFF";
     applyFiltersAndRender();
+  });
+
+  // Refresh feed aggregation
+  btnRefresh.addEventListener("click", () => {
+    aggregateArticles(true);
   });
 
   // Reset filter configuration

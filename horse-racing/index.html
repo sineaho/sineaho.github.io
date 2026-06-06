@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO 달려라 빨간말 - 코인 내기 경마</title>
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Ambient Glow Background Effects -->
+  <div class="bg-glow bg-glow-blue"></div>
+  <div class="bg-glow bg-glow-purple"></div>
+
+  <!-- PORTAL HEADER (Visible in Sandbox Apps) -->
+  <header class="main-header glass-header" id="portal-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>SandBox</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="../index.html#tools-section">무료 앱</a></li>
+        <li><a href="https://blog.naver.com/sineaho" target="_blank" rel="noopener noreferrer" class="active">CineAHO</a></li>
+        <li><a href="../prompt.html">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button id="theme-toggle" class="btn-theme">
+        <i class="fa-solid fa-sun"></i>
+        <span>라이트</span>
+      </button>
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Game Container -->
+  <main class="race-container">
+    
+    <!-- Title and Mode Switcher -->
+    <section class="game-hero-section glass-panel">
+      <div class="hero-left">
+        <div class="badge-capsule">
+          <span class="pulse-dot"></span>
+          <span>CineAHO Horse Racing Engine v1.0</span>
+        </div>
+        <h2 class="hero-game-title"><i class="fa-solid fa-horse-head text-gold"></i> 달려라 빨간말! 코인 내기 경마</h2>
+        <p class="hero-desc">
+          유튜브 쇼츠에서 화제가 된 내기 경마를 웹앱으로 재현했습니다. 
+          혼자서 코인 베팅을 즐기거나, 친구들과 벌칙(커피 사기, 청소하기 등)을 적고 참가자를 지정해 즉석 복불복 내기 경마를 즐겨보세요!
+        </p>
+      </div>
+      <div class="hero-right">
+        <!-- Mode Toggles -->
+        <div class="mode-widget">
+          <span class="widget-label"><i class="fa-solid fa-gear"></i> 게임 모드 선택</span>
+          <div class="mode-btn-row">
+            <button class="mode-btn active" id="mode-single" data-mode="single">
+              <i class="fa-solid fa-user"></i>
+              <strong>혼자 하기</strong>
+              <span>코인 베팅 시뮬레이터</span>
+            </button>
+            <button class="mode-btn" id="mode-party" data-mode="party">
+              <i class="fa-solid fa-users"></i>
+              <strong>여럿이 하기</strong>
+              <span>벌칙/벌금 내기 보드</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lower Grid Area: Race Arena on left, Configuration/Log on right -->
+    <section class="game-dashboard-grid">
+      
+      <!-- Left Column: Race Track Arena -->
+      <div class="track-column">
+        <div class="glass-panel track-wrapper">
+          
+          <!-- Race Control Header Bar -->
+          <div class="race-header-bar">
+            <!-- Digital Balance Display (Visible in Single Player Mode) -->
+            <div class="lcd-display" id="balance-display-wrapper">
+              <span class="lcd-label">COINS</span>
+              <span class="lcd-num text-gold" id="coin-balance-display">0001000</span>
+            </div>
+
+            <!-- Digital Timer -->
+            <div class="lcd-display">
+              <span class="lcd-label">TIME</span>
+              <span class="lcd-num" id="race-timer-display">00.00</span>
+            </div>
+
+            <!-- Game Status / Countdown Screen -->
+            <div class="status-screen" id="status-screen-display">
+              READY TO RUN
+            </div>
+          </div>
+
+          <!-- The Arena / Race Lanes -->
+          <div class="race-arena" id="race-arena">
+            <!-- Tracks injected dynamically by JS depending on configuration -->
+          </div>
+
+          <!-- Track Footer Control Bar -->
+          <div class="board-footer-bar">
+            <div class="footer-left">
+              <label class="sound-toggle-label">
+                <i class="fa-solid fa-volume-high text-green"></i> <span>효과음 사운드</span>
+                <input type="checkbox" id="toggle-sound" checked>
+              </label>
+            </div>
+            <div class="footer-center">
+              <span class="track-size-selector">
+                <i class="fa-solid fa-list-ol"></i> 레인수:
+                <select id="select-lanes">
+                  <option value="4">4 레인</option>
+                  <option value="5">5 레인</option>
+                  <option value="6" selected>6 레인</option>
+                  <option value="7">7 레인</option>
+                  <option value="8">8 레인</option>
+                </select>
+              </span>
+            </div>
+            <div class="footer-right">
+              <span class="instruction-txt">
+                <i class="fa-solid fa-circle-info"></i> 스타트 버튼을 눌러 말들을 달리게 합니다.
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Right Column: Settings & Betting Inputs -->
+      <div class="control-column">
+        
+        <!-- Tab Content 1: Single Player Betting (Active by Default) -->
+        <div class="glass-panel control-panel" id="panel-single">
+          <div class="panel-header">
+            <h3><i class="fa-solid fa-coins text-gold"></i> 싱글 플레이어 베팅</h3>
+            <span class="status-badge bg-gold" id="single-status-badge">베팅 대기</span>
+          </div>
+          <p class="panel-desc">우승마를 예측하고 코인을 거세요. 배당률은 말들의 예상 승률에 따라 동적으로 계산됩니다.</p>
+          
+          <div class="betting-setup-area">
+            <div class="bet-target-row">
+              <label class="input-label">베팅 대상 말 선택</label>
+              <div class="horse-selector-grid" id="single-horse-selector">
+                <!-- Horse radio buttons injected by JS -->
+              </div>
+            </div>
+
+            <div class="bet-amount-area">
+              <div class="amount-header">
+                <label class="input-label">베팅할 코인 액수</label>
+                <span class="avail-balance">베팅 가능: <strong id="bet-max-label">1,000</strong> 코인</span>
+              </div>
+              <div class="amount-input-row">
+                <i class="fa-solid fa-circle-dollar-to-slot input-icon"></i>
+                <input type="number" id="bet-amount-input" min="10" step="10" value="100" placeholder="금액 입력">
+              </div>
+              <div class="quick-bet-buttons">
+                <button class="btn-quick-bet" data-amount="100">+100</button>
+                <button class="btn-quick-bet" data-amount="500">+500</button>
+                <button class="btn-quick-bet" data-amount="1000">+1000</button>
+                <button class="btn-quick-bet" id="btn-bet-max">MAX</button>
+                <button class="btn-quick-bet" id="btn-bet-clear">초기화</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-buttons-row">
+            <button class="btn btn-primary btn-start-race" id="btn-start-single">
+              <i class="fa-solid fa-play"></i> 경기 시작 (출발)
+            </button>
+          </div>
+        </div>
+
+        <!-- Tab Content 2: Party Betting (Hidden by Default) -->
+        <div class="glass-panel control-panel" id="panel-party" style="display: none;">
+          <div class="panel-header">
+            <h3><i class="fa-solid fa-users-viewfinder text-purple"></i> 단체 내기 보드</h3>
+            <span class="status-badge bg-purple">내기 설정</span>
+          </div>
+          <p class="panel-desc">각 라인별로 배팅할 친구들의 이름을 쉼표(,)로 구분하여 입력하고, 경기 결과를 겨루세요.</p>
+          
+          <div class="party-setup-area">
+            <div class="penalty-input-group">
+              <label class="input-label" for="penalty-text-input">내기 규칙 / 벌칙 (예: 점심 사기, 커피 쏘기)</label>
+              <div class="input-with-icon">
+                <i class="fa-solid fa-face-grimace text-purple"></i>
+                <input type="text" id="penalty-text-input" placeholder="벌칙을 입력해 주세요 (예: 커피 사기)">
+              </div>
+            </div>
+
+            <div class="party-bettors-list">
+              <label class="input-label">각 라인별 베팅 참가자 입력</label>
+              <div class="bettors-inputs-grid" id="party-bettors-container">
+                <!-- Lane input fields injected by JS -->
+              </div>
+            </div>
+          </div>
+
+          <div class="action-buttons-row">
+            <button class="btn btn-primary btn-start-race" id="btn-start-party">
+              <i class="fa-solid fa-play"></i> 내기 경기 시작
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Commentary / Terminal Log Box -->
+        <div class="glass-panel terminal-logs-panel">
+          <div class="terminal-header">
+            <div class="terminal-dots">
+              <span class="dot dot-r"></span>
+              <span class="dot dot-y"></span>
+              <span class="dot dot-g"></span>
+            </div>
+            <span class="terminal-title"><i class="fa-solid fa-comment-dots"></i> 실시간 중계 중인 해설 로그</span>
+          </div>
+          <div class="terminal-body" id="commentary-log-content">
+            <p class="log-line log-dim">[SYSTEM] CineAHO 코인 경마장에 오신 것을 환영합니다!</p>
+            <p class="log-line log-dim">[SYSTEM] 모드를 선택하고 경기를 출발시켜 주세요.</p>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Victory Overlay Modal -->
+  <div class="modal-overlay" id="victory-modal">
+    <div class="modal-content glass-panel">
+      <div class="modal-ribbon">
+        <i class="fa-solid fa-trophy"></i>
+      </div>
+      <h2 class="modal-title" id="winner-modal-title">1번 빨간말 우승!</h2>
+      
+      <div class="modal-body">
+        <!-- Results stats card -->
+        <div class="results-stats-card">
+          <div class="results-icon-area" id="winner-avatar-display">
+            🐎🔴
+          </div>
+          <div class="results-text-area">
+            <p class="results-desc-main" id="payout-desc-main">베팅 성공! 350 코인을 획득했습니다.</p>
+            <p class="results-desc-sub" id="payout-desc-sub">현재 잔고: 1,350 코인</p>
+          </div>
+        </div>
+
+        <!-- Leaderboard Table -->
+        <div class="leaderboard-wrapper">
+          <h3>최종 경기 순위 (Rankings)</h3>
+          <table class="leaderboard-table">
+            <thead>
+              <tr>
+                <th>순위</th>
+                <th>말 정보</th>
+                <th>기록</th>
+                <th id="th-bettor-header">베팅 참가자</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-tbody">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-hero-start" id="btn-close-modal">
+          <i class="fa-solid fa-rotate-right"></i>
+          <span>새 경기 준비</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Section -->
+  <footer class="main-footer">
+    <p>&copy; 2026 CineAHO's SandBox. All rights reserved.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>

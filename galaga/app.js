@@ -345,6 +345,14 @@ let bestScore = 0;
 let stage = 1;
 let lives = 3;
 
+// Background Image Loader
+const bgImage = new Image();
+bgImage.src = "image/bg.png";
+let bgImageLoaded = false;
+bgImage.onload = () => {
+  bgImageLoaded = true;
+};
+
 // Starfield array
 const stars = [];
 const STAR_COUNT = 65;
@@ -370,7 +378,7 @@ const keys = {};
 
 // Mobile controller simulation state
 let mobileMoveDirection = 0; // -1: Left, 0: None, 1: Right
-let isAutofireActive = false;
+let isAutofireActive = true;
 
 // DOM items cache
 const lblScore = document.getElementById("lbl-score");
@@ -438,7 +446,7 @@ class PlayerShip {
     this.height = 28;
     this.x = SCREEN_W / 2 - this.width / 2;
     this.y = SCREEN_H - 60;
-    this.speed = 4.2;
+    this.speed = 0.21;
     
     this.isDual = false; // Combined Double fighter mode
     
@@ -455,13 +463,13 @@ class PlayerShip {
   update(deltaTime) {
     if (this.isCaptured) {
       // Rotate and slide up towards boss
-      this.capturedSpin += 0.15;
+      this.capturedSpin += 0.015;
       if (this.capturingBoss && !this.capturingBoss.isDead) {
         // Linear interpolation to boss coordinates
         const targetX = this.capturingBoss.x + this.capturingBoss.width / 2 - this.width / 2;
         const targetY = this.capturingBoss.y - this.height;
-        this.x += (targetX - this.x) * 0.05;
-        this.y += (targetY - this.y) * 0.05;
+        this.x += (targetX - this.x) * 0.005;
+        this.y += (targetY - this.y) * 0.005;
         
         // check distance
         const dx = targetX - this.x;
@@ -513,14 +521,14 @@ class PlayerShip {
         playerLasers.push({
           x: this.x + 6,
           y: this.y,
-          vy: -8.5,
+          vy: -0.425,
           width: 3,
           height: 12
         });
         playerLasers.push({
           x: this.x + this.width + 10,
           y: this.y,
-          vy: -8.5,
+          vy: -0.425,
           width: 3,
           height: 12
         });
@@ -529,7 +537,7 @@ class PlayerShip {
         playerLasers.push({
           x: this.x + this.width / 2 - 1.5,
           y: this.y,
-          vy: -8.5,
+          vy: -0.425,
           width: 3,
           height: 12
         });
@@ -626,15 +634,16 @@ class Enemy {
     this.state = "entering"; // "entering", "grid", "diving", "capturing", "captured_fall", "rejoining"
     this.health = type === "boss" ? 2 : 1;
     this.maxHealth = this.health;
+    this.flashTimer = 0;
     
     // Path parameter for spline curves
     this.pathProgress = 0;
     this.pathCurve = [];
-    this.entryDelay = id * 5; // delay spawning entry sequences
+    this.entryDelay = id * 50; // delay spawning entry sequences
     
     // Diving behaviors
     this.diveTime = 0;
-    this.diveSpeed = 2.5 + stage * 0.15;
+    this.diveSpeed = 0.125 + stage * 0.0075;
     
     // Tractor beam properties
     this.tractorBeamTimer = 0;
@@ -669,7 +678,10 @@ class Enemy {
   }
 
   update() {
-    this.animationTick += 0.08;
+    this.animationTick += 0.008;
+    if (this.flashTimer > 0) {
+      this.flashTimer--;
+    }
     
     if (this.state === "entering") {
       if (this.entryDelay > 0) {
@@ -681,7 +693,7 @@ class Enemy {
       if (stepIdx < this.pathCurve.length) {
         this.x = this.pathCurve[stepIdx].x - this.width / 2;
         this.y = this.pathCurve[stepIdx].y - this.height / 2;
-        this.pathProgress += 0.75;
+        this.pathProgress += 0.0375;
       } else {
         // Finished spline path. Hover to grid position
         this.state = "grid";
@@ -690,7 +702,7 @@ class Enemy {
     
     else if (this.state === "grid") {
       // Idle grid hover sway (sine wave sync)
-      const swayOffset = Math.sin(Date.now() * 0.002) * 15;
+      const swayOffset = Math.sin(Date.now() * 0.0002) * 15;
       this.x = this.gridX + swayOffset;
       this.y = this.gridY;
       
@@ -702,10 +714,10 @@ class Enemy {
     }
     
     else if (this.state === "diving") {
-      this.diveTime += 0.02;
+      this.diveTime += 0.002;
       this.y += this.diveSpeed;
       // Zig zag slide using sine wave
-      this.x += Math.sin(this.diveTime * 8) * 3;
+      this.x += Math.sin(this.diveTime * 8) * 0.3;
       
       // Captured fighter trails boss during dive
       if (this.capturedFighter) {
@@ -714,12 +726,12 @@ class Enemy {
       }
 
       // Shoot bullet at player
-      if (Math.random() < 0.01 + stage * 0.002) {
+      if (Math.random() < 0.001 + stage * 0.0002) {
         this.fireBullet();
       }
 
       // Boss tractor beam logic trigger
-      if (this.type === "boss" && !this.capturedFighter && this.y > 180 && this.y < 230 && Math.random() < 0.03) {
+      if (this.type === "boss" && !this.capturedFighter && this.y > 180 && this.y < 230 && Math.random() < 0.003) {
         this.state = "capturing";
         this.tractorBeamTimer = 0;
         this.tractorBeamHeight = 0;
@@ -734,12 +746,12 @@ class Enemy {
     
     else if (this.state === "capturing") {
       // Hover horizontally while tractor beam is active
-      this.tractorBeamTimer += 1;
-      this.x += Math.sin(this.tractorBeamTimer * 0.05) * 1.0;
+      this.tractorBeamTimer += 0.1;
+      this.x += Math.sin(this.tractorBeamTimer * 0.05) * 0.1;
       
       // Extend tractor beam cone down
       if (this.tractorBeamHeight < 320) {
-        this.tractorBeamHeight += 5;
+        this.tractorBeamHeight += 0.5;
       }
       
       // hum sound
@@ -766,7 +778,7 @@ class Enemy {
       }
 
       // Tractor beam shuts off after 6 seconds
-      if (this.tractorBeamTimer > 360) {
+      if (this.tractorBeamTimer > 3600) {
         this.state = "diving";
       }
     }
@@ -774,8 +786,8 @@ class Enemy {
     else if (this.state === "captured_fall") {
       // Captured fighter falls spinning towards player
       if (this.capturedFighter) {
-        this.capturedFighter.capturedSpin += 0.2;
-        this.capturedFighter.y += 3.5;
+        this.capturedFighter.capturedSpin += 0.02;
+        this.capturedFighter.y += 0.175;
         
         // Collide check with current player ship to merge into Dual
         if (player && !player.isCaptured) {
@@ -802,7 +814,7 @@ class Enemy {
     
     else if (this.state === "rejoining") {
       // Flying back from top to slot
-      const swayOffset = Math.sin(Date.now() * 0.002) * 15;
+      const swayOffset = Math.sin(Date.now() * 0.0002) * 15;
       const tx = this.gridX + swayOffset;
       const ty = this.gridY;
       
@@ -815,8 +827,8 @@ class Enemy {
         this.y = ty;
         this.state = "grid";
       } else {
-        this.x += (dx / dist) * 3.5;
-        this.y += (dy / dist) * 3.5;
+        this.x += (dx / dist) * 0.175;
+        this.y += (dy / dist) * 0.175;
       }
       
       if (this.capturedFighter) {
@@ -832,8 +844,8 @@ class Enemy {
     enemyBullets.push({
       x: this.x + this.width / 2,
       y: this.y + this.height,
-      vx: player ? ((player.x + player.width/2) - (this.x + this.width/2)) * 0.006 : 0,
-      vy: 4.0 + (stage * 0.12),
+      vx: player ? ((player.x + player.width/2) - (this.x + this.width/2)) * 0.0006 : 0,
+      vy: 0.2 + (stage * 0.006),
       radius: 4
     });
   }
@@ -873,9 +885,16 @@ class Enemy {
     const h = this.height;
     const wingFlap = Math.sin(this.animationTick) * 4;
     
+    let fillOverride = null;
+    let strokeOverride = null;
+    if (this.flashTimer > 0) {
+      fillOverride = "#ffffff";
+      strokeOverride = "#ffffff";
+    }
+    
     if (this.type === "bee") {
-      ctx.fillStyle = "#ff5555"; // Red Bee
-      ctx.strokeStyle = "#fbbf24";
+      ctx.fillStyle = fillOverride || "#ff5555"; // Red Bee
+      ctx.strokeStyle = strokeOverride || "#fbbf24";
       ctx.lineWidth = 1.5;
       
       // Wings
@@ -886,13 +905,13 @@ class Enemy {
       ctx.stroke();
       
       // Body
-      ctx.fillStyle = "#ff3333";
+      ctx.fillStyle = fillOverride || "#ff3333";
       ctx.beginPath();
       ctx.arc(this.x + w/2, this.y + h/2, 8, 0, Math.PI*2);
       ctx.fill();
       
       // Eyes
-      ctx.fillStyle = "#fff";
+      ctx.fillStyle = fillOverride || "#fff";
       ctx.beginPath();
       ctx.arc(this.x + w/2 - 3, this.y + 6, 2, 0, Math.PI*2);
       ctx.arc(this.x + w/2 + 3, this.y + 6, 2, 0, Math.PI*2);
@@ -900,8 +919,8 @@ class Enemy {
     }
     
     else if (this.type === "moth") {
-      ctx.fillStyle = "#facc15"; // Yellow Moth
-      ctx.strokeStyle = "#3b82f6";
+      ctx.fillStyle = fillOverride || "#facc15"; // Yellow Moth
+      ctx.strokeStyle = strokeOverride || "#3b82f6";
       ctx.lineWidth = 1.5;
       
       // Larger Wings
@@ -914,7 +933,7 @@ class Enemy {
       ctx.stroke();
       
       // Core
-      ctx.fillStyle = "#fbbf24";
+      ctx.fillStyle = fillOverride || "#fbbf24";
       ctx.beginPath();
       ctx.ellipse(this.x + w/2, this.y + h/2, 6, 9, 0, 0, Math.PI*2);
       ctx.fill();
@@ -923,8 +942,8 @@ class Enemy {
     else if (this.type === "boss") {
       // Green Boss
       // Top color changes green -> blue if hit once (Flashed state)
-      ctx.fillStyle = this.health === 2 ? "#10b981" : "#06b6d4";
-      ctx.strokeStyle = "#ffffff";
+      ctx.fillStyle = fillOverride || (this.health === 2 ? "#10b981" : "#06b6d4");
+      ctx.strokeStyle = strokeOverride || "#ffffff";
       ctx.lineWidth = 2;
       
       // Thick procedural shape
@@ -940,7 +959,7 @@ class Enemy {
       ctx.stroke();
       
       // Pincers / Horns
-      ctx.fillStyle = "#ef4444";
+      ctx.fillStyle = fillOverride || "#ef4444";
       ctx.beginPath();
       ctx.moveTo(this.x + w/2 - 6, this.y + 2);
       ctx.lineTo(this.x + w/2 - 12, this.y - 6);
@@ -970,7 +989,7 @@ function generateStarfield() {
     stars.push({
       x: Math.random() * SCREEN_W,
       y: Math.random() * SCREEN_H,
-      speed: Math.random() * 2.2 + 0.3,
+      speed: Math.random() * 0.11 + 0.015,
       radius: Math.random() * 1.5 + 0.5,
       // subtle twinkling
       color: `rgba(255, 255, 255, ${Math.random() * 0.7 + 0.3})`
@@ -989,8 +1008,12 @@ function updateStarfield() {
 }
 
 function drawStarfield(ctx) {
-  ctx.fillStyle = "#000000";
-  ctx.fillRect(0, 0, SCREEN_W, SCREEN_H);
+  if (bgImageLoaded) {
+    ctx.drawImage(bgImage, 0, 0, SCREEN_W, SCREEN_H);
+  } else {
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(0, 0, SCREEN_W, SCREEN_H);
+  }
   
   stars.forEach(star => {
     ctx.fillStyle = star.color;
@@ -1065,10 +1088,10 @@ function updateChallengingWaveSpawner() {
   
   // Spawns 4 waves of 8 enemies each
   const waveSpawns = [
-    { spawnTime: 60, startSide: 0 },
-    { spawnTime: 220, startSide: 1 },
-    { spawnTime: 380, startSide: 2 },
-    { spawnTime: 540, startSide: 3 }
+    { spawnTime: 600, startSide: 0 },
+    { spawnTime: 2200, startSide: 1 },
+    { spawnTime: 3800, startSide: 2 },
+    { spawnTime: 5400, startSide: 3 }
   ];
   
   waveSpawns.forEach((w) => {
@@ -1078,7 +1101,7 @@ function updateChallengingWaveSpawner() {
   });
 
   // End Challenging stage if all spawned enemies left screen or died
-  if (stageTimer > 680 && enemies.length === 0) {
+  if (stageTimer > 6800 && enemies.length === 0) {
     endChallengingStage();
   }
 }
@@ -1092,7 +1115,7 @@ function spawnChallengingWaveGroup(side) {
     const id = i;
     const enemy = new Enemy(id, type, 0, 0);
     enemy.state = "entering";
-    enemy.entryDelay = i * 8; // sequence spacing
+    enemy.entryDelay = i * 80; // sequence spacing
     
     // Custom looping trajectory path
     enemy.pathCurve = [];
@@ -1150,16 +1173,10 @@ function handleCollisions() {
       if (rectsOverlap(laser, enemyRect)) {
         laserHit = true;
         
-        // Damage enemy
-        enemy.health--;
+        // Damage enemy and kill instantly so they disappear
+        enemy.health = 0;
         spawnExplosion(laser.x, enemy.y + enemy.height/2, "#60a5fa", 5);
-
-        if (enemy.health <= 0) {
-          killEnemy(enemy);
-        } else {
-          // Play armor hit spark chime
-          synth.playLaser();
-        }
+        killEnemy(enemy);
         break;
       }
 
@@ -1306,7 +1323,7 @@ function triggerEnemyDiveScheduler() {
   if (currentStageType !== "standard" || isStageClearing || isEnteringFormationState) return;
 
   // dive interval speeds up with stage progress
-  const interval = Math.max(120 - stage * 4, 45);
+  const interval = Math.max(1200 - stage * 40, 450);
   if (stageTimer % interval === 0 && enemies.length > 0) {
     // Select a random enemy in grid state to dive
     const gridEnemies = enemies.filter(e => e.state === "grid");
@@ -1314,7 +1331,7 @@ function triggerEnemyDiveScheduler() {
       const lucky = gridEnemies[Math.floor(Math.random() * gridEnemies.length)];
       lucky.state = "diving";
       lucky.diveTime = 0;
-      lucky.diveSpeed = 2.5 + stage * 0.12;
+      lucky.diveSpeed = 0.125 + stage * 0.006;
     }
   }
 }
@@ -1458,6 +1475,16 @@ function draw() {
   // 1. Draw star background
   drawStarfield(ctx);
 
+  // 1.5. Draw HUD score at the top
+  ctx.save();
+  ctx.font = "bold 14px 'Outfit', sans-serif";
+  ctx.fillStyle = "#ffffff";
+  ctx.textAlign = "left";
+  ctx.fillText(`SCORE: ${score}`, 20, 25);
+  ctx.textAlign = "right";
+  ctx.fillText(`BEST: ${bestScore}`, SCREEN_W - 20, 25);
+  ctx.restore();
+
   // 2. Draw particle explosions
   particles.forEach(p => p.draw(ctx));
 
@@ -1496,7 +1523,7 @@ function draw() {
   ctx.font = "bold 20px 'Outfit', sans-serif";
   ctx.textAlign = "center";
   
-  if (stageTimer < 180 && !isStageClearing) {
+  if (stageTimer < 1800 && !isStageClearing) {
     // Show stage start text banner
     ctx.fillStyle = "#fb7185";
     ctx.shadowColor = "rgba(251, 113, 133, 0.6)";
@@ -1699,6 +1726,9 @@ function setupPageListeners() {
   });
 
   // Autofire Toggle button
+  btnAutofire.classList.toggle("active", isAutofireActive);
+  btnAutofire.querySelector("span").textContent = isAutofireActive ? "ON" : "OFF";
+
   btnAutofire.addEventListener("click", () => {
     isAutofireActive = !isAutofireActive;
     btnAutofire.classList.toggle("active", isAutofireActive);

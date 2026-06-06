@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 이모티콘 메이커 - CineAHO</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="main-header">
+    <div class="header-left">
+      <a href="../index.html" class="back-btn" title="CineAHO 홈으로 이동">
+        <i class="fa-solid fa-chevron-left"></i>
+      </a>
+      <div class="app-logo">
+        <i class="fa-solid fa-face-laugh-beam"></i>
+        <span>AI 이모티콘 메이커</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="app-status">
+        <span class="status-dot"></span>
+        <span>Canvas Engine v2.0</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-container">
+    
+    <!-- Left Workspace Panel -->
+    <section class="workspace-panel glass-panel">
+      <div class="panel-header">
+        <h2><i class="fa-solid fa-wand-magic-sparkles"></i> 이모티콘 편집기</h2>
+        <div class="workspace-tabs">
+          <button class="tab-btn active" id="tab-draw"><i class="fa-solid fa-pen-fancy"></i> 그리기</button>
+          <button class="tab-btn" id="tab-photo"><i class="fa-solid fa-image"></i> 사진 업로드</button>
+          <button class="tab-btn" id="tab-ai"><i class="fa-solid fa-wand-magic-sparkles"></i> AI 생성</button>
+        </div>
+      </div>
+
+      <div class="panel-content">
+        <!-- Canvas Wrapper -->
+        <div class="canvas-container">
+          <canvas id="editor-canvas" width="400" height="400"></canvas>
+          
+          <!-- Image manipulation helpers overlay (will be handled in canvas but text guides are shown) -->
+          <div class="canvas-hints">
+            <span class="photo-hint" style="display:none;"><i class="fa-solid fa-arrows-up-down-left-right"></i> 드래그: 이동 | 마우스휠: 크기 조절</span>
+            <span class="draw-hint"><i class="fa-solid fa-pencil"></i> 마우스로 그리기 | 레이어 추가 가능</span>
+            <span class="ai-hint" style="display:none;"><i class="fa-solid fa-sparkles"></i> AI 이모티콘 자동 생성 모드</span>
+          </div>
+        </div>
+
+        <!-- Canvas Controls (Draw tools) -->
+        <div class="controls-group" id="draw-tools">
+          <div class="control-row">
+            <label>브러시 색상</label>
+            <div class="color-palette">
+              <button class="color-swatch active" style="background-color: #000000;" data-color="#000000"></button>
+              <button class="color-swatch" style="background-color: #ffffff;" data-color="#ffffff"></button>
+              <button class="color-swatch" style="background-color: #ff3b30;" data-color="#ff3b30"></button>
+              <button class="color-swatch" style="background-color: #ff9500;" data-color="#ff9500"></button>
+              <button class="color-swatch" style="background-color: #ffcc00;" data-color="#ffcc00"></button>
+              <button class="color-swatch" style="background-color: #4cd964;" data-color="#4cd964"></button>
+              <button class="color-swatch" style="background-color: #5ac8fa;" data-color="#5ac8fa"></button>
+              <button class="color-swatch" style="background-color: #007aff;" data-color="#007aff"></button>
+              <button class="color-swatch" style="background-color: #5856d6;" data-color="#5856d6"></button>
+              <button class="color-swatch" style="background-color: #ff2d55;" data-color="#ff2d55"></button>
+              <!-- Custom color input -->
+              <div class="custom-color-picker">
+                <i class="fa-solid fa-palette"></i>
+                <input type="color" id="color-picker" value="#007aff">
+              </div>
+            </div>
+          </div>
+
+          <div class="control-row-split">
+            <div class="control-col">
+              <label for="brush-size">브러시 두께: <span id="brush-size-val">10px</span></label>
+              <input type="range" id="brush-size" min="1" max="50" value="10">
+            </div>
+            <div class="control-col flex-row">
+              <button class="tool-btn" id="btn-brush"><i class="fa-solid fa-paint-brush"></i> 펜</button>
+              <button class="tool-btn" id="btn-eraser"><i class="fa-solid fa-eraser"></i> 지우개</button>
+              <button class="tool-btn danger" id="btn-clear"><i class="fa-solid fa-trash-can"></i> 전체삭제</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Photo controls -->
+        <div class="controls-group" id="photo-tools" style="display: none;">
+          <div class="drop-zone" id="photo-drop-zone">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <p>사진을 이곳에 끌어다 놓거나 클릭하여 선택하세요.</p>
+            <input type="file" id="photo-input" accept="image/*" style="display: none;">
+          </div>
+          <div class="photo-adjustments" id="photo-adjusts" style="display:none;">
+            <div class="control-row">
+              <label>사진 크기 및 회전</label>
+              <div class="slider-group">
+                <span>크기</span>
+                <input type="range" id="photo-scale" min="0.1" max="3" step="0.05" value="1">
+              </div>
+              <div class="slider-group">
+                <span>회전</span>
+                <input type="range" id="photo-rotation" min="0" max="360" step="5" value="0">
+              </div>
+            </div>
+            <button class="tool-btn danger w-100" id="btn-remove-photo"><i class="fa-solid fa-circle-xmark"></i> 사진 삭제</button>
+          </div>
+        </div>
+
+        <!-- AI controls -->
+        <div class="controls-group" id="ai-tools" style="display: none;">
+          <div class="control-row">
+            <label for="ai-prompt">AI 이모티콘 생성 프롬프트</label>
+            <input type="text" id="ai-prompt" placeholder="어떤 캐릭터와 표정을 만들까요? (예: 귀여운 토끼, 화난 고양이)">
+          </div>
+          <div class="control-row-split">
+            <div class="control-col">
+              <label for="ai-style">스타일</label>
+              <select id="ai-style">
+                <option value="cute-3d">러블리 3D 캐릭터</option>
+                <option value="pixel">클래식 픽셀 아트</option>
+                <option value="vector">깔끔한 2D 벡터</option>
+                <option value="cartoon">명랑 카툰 일러스트</option>
+              </select>
+            </div>
+            <div class="control-col">
+              <label for="ai-emotion">표정/감정</label>
+              <select id="ai-emotion">
+                <option value="happy">신남/기쁨 😊</option>
+                <option value="sad">슬픔/눈물 😭</option>
+                <option value="angry">화남/분노 💢</option>
+                <option value="love">사랑/하트 😍</option>
+                <option value="surprised">놀람 😲</option>
+                <option value="sleepy">피곤/잠 졸림 😴</option>
+              </select>
+            </div>
+          </div>
+          <button class="generate-btn" id="btn-generate-ai" style="margin-top: 12px; width: 100%;">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> AI 이모티콘 생성하기
+          </button>
+          
+          <div id="ai-loading" style="display: none; text-align: center; padding: 20px; background: rgba(0,0,0,0.25); border-radius: 8px; border: 1px solid var(--glass-border); margin-top: 12px;">
+            <i class="fa-solid fa-spinner fa-spin" style="font-size: 24px; color: var(--color-primary); margin-bottom: 8px;"></i>
+            <p style="font-size: 11px; color: var(--text-secondary);">AI 모델 분석 및 이모티콘 제작 중...</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Center Customization & Execution -->
+    <section class="custom-panel glass-panel">
+      <h2><i class="fa-solid fa-circle-plus"></i> 데코레이션 추가</h2>
+      
+      <div class="accordion-group">
+        <!-- 1. Text Overlay -->
+        <div class="accordion-item active">
+          <div class="accordion-header"><i class="fa-solid fa-font"></i> 텍스트 문구 추가</div>
+          <div class="accordion-content">
+            <div class="form-group">
+              <input type="text" id="text-input" placeholder="이모티콘 문구 입력 (예: 대박, 헐, 대단해)">
+            </div>
+            <div class="control-row-split">
+              <div class="form-group">
+                <label>글자 색상</label>
+                <input type="color" id="text-color" value="#ffffff">
+              </div>
+              <div class="form-group">
+                <label>테두리 색상</label>
+                <input type="color" id="text-stroke-color" value="#000000">
+              </div>
+            </div>
+            <div class="control-row-split">
+              <div class="form-group">
+                <label>글자 크기</label>
+                <input type="range" id="text-size" min="20" max="80" value="48">
+              </div>
+              <div class="form-group">
+                <label>폰트</label>
+                <select id="text-font">
+                  <option value="'Noto Sans KR', sans-serif">본고딕 (Sans)</option>
+                  <option value="'Outfit', sans-serif">Outfit (영문용)</option>
+                  <option value="Comic Sans MS, sans-serif">Comic Sans</option>
+                  <option value="Impact, sans-serif">Impact (밈 스타일)</option>
+                </select>
+              </div>
+            </div>
+            <button class="submit-btn" id="btn-add-text"><i class="fa-solid fa-plus"></i> 텍스트 레이어 추가</button>
+          </div>
+        </div>
+
+        <!-- 2. Speech Bubbles -->
+        <div class="accordion-item">
+          <div class="accordion-header"><i class="fa-solid fa-comment-dots"></i> 말풍선 추가</div>
+          <div class="accordion-content">
+            <div class="form-group">
+              <input type="text" id="bubble-input" placeholder="말풍선 안의 대사 입력">
+            </div>
+            <div class="control-row-split">
+              <div class="form-group">
+                <label>말풍선 모양</label>
+                <select id="bubble-style">
+                  <option value="rounded">둥근 모서리</option>
+                  <option value="oval">타원형</option>
+                  <option value="shout">번개/외침</option>
+                  <option value="thought">생각 구름</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>배경 색상</label>
+                <input type="color" id="bubble-bg-color" value="#ffffff">
+              </div>
+            </div>
+            <button class="submit-btn" id="btn-add-bubble"><i class="fa-solid fa-plus"></i> 말풍선 레이어 추가</button>
+          </div>
+        </div>
+
+        <!-- 3. Emoticons & Stickers -->
+        <div class="accordion-item">
+          <div class="accordion-header"><i class="fa-solid fa-face-grin-tongue-wink"></i> 데코 스티커 추가</div>
+          <div class="accordion-content">
+            <div class="sticker-selector">
+              <div class="sticker-swatch" data-sticker="❤️">❤️</div>
+              <div class="sticker-swatch" data-sticker="⭐">⭐</div>
+              <div class="sticker-swatch" data-sticker="🔥">🔥</div>
+              <div class="sticker-swatch" data-sticker="💦">💦</div>
+              <div class="sticker-swatch" data-sticker="💢">💢</div>
+              <div class="sticker-swatch" data-sticker="✨">✨</div>
+              <div class="sticker-swatch" data-sticker="👑">👑</div>
+              <div class="sticker-swatch" data-sticker="😎">😎</div>
+              <div class="sticker-swatch" data-sticker="😭">😭</div>
+              <div class="sticker-swatch" data-sticker="💡">💡</div>
+              <div class="sticker-swatch" data-sticker="🎉">🎉</div>
+              <div class="sticker-swatch" data-sticker="🍀">🍀</div>
+            </div>
+            <div class="form-group margin-top-12">
+              <label>스티커 크기</label>
+              <input type="range" id="sticker-size" min="30" max="150" value="80">
+            </div>
+            <button class="submit-btn" id="btn-add-sticker"><i class="fa-solid fa-plus"></i> 선택한 스티커 추가</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Execution settings -->
+      <div class="execution-settings margin-top-20">
+        <h3><i class="fa-solid fa-gears"></i> 생성 옵션</h3>
+        
+        <div class="control-row">
+          <label>이모티콘 테두리 형태</label>
+          <div class="mask-options">
+            <button class="mask-btn active" id="mask-square">정사각형</button>
+            <button class="mask-btn" id="mask-circle">원형 자르기</button>
+          </div>
+        </div>
+
+        <div class="control-row">
+          <label class="checkbox-label">
+            <input type="checkbox" id="sticker-border" checked>
+            <span>스티커 스타일 백색 테두리 추가</span>
+          </label>
+        </div>
+
+        <div class="control-row">
+          <label>이모티콘 필터 효과</label>
+          <select id="emoticon-filter">
+            <option value="none">원본 (기본)</option>
+            <option value="outline">스티커 외곽선 강조</option>
+            <option value="cartoon">카툰 일러스트 효과</option>
+            <option value="pixel">복고풍 픽셀 아트</option>
+            <option value="sketch">연필 크로키 스케치</option>
+            <option value="neon">네온 야광 글로우</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <button class="generate-btn" id="btn-generate">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <span>이모티콘 만들기!</span>
+      </button>
+
+    </section>
+
+    <!-- Right Preview & Gallery Panel -->
+    <section class="preview-panel glass-panel">
+      <div class="panel-header">
+        <h2><i class="fa-solid fa-circle-check"></i> 완성본 미리보기</h2>
+      </div>
+
+      <div class="panel-content flex-center">
+        <!-- Render preview wrapper -->
+        <div class="preview-box">
+          <div class="checker-bg">
+            <img id="emoticon-preview" alt="완성된 이모티콘 미리보기" style="display:none;">
+            <div class="preview-placeholder" id="preview-placeholder">
+              <i class="fa-solid fa-face-grin-stars"></i>
+              <p>왼쪽 편집기에서 디자인하고<br><strong>[이모티콘 만들기!]</strong> 버튼을 눌러주세요.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Export Actions -->
+        <div class="action-buttons margin-top-20" id="preview-actions" style="display:none;">
+          <button class="export-btn download" id="btn-download"><i class="fa-solid fa-download"></i> 이미지 파일 다운로드</button>
+          <button class="export-btn save" id="btn-save-gallery"><i class="fa-solid fa-heart-circle-plus"></i> 내 보관함에 저장</button>
+        </div>
+
+        <!-- Local Gallery -->
+        <div class="gallery-section margin-top-30">
+          <h3><i class="fa-solid fa-box-archive"></i> 내 이모티콘 보관함</h3>
+          <div class="gallery-grid" id="gallery-grid">
+            <!-- Dynamic elements loaded here -->
+            <div class="gallery-empty">보관함이 비어있습니다.</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO 국회의원 정보 검색</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>SandBox</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="../index.html#tools-section">무료 앱</a></li>
+        <li><a href="https://blog.naver.com/sineaho" target="_blank" rel="noopener noreferrer" class="active">CineAHO</a></li>
+        <li><a href="../prompt.html">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="assembly-container">
+    
+    <!-- Title & Description Header -->
+    <section class="assembly-header-section">
+      <h1 class="main-title"><i class="fa-solid fa-building-columns"></i> 국회의원 정보 검색 - <span>국회 Open API</span></h1>
+      <p class="subtitle-desc">
+        대한민국국회 Open API(ALLNAMEMBER)로 국회의원을 검색합니다. 이름·정당·위원회·의원코드로<br>
+        조회하고 사진·연락처·선거구·약력을 확인하세요. 검색 결과는 Turso에 캐시되어 반복 조회 시 외부 API 호출을 줄입니다.
+      </p>
+      
+      <div class="tag-badges">
+        <span class="badge">국회</span>
+        <span class="badge">국회의원</span>
+        <span class="badge">Open API</span>
+        <span class="badge">데이터</span>
+      </div>
+    </section>
+
+    <!-- Search Conditions Panel -->
+    <section class="search-panel glass-panel">
+      <div class="panel-header">
+        <h3><i class="fa-solid fa-magnifying-glass"></i> 조사 조건</h3>
+        <div class="header-badges">
+          <span class="badge-status" id="badge-active-term">제22대 필터</span>
+          <button class="btn-turso-cache" id="btn-reload-cache"><i class="fa-solid fa-database"></i> Turso 캐시 재사용</button>
+        </div>
+      </div>
+
+      <form id="search-form" class="search-grid">
+        <div class="form-group">
+          <label for="input-code">국회의원 코드</label>
+          <input type="text" id="input-code" placeholder="예: 9770906">
+        </div>
+        <div class="form-group">
+          <label for="input-name">국회의원명</label>
+          <input type="text" id="input-name" placeholder="예: 홍길동">
+        </div>
+        <div class="form-group">
+          <label for="input-party">정당명</label>
+          <input type="text" id="input-party" placeholder="예: 더불어민주당">
+        </div>
+        <div class="form-group">
+          <label for="input-committee">소속위원회명</label>
+          <input type="text" id="input-committee" placeholder="예: 법제사법">
+        </div>
+        <div class="form-group">
+          <label for="select-term">대수 필터</label>
+          <div class="select-wrapper">
+            <select id="select-term">
+              <option value="제22대" selected>제22대</option>
+              <option value="제21대">제21대</option>
+              <option value="제20대">제20대</option>
+              <option value="제19대">제19대</option>
+              <option value="제18대">제18대</option>
+              <option value="제17대">제17대</option>
+              <option value="제16대">제16대</option>
+              <option value="제15대">제15대</option>
+              <option value="제14대">제14대</option>
+              <option value="제13대">제13대</option>
+              <option value="제12대">제12대</option>
+              <option value="제11대">제11대</option>
+              <option value="제10대">제10대</option>
+              <option value="제9대">제9대</option>
+              <option value="제8대">제8대</option>
+              <option value="제7대">제7대</option>
+              <option value="제6대">제6대</option>
+              <option value="제5대">제5대</option>
+              <option value="제4대">제4대</option>
+              <option value="제3대">제3대</option>
+              <option value="제2대">제2대</option>
+              <option value="제1대">제1대</option>
+            </select>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="select-pagesize">페이지 크기</label>
+          <div class="select-wrapper">
+            <select id="select-pagesize">
+              <option value="10">10명</option>
+              <option value="20">20명</option>
+              <option value="30">30명</option>
+              <option value="50" selected>50명</option>
+              <option value="100">100명</option>
+            </select>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-search"><i class="fa-solid fa-play"></i> 조사 실행</button>
+          <button type="button" class="btn-reset" id="btn-reset-form">초기화</button>
+        </div>
+      </form>
+
+      <!-- Party Filter List (Dynamic) -->
+      <div class="party-stats-bar" id="party-stats-container">
+        <!-- Party statistics tags will be loaded here -->
+        <span class="party-label" id="party-stats-label">제22대 국회의원 필터 - </span>
+        <div class="party-list" id="party-stats-list">
+          <span class="loading-text">로딩 중...</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results Panel -->
+    <section class="results-panel glass-panel">
+      <div class="results-header">
+        <div class="results-title-row">
+          <h3>조사 결과</h3>
+          <span class="badge-term-title" id="badge-term-results">대수 제22대</span>
+        </div>
+        
+        <!-- Timeline Selector Grid -->
+        <div class="timeline-container">
+          <div class="timeline-grid" id="timeline-buttons">
+            <!-- 1대 ~ 22대 buttons loaded dynamically/statically -->
+            <button class="timeline-btn" data-term="제1대"><strong>1대</strong><span>이승만</span></button>
+            <button class="timeline-btn" data-term="제2대"><strong>2대</strong><span>이승만</span></button>
+            <button class="timeline-btn" data-term="제3대"><strong>3대</strong><span>이승만</span></button>
+            <button class="timeline-btn" data-term="제4대"><strong>4대</strong><span>이승만</span></button>
+            <button class="timeline-btn" data-term="제5대"><strong>5대</strong><span>윤보선-장면</span></button>
+            <button class="timeline-btn" data-term="제6대"><strong>6대</strong><span>박정희</span></button>
+            <button class="timeline-btn" data-term="제7대"><strong>7대</strong><span>박정희</span></button>
+            <button class="timeline-btn" data-term="제8대"><strong>8대</strong><span>박정희</span></button>
+            <button class="timeline-btn" data-term="제9대"><strong>9대</strong><span>박정희</span></button>
+            <button class="timeline-btn" data-term="제10대"><strong>10대</strong><span>박정희-최규하</span></button>
+            <button class="timeline-btn" data-term="제11대"><strong>11대</strong><span>전두환</span></button>
+            <button class="timeline-btn" data-term="제12대"><strong>12대</strong><span>전두환-노태우</span></button>
+            <button class="timeline-btn" data-term="제13대"><strong>13대</strong><span>노태우</span></button>
+            <button class="timeline-btn" data-term="제14대"><strong>14대</strong><span>노태우-김영삼</span></button>
+            <button class="timeline-btn" data-term="제15대"><strong>15대</strong><span>김영삼-김대중</span></button>
+            <button class="timeline-btn" data-term="제16대"><strong>16대</strong><span>김대중-노무현</span></button>
+            <button class="timeline-btn" data-term="제17대"><strong>17대</strong><span>노무현-이명박</span></button>
+            <button class="timeline-btn" data-term="제18대"><strong>18대</strong><span>이명박</span></button>
+            <button class="timeline-btn" data-term="제19대"><strong>19대</strong><span>이명박-박근혜</span></button>
+            <button class="timeline-btn" data-term="제20대"><strong>20대</strong><span>박근혜-문재인</span></button>
+            <button class="timeline-btn" data-term="제21대"><strong>21대</strong><span>문재인-윤석열</span></button>
+            <button class="timeline-btn active" data-term="제22대"><strong>22대</strong><span>윤석열-이재명</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Query Metadata Row -->
+      <div class="meta-info-row" id="results-meta-row">
+        <div class="meta-left" id="query-meta-details">
+          질의 <span class="highlight">제22대</span> | 페이지 <span class="highlight">1</span> | 페이지당 <span class="highlight">50명</span> | 전체 <span class="highlight" id="meta-total-count">0건</span> | 이번 화면 <span class="highlight" id="meta-current-count">0명</span> | 출처 <span class="highlight" id="meta-source">Turso 캐시</span> | 동기화 <span class="highlight" id="meta-sync-time">2026. 6. 2. 오전 10:00</span>
+        </div>
+        <div class="meta-right">
+          <div class="pagination-summary" id="pagination-summary">1 - 50 / 306건</div>
+          <div class="view-mode-group">
+            <button class="btn-view-mode" id="btn-mode-list"><i class="fa-solid fa-list"></i> 목록</button>
+            <button class="btn-view-mode active" id="btn-mode-photo"><i class="fa-solid fa-image"></i> 사진</button>
+          </div>
+          <div class="nav-page-group">
+            <button class="btn-nav" id="btn-page-prev"><i class="fa-solid fa-chevron-left"></i> 이전</button>
+            <button class="btn-nav" id="btn-page-next">다음 <i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Members Results List/Grid -->
+      <div class="results-content-area">
+        <!-- Photo grid container -->
+        <div class="members-grid-view" id="members-grid-container">
+          <!-- Member Cards load dynamically here -->
+          <div class="empty-state">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+            <p>데이터를 불러오는 중입니다...</p>
+          </div>
+        </div>
+
+        <!-- List table container (Hidden by default) -->
+        <div class="members-list-view" id="members-list-container" style="display: none;">
+          <table class="members-table">
+            <thead>
+              <tr>
+                <th>사진</th>
+                <th>의원코드</th>
+                <th>이름</th>
+                <th>한자명</th>
+                <th>정당</th>
+                <th>선거구</th>
+                <th>소속위원회</th>
+                <th>당선대수</th>
+              </tr>
+            </thead>
+            <tbody id="members-table-body">
+              <!-- Member rows load dynamically here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Member Detail Modal Popup -->
+  <div class="detail-modal-overlay" id="detail-modal">
+    <div class="detail-modal-content glass-panel">
+      <button class="modal-close-btn" id="btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
+      
+      <div class="modal-body-grid">
+        <!-- Left Column: Photo & Basic Details -->
+        <div class="modal-profile-column">
+          <div class="modal-photo-wrapper">
+            <img src="" alt="의원 사진" id="modal-photo" onerror="this.src='https://www.assembly.go.kr/static/portal/img/openassm/default.jpg'">
+          </div>
+          <div class="modal-profile-header">
+            <h2 id="modal-name">홍길동</h2>
+            <span class="modal-hanja" id="modal-hanja">(洪吉童)</span>
+            <span class="modal-eng" id="modal-eng">HONG GILDONG</span>
+          </div>
+          <div class="modal-party-badge" id="modal-party">더불어민주당</div>
+        </div>
+
+        <!-- Right Column: Biography & Full Info -->
+        <div class="modal-info-column">
+          <div class="info-section">
+            <h4><i class="fa-solid fa-user-tie"></i> 의원 기본 정보</h4>
+            <div class="info-details-grid">
+              <div class="info-item"><strong>생년월일</strong><span id="modal-birth">1970-01-01</span></div>
+              <div class="info-item"><strong>선거구</strong><span id="modal-district">서울 마포구갑</span></div>
+              <div class="info-item"><strong>당선대수</strong><span id="modal-terms">제22대</span></div>
+              <div class="info-item"><strong>재선여부</strong><span id="modal-reelect">초선</span></div>
+            </div>
+          </div>
+
+          <div class="info-section">
+            <h4><i class="fa-solid fa-address-book"></i> 연락처 및 사무실</h4>
+            <div class="info-details-grid">
+              <div class="info-item"><strong>사무실</strong><span id="modal-office">의원회관 101호</span></div>
+              <div class="info-item"><strong>전화번호</strong><span id="modal-phone">02-784-0000</span></div>
+              <div class="info-item"><strong>이메일</strong><span id="modal-email">test@assembly.go.kr</span></div>
+              <div class="info-item"><strong>홈페이지</strong><a href="#" target="_blank" id="modal-homepage">바로가기</a></div>
+            </div>
+          </div>
+
+          <div class="info-section">
+            <h4><i class="fa-solid fa-users"></i> 보좌직원</h4>
+            <div class="info-details-grid">
+              <div class="info-item"><strong>보좌관</strong><span id="modal-aides">-</span></div>
+              <div class="info-item"><strong>비서관</strong><span id="modal-secretaries1">-</span></div>
+              <div class="info-item"><strong>비서</strong><span id="modal-secretaries2">-</span></div>
+            </div>
+          </div>
+
+          <div class="info-section">
+            <h4><i class="fa-solid fa-file-contract"></i> 소속 위원회</h4>
+            <p id="modal-committees" class="modal-committees-text">-</p>
+          </div>
+
+          <div class="info-section">
+            <h4><i class="fa-solid fa-graduation-cap"></i> 주요 약력</h4>
+            <div class="modal-career-box" id="modal-career">
+              <!-- Career bullets loaded here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-notification" id="toast-notif">검색 완료!</div>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>
