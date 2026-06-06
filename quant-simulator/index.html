@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>퀀트 투자 시뮬레이터 - CineAHO</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="main-header">
+    <div class="header-left">
+      <a href="../index.html" class="back-btn" title="CineAHO 홈으로 이동">
+        <i class="fa-solid fa-chevron-left"></i>
+      </a>
+      <div class="app-logo">
+        <i class="fa-solid fa-chart-pie"></i>
+        <span>퀀트 투자 시뮬레이터</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="app-status">
+        <span class="status-dot"></span>
+        <span>Quant Backtest v1.0</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-container">
+    
+    <!-- Left Column: Strategy Presets -->
+    <section class="strategy-panel glass-panel">
+      <h2><i class="fa-solid fa-book-open"></i> 퀀트 투자 전략 가이드</h2>
+      <p class="panel-intro">잘 알려진 대표적인 퀀트 전략들입니다. 클릭하면 시뮬레이터 설정에 자동으로 값이 적용됩니다.</p>
+      
+      <div class="presets-list">
+        <!-- Preset 1 -->
+        <div class="preset-card active" data-preset="magic">
+          <div class="preset-header">
+            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> 조셉 그린블라트 마법공식</h3>
+            <span class="preset-badge">가치 + 품질</span>
+          </div>
+          <p class="preset-desc">자본수익률(ROE)이 높은 우량 기업 중 이익수익률(역 PER)이 높은 가치 기업을 공략하는 전략입니다. 시장 대비 안정적인 초과수익을 목표로 합니다.</p>
+          <div class="preset-formula">
+            <span>ROE 순위 + PER 순위 (낮은 순) 합산 평가</span>
+          </div>
+          <button class="btn-preset-apply" data-preset="magic">이 전략 불러오기</button>
+        </div>
+
+        <!-- Preset 2 -->
+        <div class="preset-card" data-preset="momentum">
+          <div class="preset-header">
+            <h3><i class="fa-solid fa-rocket"></i> 듀얼 모멘텀 전략</h3>
+            <span class="preset-badge">추세 추종</span>
+          </div>
+          <p class="preset-desc">과거 12개월 동안 강한 상승세를 탄 종목을 매수합니다. 하락장에는 안전 자산(현금 대용주)으로 포트폴리오를 전환하여 MDD를 낮춥니다.</p>
+          <div class="preset-formula">
+            <span>12M 수익률 필터링 + 최고 모멘텀 순위 매수</span>
+          </div>
+          <button class="btn-preset-apply" data-preset="momentum">이 전략 불러오기</button>
+        </div>
+
+        <!-- Preset 3 -->
+        <div class="preset-card" data-preset="value">
+          <div class="preset-header">
+            <h3><i class="fa-solid fa-coins"></i> 저PBR + 저PER 가치 콤보</h3>
+            <span class="preset-badge">전통 가치주</span>
+          </div>
+          <p class="preset-desc">순자산가치 대비 저평가된 기업(저PBR)과 순이익 대비 저평가된 기업(저PER)을 결합하여 가치투자의 안전마진을 극대화하는 투자 전략입니다.</p>
+          <div class="preset-formula">
+            <span>PER 순위 (50%) + PBR 순위 (50%) 결합 평가</span>
+          </div>
+          <button class="btn-preset-apply" data-preset="value">이 전략 불러오기</button>
+        </div>
+
+        <!-- Preset 4 -->
+        <div class="preset-card" data-preset="ncav">
+          <div class="preset-header">
+            <h3><i class="fa-solid fa-shield-halved"></i> 그레이엄 청산가치 (NCAV)</h3>
+            <span class="preset-badge">자산 저평가</span>
+          </div>
+          <p class="preset-desc">순유동자산 가치보다 시가총액이 낮은 극저평가 소형주들을 발굴합니다. 부채비율을 제한하여 재무 안전성을 높이고 소형주 팩터 효과를 노립니다.</p>
+          <div class="preset-formula">
+            <span>부채비율 < 100% + 소형주 위주 + 낮은 PBR/PER</span>
+          </div>
+          <button class="btn-preset-apply" data-preset="ncav">이 전략 불러오기</button>
+        </div>
+
+        <!-- Preset 5 -->
+        <div class="preset-card" data-preset="fscore">
+          <div class="preset-header">
+            <h3><i class="fa-solid fa-gem"></i> 피오트로스키 고품질 가치</h3>
+            <span class="preset-badge">재무 건전성 + 가치</span>
+          </div>
+          <p class="preset-desc">순이익 증가율, 자산 회전율 개선 등 재무 건전성 팩터(F-Score 대용)를 필터링하고 저평가된 고성장 가치주에 매수하는 복합 퀀트 전략입니다.</p>
+          <div class="preset-formula">
+            <span>ROE > 10% + 이익성장 > 0% + 저PER/PBR</span>
+          </div>
+          <button class="btn-preset-apply" data-preset="fscore">이 전략 불러오기</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Center Column: Configuration Form -->
+    <section class="config-panel glass-panel">
+      <h2><i class="fa-solid fa-sliders"></i> 시뮬레이션 설정</h2>
+      
+      <form id="quant-form" onsubmit="return false;">
+        <!-- Group 1: General Settings -->
+        <div class="form-section">
+          <h3><i class="fa-solid fa-sack-dollar"></i> 기본 운용 설정</h3>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="initial-balance">초기 투자금 (원)</label>
+              <input type="number" id="initial-balance" value="10000000" min="1000000" max="1000000000" step="1000000">
+            </div>
+            <div class="form-group">
+              <label for="rebalance-period">리밸런싱 주기</label>
+              <select id="rebalance-period">
+                <option value="1">1개월 (매월)</option>
+                <option value="3" selected>3개월 (분기별)</option>
+                <option value="6">6개월 (반기별)</option>
+                <option value="12">12개월 (매년)</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="portfolio-size">최대 보유 종목 수</label>
+              <select id="portfolio-size">
+                <option value="5">5개</option>
+                <option value="10" selected>10개</option>
+                <option value="15">15개</option>
+                <option value="20">20개</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="fee-rate">거래 비용 및 세금 (%)</label>
+              <input type="number" id="fee-rate" value="0.25" min="0.0" max="5.0" step="0.05">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="backtest-duration">백테스트 기간</label>
+            <select id="backtest-duration">
+              <option value="60" selected>최근 5년 (60개월)</option>
+              <option value="36">최근 3년 (36개월)</option>
+              <option value="12">최근 1년 (12개월)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Group 2: Filter Settings -->
+        <div class="form-section">
+          <h3><i class="fa-solid fa-filter"></i> 필터링 설정 (안전성 & 규모)</h3>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="max-debt">최대 부채비율 (%)</label>
+              <input type="number" id="max-debt" value="200" min="50" max="500" step="10">
+            </div>
+            <div class="form-group">
+              <label for="min-roe">최소 ROE (%)</label>
+              <input type="number" id="min-roe" value="0" min="-20" max="40" step="1">
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="min-growth">최소 순이익 성장률 (%)</label>
+              <input type="number" id="min-growth" value="-50" min="-100" max="100" step="5">
+            </div>
+            <div class="form-group">
+              <label for="mcap-filter">시가총액 규모</label>
+              <select id="mcap-filter">
+                <option value="all" selected>전체 주식</option>
+                <option value="large">대형주 위주 (상위 30%)</option>
+                <option value="mid">중형주 위주 (중위 40%)</option>
+                <option value="small">소형주 위주 (하위 30%)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Group 3: Factor Weight Settings -->
+        <div class="form-section">
+          <h3><i class="fa-solid fa-chart-simple"></i> 가치 및 모멘텀 인자 가중치 (합계 100%)</h3>
+          <p class="section-intro">주식 점수를 매길 가중치를 설정합니다. (입력 후 합계가 100%가 되도록 조정됩니다)</p>
+          
+          <div class="slider-control-group">
+            <div class="slider-row">
+              <div class="slider-label-row">
+                <span>저 PER 인자 (수익가치)</span>
+                <span id="weight-per-val">50%</span>
+              </div>
+              <input type="range" class="factor-weight-slider" id="weight-per" min="0" max="100" value="50">
+            </div>
+
+            <div class="slider-row">
+              <div class="slider-label-row">
+                <span>저 PBR 인자 (자산가치)</span>
+                <span id="weight-pbr-val">50%</span>
+              </div>
+              <input type="range" class="factor-weight-slider" id="weight-pbr" min="0" max="100" value="50">
+            </div>
+
+            <div class="slider-row">
+              <div class="slider-label-row">
+                <span>저 PSR 인자 (매출가치)</span>
+                <span id="weight-psr-val">0%</span>
+              </div>
+              <input type="range" class="factor-weight-slider" id="weight-psr" min="0" max="100" value="0">
+            </div>
+
+            <div class="slider-row">
+              <div class="slider-label-row">
+                <span>모멘텀 인자 (상승 추세)</span>
+                <span id="weight-mom-val">0%</span>
+              </div>
+              <input type="range" class="factor-weight-slider" id="weight-mom" min="0" max="100" value="0">
+            </div>
+          </div>
+
+          <div class="form-group" id="momentum-duration-group" style="display:none; margin-top: 10px;">
+            <label for="momentum-lookback">모멘텀 측정 기간</label>
+            <select id="momentum-lookback">
+              <option value="3">최근 3개월 수익률</option>
+              <option value="6">최근 6개월 수익률</option>
+              <option value="12" selected>최근 12개월 수익률</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="btn-execute" id="btn-run-simulation">
+          <i class="fa-solid fa-circle-play"></i> 퀀트 시뮬레이션 실행하기
+        </button>
+      </form>
+    </section>
+
+    <!-- Right/Bottom Column: Simulation Results -->
+    <section class="results-panel glass-panel">
+      <h2><i class="fa-solid fa-square-poll-vertical"></i> 시뮬레이션 성과 보고서</h2>
+      
+      <!-- Pre-run Placeholder -->
+      <div id="results-placeholder" class="placeholder-box">
+        <i class="fa-solid fa-chart-line"></i>
+        <p>왼쪽 설정 창을 확인하고<br><strong>[퀀트 시뮬레이션 실행하기]</strong> 버튼을 클릭하세요.</p>
+      </div>
+
+      <!-- Simulation Loading Spinner -->
+      <div id="simulation-loading" class="spinner-box" style="display:none;">
+        <i class="fa-solid fa-circle-notch fa-spin"></i>
+        <p>5개년 월별 주가 및 재무 실적 빅데이터 분석 중...</p>
+      </div>
+
+      <!-- Result Content (Hidden Initially) -->
+      <div id="results-content" style="display:none;">
+        
+        <!-- KPI Dashboard -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <h4>누적 수익률</h4>
+            <p id="kpi-cum-return" class="positive">+0.00%</p>
+          </div>
+          <div class="kpi-card">
+            <h4>연평균 수익률 (CAGR)</h4>
+            <p id="kpi-cagr" class="positive">+0.00%</p>
+          </div>
+          <div class="kpi-card">
+            <h4>최대 낙폭 (MDD)</h4>
+            <p id="kpi-mdd" class="negative">-0.00%</p>
+          </div>
+          <div class="kpi-card">
+            <h4>샤프 지수 (Sharpe)</h4>
+            <p id="kpi-sharpe">0.00</p>
+          </div>
+          <div class="kpi-card">
+            <h4>승률 (월 단위)</h4>
+            <p id="kpi-win-rate">0.0%</p>
+          </div>
+          <div class="kpi-card">
+            <h4>최종 자산 평가액</h4>
+            <p id="kpi-final-balance">0원</p>
+          </div>
+        </div>
+
+        <!-- Charts Area -->
+        <div class="chart-container">
+          <div class="chart-box">
+            <h4><i class="fa-solid fa-chart-line"></i> 누적 수익률 추이 비교 (vs 벤치마크)</h4>
+            <canvas id="return-chart"></canvas>
+          </div>
+          <div class="chart-box">
+            <h4><i class="fa-solid fa-chart-bar"></i> 연도별 성과 비교</h4>
+            <canvas id="annual-chart"></canvas>
+          </div>
+        </div>
+
+        <!-- Portfolio Composition (Active Holding) -->
+        <div class="details-section">
+          <h3><i class="fa-solid fa-briefcase"></i> 현재 포트폴리오 편입 종목</h3>
+          <div class="table-wrapper">
+            <table id="portfolio-table">
+              <thead>
+                <tr>
+                  <th>종목명</th>
+                  <th>규모</th>
+                  <th>비중 (%)</th>
+                  <th>현재가</th>
+                  <th>PER</th>
+                  <th>PBR</th>
+                  <th>ROE (%)</th>
+                  <th>부채비율 (%)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Loaded dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Rebalancing History Log -->
+        <div class="details-section">
+          <h3><i class="fa-solid fa-clock-rotate-left"></i> 리밸런싱 및 매매 일지 내역</h3>
+          <div class="table-wrapper table-height-limit">
+            <table id="history-table">
+              <thead>
+                <tr>
+                  <th>날짜</th>
+                  <th>구분</th>
+                  <th>종목명</th>
+                  <th>매매 단가</th>
+                  <th>주식 수</th>
+                  <th>거래 총액</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Loaded dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Script links -->
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO 틀린그림 찾기 Pro - Spot the Difference</title>
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Ambient Glow Background Effects -->
+  <div class="bg-glow bg-glow-blue"></div>
+  <div class="bg-glow bg-glow-purple"></div>
+
+  <!-- PORTAL HEADER (Visible in Sandbox Apps) -->
+  <header class="main-header glass-header" id="portal-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>SandBox</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="../index.html#tools-section">무료 앱</a></li>
+        <li><a href="https://blog.naver.com/sineaho" target="_blank" rel="noopener noreferrer" class="active">CineAHO</a></li>
+        <li><a href="../prompt.html">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button id="theme-toggle" class="btn-theme">
+        <i class="fa-solid fa-sun"></i>
+        <span>라이트</span>
+      </button>
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Game Container -->
+  <main class="spot-container">
+    
+    <!-- Title and Mode Switcher -->
+    <section class="game-hero-section glass-panel">
+      <div class="hero-left">
+        <div class="badge-capsule">
+          <span class="pulse-dot"></span>
+          <span>CineAHO Spot Difference Engine v2.0</span>
+        </div>
+        <h2 class="hero-game-title"><i class="fa-solid fa-images text-purple"></i> 틀린그림 찾기 Pro</h2>
+        <p class="hero-desc">
+          30가지 다채로운 고품질 스테이지를 즐겨보세요! 
+          추가로 **제작기 모드**를 통해 컴퓨터에 있는 이미지를 올리면 자동으로 틀린 그림을 만들어 주거나, 직접 모자이크, 색상 변경, 스티커를 입혀 자신만의 맵을 설계할 수 있습니다.
+        </p>
+      </div>
+      <div class="hero-right">
+        <!-- Mode Widget -->
+        <div class="mode-widget">
+          <span class="widget-label"><i class="fa-solid fa-sliders"></i> 모드 선택</span>
+          <div class="mode-btn-row">
+            <button class="mode-btn active" id="mode-stages" data-mode="stages">
+              <i class="fa-solid fa-play"></i>
+              <strong>스테이지 모드</strong>
+              <span>30가지 테마 스테이지</span>
+            </button>
+            <button class="mode-btn" id="mode-creator" data-mode="creator">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              <strong>제작기 모드</strong>
+              <span>직접 사진 업로드 & 편집</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lower Grid Area: Canvas Viewport on left, Settings / Logs on right -->
+    <section class="game-dashboard-grid">
+      
+      <!-- Left Column: Canvas Viewport -->
+      <div class="canvas-column">
+        <div class="glass-panel canvas-wrapper">
+          
+          <!-- Classic Game Stats Header Bar -->
+          <div class="game-header-bar">
+            <!-- Level / Stage indicator -->
+            <div class="lcd-display" id="stage-lcd-display">
+              <span class="lcd-label">STAGE</span>
+              <span class="lcd-num text-purple" id="stage-number-display">01 / 30</span>
+            </div>
+
+            <!-- Differences Found -->
+            <div class="lcd-display">
+              <span class="lcd-label">FOUND</span>
+              <span class="lcd-num text-green" id="diffs-found-display">0 / 5</span>
+            </div>
+
+            <!-- Health / Hearts -->
+            <div class="health-hearts-display" id="health-hearts-container">
+              <i class="fa-solid fa-heart heart-icon active"></i>
+              <i class="fa-solid fa-heart heart-icon active"></i>
+              <i class="fa-solid fa-heart heart-icon active"></i>
+            </div>
+
+            <!-- Countdown Timer -->
+            <div class="lcd-display">
+              <span class="lcd-label">TIME</span>
+              <span class="lcd-num text-red" id="game-timer-display">90</span>
+            </div>
+          </div>
+
+          <!-- Canvas Area (Original & Modified Side by Side) -->
+          <div class="canvas-arena-outer">
+            <!-- Left Side: Original Image -->
+            <div class="canvas-box">
+              <span class="canvas-tag tag-orig">원본 (Original)</span>
+              <div class="canvas-holder">
+                <canvas id="canvas-original" width="450" height="450"></canvas>
+                <div class="visual-overlays" id="overlay-original"></div>
+              </div>
+            </div>
+
+            <!-- Right Side: Modified Image -->
+            <div class="canvas-box">
+              <span class="canvas-tag tag-mod">수정본 (Modified)</span>
+              <div class="canvas-holder">
+                <canvas id="canvas-modified" width="450" height="450"></canvas>
+                <div class="visual-overlays" id="overlay-modified"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Control Footer Bar -->
+          <div class="board-footer-bar">
+            <div class="footer-left">
+              <label class="sound-toggle-label">
+                <i class="fa-solid fa-volume-high text-green"></i> <span>효과음 사운드</span>
+                <input type="checkbox" id="toggle-sound" checked>
+              </label>
+            </div>
+            <div class="footer-center">
+              <button class="btn btn-secondary btn-hint" id="btn-use-hint">
+                <i class="fa-solid fa-lightbulb text-yellow"></i> <span>힌트 쓰기 (남은 개수: <strong id="hint-count-display">3</strong>)</span>
+              </button>
+            </div>
+            <div class="footer-right">
+              <button class="btn btn-secondary btn-reset" id="btn-reset-stage">
+                <i class="fa-solid fa-rotate-left"></i> <span>처음부터</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Right Column: Level Selection / Custom Editor -->
+      <div class="control-column">
+        
+        <!-- Tab Content 1: Stages list (Active by default) -->
+        <div class="glass-panel control-panel" id="panel-stages">
+          <div class="panel-header">
+            <h3><i class="fa-solid fa-list-check text-purple"></i> 스테이지 선택</h3>
+            <span class="status-badge bg-purple" id="stages-count-badge">30개 레벨</span>
+          </div>
+          <p class="panel-desc">순서대로 클리어하거나 아래 목록에서 원하는 스테이지를 클릭해 즉시 시작할 수 있습니다.</p>
+          
+          <div class="stages-grid" id="stages-buttons-grid">
+            <!-- Stage buttons injected dynamically by JS -->
+          </div>
+        </div>
+
+        <!-- Tab Content 2: Custom Creator (Hidden by default) -->
+        <div class="glass-panel control-panel" id="panel-creator" style="display: none;">
+          <div class="panel-header">
+            <h3><i class="fa-solid fa-crop text-gold"></i> 제작기 도구함</h3>
+            <span class="status-badge bg-gold">에디터 모드</span>
+          </div>
+          <p class="panel-desc">사진을 올리고, 아래 도구를 이용해 수정을 입혀 나만의 틀린그림 찾기 게임을 설계하세요.</p>
+          
+          <div class="creator-setup-area">
+            <!-- Drag and Drop Dropzone -->
+            <div class="image-dropzone-wrapper" id="dropzone-area">
+              <i class="fa-solid fa-cloud-arrow-up cloud-icon"></i>
+              <p class="dropzone-text">이미지를 드래그하여 놓거나 <strong>파일 선택</strong></p>
+              <span class="dropzone-sub">권장 사이즈: 가로/세로 450px 이상</span>
+              <input type="file" id="image-file-input" accept="image/*" style="display: none;">
+            </div>
+
+            <!-- Image Loaded Controls -->
+            <div class="creator-edit-tools" id="editor-controls-box" style="display: none;">
+              <!-- Editor Selection Options -->
+              <div class="editor-tool-row">
+                <label class="input-label">편집 브러시 도구</label>
+                <div class="tool-selector-grid">
+                  <button class="btn-editor-tool active" data-tool="hue" title="브러시 영역의 색상을 변형합니다.">
+                    <i class="fa-solid fa-palette"></i> 색상 변경
+                  </button>
+                  <button class="btn-editor-tool" data-tool="mosaic" title="브러시 영역을 모자이크 처리합니다.">
+                    <i class="fa-solid fa-border-all"></i> 모자이크
+                  </button>
+                  <button class="btn-editor-tool" data-tool="invert" title="브러시 영역의 색상을 반전시킵니다.">
+                    <i class="fa-solid fa-circle-half-stroke"></i> 색상 반전
+                  </button>
+                  <button class="btn-editor-tool" data-tool="stamp" title="선택한 귀여운 스티커를 클릭 위치에 입힙니다.">
+                    <i class="fa-solid fa-face-smile"></i> 스티커 붙이기
+                  </button>
+                </div>
+              </div>
+
+              <!-- Stamp Picker (Only shown when tool == stamp) -->
+              <div class="editor-tool-row" id="stamp-picker-wrapper" style="display: none;">
+                <label class="input-label">스티커 캐릭터 선택</label>
+                <div class="stamp-choices-row">
+                  <button class="btn-stamp-choice active" data-stamp="⭐">⭐</button>
+                  <button class="btn-stamp-choice" data-stamp="❤️">❤️</button>
+                  <button class="btn-stamp-choice" data-stamp="🍀">🍀</button>
+                  <button class="btn-stamp-choice" data-stamp="🐱">🐱</button>
+                  <button class="btn-stamp-choice" data-stamp="🕶️">🕶️</button>
+                  <button class="btn-stamp-choice" data-stamp="🎯">🎯</button>
+                </div>
+              </div>
+
+              <!-- Brush Size Slider -->
+              <div class="editor-tool-row">
+                <div class="slider-header">
+                  <label class="input-label">브러시 크기 (반경)</label>
+                  <span class="slider-val" id="brush-radius-display">30px</span>
+                </div>
+                <input type="range" id="brush-radius-slider" min="15" max="60" step="5" value="30" class="speed-slider">
+              </div>
+
+              <!-- Auto Difference Button -->
+              <div class="editor-tool-row">
+                <button class="btn btn-secondary" id="btn-auto-generate-diffs" style="width: 100%;">
+                  <i class="fa-solid fa-wand-magic-sparkles text-purple"></i> AI 자동 틀린그림 생성
+                </button>
+              </div>
+
+              <!-- Creator Action Trigger buttons -->
+              <div class="editor-action-buttons">
+                <button class="btn btn-primary" id="btn-play-custom">
+                  <i class="fa-solid fa-circle-play"></i> 만든 맵 플레이하기
+                </button>
+                <button class="btn btn-secondary" id="btn-clear-custom">
+                  <i class="fa-solid fa-trash-can"></i> 편집 초기화
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Commentary / Terminal Log Box -->
+        <div class="glass-panel terminal-logs-panel">
+          <div class="terminal-header">
+            <div class="terminal-dots">
+              <span class="dot dot-r"></span>
+              <span class="dot dot-y"></span>
+              <span class="dot dot-g"></span>
+            </div>
+            <span class="terminal-title"><i class="fa-solid fa-terminal"></i> Game Status Console Console</span>
+          </div>
+          <div class="terminal-body" id="game-console-logs">
+            <p class="log-line log-dim">[SYSTEM] 틀린그림 찾기 게임 엔진 초기화 중...</p>
+            <p class="log-line log-dim">[SYSTEM] 스테이지를 선택하거나 직접 사진을 올려 플레이해보세요.</p>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Level Clear / Game Over modal -->
+  <div class="modal-overlay" id="result-modal">
+    <div class="modal-content glass-panel">
+      <div class="modal-ribbon" id="modal-status-ribbon">
+        <i class="fa-solid fa-award"></i>
+      </div>
+      <h2 class="modal-title" id="result-modal-title">STAGE CLEAR!</h2>
+      
+      <div class="modal-body">
+        <div class="results-stats-card">
+          <div class="results-icon-area" id="result-badge-emoji">
+            🎉
+          </div>
+          <div class="results-text-area">
+            <p class="results-desc-main" id="result-desc-main">축하합니다! 5개의 틀린그림을 완벽히 찾았습니다.</p>
+            <p class="results-desc-sub" id="result-desc-sub">소요 시간: 24.5초 (남은 생명: 💖💖💖)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-hero-start" id="btn-next-action">
+          <span>다음 스테이지 진행</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Section -->
+  <footer class="main-footer">
+    <p>&copy; 2026 CineAHO's SandBox. All rights reserved.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="stages.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO 슬러그 슈터 - 횡스크롤 런앤건</title>
+  <meta name="description" content="5개의 고유한 전장, 레트로 횡스크롤 스크롤 물리, 개성 만점 5종의 중간 보스 및 최종 보스들, 포로 구출과 무기 체계를 갖춘 슬러그 슈터 아케이드 게임입니다!">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>SandBox</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="../index.html#tools-section">무료 앱</a></li>
+        <li><a href="https://blog.naver.com/sineaho" target="_blank" rel="noopener noreferrer" class="active">CineAHO</a></li>
+        <li><a href="../prompt.html">프롬프트</a></li>
+        <li><a href="../coming-soon.html">칼럼</a></li>
+        <li><a href="../coming-soon.html">PPT</a></li>
+        <li><a href="../coming-soon.html">위키</a></li>
+        <li><a href="../coming-soon.html">엔터테인먼트</a></li>
+        <li><a href="../coming-soon.html">AI 이미지</a></li>
+        <li><a href="../coming-soon.html">AI 툴</a></li>
+        <li><a href="../coming-soon.html">프로그램</a></li>
+        <li><a href="../coming-soon.html">쇼핑 핫딜</a></li>
+        <li><a href="../coming-soon.html">부업 백과</a></li>
+        <li><a href="../coming-soon.html">RSS</a></li>
+        <li><a href="../coming-soon.html">개발</a></li>
+        <li><a href="../coming-soon.html">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button id="theme-toggle" class="btn-theme">
+        <i class="fa-solid fa-sun"></i>
+        <span>라이트</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="hub-container ss-page-container">
+    
+    <!-- Hero Header -->
+    <section class="ss-hero-section glass-panel">
+      <div class="hero-left-info">
+        <div class="badge-capsule">
+          <span class="pulse-dot"></span>
+          <span>CineAHO Run & Gun Side-scrolling Game v1.0</span>
+        </div>
+        <h2 class="hero-ss-title">슬러그 슈터 (Slug Shooter)</h2>
+        <p>포로를 구출해 강력한 무기를 얻고, 5개 전장의 중간 보스와 최종 보스를 무찌르는 아케이드 슈팅 게임입니다!</p>
+      </div>
+    </section>
+
+    <!-- Game Layout Grid -->
+    <section class="game-layout">
+      
+      <!-- Left Column: Mission Info & Legend -->
+      <article class="legend-panel glass-panel">
+        <div class="panel-header">
+          <h3><i class="fa-solid fa-person-rifle text-purple"></i> 미션 가이드</h3>
+          <p>스테이지별 목표를 확인하세요.</p>
+        </div>
+        
+        <div class="mission-box">
+          <span class="mission-lbl">현재 목표</span>
+          <h4 id="display-mission-title">밀림 전선 돌파</h4>
+          <p class="mission-desc" id="display-mission-desc">밀림 속 적 초소를 돌파하고 중간 보스인 헬기와 최종 장갑탱크를 처치하세요.</p>
+        </div>
+
+        <div class="rescue-counter-box">
+          <span class="rescue-lbl"><i class="fa-solid fa-handshake-angle text-gold"></i> 포로 구출 현황</span>
+          <div class="rescue-bar-container">
+            <span class="rescue-val"><span id="display-rescued-count">0</span> / <span id="display-total-captives">4</span> 명</span>
+            <div class="rescue-progress">
+              <div class="rescue-progress-bar" id="display-rescue-progress" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-header" style="margin-top: 1rem; border-bottom: none; padding-bottom: 0;">
+          <h3><i class="fa-solid fa-keyboard text-blue"></i> 키보드 조작법</h3>
+          <ul class="control-list">
+            <li><kbd>A</kbd> / <kbd>D</kbd> : 좌/우 이동</li>
+            <li><kbd>W</kbd> : 위 조준 (Aim Up)</li>
+            <li><kbd>S</kbd> : 앉기 / 아래 조준 (Crouch)</li>
+            <li><kbd>K</kbd> : 점프 (Jump)</li>
+            <li><kbd>J</kbd> : 무기 발사 (Shoot)</li>
+            <li><kbd>L</kbd> : 수류탄 투척 (Grenade)</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- Center Column: Arcade Cabinet Canvas -->
+      <article class="canvas-panel-wrapper">
+        <div class="cabinet-top-info glass-panel">
+          <div class="stage-title-display">
+            <span class="tag-stage" id="display-stage-number">STAGE 1</span>
+            <span class="title-stage" id="display-stage-name">정글 오아시스</span>
+          </div>
+        </div>
+        
+        <div class="canvas-container glass-panel" id="canvas-container-box">
+          <canvas id="game-canvas" width="640" height="480"></canvas>
+          <div class="crt-scanlines"></div>
+          
+          <!-- Screen Flash overlay for explosions -->
+          <div class="screen-flash" id="flash-overlay"></div>
+
+          <!-- Boss HP bar (Visible only during Boss Fights) -->
+          <div class="boss-health-container" id="boss-hud" style="display: none;">
+            <div class="boss-meta">
+              <span class="boss-badge">BOSS</span>
+              <span class="boss-name" id="boss-hud-name">SV-001 IRON NOKANA</span>
+            </div>
+            <div class="boss-hp-bar">
+              <div class="boss-hp-progress" id="boss-hud-progress" style="width: 100%"></div>
+            </div>
+          </div>
+
+          <!-- Large Start Screen Overlay -->
+          <div class="canvas-overlay" id="start-overlay">
+            <div class="overlay-inner">
+              <span class="overlay-badge"><i class="fa-solid fa-gamepad"></i> RUN & GUN ARCADE</span>
+              <h2 class="overlay-title">SLUG SHOOTER</h2>
+              <p class="overlay-subtitle">횡스크롤 아케이드를 무대로 적들을 소탕하고 생존하세요!</p>
+              <button class="btn-play-start" id="btn-start-game-click"><i class="fa-solid fa-play"></i> 작전 개시</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile Controller Panel (Visible only on mobile/touch view) -->
+        <div class="mobile-controller" id="mobile-gamepad">
+          <div class="joystick-column">
+            <!-- Left joystick direction pad -->
+            <div class="mobile-direction-pad">
+              <button class="ctrl-btn dir-up" id="btn-m-up"><i class="fa-solid fa-caret-up"></i></button>
+              <div class="dir-row">
+                <button class="ctrl-btn dir-left" id="btn-m-left"><i class="fa-solid fa-caret-left"></i></button>
+                <div class="dir-center"><i class="fa-solid fa-circle"></i></div>
+                <button class="ctrl-btn dir-right" id="btn-m-right"><i class="fa-solid fa-caret-right"></i></button>
+              </div>
+              <button class="ctrl-btn dir-down" id="btn-m-down"><i class="fa-solid fa-caret-down"></i></button>
+            </div>
+          </div>
+          
+          <div class="action-column">
+            <!-- Jump, fire, grenade round action buttons -->
+            <button class="action-btn btn-grenade" id="btn-m-grenade"><i class="fa-solid fa-bomb"></i></button>
+            <button class="action-btn btn-jump" id="btn-m-jump"><i class="fa-solid fa-chevron-up"></i></button>
+            <button class="action-btn btn-fire" id="btn-m-fire"><i class="fa-solid fa-crosshairs"></i></button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Right Column: Control & Stats Dashboard -->
+      <article class="control-panel glass-panel">
+        
+        <div class="player-vital-status">
+          <div class="status-meta">
+            <span class="lbl"><i class="fa-solid fa-heart text-red"></i> 남은 생명</span>
+            <span class="val" id="player-lives-text">3</span>
+          </div>
+          <div class="lives-hearts-display" id="lives-hearts-box">
+            <!-- hearts generated via JS -->
+          </div>
+        </div>
+
+        <div class="weapon-status-box glass-panel">
+          <span class="weapon-lbl">장착 중인 화기</span>
+          <div class="weapon-display">
+            <span class="weapon-icon" id="weapon-icon-display">🔫</span>
+            <div class="weapon-meta">
+              <h4 id="weapon-name-display">HANDGUN</h4>
+              <span class="weapon-ammo" id="weapon-ammo-display">INFINITY</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="scoreboard">
+          <div class="score-card">
+            <span class="score-label"><i class="fa-solid fa-ranking-star text-gold"></i> 현재 점수</span>
+            <h3 class="score-val" id="current-score">0</h3>
+          </div>
+          <div class="score-card">
+            <span class="score-label"><i class="fa-solid fa-trophy text-gold"></i> 최고 점수</span>
+            <h3 class="score-val" id="best-score">0</h3>
+          </div>
+          <div class="score-card grenade-card">
+            <span class="score-label"><i class="fa-solid fa-circle-radiation text-orange"></i> 수류탄 잔량</span>
+            <h3 class="score-val" id="grenades-count">10</h3>
+          </div>
+        </div>
+
+        <div class="game-controls">
+          <button class="btn btn-restart" id="btn-restart-game"><i class="fa-solid fa-rotate-right"></i> 미션 재시작</button>
+          <button class="btn btn-pause" id="btn-pause-toggle"><i class="fa-solid fa-pause"></i> 일시 정지</button>
+          <button class="btn btn-sound" id="btn-sound-toggle"><i class="fa-solid fa-volume-high"></i> 소리 켜짐</button>
+        </div>
+      </article>
+
+    </section>
+
+  </main>
+
+  <!-- Modal: Game Over -->
+  <div class="modal-overlay" id="game-over-modal">
+    <div class="modal-box glass-panel">
+      <div class="modal-header">
+        <span class="game-over-badge"><i class="fa-solid fa-skull"></i> MISSION FAILED</span>
+        <h3>전사하였습니다!</h3>
+      </div>
+      <div class="modal-body">
+        <div class="final-stats-grid">
+          <div class="final-stat-item">
+            <span class="final-label">작전 점수</span>
+            <strong class="final-val text-blue" id="modal-final-score">0점</strong>
+          </div>
+          <div class="final-stat-item">
+            <span class="final-label">최대 도달 구역</span>
+            <strong class="final-val text-purple" id="modal-max-stage">STAGE 1</strong>
+          </div>
+        </div>
+        <div class="modal-section" style="margin-top: 1.5rem; text-align: center;">
+          <button class="btn-restart-modal" id="btn-restart-modal-btn"><i class="fa-solid fa-rotate"></i> 다시 도전하기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Mission Complete (Stage Clear) -->
+  <div class="modal-overlay" id="stage-clear-modal">
+    <div class="modal-box glass-panel">
+      <div class="modal-header">
+        <span class="stage-clear-badge"><i class="fa-solid fa-circle-check"></i> MISSION COMPLETE</span>
+        <h3>구역을 정찰하고 보스를 토벌했습니다!</h3>
+      </div>
+      <div class="modal-body">
+        <div class="clear-stats-info">
+          <p>보너스 수류탄과 점수가 추가되었습니다. 다음 미션을 준비하십시오.</p>
+        </div>
+        <div class="modal-section" style="margin-top: 1.5rem; text-align: center;">
+          <button class="btn-next-modal" id="btn-next-stage-btn"><i class="fa-solid fa-forward-step"></i> 다음 미션 개시 &rarr;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: All Stages Clear -->
+  <div class="modal-overlay" id="all-clear-modal">
+    <div class="modal-box glass-panel grand-victory-box">
+      <div class="modal-header">
+        <span class="all-clear-badge"><i class="fa-solid fa-award"></i> GRAND VICTORY</span>
+        <h3>축하합니다! 전 5미션 정복 성공!</h3>
+      </div>
+      <div class="modal-body">
+        <p class="congrats-text">당신은 외계 사령부 루트마스까지 완전히 소탕하고 지구의 영웅이 되었습니다!</p>
+        <div class="final-stats-grid">
+          <div class="final-stat-item">
+            <span class="final-label">최종 격파 점수</span>
+            <strong class="final-val text-gold" id="modal-all-final-score">0점</strong>
+          </div>
+        </div>
+        <div class="modal-section" style="margin-top: 1.5rem; text-align: center;">
+          <button class="btn-restart-modal" id="btn-all-restart-btn"><i class="fa-solid fa-rotate-right"></i> 처음부터 다시 시작</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="rich-footer">
+    <div class="footer-top-grid">
+
+      <!-- Footer Left: Branding & Visitor Stats -->
+      <div class="footer-left-brand">
+        <div class="brand-title">
+          <span class="cdb-badge">CDB</span>
+          <h2>Cineaho's SandBox</h2>
+        </div>
+
+        <div class="brand-links">
+          <span>🧰 웹앱</span>
+          <span class="divider-dot">•</span>
+          <span>💻 Cineaho</span>
+          <span class="divider-dot">•</span>
+          <span>📝 이슈트래커</span>
+          <span class="divider-dot">•</span>
+          <span>📄 기타 페이지를 한 곳에서. 모든 도구를 쉽고 빠르게 사용하세요.</span>
+        </div>
+
+        <div class="visitor-stats">
+          <div class="stat-group">
+            <h4>사이트 방문</h4>
+            <p>전체 <span id="site-visit-total">0</span> · 오늘 <span id="site-visit-today">0</span> · 고유 전체 <span id="site-visit-utotal">0</span> · 고유 오늘 <span id="site-visit-utoday">0</span></p>
+          </div>
+          <div class="stat-group">
+            <h4>이 앱 방문</h4>
+            <p>전체 <span id="apps-visit-total">0</span> · today <span id="apps-visit-today">0</span> · 고유 전체 <span id="apps-visit-utotal">0</span> · 고유 오늘 <span id="apps-visit-utoday">0</span></p>
+          </div>
+          <a href="#" class="stats-link">방문 통계 / 인기 앱 순위 보러 가기 &rarr;</a>
+        </div>
+      </div>
+
+      <!-- Footer Right: Columns -->
+      <div class="footer-right-columns">
+        <div class="footer-col">
+          <h3>제품</h3>
+          <ul>
+            <li><a href="../all-tools.html">모든 도구</a></li>
+            <li><a href="../category.html">카테고리</a></li>
+            <li><a href="../popular.html">인기 도구</a></li>
+            <li><a href="../new-tools.html">새로운 도구</a></li>
+            <li><a href="../sitemap.html">사이트맵</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3>지원</h3>
+          <ul>
+            <li><a href="../coming-soon.html">통계</a></li>
+            <li><a href="../updates.html">업데이트</a></li>
+            <li><a href="../help.html">도움말</a></li>
+            <li><a href="mailto:growplant@gmail.com">문의하기</a></li>
+            <li><a href="mailto:growplant@gmail.com?subject=CineAHO%20%EB%B2%85%EA%B7%B8%20%EC%8B%A0%EA%B3%A0">버그 신고</a></li>
+            <li><a href="../faq.html">FAQ</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3>법적 고지</h3>
+          <ul>
+            <li><a href="../privacy.html" style="color: var(--text-main); font-weight: 500;">개인정보처리방침</a></li>
+            <li><a href="../terms.html">이용약관</a></li>
+            <li><a href="../cookie-policy.html">쿠키 정책</a></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer Bottom Bar -->
+    <div class="footer-bottom-bar">
+      <div class="footer-copyright">
+        CineAHO's SandBox - 모든 도구를 한 곳에서 &copy; 2025 Cineaho. All right reserved.
+      </div>
+      <div class="footer-built-with">
+        Built on Cloudflare Pages, Workers, D1, R2 and Turso
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>

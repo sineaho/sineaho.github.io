@@ -260,7 +260,7 @@ btnCopyAll.addEventListener('click', () => {
   generatedGames.forEach((nums, index) => {
     textToCopy += `${alphabets[index]} 게임: ${nums.map(n => String(n).padStart(2, '0')).join(', ')}\n`;
   });
-  textToCopy += '-------------------------------\nCineAHO 웹앱 스토어에서 즉석 복사됨.';
+  textToCopy += '-------------------------------\nCineAHO's SandBox에서 즉석 복사됨.';
 
   navigator.clipboard.writeText(textToCopy)
     .then(() => {

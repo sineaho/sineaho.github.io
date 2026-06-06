@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>맛집 탐색기 - CineAHO Restaurant Finder</title>
+  <meta name="description" content="네이버, 카카오, Google Places 실제 API로 주변 맛집을 실시간 검색하고 별점순으로 정렬합니다. 식당 이름, 주소, 전화번호, 카테고리 정보를 한눈에 확인하세요.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Ambient Background Orbs -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>SandBox</span></span>
+    </div>
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="../index.html#tools-section">무료 앱</a></li>
+        <li><a href="https://blog.naver.com/sineaho" target="_blank" rel="noopener noreferrer">CineAHO</a></li>
+        <li><a href="../prompt.html">프롬프트</a></li>
+        <li><a href="../coming-soon.html">칼럼</a></li>
+      </ul>
+    </nav>
+    <div class="header-right">
+      <a href="../index.html" class="btn-home-link"><i class="fa-solid fa-house"></i></a>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="hub-container rf-page-container">
+    
+    <!-- Hero Section -->
+    <section class="rf-hero glass-panel">
+      <div class="hero-content">
+        <div class="badge-capsule">
+          <span class="pulse-dot"></span>
+          <span>Real-time Restaurant Finder v1.0</span>
+        </div>
+        <h1 class="hero-title">🍽️ 맛집 탐색기</h1>
+        <p class="hero-desc">네이버, 카카오, Google 실제 API로 주변 맛집을 실시간 검색하고 별점순으로 정렬합니다.</p>
+      </div>
+    </section>
+
+    <!-- Search & Controls Section -->
+    <section class="rf-search-section">
+      
+      <!-- API Source Tabs -->
+      <div class="api-tab-bar glass-panel">
+        <button class="api-tab active" data-source="naver">
+          <span class="tab-icon naver-icon">N</span>
+          <span>네이버</span>
+        </button>
+        <button class="api-tab" data-source="kakao">
+          <span class="tab-icon kakao-icon">K</span>
+          <span>카카오</span>
+        </button>
+        <button class="api-tab" data-source="google">
+          <span class="tab-icon google-icon">G</span>
+          <span>Google</span>
+          <span class="rating-badge">⭐ 별점</span>
+        </button>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="search-bar-container glass-panel">
+        <div class="search-input-wrap">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" id="search-input" placeholder="검색어를 입력하세요 (예: 강남 맛집, 홍대 파스타, 부산 횟집...)" autocomplete="off">
+          <button class="btn-search" id="btn-search">
+            <i class="fa-solid fa-search"></i> 검색
+          </button>
+        </div>
+        <div class="search-options">
+          <div class="option-group">
+            <label><i class="fa-solid fa-location-dot"></i> 내 위치 사용</label>
+            <label class="toggle-switch">
+              <input type="checkbox" id="use-location">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="option-group">
+            <label><i class="fa-solid fa-arrows-rotate"></i> 정렬</label>
+            <select id="sort-select">
+              <option value="accuracy">정확도순</option>
+              <option value="rating">별점순 (Google)</option>
+              <option value="name">이름순</option>
+            </select>
+          </div>
+          <div class="option-group location-info" id="location-info" style="display: none;">
+            <i class="fa-solid fa-map-pin"></i>
+            <span id="location-text">위치 확인 중...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Search Tags -->
+      <div class="quick-tags">
+        <button class="tag-btn" data-query="강남 맛집">강남 맛집</button>
+        <button class="tag-btn" data-query="홍대 파스타">홍대 파스타</button>
+        <button class="tag-btn" data-query="이태원 브런치">이태원 브런치</button>
+        <button class="tag-btn" data-query="명동 한식">명동 한식</button>
+        <button class="tag-btn" data-query="부산 횟집">부산 횟집</button>
+        <button class="tag-btn" data-query="제주 카페">제주 카페</button>
+        <button class="tag-btn" data-query="서울 미슐랭">서울 미슐랭</button>
+        <button class="tag-btn" data-query="전주 비빔밥">전주 비빔밥</button>
+      </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="rf-results-section">
+      
+      <!-- Result Stats Bar -->
+      <div class="result-stats glass-panel" id="result-stats" style="display: none;">
+        <div class="stats-left">
+          <span class="stats-source" id="stats-source"></span>
+          <span class="stats-count" id="stats-count"></span>
+          <span class="stats-query" id="stats-query"></span>
+        </div>
+        <div class="stats-right">
+          <span class="stats-time" id="stats-time"></span>
+        </div>
+      </div>
+
+      <!-- Loading Spinner -->
+      <div class="loading-container" id="loading-spinner" style="display: none;">
+        <div class="spinner"></div>
+        <p>맛집 검색 중...</p>
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-container glass-panel" id="error-container" style="display: none;">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <p id="error-message"></p>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="empty-state">
+        <div class="empty-icon">🍜</div>
+        <h3>맛집을 검색해보세요!</h3>
+        <p>검색어를 입력하거나 빠른 검색 태그를 클릭하면 실시간 API로 식당 정보를 가져옵니다.</p>
+        <div class="api-info-cards">
+          <div class="api-info-card naver-card">
+            <span class="api-logo naver-icon">N</span>
+            <h4>네이버 지역 검색</h4>
+            <p>국내 식당 정보, 주소, 전화번호</p>
+            <span class="api-note">별점 없음</span>
+          </div>
+          <div class="api-info-card kakao-card">
+            <span class="api-logo kakao-icon">K</span>
+            <h4>카카오 로컬 검색</h4>
+            <p>카카오맵 기반 장소 데이터</p>
+            <span class="api-note">별점 없음</span>
+          </div>
+          <div class="api-info-card google-card">
+            <span class="api-logo google-icon">G</span>
+            <h4>Google Places</h4>
+            <p>전세계 식당 정보 + ⭐ 별점</p>
+            <span class="api-note has-rating">⭐ 별점 제공</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Grid -->
+      <div class="results-grid" id="results-grid"></div>
+
+      <!-- Pagination -->
+      <div class="pagination-bar" id="pagination-bar" style="display: none;">
+        <button class="btn-page" id="btn-prev-page"><i class="fa-solid fa-chevron-left"></i> 이전</button>
+        <span class="page-info" id="page-info"></span>
+        <button class="btn-page" id="btn-next-page">다음 <i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+    </section>
+
+    <!-- API Key Settings Panel (Collapsible) -->
+    <section class="rf-settings-section">
+      <div class="settings-toggle glass-panel" id="settings-toggle">
+        <i class="fa-solid fa-gear"></i>
+        <span>API 키 설정</span>
+        <i class="fa-solid fa-chevron-down toggle-arrow" id="settings-arrow"></i>
+      </div>
+      <div class="settings-panel glass-panel" id="settings-panel" style="display: none;">
+        <div class="settings-info">
+          <i class="fa-solid fa-info-circle"></i>
+          <p>서버에 API 키가 등록되어 있으면 자동으로 사용됩니다. 서버 키가 없는 경우 아래에 직접 입력하세요. 입력한 키는 브라우저 localStorage에만 저장됩니다.</p>
+        </div>
+        <div class="api-key-status" id="api-key-status">
+          <!-- JS로 서버 키 상태 표시 -->
+        </div>
+        <div class="settings-grid">
+          <div class="setting-group">
+            <label><span class="tab-icon naver-icon">N</span> 네이버 Client ID</label>
+            <input type="text" id="key-naver-id" placeholder="Client ID">
+          </div>
+          <div class="setting-group">
+            <label><span class="tab-icon naver-icon">N</span> 네이버 Client Secret</label>
+            <input type="password" id="key-naver-secret" placeholder="Client Secret">
+          </div>
+          <div class="setting-group">
+            <label><span class="tab-icon kakao-icon">K</span> 카카오 REST API Key</label>
+            <input type="text" id="key-kakao" placeholder="REST API Key">
+          </div>
+          <div class="setting-group">
+            <label><span class="tab-icon google-icon">G</span> Google Places API Key</label>
+            <input type="text" id="key-google" placeholder="API Key">
+          </div>
+        </div>
+        <div class="settings-actions">
+          <button class="btn btn-save-keys" id="btn-save-keys"><i class="fa-solid fa-floppy-disk"></i> 키 저장</button>
+          <button class="btn btn-clear-keys" id="btn-clear-keys"><i class="fa-solid fa-trash"></i> 초기화</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Guide Section -->
+    <section class="rf-guide-section glass-panel">
+      <div class="guide-header">
+        <h2><i class="fa-solid fa-book-open"></i> 사용 가이드</h2>
+      </div>
+      <div class="guide-layout">
+        <nav class="guide-index">
+          <ul class="guide-index-list">
+            <li class="active" data-guide="0"><i class="fa-solid fa-circle-info"></i> 개요</li>
+            <li data-guide="1"><i class="fa-solid fa-key"></i> API 키 발급</li>
+            <li data-guide="2"><i class="fa-solid fa-star"></i> 별점 검색</li>
+            <li data-guide="3"><i class="fa-solid fa-scale-balanced"></i> API 비교</li>
+            <li data-guide="4"><i class="fa-solid fa-circle-question"></i> FAQ</li>
+          </ul>
+        </nav>
+        <div class="guide-content">
+          <span class="guide-badge" id="guide-badge">가이드 01: 개요</span>
+          <h3 id="guide-title">맛집 탐색기란?</h3>
+          <div class="guide-body" id="guide-body">
+            <!-- JS로 채움 -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Floating Nav -->
+  <div class="floating-nav">
+    <button id="btn-scroll-top" title="맨 위로"><i class="fa-solid fa-chevron-up"></i></button>
+    <button id="btn-scroll-bottom" title="맨 아래로"><i class="fa-solid fa-chevron-down"></i></button>
+  </div>
+
+  <!-- Footer -->
+  <footer class="rich-footer">
+    <div class="footer-top-grid">
+      <div class="footer-left-brand">
+        <div class="brand-title">
+          <span class="cdb-badge">CDB</span>
+          <h2>Cineaho's SandBox</h2>
+        </div>
+        <div class="brand-links">
+          <span>🧰 웹앱</span>
+          <span class="divider-dot">•</span>
+          <span>💻 Cineaho</span>
+          <span class="divider-dot">•</span>
+          <span>📝 이슈트래커</span>
+          <span class="divider-dot">•</span>
+          <span>📄 모든 도구를 한 곳에서</span>
+        </div>
+        <div class="visitor-stats">
+          <div class="stat-group">
+            <h4>사이트 방문</h4>
+            <p>전체 <span id="site-visit-total">0</span> · 오늘 <span id="site-visit-today">0</span></p>
+          </div>
+        </div>
+      </div>
+      <div class="footer-right-columns">
+        <div class="footer-col">
+          <h3>제품</h3>
+          <ul>
+            <li><a href="../index.html">홈</a></li>
+            <li><a href="../category.html">카테고리</a></li>
+            <li><a href="../sitemap.html">사이트맵</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>지원</h3>
+          <ul>
+            <li><a href="../updates.html">업데이트</a></li>
+            <li><a href="../help.html">도움말</a></li>
+            <li><a href="mailto:growplant@gmail.com">문의하기</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom-bar">
+      <div class="footer-copyright">
+        CineAHO's SandBox &copy; 2025 Cineaho. All right reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

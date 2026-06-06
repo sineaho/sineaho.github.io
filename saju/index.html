@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/lunar-javascript/lunar.js"></script>
 </head>
 <body>
 
@@ -20,15 +21,15 @@
   <header class="main-header glass-header">
     <div class="header-left">
       <div class="logo-circle">AHO</div>
-      <span class="logo-text">CineAHO's <span>웹앱 아이디어 창고</span></span>
+      <span class="logo-text">CineAHO's <span>SandBox</span></span>
     </div>
     
     <nav class="header-nav">
       <ul class="nav-list">
         <li><a href="../index.html">홈</a></li>
-        <li><a href="#">무료 앱 189종</a></li>
-        <li><a href="#" class="active">CineAHO</a></li>
-        <li><a href="#">프롬프트</a></li>
+        <li><a href="../index.html#tools-section">무료 앱</a></li>
+        <li><a href="https://blog.naver.com/sineaho" target="_blank" rel="noopener noreferrer" class="active">CineAHO</a></li>
+        <li><a href="../prompt.html">프롬프트</a></li>
         <li><a href="#">칼럼</a></li>
         <li><a href="#">PPT</a></li>
         <li><a href="#">위키</a></li>
@@ -106,6 +107,13 @@
               <button class="btn-toggle" id="btn-lunar" data-type="lunar">
                 <i class="fa-solid fa-moon text-blue"></i> 음력
               </button>
+            </div>
+            <div class="lunar-leap-box" id="lunar-leap-box" style="display: none; margin-top: 0.5rem; padding: 0.25rem 0.5rem;">
+              <label class="checkbox-container">
+                <input type="checkbox" id="chk-lunar-leap">
+                <span class="checkmark"></span>
+                <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">윤달 (Leap Month)</span>
+              </label>
             </div>
             <div class="toggle-buttons" style="margin-top: 0.75rem;">
               <button class="btn-toggle active" id="btn-gender-m" data-type="male">
@@ -242,106 +250,549 @@
 
     <!-- Saju Output Results Area (Initially Hidden) -->
     <section class="saju-results-panel glass-panel" id="saju-results-panel" style="display: none;">
-      <div class="results-header">
-        <h3><i class="fa-solid fa-circle-nodes"></i> 사주 분석 결과 명식</h3>
-        <span class="result-badge">AI 명리 진단</span>
+      <!-- Results Bar: Birth date details, gender, age, settings -->
+      <div class="results-summary-bar">
+        <span id="res-birth-date"><i class="fa-regular fa-calendar"></i> 1979년 6월 17일 (양력)</span>
+        <span class="divider">|</span>
+        <span id="res-birth-time"><i class="fa-regular fa-clock"></i> 시간 미입력</span>
+        <span class="divider">|</span>
+        <span id="res-gender"><i class="fa-solid fa-venus-mars"></i> 남성</span>
+        <span class="divider">|</span>
+        <span id="res-age"><i class="fa-solid fa-cake-candles"></i> 만 47세 (48세)</span>
+      </div>
+      <div class="results-settings-row">
+        <span class="badge-setting" id="res-setting-base">표준 만세력 기준</span>
+        <span class="badge-setting" id="res-setting-jasi">동자시</span>
+        <span class="badge-setting-desc">입력한 시각 기준으로 계산</span>
       </div>
 
-      <div class="results-grid">
-        
-        <!-- Results Left: Saju Grid Table -->
-        <div class="results-left">
-          <div class="saju-table-wrapper">
-            <table class="saju-table">
+      <!-- Main Daymaster Card Section -->
+      <div class="main-daymaster-card">
+        <div class="daymaster-circle-wrap">
+          <div class="daymaster-circle" id="res-dm-circle">목</div>
+        </div>
+        <h2 class="daymaster-title" id="res-dm-title">을묘 <span class="hanja">乙卯</span></h2>
+        <p class="daymaster-subtitle" id="res-dm-subtitle">목(木) 일간</p>
+        <div class="daymaster-badges" id="res-dm-badges">
+          <span>순수함</span>
+          <span>예술성</span>
+          <span>유연성</span>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-box">
+            <span class="metric-label">격국</span>
+            <strong id="res-m-gyeokguk">신약격</strong>
+          </div>
+          <div class="metric-box">
+            <span class="metric-label">용신</span>
+            <strong id="res-m-yongshin" class="text-blue">화(火)</strong>
+          </div>
+          <div class="metric-box">
+            <span class="metric-label">신강/신약</span>
+            <strong id="res-m-strength">중화</strong>
+          </div>
+          <div class="metric-box">
+            <span class="metric-label">현재 대운</span>
+            <strong id="res-m-daeun">을축<br><span class="age-range">43~52세</span></strong>
+          </div>
+          <div class="metric-box">
+            <span class="metric-label">2026년 세운</span>
+            <strong id="res-m-sewun" class="text-gold">병오</strong>
+          </div>
+          <div class="metric-box">
+            <span class="metric-label">띠</span>
+            <strong id="res-m-zodiac">양<br><span class="hanja-sub">미(未)</span></strong>
+          </div>
+        </div>
+
+        <div class="tip-alert-box" id="res-tip-alert">
+          <i class="fa-solid fa-hand-holding-heart"></i>
+          <span>목 일간의 중화 사주입니다. 용신 화(火)(식상)으로 기운을 보완하면 좋습니다.</span>
+        </div>
+        <div class="calc-note" id="res-calc-note">
+          계산 기준 · 시간 미상으로 시주는 제외했습니다.
+        </div>
+      </div>
+
+      <!-- Saju Wonguk Column Cards Section -->
+      <div class="wonguk-section">
+        <div class="wonguk-header">
+          <h4><i class="fa-solid fa-columns"></i> 사주 원국 <span class="hanja-sub">四柱原局</span></h4>
+          <div class="action-buttons">
+            <button class="btn-action" id="btn-copy-result" title="복사"><i class="fa-regular fa-copy"></i> 복사</button>
+            <button class="btn-action" id="btn-save-result" title="저장"><i class="fa-solid fa-download"></i> 저장</button>
+            <button class="btn-action" id="btn-share-result" title="결과 공유"><i class="fa-solid fa-share-nodes"></i> 결과 공유</button>
+            <button class="btn-action" id="btn-share-app" title="어플 공유"><i class="fa-solid fa-arrow-up-right-from-square"></i> 어플 공유</button>
+          </div>
+        </div>
+
+        <div class="wonguk-grid">
+          <!-- Siju (Hour) -->
+          <div class="wonguk-col-card empty-siju" id="card-siju">
+            <span class="col-label">시주<br><span class="col-desc-sub">말년·자식</span></span>
+            <div class="col-body-unknown">미상</div>
+          </div>
+          <!-- Ilju (Day) -->
+          <div class="wonguk-col-card" id="card-ilju">
+            <span class="col-label">일주<br><span class="col-desc-sub">중년·본인/배우자</span></span>
+            <div class="wonguk-cell-box stem-box" id="cell-il-stem">
+              <span class="hz" id="txt-il-stem">을</span>
+              <span class="hz-han" id="txt-il-stem-han">乙</span>
+              <span class="elem-txt" id="txt-il-stem-elem">목(木) ○</span>
+              <span class="god-tag god-ilgan">일간</span>
+            </div>
+            <div class="wonguk-cell-box branch-box" id="cell-il-branch">
+              <span class="hz" id="txt-il-branch">묘</span>
+              <span class="hz-han" id="txt-il-branch-han">卯</span>
+              <span class="elem-txt" id="txt-il-branch-elem">목(木) ○</span>
+              <span class="god-tag" id="tag-il-branch-god">비견</span>
+            </div>
+            <div class="lifestage-badge-wrap"><span class="badge-stage badge-wood" id="cell-il-lifestage">건록(建祿)</span></div>
+            <div class="hidegan-desc-text" id="cell-il-hidegan">을</div>
+          </div>
+          <!-- Wolju (Month) -->
+          <div class="wonguk-col-card" id="card-wolju">
+            <span class="col-label">월주<br><span class="col-desc-sub">청년·부모/형제</span></span>
+            <div class="wonguk-cell-box stem-box" id="cell-wol-stem">
+              <span class="hz" id="txt-wol-stem">경</span>
+              <span class="hz-han" id="txt-wol-stem-han">庚</span>
+              <span class="elem-txt" id="txt-wol-stem-elem">금(金) ●</span>
+              <span class="god-tag" id="tag-wol-stem-god">정관</span>
+            </div>
+            <div class="wonguk-cell-box branch-box" id="cell-wol-branch">
+              <span class="hz" id="txt-wol-branch">오</span>
+              <span class="hz-han" id="txt-wol-branch-han">午</span>
+              <span class="elem-txt" id="txt-wol-branch-elem">화(火) ●</span>
+              <span class="god-tag" id="tag-wol-branch-god">식신</span>
+            </div>
+            <div class="lifestage-badge-wrap"><span class="badge-stage badge-fire" id="cell-wol-lifestage">장생(長生)</span></div>
+            <div class="hidegan-desc-text" id="cell-wol-hidegan">기 정</div>
+          </div>
+          <!-- Yeonju (Year) -->
+          <div class="wonguk-col-card" id="card-yeonju">
+            <span class="col-label">연주<br><span class="col-desc-sub">초년·조상</span></span>
+            <div class="wonguk-cell-box stem-box" id="cell-yeon-stem">
+              <span class="hz" id="txt-yeon-stem">기</span>
+              <span class="hz-han" id="txt-yeon-stem-han">己</span>
+              <span class="elem-txt" id="txt-yeon-stem-elem">토(土) ○</span>
+              <span class="god-tag" id="tag-yeon-stem-god">편재</span>
+            </div>
+            <div class="wonguk-cell-box branch-box" id="cell-yeon-branch">
+              <span class="hz" id="txt-yeon-branch">미</span>
+              <span class="hz-han" id="txt-yeon-branch-han">未</span>
+              <span class="elem-txt" id="txt-yeon-branch-elem">토(土) ●</span>
+              <span class="god-tag" id="tag-yeon-branch-god">편재</span>
+            </div>
+            <div class="lifestage-badge-wrap"><span class="badge-stage badge-earth" id="cell-yeon-lifestage">양(養)</span></div>
+            <div class="hidegan-desc-text" id="cell-yeon-hidegan">을 정 기</div>
+          </div>
+        </div>
+
+        <!-- Combinations Badges -->
+        <div class="wonguk-combinations">
+          <span class="section-badge" id="comb-count-badge"><i class="fa-solid fa-link"></i> 합충형파해 <span class="badge-num" id="comb-count">2개</span></span>
+          <div class="combinations-list" id="comb-list">
+            <!-- Dynamically generated hap-chung badges -->
+          </div>
+        </div>
+
+        <!-- Shinsal Compact Badges -->
+        <div class="wonguk-shinsal">
+          <span class="section-badge" id="shinsal-count-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> 신살 <span class="badge-num" id="shinsal-count">10개</span></span>
+          <div class="shinsal-compact-list" id="shinsal-compact-list">
+            <!-- Dynamically generated shinsal badges -->
+          </div>
+        </div>
+
+        <!-- 12 Lifestage & Hidden Stem Detail Cards -->
+        <div class="detail-wonguk-section">
+          <span class="section-badge"><i class="fa-solid fa-chart-line"></i> 12운성·지장간 상세</span>
+          <div class="detail-wonguk-grid" id="detail-wonguk-grid">
+            <!-- Dynamically generated detail cards for each pillar -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Luck Category Cards Section -->
+      <div class="luck-categories-section">
+        <div class="section-title-bar">
+          <h4>A. 기본 운세</h4>
+          <span class="sub-desc">포춘텔러 기반 추천과 현재 원국 해석을 계산 직후 바로 보여줍니다.</span>
+        </div>
+
+        <div class="luck-cards-grid">
+          <!-- Card 1: 성향 -->
+          <div class="luck-card" id="luck-card-personality">
+            <div class="luck-card-header">
+              <div class="title-left">
+                <span class="lbl">성향</span>
+                <strong class="title-main" id="luck-p-title">성향 로딩 중...</strong>
+              </div>
+              <div class="score-right" id="luck-p-score-wrap">
+                <span class="score-num" id="luck-p-score">0</span><span class="score-unit">점</span>
+              </div>
+            </div>
+            <div class="score-bar-wrap"><div class="score-bar" id="luck-p-bar" style="width: 0%;"></div></div>
+            <div class="luck-card-body">
+              <p id="luck-p-desc">분석 중...</p>
+              <div class="luck-card-tags" id="luck-p-tags">
+                <!-- Tags -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: 애정운 -->
+          <div class="luck-card" id="luck-card-love">
+            <div class="luck-card-header">
+              <div class="title-left">
+                <span class="lbl">애정운</span>
+                <strong class="title-main" id="luck-l-title">애정운 로딩 중...</strong>
+              </div>
+              <div class="score-right" id="luck-l-score-wrap">
+                <span class="score-num" id="luck-l-score">0</span><span class="score-unit">점</span>
+              </div>
+            </div>
+            <div class="score-bar-wrap"><div class="score-bar" id="luck-l-bar" style="width: 0%;"></div></div>
+            <div class="luck-card-body">
+              <p id="luck-l-desc">분석 중...</p>
+              <div class="luck-card-tags" id="luck-l-tags">
+                <!-- Tags -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: 직업운 -->
+          <div class="luck-card" id="luck-card-job">
+            <div class="luck-card-header">
+              <div class="title-left">
+                <span class="lbl">직업운</span>
+                <strong class="title-main" id="luck-j-title">직업운 로딩 중...</strong>
+              </div>
+              <div class="score-right" id="luck-j-score-wrap">
+                <span class="score-num" id="luck-j-score">0</span><span class="score-unit">점</span>
+              </div>
+            </div>
+            <div class="score-bar-wrap"><div class="score-bar" id="luck-j-bar" style="width: 0%;"></div></div>
+            <div class="luck-card-body">
+              <p id="luck-j-desc">분석 중...</p>
+              <div class="luck-card-tags" id="luck-j-tags">
+                <!-- Tags -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: 재물운 -->
+          <div class="luck-card" id="luck-card-wealth">
+            <div class="luck-card-header">
+              <div class="title-left">
+                <span class="lbl">재물운</span>
+                <strong class="title-main" id="luck-w-title">재물운 로딩 중...</strong>
+              </div>
+              <div class="score-right" id="luck-w-score-wrap">
+                <span class="score-num" id="luck-w-score">0</span><span class="score-unit">점</span>
+              </div>
+            </div>
+            <div class="score-bar-wrap"><div class="score-bar" id="luck-w-bar" style="width: 0%;"></div></div>
+            <div class="luck-card-body">
+              <p id="luck-w-desc">분석 중...</p>
+              <div class="luck-card-tags" id="luck-w-tags">
+                <!-- Tags -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 5: 건강운 -->
+          <div class="luck-card" id="luck-card-health">
+            <div class="luck-card-header">
+              <div class="title-left">
+                <span class="lbl">건강운</span>
+                <strong class="title-main" id="luck-h-title">건강운 로딩 중...</strong>
+              </div>
+              <div class="score-right" id="luck-h-score-wrap">
+                <span class="score-num" id="luck-h-score">0</span><span class="score-unit">점</span>
+              </div>
+            </div>
+            <div class="score-bar-wrap"><div class="score-bar" id="luck-h-bar" style="width: 0%;"></div></div>
+            <div class="luck-card-body">
+              <p id="luck-h-desc">분석 중...</p>
+              <div class="luck-card-tags" id="luck-h-tags">
+                <!-- Tags -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="luck-detail-boxes">
+          <div class="detail-box glass-panel-inner" id="box-yongshin-use">
+            <div class="detail-box-header text-blue">용신 활용</div>
+            <div class="detail-box-title" id="box-yongshin-title">수 · 목</div>
+            <div class="detail-box-body" id="box-yongshin-body">...</div>
+          </div>
+          <div class="detail-box glass-panel-inner" id="box-current-flow">
+            <div class="detail-box-header text-purple">현재 흐름</div>
+            <div class="detail-box-title" id="box-current-title">병오 · 을축</div>
+            <div class="detail-box-body" id="box-current-body">...</div>
+          </div>
+          <div class="detail-box glass-panel-inner" id="box-solar-term">
+            <div class="detail-box-header text-gold">절기 기반 지장간 세력</div>
+            <div class="detail-box-title" id="box-solar-title">오월 · 기 우세</div>
+            <div class="detail-box-body" id="box-solar-body">...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Daily Calendar and Compatibility Section -->
+      <div class="daily-calendar-section">
+        <div class="section-title-bar">
+          <h4>일일 운세</h4>
+          <span class="sub-desc">오늘과 이번 달의 길일, 주의일을 바로 확인할 수 있게 앞쪽에 배치했습니다.</span>
+        </div>
+
+        <div class="calendar-container glass-panel-inner">
+          <div class="calendar-header-bar">
+            <span class="cal-title"><i class="fa-regular fa-calendar-days"></i> 일진 달력</span>
+            <div class="cal-nav">
+              <button class="btn-cal-prev" id="btn-cal-prev"><i class="fa-solid fa-chevron-left"></i></button>
+              <span class="cal-month-text" id="cal-month-text">2026년 6월</span>
+              <button class="btn-cal-next" id="btn-cal-next"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+          </div>
+
+          <div class="calendar-grid-wrapper">
+            <table class="calendar-table">
               <thead>
                 <tr>
-                  <th>시주 (時柱)</th>
-                  <th>일주 (日柱)</th>
-                  <th>월주 (月柱)</th>
-                  <th>연주 (年柱)</th>
+                  <th class="sun">일</th>
+                  <th>월</th>
+                  <th>화</th>
+                  <th>수</th>
+                  <th>목</th>
+                  <th>금</th>
+                  <th class="sat">토</th>
                 </tr>
               </thead>
-              <tbody>
-                <!-- Row 1: 천간 (Heavenly Stems) -->
-                <tr class="tr-stems">
-                  <td id="stem-si">?</td>
-                  <td id="stem-il" class="ilgan-focus">?</td>
-                  <td id="stem-wol">?</td>
-                  <td id="stem-yeon">?</td>
-                </tr>
-                <!-- Row 2: 지지 (Earthly Branches) -->
-                <tr class="tr-branches">
-                  <td id="branch-si">?</td>
-                  <td id="branch-il">?</td>
-                  <td id="branch-wol">?</td>
-                  <td id="branch-yeon">?</td>
-                </tr>
-                <!-- Row 3: 십신 (Ten Gods) -->
-                <tr class="tr-gods">
-                  <td id="god-si">-</td>
-                  <td class="text-muted">일간(본원)</td>
-                  <td id="god-wol">-</td>
-                  <td id="god-yeon">-</td>
-                </tr>
+              <tbody id="calendar-body">
+                <!-- Generated by JS -->
               </tbody>
             </table>
           </div>
-          
-          <div class="ilgan-desc-box" id="ilgan-desc-box">
-            일간분석 로딩 중...
+
+          <div class="calendar-legend">
+            <span class="legend-item"><span class="dot-legend dot-today"></span> 오늘</span>
+            <span class="legend-item"><span class="dot-legend dot-good"></span> 길일</span>
+            <span class="legend-item"><span class="dot-legend dot-warn"></span> 주의일</span>
           </div>
         </div>
 
-        <!-- Results Right: 5 Elements Analysis -->
-        <div class="results-right">
-          <h4>오행(五行) 기운 분석</h4>
-          <div class="elements-stats-box">
-            <!-- 5 elements list -->
-            <div class="elem-row">
-              <span class="elem-name text-green"><i class="fa-solid fa-tree"></i> 木 (나무)</span>
-              <div class="elem-bar-wrapper"><div class="elem-bar bg-green" id="bar-wood" style="width: 0%;"></div></div>
-              <span class="elem-count" id="count-wood">0개</span>
-            </div>
-            <div class="elem-row">
-              <span class="elem-name text-red"><i class="fa-solid fa-fire"></i> 火 (불)</span>
-              <div class="elem-bar-wrapper"><div class="elem-bar bg-red" id="bar-fire" style="width: 0%;"></div></div>
-              <span class="elem-count" id="count-fire">0개</span>
-            </div>
-            <div class="elem-row">
-              <span class="elem-name text-gold"><i class="fa-solid fa-mountain"></i> 土 (흙)</span>
-              <div class="elem-bar-wrapper"><div class="elem-bar bg-gold" id="bar-earth" style="width: 0%;"></div></div>
-              <span class="elem-count" id="count-earth">0개</span>
-            </div>
-            <div class="elem-row">
-              <span class="elem-name text-grey"><i class="fa-solid fa-coins"></i> 金 (쇠)</span>
-              <div class="elem-bar-wrapper"><div class="elem-bar bg-grey" id="bar-metal" style="width: 0%;"></div></div>
-              <span class="elem-count" id="count-metal">0개</span>
-            </div>
-            <div class="elem-row">
-              <span class="elem-name text-blue"><i class="fa-solid fa-droplet"></i> 水 (물)</span>
-              <div class="elem-bar-wrapper"><div class="elem-bar bg-blue" id="bar-water" style="width: 0%;"></div></div>
-              <span class="elem-count" id="count-water">0개</span>
-            </div>
-          </div>
-
-          <div class="saju-strength-card" id="saju-strength-card">
-            사주 종합 기운 판정 중...
+        <!-- Compatibility Section -->
+        <div class="compatibility-container glass-panel-inner">
+          <div class="comp-title">궁합</div>
+          <p class="comp-subtitle">계산 직후 같은 화면에서 바로 상대방 정보를 넣고 궁합을 볼 수 있습니다.</p>
+          <div class="comp-card">
+            <div class="comp-card-icon"><i class="fa-solid fa-user-group"></i> 궁합 분석</div>
+            <p class="comp-card-desc">상대방의 생년월일시를 입력하여 궁합을 분석할 수 있습니다.</p>
+            <button class="btn-comp-start" id="btn-comp-start"><i class="fa-regular fa-heart"></i> 궁합 분석 시작</button>
           </div>
         </div>
-
       </div>
 
-      <!-- AI Saju Analysis Report tabs -->
-      <div class="ai-report-tabs-section">
-        <nav class="report-tabs-bar">
-          <button class="rep-tab-btn active" data-tab="summary"><i class="fa-solid fa-clipboard-list"></i> 종합 풀이</button>
-          <button class="rep-tab-btn" data-tab="wealth"><i class="fa-solid fa-coins"></i> 재물운</button>
-          <button class="rep-tab-btn" data-tab="job"><i class="fa-solid fa-briefcase"></i> 직업/적성운</button>
-          <button class="rep-tab-btn" data-tab="love"><i class="fa-solid fa-heart"></i> 연애/결혼운</button>
-          <button class="rep-tab-btn" data-tab="daeun"><i class="fa-solid fa-arrow-trend-up"></i> 대운 흐름</button>
-        </nav>
-        <div class="report-content-body" id="report-content-body">
-          <!-- Tab content text generated by app.js -->
+      <!-- Technical Metrics Section -->
+      <div class="technical-metrics-section">
+        <!-- 십성 배치표 -->
+        <div class="metrics-table-container glass-panel-inner">
+          <h5><i class="fa-solid fa-star"></i> 십성 배치표</h5>
+          <table class="metrics-table">
+            <thead>
+              <tr>
+                <th>구분</th>
+                <th>시주</th>
+                <th>일주</th>
+                <th>월주</th>
+                <th>년주</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="lbl-row">천간</td>
+                <td id="tbl-si-stem">-</td>
+                <td id="tbl-il-stem" class="ilgan-focus-text">을(일간)</td>
+                <td id="tbl-wol-stem">경</td>
+                <td id="tbl-yeon-stem">기</td>
+              </tr>
+              <tr>
+                <td class="lbl-row">십성</td>
+                <td id="tbl-si-stem-god">-</td>
+                <td class="text-muted">(본인)</td>
+                <td id="tbl-wol-stem-god">정관</td>
+                <td id="tbl-yeon-stem-god">편재</td>
+              </tr>
+              <tr>
+                <td class="lbl-row">지지</td>
+                <td id="tbl-si-branch">-</td>
+                <td id="tbl-il-branch">묘</td>
+                <td id="tbl-wol-branch">오</td>
+                <td id="tbl-yeon-branch">미</td>
+              </tr>
+              <tr>
+                <td class="lbl-row">십성</td>
+                <td id="tbl-si-branch-god">-</td>
+                <td id="tbl-il-branch-god">비견</td>
+                <td id="tbl-wol-branch-god">식신</td>
+                <td id="tbl-yeon-branch-god">편재</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="metrics-widgets-row">
+          <!-- Widget 1: Strength Slider -->
+          <div class="widget-card glass-panel-inner" id="widget-strength">
+            <div class="widget-header">
+              <i class="fa-solid fa-dumbbell"></i>
+              <div>
+                <span class="w-label">신강/신약</span>
+                <h4 id="res-w-strength-title">중화</h4>
+              </div>
+            </div>
+
+            <div class="strength-slider-container">
+              <div class="slider-bar">
+                <div class="slider-fill" id="res-strength-fill" style="left: 50%;"></div>
+                <div class="slider-thumb" id="res-strength-thumb" style="left: 50%;"></div>
+              </div>
+              <div class="slider-labels">
+                <span>약함</span>
+                <span id="res-strength-pct">50%</span>
+                <span>강함</span>
+              </div>
+            </div>
+
+            <div class="strength-scores">
+              <div class="score-chip">득령 <span id="sc-deungryeong">0.0</span></div>
+              <div class="score-chip green">득지 <span id="sc-deungji">+2.0</span></div>
+              <div class="score-chip">득세 <span id="sc-deungse">0.0</span></div>
+              <div class="score-chip green">득세 <span id="sc-deungse-total">+0.1</span></div>
+            </div>
+          </div>
+
+          <!-- Widget 2: Yongshin details -->
+          <div class="widget-card glass-panel-inner" id="widget-yongshin">
+            <div class="widget-header">
+              <i class="fa-solid fa-bullseye"></i>
+              <div>
+                <span class="w-label">용신(用神)</span>
+                <h4 id="res-w-yongshin-title" class="text-blue">화(火)</h4>
+              </div>
+            </div>
+
+            <div class="yongshin-details-list">
+              <div class="ys-detail-item ys-yong">
+                <div class="ys-header">
+                  <span class="ys-dot bg-green-dot">✓</span>
+                  <span class="lbl">용신</span>
+                  <strong id="ys-yong-val" class="text-green">화(火) (식상)</strong>
+                </div>
+                <p id="ys-yong-desc">중화격: 가장 부족한 화(火) 보완 (조후용신)</p>
+              </div>
+              <div class="ys-detail-item ys-hui">
+                <div class="ys-header">
+                  <span class="ys-dot bg-blue-dot">○</span>
+                  <span class="lbl">희신</span>
+                  <strong id="ys-hui-val" class="text-blue">목(木) (비겁)</strong>
+                </div>
+                <p id="ys-hui-desc">화(火)를 생해주어 균형 조화</p>
+              </div>
+              <div class="ys-detail-item ys-gi">
+                <div class="ys-header">
+                  <span class="ys-dot bg-red-dot">✕</span>
+                  <span class="lbl">기신</span>
+                  <strong id="ys-gi-val" class="text-red">수(水) (인성)</strong>
+                </div>
+                <p id="ys-gi-desc">부족한 화(火)를 극하여 불균형 심화</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Widget 3: Five Elements percent bars -->
+          <div class="widget-card glass-panel-inner" id="widget-elements">
+            <div class="widget-header">
+              <i class="fa-solid fa-scale-balanced"></i>
+              <div>
+                <span class="w-label">오행 분포</span>
+                <h4 id="res-w-elem-title">목 우세</h4>
+              </div>
+            </div>
+
+            <div class="elements-progress-list">
+              <div class="ep-row">
+                <span class="ep-name ep-wood">木</span>
+                <div class="ep-bar-wrap"><div class="ep-bar bg-green" id="ep-bar-wood" style="width: 33%;"></div></div>
+                <span class="ep-val" id="ep-val-wood">33%</span>
+                <span class="ep-status ep-tag-over" id="ep-status-wood">과다</span>
+              </div>
+              <div class="ep-row">
+                <span class="ep-name ep-fire">火</span>
+                <div class="ep-bar-wrap"><div class="ep-bar bg-red" id="ep-bar-fire" style="width: 17%;"></div></div>
+                <span class="ep-val" id="ep-val-fire">17%</span>
+                <span class="ep-status ep-tag-good" id="ep-status-fire">적정</span>
+              </div>
+              <div class="ep-row">
+                <span class="ep-name ep-earth">土</span>
+                <div class="ep-bar-wrap"><div class="ep-bar bg-gold" id="ep-bar-earth" style="width: 33%;"></div></div>
+                <span class="ep-val" id="ep-val-earth">33%</span>
+                <span class="ep-status ep-tag-over" id="ep-status-earth">과다</span>
+              </div>
+              <div class="ep-row">
+                <span class="ep-name ep-metal">金</span>
+                <div class="ep-bar-wrap"><div class="ep-bar bg-grey" id="ep-bar-metal" style="width: 17%;"></div></div>
+                <span class="ep-val" id="ep-val-metal">17%</span>
+                <span class="ep-status ep-tag-good" id="ep-status-metal">적정</span>
+              </div>
+              <div class="ep-row">
+                <span class="ep-name ep-water">水</span>
+                <div class="ep-bar-wrap"><div class="ep-bar bg-blue" id="ep-bar-water" style="width: 0%;"></div></div>
+                <span class="ep-val" id="ep-val-water">0%</span>
+                <span class="ep-status ep-tag-under" id="ep-status-water">부족</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 12 Lifestage Flow & Daeun Timeline slider Section -->
+      <div class="timeline-navigation-section">
+        <div class="timeline-header-title">
+          <h5><i class="fa-solid fa-arrows-spin"></i> 12운성 (생애 에너지 흐름)</h5>
+        </div>
+
+        <div class="lifestage-energy-grid" id="lifestage-energy-grid">
+          <!-- Yeonju, Wolju, Ilju, Siju lifestage cards with icons -->
+        </div>
+
+        <div class="daeun-timeline-section">
+          <div class="daeun-timeline-header">
+            <div class="dt-title">
+              <h5><i class="fa-solid fa-chart-area"></i> 대운 <span class="hanja-sub">大運</span></h5>
+              <span class="dt-meta-info" id="daeun-meta-info">남 + 음년 = 역행 · 대운수 3세</span>
+            </div>
+            <div class="dt-right">
+              <span class="dt-age-now" id="daeun-current-age">현재 나이: 48세</span>
+              <button class="btn-dt-direction" id="btn-dt-direction">역행</button>
+            </div>
+          </div>
+
+          <div class="daeun-slider-wrapper">
+            <div class="daeun-slider" id="daeun-slider">
+              <!-- Generated by JS -->
+            </div>
+          </div>
+
+          <div class="daeun-legend">
+            <span class="legend-item"><span class="dot-legend dot-current-daeun"></span> 현재 대운</span>
+            <span class="legend-item"><span class="dot-legend dot-past-daeun"></span> 지난 대운</span>
+            <span class="legend-item"><span class="dot-legend dot-future-daeun"></span> 미래 대운</span>
+          </div>
         </div>
       </div>
     </section>

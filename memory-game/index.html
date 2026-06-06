@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D 카드 매칭 – 메모리 마스터</title>
+  <meta name="description" content="3D 플립 애니메이션이 적용된 프리미엄 메모리 카드 맞추기 게임. 최소한의 시도로 모든 카드를 맞춰보세요!">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>SandBox</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="../index.html#tools-section">무료 앱</a></li>
+        <li><a href="https://blog.naver.com/sineaho" target="_blank" rel="noopener noreferrer">CineAHO</a></li>
+        <li><a href="../prompt.html">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#" class="active">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Memory Game Container -->
+  <main class="memory-container">
+
+    <!-- Title & Description Header -->
+    <section class="memory-header-section">
+      <h1 class="main-title">
+        🧠 메모리 마스터 3D 🧠
+      </h1>
+      <p class="subtitle-desc">
+        <span class="highlight-purple">3D 플립 애니메이션</span>과 <span class="highlight-blue">프리미엄 글래스모피즘</span> 디자인으로 즐기는 카드 매칭 게임. 최소 시도로 모든 쌍을 맞춰보세요!
+      </p>
+      
+      <div class="tag-badges">
+        <span class="badge badge-tag">메모리 게임</span>
+        <span class="badge badge-tag">3D 카드</span>
+        <span class="badge badge-tag">두뇌 훈련</span>
+        <span class="badge badge-tag">난이도 선택</span>
+      </div>
+    </section>
+
+    <!-- Stat Dashboard Cards Row -->
+    <section class="stat-dashboard-cards">
+      <div class="glass-panel stat-card">
+        <div class="stat-icon yellow"><i class="fa-solid fa-hand-pointer"></i> 시도</div>
+        <div class="stat-value" id="lbl-moves">0</div>
+      </div>
+      <div class="glass-panel stat-card">
+        <div class="stat-icon purple"><i class="fa-solid fa-clock"></i> 시간</div>
+        <div class="stat-value" id="lbl-timer">00:00</div>
+      </div>
+      <div class="glass-panel stat-card">
+        <div class="stat-icon blue"><i class="fa-solid fa-layer-group"></i> 매칭</div>
+        <div class="stat-value" id="lbl-matched">0 / 8</div>
+      </div>
+      <div class="glass-panel stat-card">
+        <div class="stat-icon gold"><i class="fa-solid fa-trophy"></i> 최고기록</div>
+        <div class="stat-value" id="lbl-best">--</div>
+      </div>
+    </section>
+
+    <!-- Game Workspace -->
+    <section class="game-workspace">
+
+      <!-- 3D Card Board -->
+      <div class="board-panel glass-panel">
+        <div id="board" class="board board-4x4">
+          <!-- Cards are generated dynamically by JS -->
+        </div>
+
+        <!-- Start / Game Over Overlay -->
+        <div class="board-overlay" id="overlay-screen">
+          <div class="overlay-inner">
+            <h2 class="overlay-title">메모리 마스터</h2>
+            <p class="overlay-subtitle">카드를 뒤집어 같은 쌍을 맞추세요</p>
+            <button class="btn btn-primary btn-large" id="btn-overlay-start">
+              <i class="fa-solid fa-play"></i> 시작
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls Panel -->
+      <div class="controls-panel glass-panel">
+        <div class="controls-header-row">
+          <h3><i class="fa-solid fa-sliders"></i> 게임 컨트롤</h3>
+          <div class="controls-header-actions">
+            <button class="btn btn-primary" id="btn-restart">
+              <i class="fa-solid fa-rotate-right"></i> 다시 시작
+            </button>
+          </div>
+        </div>
+
+        <div class="controls-details-grid">
+          <div class="control-col">
+            <h4><i class="fa-solid fa-grip"></i> 난이도 선택</h4>
+            <div class="difficulty-btns">
+              <button class="btn-diff" data-size="4">4×3 쉬움</button>
+              <button class="btn-diff active" data-size="4x4">4×4 보통</button>
+              <button class="btn-diff" data-size="6">6×4 어려움</button>
+              <button class="btn-diff" data-size="6x5">6×5 극한</button>
+            </div>
+          </div>
+          <div class="control-col">
+            <h4><i class="fa-solid fa-lightbulb"></i> 게임 규칙</h4>
+            <ul>
+              <li>두 장의 카드를 클릭하여 뒤집기</li>
+              <li>같은 아이콘이면 <strong>매칭 성공</strong></li>
+              <li>다르면 다시 뒤집힘</li>
+              <li>모든 쌍 매칭 시 <strong>게임 완료</strong></li>
+            </ul>
+          </div>
+          <div class="control-col">
+            <h4><i class="fa-solid fa-brain"></i> 두뇌 훈련 팁</h4>
+            <ul>
+              <li><strong>위치 기억</strong>: 뒤집은 카드의 위치를 기억하세요</li>
+              <li><strong>패턴 인식</strong>: 체계적으로 카드를 확인하세요</li>
+              <li><strong>집중력</strong>: 최소 시도로 완료하면 높은 점수!</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bottom Guide Board -->
+    <section class="explanation-board-section">
+      <div class="board-header">
+        <i class="fa-solid fa-book text-blue"></i>
+        <div>
+          <h2>메모리 마스터 백과사전</h2>
+          <span>카드 매칭 게임의 전략과 두뇌 훈련 효과를 알아보세요.</span>
+        </div>
+      </div>
+
+      <div class="explanation-layout">
+        <!-- Navigation List (Left Column) -->
+        <nav class="explanation-index-list">
+          <ul>
+            <li class="active" data-index="1"><span class="index-num">01</span> 메모리 게임이란?</li>
+            <li data-index="2"><span class="index-num">02</span> 인지 능력 향상 효과</li>
+            <li data-index="3"><span class="index-num">03</span> 카드 매칭 전략</li>
+            <li data-index="4"><span class="index-num">04</span> 난이도별 공략법</li>
+            <li data-index="5"><span class="index-num">05</span> 자주 묻는 질문 (FAQ)</li>
+          </ul>
+        </nav>
+
+        <!-- Dynamic Content Board Display Box (Right Column) -->
+        <div class="explanation-display-box glass-panel">
+          <div class="display-content-inner" id="explanation-board-content">
+            <div class="display-top-badge">
+              <i class="fa-solid fa-circle-info text-blue"></i>
+              <span id="explanation-title-badge">가이드 01: 개요</span>
+            </div>
+            
+            <h3 id="explanation-display-title">메모리 게임이란?</h3>
+            
+            <div class="display-text-body" id="explanation-display-text">
+              로딩 중...
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Floating Navigation Widget -->
+  <aside class="floating-navigator" id="floating-menu">
+    <div class="floating-buttons-col">
+      <button class="btn-float btn-scroll-top" id="btn-scroll-top" title="위로 이동"><i class="fa-solid fa-arrow-up"></i></button>
+      <button class="btn-float btn-scroll-bottom" id="btn-scroll-bottom" title="아래로 이동"><i class="fa-solid fa-arrow-down"></i></button>
+    </div>
+  </aside>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>

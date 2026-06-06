@@ -1335,3 +1335,1779 @@ body::before {
     grid-template-columns: 1fr;
   }
 }
+
+/* Saju Diagnostics Styles */
+.saju-diagnostics-box {
+  margin-top: 1.5rem;
+}
+
+.diag-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1.25rem;
+  transition: var(--transition-smooth);
+}
+
+.diag-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(168, 85, 247, 0.2);
+}
+
+.diag-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+}
+
+.diag-card-body strong {
+  font-size: 1.2rem;
+  color: var(--text-main);
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.diag-desc {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.shinsal-list-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.shinsal-badge {
+  display: inline-flex;
+  flex-direction: column;
+  padding: 0.5rem 0.85rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: var(--transition-smooth);
+}
+
+.shinsal-badge:hover {
+  transform: translateY(-2px);
+}
+
+.shinsal-badge strong {
+  font-size: 0.85rem;
+  color: var(--text-main);
+}
+
+.shinsal-badge span {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+/* Specific Shinsal Badge Themes */
+.badge-gwiin {
+  border-color: rgba(168, 85, 247, 0.3);
+  background: rgba(168, 85, 247, 0.06);
+}
+.badge-gwiin strong {
+  color: #c084fc;
+}
+
+.badge-dohwa {
+  border-color: rgba(244, 63, 94, 0.3);
+  background: rgba(244, 63, 94, 0.06);
+}
+.badge-dohwa strong {
+  color: #fb7185;
+}
+
+.badge-yeokma {
+  border-color: rgba(6, 182, 212, 0.3);
+  background: rgba(6, 182, 212, 0.06);
+}
+.badge-yeokma strong {
+  color: #22d3ee;
+}
+
+.badge-hwagae {
+  border-color: rgba(251, 191, 36, 0.3);
+  background: rgba(251, 191, 36, 0.06);
+}
+.badge-hwagae strong {
+  color: #fbbf24;
+}
+
+.badge-yangin {
+  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.06);
+}
+.badge-yangin strong {
+  color: #f87171;
+}
+
+.badge-gwimun {
+  border-color: rgba(16, 185, 129, 0.3);
+  background: rgba(16, 185, 129, 0.06);
+}
+.badge-gwimun strong {
+  color: #34d399;
+}
+
+/* Saju Table Additional Row Styles */
+.tr-hidegans td {
+  font-size: 0.72rem !important;
+  color: var(--text-muted) !important;
+  padding: 0.65rem 0.25rem !important;
+  line-height: 1.3 !important;
+  background: rgba(255,255,255,0.01) !important;
+}
+
+.tr-lifestages td {
+  font-size: 0.75rem !important;
+  color: var(--highlight-color) !important;
+  font-weight: 700 !important;
+  padding: 0.5rem 0.25rem !important;
+  background: rgba(255,255,255,0.015) !important;
+}
+
+/* ----------------------------------------------------
+   REDESIGNED RESULTS DASHBOARD STYLES
+   ---------------------------------------------------- */
+
+/* 1. Results Summary Header Bar */
+.results-summary-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0.85rem 1.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.results-summary-bar i {
+  color: #c084fc;
+  margin-right: 0.4rem;
+}
+
+.results-summary-bar .divider {
+  color: rgba(255, 255, 255, 0.15);
+  font-weight: 300;
+}
+
+.results-settings-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.badge-setting {
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  color: #c084fc;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.75rem;
+  border-radius: 30px;
+}
+
+.badge-setting-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* 2. Main Daymaster Card */
+.main-daymaster-card {
+  text-align: center;
+  background: radial-gradient(circle at center, rgba(126, 34, 206, 0.2) 0%, rgba(14, 20, 38, 0.6) 100%);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  border-radius: 24px;
+  padding: 3rem 2rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.daymaster-circle-wrap {
+  margin-bottom: 1.5rem;
+}
+
+.daymaster-circle {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: #10b981; /* Default to Wood */
+  color: #fff;
+  font-size: 2.2rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  transition: var(--transition-smooth);
+}
+
+.daymaster-circle.wood { background: #10b981; box-shadow: 0 0 35px rgba(16, 185, 129, 0.45); }
+.daymaster-circle.fire { background: #ef4444; box-shadow: 0 0 35px rgba(239, 68, 68, 0.45); }
+.daymaster-circle.earth { background: #d97706; box-shadow: 0 0 35px rgba(217, 119, 6, 0.45); }
+.daymaster-circle.metal { background: #94a3b8; box-shadow: 0 0 35px rgba(148, 163, 184, 0.45); }
+.daymaster-circle.water { background: #2563eb; box-shadow: 0 0 35px rgba(37, 99, 235, 0.45); }
+
+.daymaster-title {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+.daymaster-title .hanja {
+  font-size: 2.2rem;
+  color: rgba(255, 255, 255, 0.65);
+  font-weight: 400;
+  margin-left: 0.5rem;
+}
+
+.daymaster-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.daymaster-badges {
+  display: flex;
+  justify-content: center;
+  gap: 0.65rem;
+  margin-bottom: 2.5rem;
+}
+
+.daymaster-badges span {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.45rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  width: 100%;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.metric-box {
+  background: rgba(14, 20, 38, 0.4);
+  padding: 1.25rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.metric-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.metric-box strong {
+  font-size: 1rem;
+  color: #fff;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.metric-box strong .age-range {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.metric-box strong .hanja-sub {
+  font-size: 0.8rem;
+  color: var(--text-dark);
+  font-weight: 400;
+}
+
+.tip-alert-box {
+  background: rgba(251, 191, 36, 0.06);
+  border: 1px solid rgba(251, 191, 36, 0.18);
+  border-radius: 12px;
+  padding: 0.95rem 1.5rem;
+  color: #fef08a;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  margin-bottom: 1rem;
+  justify-content: center;
+}
+
+.tip-alert-box i {
+  color: #fbbf24;
+  font-size: 1rem;
+}
+
+.calc-note {
+  font-size: 0.75rem;
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+/* 3. Saju Won-guk Section */
+.wonguk-section {
+  background: rgba(14, 20, 38, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 1.75rem;
+  margin-bottom: 2rem;
+}
+
+.wonguk-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding-bottom: 1rem;
+}
+
+.wonguk-header h4 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #fff;
+}
+
+.wonguk-header h4 .hanja-sub {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--text-dark);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.btn-action {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 0.45rem 0.85rem;
+  color: #cbd5e1;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: var(--transition-smooth);
+}
+
+.btn-action:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.15);
+  color: #fff;
+}
+
+.wonguk-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.wonguk-col-card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 1.25rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  text-align: center;
+  transition: var(--transition-smooth);
+}
+
+.wonguk-col-card:hover {
+  border-color: rgba(168, 85, 247, 0.2);
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.wonguk-col-card.empty-siju {
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  justify-content: space-between;
+}
+
+.col-label {
+  font-size: 0.75rem;
+  color: var(--text-dark);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+.col-label .col-desc-sub {
+  font-size: 0.65rem;
+  font-weight: 500;
+}
+
+.col-body-unknown {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  padding: 3rem 0;
+}
+
+.wonguk-cell-box {
+  padding: 1rem 0.5rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  position: relative;
+}
+
+.wonguk-cell-box.stem-box {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.wonguk-cell-box.branch-box {
+  margin-bottom: 1.25rem;
+}
+
+.wonguk-cell-box .hz {
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.wonguk-cell-box .hz-han {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 0.4rem;
+}
+
+.wonguk-cell-box .elem-txt {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.wonguk-cell-box .elem-txt span {
+  font-size: 0.6rem;
+}
+
+.dot-y { color: #10b981; } /* Wood */
+.dot-r { color: #ef4444; } /* Fire */
+.dot-e { color: #fbbf24; } /* Earth */
+.dot-w { color: #cbd5e1; } /* Metal */
+.dot-b { color: #3b82f6; } /* Water */
+
+.god-tag {
+  background: rgba(255, 255, 255, 0.06);
+  color: #e2e8f0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+.god-tag.god-ilgan {
+  background: #a855f7;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
+}
+
+.lifestage-badge-wrap {
+  margin-bottom: 1rem;
+}
+
+.badge-stage {
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.badge-stage.badge-wood { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+.badge-stage.badge-fire { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+.badge-stage.badge-earth { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+.badge-stage.badge-metal { background: rgba(255, 255, 255, 0.08); color: #cbd5e1; border: 1px solid rgba(255, 255, 255, 0.15); }
+.badge-stage.badge-water { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+
+.hidegan-desc-text {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  padding-top: 0.65rem;
+}
+
+.wonguk-combinations,
+.wonguk-shinsal {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.section-badge {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(0,0,0,0.25);
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+}
+
+.section-badge i {
+  color: #c084fc;
+}
+
+.section-badge .badge-num {
+  background: #a855f7;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  padding: 0.05rem 0.35rem;
+  border-radius: 30px;
+  margin-left: 0.25rem;
+}
+
+.combinations-list,
+.shinsal-compact-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.comb-badge {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.comb-badge .type-tag {
+  background: #10b981;
+  color: #fff;
+  padding: 0.05rem 0.25rem;
+  border-radius: 3px;
+  font-size: 0.65rem;
+}
+
+.comb-badge .detail-tag {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.shinsal-tag {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: #e2e8f0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+}
+
+.shinsal-tag .loc-tag {
+  color: var(--text-dark);
+  font-weight: 500;
+  font-size: 0.65rem;
+  margin-left: 0.2rem;
+}
+
+/* 4. 12운성/지장간 상세 리스트 */
+.detail-wonguk-section {
+  margin-top: 1.5rem;
+}
+
+.detail-wonguk-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-top: 0.85rem;
+}
+
+.wonguk-detail-card {
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.wonguk-detail-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.wonguk-detail-card-header .col-t {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.wonguk-detail-card-header .stage-t {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--highlight-color);
+}
+
+.wonguk-detail-card-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.wonguk-detail-card-hg-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+}
+
+.wonguk-detail-card-hg-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+  background: rgba(0,0,0,0.15);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.wonguk-detail-card-hg-item .hg-name {
+  font-weight: 600;
+}
+
+.wonguk-detail-card-hg-item .hg-pct {
+  font-family: var(--font-display);
+  color: var(--text-muted);
+}
+
+/* 5. A. 기본 운세 */
+.luck-categories-section {
+  background: rgba(14, 20, 38, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 20px;
+  padding: 1.75rem;
+  margin-bottom: 2rem;
+}
+
+.section-title-bar {
+  margin-bottom: 1.5rem;
+}
+
+.section-title-bar h4 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 0.25rem;
+}
+
+.section-title-bar .sub-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.luck-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.luck-card {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  transition: var(--transition-smooth);
+}
+
+.luck-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(168, 85, 247, 0.25);
+}
+
+.luck-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.luck-card-header .title-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.luck-card-header .title-left .lbl {
+  font-size: 0.68rem;
+  color: var(--text-dark);
+  font-weight: 700;
+}
+
+.luck-card-header .title-left .title-main {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.luck-card-header .score-right {
+  text-align: right;
+}
+
+.luck-card-header .score-right .score-num {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #10b981;
+}
+
+.luck-card-header .score-right .score-unit {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.score-bar-wrap {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.score-bar {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#luck-card-personality .score-bar { background: linear-gradient(90deg, #06b6d4 0%, #22d3ee 100%); }
+#luck-card-personality .score-num { color: #22d3ee; }
+
+#luck-card-love .score-bar { background: linear-gradient(90deg, #f43f5e 0%, #fb7185 100%); }
+#luck-card-love .score-num { color: #fb7185; }
+
+#luck-card-job .score-bar { background: linear-gradient(90deg, #fbbf24 0%, #fcd34d 100%); }
+#luck-card-job .score-num { color: #fbbf24; }
+
+#luck-card-wealth .score-bar { background: linear-gradient(90deg, #fbbf24 0%, #fb923c 100%); }
+#luck-card-wealth .score-num { color: #fb923c; }
+
+#luck-card-health .score-bar { background: linear-gradient(90deg, #ec4899 0%, #f472b6 100%); }
+#luck-card-health .score-num { color: #f472b6; }
+
+.luck-card-body p {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin-bottom: 0.5rem;
+}
+
+.luck-card-tags {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.luck-card-tags span {
+  background: rgba(255,255,255,0.03);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.luck-detail-boxes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.detail-box {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-box-header {
+  font-size: 0.72rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.detail-box-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 0.75rem;
+}
+
+.detail-box-body {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* 6. Daily Calendar and Compatibility */
+.daily-calendar-section {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.calendar-container {
+  background: rgba(14, 20, 38, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.calendar-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.cal-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.cal-title i {
+  color: #c084fc;
+}
+
+.cal-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cal-nav button {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  transition: var(--transition-smooth);
+}
+
+.cal-nav button:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.15);
+}
+
+.cal-month-text {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.calendar-grid-wrapper {
+  overflow-x: auto;
+}
+
+.calendar-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.calendar-table th {
+  padding: 0.5rem 0.25rem;
+  font-size: 0.78rem;
+  color: var(--text-dark);
+  font-weight: 700;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.calendar-table th.sun { color: #f87171; }
+.calendar-table th.sat { color: #60a5fa; }
+
+.calendar-table td {
+  padding: 0.35rem 0.25rem;
+  height: 70px;
+  vertical-align: top;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.calendar-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.35rem 0.15rem;
+  border-radius: 6px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.005);
+  border: 1px solid transparent;
+  transition: var(--transition-smooth);
+}
+
+.calendar-cell:hover {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.calendar-cell.other-month {
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+.calendar-cell .day-num {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 0.15rem;
+}
+
+.calendar-cell.cell-today {
+  border-color: #a855f7 !important;
+  background: rgba(168, 85, 247, 0.08) !important;
+}
+
+.calendar-cell.cell-today .day-num {
+  color: #c084fc;
+}
+
+.calendar-cell.cell-good {
+  border-color: rgba(16, 185, 129, 0.3);
+  background: rgba(16, 185, 129, 0.04);
+}
+
+.calendar-cell.cell-good .day-num {
+  color: #34d399;
+}
+
+.calendar-cell.cell-warn {
+  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.04);
+}
+
+.calendar-cell.cell-warn .day-num {
+  color: #f87171;
+}
+
+.calendar-cell .ganzhi-text {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.1;
+  letter-spacing: -0.3px;
+}
+
+.calendar-cell .lunar-text {
+  font-size: 0.6rem;
+  color: var(--text-dark);
+}
+
+.calendar-cell .god-text {
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+.calendar-legend {
+  display: flex;
+  gap: 0.85rem;
+  justify-content: flex-start;
+  margin-top: 0.85rem;
+}
+
+.legend-item {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 600;
+}
+
+.dot-legend {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot-legend.dot-today { background: #a855f7; }
+.dot-legend.dot-good { background: #10b981; }
+.dot-legend.dot-warn { background: #ef4444; }
+
+.dot-legend.dot-current-daeun { background: #a855f7; }
+.dot-legend.dot-past-daeun { background: #4b5563; }
+.dot-legend.dot-future-daeun { background: #1f2937; }
+
+/* Compatibility widget styling */
+.compatibility-container {
+  background: rgba(14, 20, 38, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.comp-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.25rem;
+}
+
+.comp-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 1.25rem;
+  line-height: 1.4;
+}
+
+.comp-card {
+  flex-grow: 1;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  padding: 1.25rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.comp-card-icon {
+  font-size: 1.5rem;
+  color: #c084fc;
+}
+
+.comp-card-desc {
+  font-size: 0.75rem;
+  color: var(--text-dark);
+  line-height: 1.4;
+}
+
+.btn-comp-start {
+  width: 100%;
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  color: #c084fc;
+  padding: 0.55rem 0;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: var(--transition-smooth);
+}
+
+.btn-comp-start:hover {
+  background: #a855f7;
+  color: #fff;
+  border-color: #a855f7;
+}
+
+/* 7. Technical Metrics Section */
+.technical-metrics-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.metrics-table-container {
+  background: rgba(14, 20, 38, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.metrics-table-container h5 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.metrics-table-container h5 i {
+  color: #fbbf24;
+}
+
+.metrics-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.metrics-table th {
+  padding: 0.65rem 0.5rem;
+  font-size: 0.78rem;
+  color: var(--text-dark);
+  font-weight: 700;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.metrics-table td {
+  padding: 0.85rem 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.02);
+}
+
+.metrics-table .lbl-row {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: left;
+  padding-left: 0.5rem;
+}
+
+.ilgan-focus-text {
+  color: #c084fc;
+}
+
+.metrics-widgets-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.widget-card {
+  background: rgba(14, 20, 38, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.widget-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.widget-header i {
+  font-size: 1.5rem;
+  color: #c084fc;
+}
+
+.widget-header .w-label {
+  font-size: 0.7rem;
+  color: var(--text-dark);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.widget-header h4 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.strength-slider-container {
+  margin-bottom: 1.5rem;
+}
+
+.slider-bar {
+  height: 8px;
+  background: linear-gradient(90deg, #3b82f6 0%, #fbbf24 50%, #ef4444 100%);
+  border-radius: 10px;
+  position: relative;
+}
+
+.slider-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 2px;
+  background: rgba(255,255,255,0.3);
+}
+
+.slider-thumb {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #a855f7;
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
+  cursor: default;
+}
+
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+  font-weight: 600;
+}
+
+.strength-scores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+}
+
+.score-chip {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.score-chip.green {
+  border-color: rgba(16, 185, 129, 0.25);
+  color: #34d399;
+}
+
+.yongshin-details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ys-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.ys-detail-item .ys-header {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.1rem;
+}
+
+.ys-detail-item .ys-header .ys-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.ys-dot.bg-green-dot { background: #10b981; }
+.ys-dot.bg-blue-dot { background: #3b82f6; }
+.ys-dot.bg-red-dot { background: #ef4444; }
+
+.ys-detail-item .ys-header .lbl {
+  font-size: 0.7rem;
+  color: var(--text-dark);
+  font-weight: 700;
+}
+
+.ys-detail-item .ys-header strong {
+  font-size: 0.82rem;
+}
+
+.ys-detail-item p {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  padding-left: 1.15rem;
+  line-height: 1.35;
+}
+
+.elements-progress-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.ep-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.ep-name {
+  font-size: 0.75rem;
+  font-weight: 800;
+  width: 20px;
+}
+
+.ep-name.ep-wood { color: #10b981; }
+.ep-name.ep-fire { color: #ef4444; }
+.ep-name.ep-earth { color: #fbbf24; }
+.ep-name.ep-metal { color: #cbd5e1; }
+.ep-name.ep-water { color: #3b82f6; }
+
+.ep-bar-wrap {
+  flex-grow: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.ep-bar {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ep-val {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fff;
+  width: 32px;
+  text-align: right;
+}
+
+.ep-status {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  width: 36px;
+  text-align: center;
+}
+
+.ep-status.ep-tag-over { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+.ep-status.ep-tag-good { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+.ep-status.ep-tag-under { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+
+/* 8. 12운성 생애 에너지 & 대운 타임라인 */
+.timeline-navigation-section {
+  background: rgba(14, 20, 38, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  padding: 1.75rem;
+  margin-bottom: 2rem;
+}
+
+.timeline-header-title {
+  margin-bottom: 1rem;
+}
+
+.timeline-header-title h5 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.lifestage-energy-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.lifestage-energy-card {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 1.25rem 1rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  transition: var(--transition-smooth);
+}
+
+.lifestage-energy-card:hover {
+  border-color: rgba(168, 85, 247, 0.2);
+}
+
+.lifestage-energy-card.unknown-stage {
+  opacity: 0.35;
+  background: rgba(255,255,255,0.01);
+  border: 1px dashed rgba(255,255,255,0.08);
+}
+
+.lifestage-energy-card .col-name {
+  font-size: 0.75rem;
+  color: var(--text-dark);
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.lifestage-energy-card .col-name .age-hint {
+  font-size: 0.65rem;
+  font-weight: 500;
+}
+
+.lifestage-energy-card .energy-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+.lifestage-energy-card .energy-icon-wood { border-color: rgba(16, 185, 129, 0.2); color: #10b981; }
+.lifestage-energy-card .energy-icon-fire { border-color: rgba(239, 68, 68, 0.2); color: #ef4444; }
+.lifestage-energy-card .energy-icon-earth { border-color: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+.lifestage-energy-card .energy-icon-metal { border-color: rgba(255, 255, 255, 0.1); color: #cbd5e1; }
+.lifestage-energy-card .energy-icon-water { border-color: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+
+.lifestage-energy-card .stage-name {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 0.15rem;
+}
+
+.lifestage-energy-card .stage-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.lifestage-energy-card .badge-power {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.05rem 0.35rem;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.badge-power.power-strong { background: #10b981; }
+.badge-power.power-mid { background: #fbbf24; }
+.badge-power.power-weak { background: #ef4444; }
+
+.lifestage-energy-card .stage-desc {
+  font-size: 0.72rem;
+  color: var(--text-dark);
+  line-height: 1.4;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  padding-top: 0.65rem;
+  width: 100%;
+}
+
+.daeun-timeline-section {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 1.5rem;
+}
+
+.daeun-timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.daeun-timeline-header .dt-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.daeun-timeline-header h5 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.daeun-timeline-header h5 i {
+  color: #c084fc;
+}
+
+.daeun-timeline-header .dt-title .dt-meta-info {
+  font-size: 0.75rem;
+  color: var(--text-dark);
+}
+
+.daeun-timeline-header .dt-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.daeun-timeline-header .dt-right .dt-age-now {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.daeun-timeline-header .dt-right .btn-dt-direction {
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  color: #c084fc;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.7rem;
+  border-radius: 4px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.daeun-slider-wrapper {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  padding-bottom: 0.75rem;
+}
+
+.daeun-slider {
+  display: flex;
+  gap: 0.75rem;
+  width: max-content;
+  padding: 0.25rem;
+}
+
+.daeun-item-card {
+  width: 130px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 1rem 0.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  transition: var(--transition-smooth);
+}
+
+.daeun-item-card:hover {
+  transform: translateY(-2px);
+}
+
+.daeun-item-card .di-title {
+  font-size: 0.68rem;
+  color: var(--text-dark);
+  font-weight: 700;
+}
+
+.daeun-item-card .di-age {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.daeun-item-card .di-year {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.daeun-item-card .di-ganzhi {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5px;
+  margin: 0.15rem 0;
+}
+
+.daeun-item-card .di-god {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0.1rem 0.45rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  border-radius: 4px;
+  color: var(--text-muted);
+}
+
+.daeun-item-card .di-stage {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--highlight-color);
+}
+
+/* Daeun Status states */
+.daeun-item-card.current-daeun {
+  background: rgba(168, 85, 247, 0.08);
+  border: 1.5px solid #a855f7;
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.25);
+}
+
+.daeun-item-card.current-daeun .di-title {
+  color: #c084fc;
+}
+
+.daeun-item-card.past-daeun {
+  opacity: 0.45;
+  background: rgba(255, 255, 255, 0.005);
+}
+
+.daeun-item-card.future-daeun {
+  opacity: 0.75;
+}
+
+.daeun-legend {
+  display: flex;
+  gap: 0.85rem;
+  justify-content: flex-start;
+  margin-top: 0.85rem;
+}
+
+/* Responsiveness overrides */
+@media (max-width: 900px) {
+  .results-summary-bar {
+    border-radius: 12px;
+    gap: 0.75rem;
+  }
+  .results-summary-bar .divider {
+    display: none;
+  }
+  .metrics-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .wonguk-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .detail-wonguk-grid {
+    grid-template-columns: 1fr;
+  }
+  .luck-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .luck-detail-boxes {
+    grid-template-columns: 1fr;
+  }
+  .daily-calendar-section {
+    grid-template-columns: 1fr;
+  }
+  .metrics-widgets-row {
+    grid-template-columns: 1fr;
+  }
+  .lifestage-energy-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .wonguk-grid {
+    grid-template-columns: 1fr;
+  }
+  .luck-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  .lifestage-energy-grid {
+    grid-template-columns: 1fr;
+  }
+}

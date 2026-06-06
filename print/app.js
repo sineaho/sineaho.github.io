@@ -1,6 +1,6 @@
 /**
  * CineAHO Web Print Editor App Engine
- * Re-creation of PrintWhatYouLike.com
+ * Re-creation of Cineaho's WebPrint
  */
 
 // Sound Synthesizer using Web Audio API
@@ -84,7 +84,50 @@ const App = {
     this.hoverToolbarEl = document.getElementById('hover-toolbar');
     this.urlInputEl = document.getElementById('target-url');
 
+    this.initTheme();
     this.bindEvents();
+
+    // Parse URL parameter on load
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetUrlParam = urlParams.get('url');
+    if (targetUrlParam) {
+      this.urlInputEl.value = decodeURIComponent(targetUrlParam);
+      this.loadUrl(decodeURIComponent(targetUrlParam));
+    }
+  },
+
+  initTheme() {
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    if (!themeToggleBtn) return;
+    const themeIcon = themeToggleBtn.querySelector('i');
+    const themeText = themeToggleBtn.querySelector('span');
+
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeUI(savedTheme);
+
+    themeToggleBtn.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      let newTheme = 'dark';
+      if (currentTheme === 'dark') {
+        newTheme = 'light';
+      }
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeUI(newTheme);
+    });
+
+    function updateThemeUI(theme) {
+      if (theme === 'light') {
+        themeIcon.className = 'fa-solid fa-moon';
+        themeText.textContent = '다크';
+        themeToggleBtn.style.borderColor = 'var(--text-muted)';
+      } else {
+        themeIcon.className = 'fa-solid fa-sun';
+        themeText.textContent = '라이트';
+        themeToggleBtn.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+      }
+    }
   },
 
   bindEvents() {
@@ -127,6 +170,37 @@ const App = {
       }
       this.loadCustomHTML(htmlCode);
     });
+
+    // Share / Save Link Click
+    const btnShareLink = document.getElementById('btn-share-link');
+    if (btnShareLink) {
+      btnShareLink.addEventListener('click', () => {
+        const url = this.urlInputEl.value.trim();
+        if (!url) {
+          alert("먼저 URL을 입력창에 입력해 주세요!");
+          return;
+        }
+        
+        let targetUrl = url;
+        if (!/^https?:\/\//i.test(targetUrl)) {
+          targetUrl = 'http://' + targetUrl;
+        }
+
+        // Construct share link
+        const shareLink = `${window.location.origin}${window.location.pathname}?url=${encodeURIComponent(targetUrl)}`;
+        
+        // Copy to clipboard
+        navigator.clipboard.writeText(shareLink)
+          .then(() => {
+            alert(`공유 링크가 클립보드에 복사되었습니다!\n\n${shareLink}\n\n이 링크를 통해 다른 사람도 이 웹페이지를 즉시 편집할 수 있습니다.`);
+          })
+          .catch(err => {
+            console.error("Clipboard copy failed", err);
+            // Fallback alert prompt
+            prompt("아래 공유 링크를 복사하여 공유하세요:", shareLink);
+          });
+      });
+    }
 
     // Sidebar Toggles
     document.getElementById('toggle-hide-images').addEventListener('change', (e) => {
@@ -475,7 +549,7 @@ const App = {
 
               <h2 style="font-size:1.35rem; border-bottom:1px solid #a2a9b1; margin-top:20px; margin-bottom:10px;">1. 산하 프로젝트 역사</h2>
               <p style="margin-bottom:12px; line-height:1.6;">
-                최초의 서브프로젝트는 네이버 SEO 분석 도구였으며, 점차 장기/오목 같은 복고 보드게임과 스도쿠/2048 등 하이테크 수학 퍼즐로 범위를 확장했습니다. 최근에는 PDF 분할 병합 도구 및 2D 물리 벡터 연산을 연동한 구슬 룰렛 추첨기를 탑재하여 생산성과 게임성을 고루 겸비한 창고가 되었습니다.
+                최초의 서브프로젝트는 네이버 SEO 분석 도구였으며, 점차 장기/오목 같은 복고 보드게임과 스도쿠/2048 등 하이테크 수학 퍼즐로 범위를 확장했습니다. 최근에는 PDF 분할 병합 도구 및 2D 물리 벡터 연산을 연동한 구슬 룰렛 추첨기를 탑재하여 생산성과 게임성을 고루 겸비한 SandBox가 되었습니다.
               </p>
             </div>
           </div>

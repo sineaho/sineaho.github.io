@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>뉴로 리플렉스 3D – 반응속도 테스트</title>
+  <meta name="description" content="3D 애니메이션과 프리미엄 UI로 즐기는 반응속도 테스트 게임. 나타나는 타겟을 최대한 빨리 클릭하세요!">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>SandBox</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="../index.html#tools-section">무료 앱</a></li>
+        <li><a href="https://blog.naver.com/sineaho" target="_blank" rel="noopener noreferrer">CineAHO</a></li>
+        <li><a href="../prompt.html">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#" class="active">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Neuro Reflex Game Container -->
+  <main class="neuro-container">
+
+    <!-- Title & Description Header -->
+    <section class="neuro-header-section">
+      <h1 class="main-title">
+        ⚡ 뉴로 리플렉스 3D ⚡
+      </h1>
+      <p class="subtitle-desc">
+        <span class="highlight-rose">3D 타겟 애니메이션</span>과 <span class="highlight-blue">정밀 반응속도 측정</span>으로 신경 반응을 극한까지 테스트하세요. 더 빠르게, 더 정확하게!
+      </p>
+      
+      <div class="tag-badges">
+        <span class="badge badge-tag">반응속도</span>
+        <span class="badge badge-tag">두뇌 훈련</span>
+        <span class="badge badge-tag">3D 애니메이션</span>
+        <span class="badge badge-tag">난이도 선택</span>
+      </div>
+    </section>
+
+    <!-- Stat Dashboard Cards Row -->
+    <section class="stat-dashboard-cards">
+      <div class="glass-panel stat-card">
+        <div class="stat-icon yellow"><i class="fa-solid fa-crosshairs"></i> 점수</div>
+        <div class="stat-value" id="lbl-score">0</div>
+      </div>
+      <div class="glass-panel stat-card">
+        <div class="stat-icon purple"><i class="fa-solid fa-clock"></i> 남은 시간</div>
+        <div class="stat-value" id="lbl-timer">30s</div>
+      </div>
+      <div class="glass-panel stat-card">
+        <div class="stat-icon blue"><i class="fa-solid fa-bolt"></i> 평균 반응</div>
+        <div class="stat-value" id="lbl-avg-reaction">--ms</div>
+      </div>
+      <div class="glass-panel stat-card">
+        <div class="stat-icon gold"><i class="fa-solid fa-trophy"></i> 최고기록</div>
+        <div class="stat-value" id="lbl-best">--</div>
+      </div>
+    </section>
+
+    <!-- Game Workspace -->
+    <section class="game-workspace">
+
+      <!-- 3D Play Area -->
+      <div class="arena-panel glass-panel">
+        <div id="arena" class="arena">
+          <!-- Targets spawn here dynamically -->
+        </div>
+
+        <!-- Start Overlay -->
+        <div class="arena-overlay" id="overlay-screen">
+          <div class="overlay-inner">
+            <h2 class="overlay-title">뉴로 리플렉스</h2>
+            <p class="overlay-subtitle">나타나는 타겟을 최대한 빨리 클릭하세요!</p>
+            <button class="btn btn-primary btn-large" id="btn-overlay-start">
+              <i class="fa-solid fa-play"></i> 시작
+            </button>
+          </div>
+        </div>
+
+        <!-- Game Over Overlay (injected by JS) -->
+      </div>
+
+      <!-- Controls Panel -->
+      <div class="controls-panel glass-panel">
+        <div class="controls-header-row">
+          <h3><i class="fa-solid fa-sliders"></i> 게임 컨트롤</h3>
+          <div class="controls-header-actions">
+            <button class="btn btn-primary" id="btn-restart">
+              <i class="fa-solid fa-rotate-right"></i> 다시 시작
+            </button>
+          </div>
+        </div>
+
+        <div class="controls-details-grid">
+          <div class="control-col">
+            <h4><i class="fa-solid fa-gauge-high"></i> 난이도 선택</h4>
+            <div class="difficulty-btns">
+              <button class="btn-diff" data-diff="easy">🟢 쉬움</button>
+              <button class="btn-diff active" data-diff="normal">🟡 보통</button>
+              <button class="btn-diff" data-diff="hard">🔴 어려움</button>
+            </div>
+          </div>
+          <div class="control-col">
+            <h4><i class="fa-solid fa-lightbulb"></i> 게임 규칙</h4>
+            <ul>
+              <li>제한 시간 내에 나타나는 <strong>타겟</strong>을 클릭</li>
+              <li>타겟은 <strong>무작위 위치, 크기</strong>로 출현</li>
+              <li>클릭 시 <strong>반응 시간(ms)</strong> 기록</li>
+              <li>시간 종료 시 <strong>최종 점수</strong> 및 평균 반응 표시</li>
+            </ul>
+          </div>
+          <div class="control-col">
+            <h4><i class="fa-solid fa-brain"></i> 반응속도 팁</h4>
+            <ul>
+              <li><strong>시선 집중</strong>: 화면 중앙에 시선을 두세요</li>
+              <li><strong>주변 시야</strong>: 가장자리 타겟도 빠르게 인식</li>
+              <li><strong>리듬 파악</strong>: 타겟 출현 패턴을 예측하세요</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bottom Guide Board -->
+    <section class="explanation-board-section">
+      <div class="board-header">
+        <i class="fa-solid fa-book text-blue"></i>
+        <div>
+          <h2>뉴로 리플렉스 백과사전</h2>
+          <span>반응속도 훈련의 과학적 근거와 향상 전략을 알아보세요.</span>
+        </div>
+      </div>
+
+      <div class="explanation-layout">
+        <nav class="explanation-index-list">
+          <ul>
+            <li class="active" data-index="1"><span class="index-num">01</span> 반응속도란?</li>
+            <li data-index="2"><span class="index-num">02</span> 신경 전달 과학</li>
+            <li data-index="3"><span class="index-num">03</span> 훈련 효과</li>
+            <li data-index="4"><span class="index-num">04</span> 난이도별 공략</li>
+            <li data-index="5"><span class="index-num">05</span> FAQ</li>
+          </ul>
+        </nav>
+
+        <div class="explanation-display-box glass-panel">
+          <div class="display-content-inner" id="explanation-board-content">
+            <div class="display-top-badge">
+              <i class="fa-solid fa-circle-info text-blue"></i>
+              <span id="explanation-title-badge">가이드 01: 개요</span>
+            </div>
+            <h3 id="explanation-display-title">반응속도란?</h3>
+            <div class="display-text-body" id="explanation-display-text">
+              로딩 중...
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Floating Navigation Widget -->
+  <aside class="floating-navigator" id="floating-menu">
+    <div class="floating-buttons-col">
+      <button class="btn-float btn-scroll-top" id="btn-scroll-top" title="위로 이동"><i class="fa-solid fa-arrow-up"></i></button>
+      <button class="btn-float btn-scroll-bottom" id="btn-scroll-bottom" title="아래로 이동"><i class="fa-solid fa-arrow-down"></i></button>
+    </div>
+  </aside>
+
+  <script src="app.js"></script>
+</body>
+</html>
