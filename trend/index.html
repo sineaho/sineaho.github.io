@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO Keyword & Trend Analysis Solution</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- App Header & Toolbar -->
+  <header class="main-header">
+    <div class="header-left">
+      <!-- Back to CineAHO Portal Home -->
+      <a href="../index.html" class="action-btn" style="background-color: rgba(255,255,255,0.05); border: 1px solid var(--border-color); text-decoration: none; display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 6px; color: var(--text-main); margin-right: 8px;" title="CineAHO 홈으로 이동">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      </a>
+      <div class="app-logo">
+        <i class="fa-solid fa-chart-line"></i> Keyword & Trend Analyzer
+      </div>
+    </div>
+    <div class="header-right" style="display: flex; align-items: center; gap: 16px;">
+      <!-- Trend Re-analyzer Button -->
+      <button class="action-btn" id="btn-reanalyze-trends" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3); color: #a7f3d0;" title="네이버/구글 API로부터 현재 트렌드 데이터 및 지수를 실시간 재수집하고 분석합니다.">
+        <i class="fa-solid fa-arrows-rotate"></i> 트렌드 재분석
+      </button>
+      <!-- Kiwi Credits counter -->
+      <div class="kiwi-counter" id="kiwi-credits-display" title="키워드 추천/확장에 소모되는 가상 크레딧입니다. 클릭시 무료 충전 가능합니다.">
+        <i class="fa-solid fa-lemon"></i>
+        <span>500 KIWI</span>
+      </div>
+      <button class="action-btn" id="btn-reset-app">데이터 초기화</button>
+    </div>
+  </header>
+
+  <!-- Navigation tabs -->
+  <nav class="tabs-bar">
+    <div class="tabs-container">
+      <button class="tab-btn active" data-tab="tab-trend">
+        <i class="fa-solid fa-fire"></i> 트렌드 분석
+      </button>
+      <button class="tab-btn" data-tab="tab-season">
+        <i class="fa-solid fa-calendar-days"></i> 시즌 키워드 & 캘린더
+      </button>
+      <button class="tab-btn" data-tab="tab-recommend">
+        <i class="fa-solid fa-compass"></i> 키워드 발굴 & 추천
+      </button>
+      <button class="tab-btn" data-tab="tab-analysis">
+        <i class="fa-solid fa-magnifying-glass-chart"></i> 키워드 심층 분석
+      </button>
+      <button class="tab-btn" data-tab="tab-quick">
+        <i class="fa-solid fa-table-list"></i> 간편 키워드 조회
+      </button>
+      <button class="tab-btn" data-tab="tab-influence">
+        <i class="fa-solid fa-ranking-star"></i> 영향력 순위 & 진단
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main View Area -->
+  <main class="main-content">
+
+    <!-- 1. Trend Analysis Panel -->
+    <div class="tab-panel active" id="tab-trend">
+      <!-- Popular Rising Keywords block -->
+      <section class="glass-panel" style="display: flex; flex-direction: column; gap: 16px;">
+        <div class="calendar-header">
+          <h3 class="glass-panel-title">
+            <i class="fa-solid fa-bolt" style="color: var(--color-warning);"></i> 인기 급상승 키워드
+          </h3>
+          <select class="select-input" id="trend-period-select" style="width: 100px; padding: 4px 8px;">
+            <option value="daily">일간 급상승</option>
+            <option value="monthly">월간 급상승</option>
+          </select>
+        </div>
+        <!-- Portal Source Tabs -->
+        <div class="source-tabs">
+          <button class="source-tab-btn active" data-source="all">
+            <i class="fa-solid fa-globe"></i> 전체 트렌드
+          </button>
+          <button class="source-tab-btn" data-source="naver">
+            <span style="font-weight: 800; color: #10b981; font-family: sans-serif; font-size: 11px;">N</span> 네이버
+          </button>
+          <button class="source-tab-btn" data-source="google">
+            <i class="fa-brands fa-google" style="color: #38bdf8; font-size: 11px;"></i> 구글
+          </button>
+          <button class="source-tab-btn" data-source="daum">
+            <span style="font-weight: 800; color: #bae6fd; font-family: sans-serif; font-size: 11px;">D</span> 다음
+          </button>
+        </div>
+        <div class="table-container">
+          <table class="trend-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">순위</th>
+                <th>키워드</th>
+                <th>검색량 증가율</th>
+                <th>구분</th>
+                <th style="text-align: right; width: 140px;">액션</th>
+              </tr>
+            </thead>
+            <tbody id="rising-keywords-tbody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="grid-2col">
+        <!-- Real-time News Sentiment & Frequency Analyzer -->
+        <section class="glass-panel" style="display: flex; flex-direction: column; gap: 16px;">
+          <h3 class="glass-panel-title">
+            <i class="fa-solid fa-square-rss" style="color: var(--color-secondary);"></i> 실시간 뉴스 키워드 & 감성 분석
+          </h3>
+          <div style="font-size: 13px; color: var(--text-secondary); display: flex; justify-content: space-between; align-items: center;">
+            <span>분석 대상 키워드: <strong id="news-analysis-target-label" style="color: var(--color-secondary); font-size: 14px;">Claude 3.5</strong></span>
+            <span id="news-sentiment-status-label" class="badge-tag" style="background-color: rgba(16, 185, 129, 0.15); color: var(--color-success); font-weight: 700;">긍정적 여론 우세</span>
+          </div>
+
+          <div class="grid-2col" style="gap: 16px; margin-top: 8px;">
+            <!-- Left: Related Frequency progress bars -->
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <span style="font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">뉴스 헤드라인 키워드 주파수 (Top 5)</span>
+              <div id="news-frequency-bars-container" style="display: flex; flex-direction: column; gap: 8px;">
+                <!-- Dynamic progress bars -->
+              </div>
+            </div>
+
+            <!-- Right: Sentiment bar chart -->
+            <div style="display: flex; flex-direction: column; gap: 10px; justify-content: center;">
+              <span style="font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">뉴스 감성 분포 비율</span>
+              <div id="news-sentiment-bar" style="width: 100%; height: 16px; border-radius: 8px; display: flex; overflow: hidden; border: 1px solid rgba(255,255,255,0.05);">
+                <!-- Colored segments -->
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-secondary);">
+                <span style="color: var(--color-success);"><i class="fa-solid fa-circle" style="font-size: 8px; margin-right:4px;"></i> 긍정: <strong id="news-pos-pct">75%</strong></span>
+                <span style="color: var(--text-secondary);"><i class="fa-solid fa-circle" style="font-size: 8px; margin-right:4px;"></i> 중립: <strong id="news-neu-pct">15%</strong></span>
+                <span style="color: var(--color-error);"><i class="fa-solid fa-circle" style="font-size: 8px; margin-right:4px;"></i> 부정: <strong id="news-neg-pct">10%</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <div style="border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 8px;">
+            <span style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 6px;">실시간 연동 뉴스 헤드라인</span>
+            <ul style="font-size: 12.5px; color: var(--text-secondary); display: flex; flex-direction: column; gap: 6px; padding-left: 16px;" id="news-headlines-list">
+              <!-- Simulated headlines -->
+            </ul>
+          </div>
+        </section>
+
+        <!-- Tag Cloud & Newly Emerged block -->
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+          <section class="glass-panel">
+            <h3 class="glass-panel-title"><i class="fa-solid fa-cloud"></i> 실시간 관심사 클라우드</h3>
+            <div class="word-cloud-container" id="word-cloud-container">
+              <!-- Dynamically populated -->
+            </div>
+          </section>
+
+          <section class="glass-panel">
+            <h3 class="glass-panel-title">
+              <i class="fa-solid fa-sparkles" style="color: var(--color-secondary);"></i> 새롭게 등장한 키워드
+            </h3>
+            <div id="newly-emerged-container">
+              <!-- Dynamically populated -->
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- AI Trend Report block -->
+      <section class="glass-panel" style="display: flex; flex-direction: column; gap: 16px;">
+        <div class="calendar-header">
+          <h3 class="glass-panel-title"><i class="fa-solid fa-brain"></i> AI 트렌드 인사이트 리포트</h3>
+          <button class="secondary-btn" id="btn-download-pdf">
+            <i class="fa-solid fa-file-pdf"></i> 리포트 PDF 다운로드
+          </button>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px; background-color: rgba(255,255,255,0.02); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color);" id="ai-insight-report-container">
+          <!-- Dynamically populated -->
+        </div>
+      </section>
+
+      <!-- Data Sources and Share Stats block -->
+      <section class="glass-panel" style="display: flex; flex-direction: column; gap: 16px;">
+        <h3 class="glass-panel-title"><i class="fa-solid fa-database"></i> 데이터 수집 출처 및 검색 채널 점유율</h3>
+        <div class="grid-2col">
+          <!-- Left: Search Share -->
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <span style="font-size: 12px; font-weight: 700; color: var(--color-secondary); margin-bottom: 6px;">[국내 검색 엔진 점유율 현황]</span>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 2px;">
+                  <span>네이버 (Naver)</span>
+                  <span>58.4%</span>
+                </div>
+                <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
+                  <div style="width: 58.4%; height: 100%; background: #10b981;"></div>
+                </div>
+              </div>
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 2px;">
+                  <span>구글 (Google)</span>
+                  <span>35.2%</span>
+                </div>
+                <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
+                  <div style="width: 35.2%; height: 100%; background: #38bdf8;"></div>
+                </div>
+              </div>
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 2px;">
+                  <span>다음 (Daum) 및 기타</span>
+                  <span>6.4%</span>
+                </div>
+                <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
+                  <div style="width: 6.4%; height: 100%; background: #a855f7;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Searched Journals and APIs list -->
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <span style="font-size: 12px; font-weight: 700; color: var(--color-primary); margin-bottom: 6px;">[조사 대상 학술지 및 트렌드 데이터베이스]</span>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px; color: var(--text-secondary);">
+              <div><i class="fa-solid fa-circle-nodes" style="color:var(--color-primary); margin-right:6px;"></i> Naver DataLab API</div>
+              <div><i class="fa-solid fa-circle-nodes" style="color:var(--color-secondary); margin-right:6px;"></i> Google Trends API</div>
+              <div><i class="fa-solid fa-book" style="color:var(--color-warning); margin-right:6px;"></i> Nature Publications</div>
+              <div><i class="fa-solid fa-book" style="color:var(--color-warning); margin-right:6px;"></i> Science Journal</div>
+              <div><i class="fa-solid fa-book" style="color:var(--color-warning); margin-right:6px;"></i> Cell Press</div>
+              <div><i class="fa-solid fa-graduation-cap" style="color:var(--color-success); margin-right:6px;"></i> PubMed Database</div>
+              <div><i class="fa-solid fa-graduation-cap" style="color:var(--color-success); margin-right:6px;"></i> Google Scholar</div>
+              <div><i class="fa-solid fa-rss" style="color:var(--color-secondary); margin-right:6px;"></i> 실시간 RSS (10분 주기)</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 2. Seasonal Keywords Panel -->
+    <div class="tab-panel" id="tab-season">
+      <div class="grid-2col">
+        <!-- Seasonal Keywords left block -->
+        <section class="glass-panel" style="display: flex; flex-direction: column; gap: 16px;">
+          <h3 class="glass-panel-title"><i class="fa-solid fa-umbrella-beach"></i> 계절별/시즌별 키워드 리스트</h3>
+          <div style="display: flex; gap: 12px;">
+            <div class="form-group" style="flex: 1; margin-bottom: 0;">
+              <label for="season-month-select">대상 월 선택</label>
+              <select class="select-input" id="season-month-select">
+                <option value="6">현재 월 (6월)</option>
+                <option value="7">향후 1개월 뒤 (7월)</option>
+                <option value="8">향후 2개월 뒤 (8월)</option>
+                <option value="9">향후 3개월 뒤 (9월)</option>
+              </select>
+            </div>
+            <div class="form-group" style="flex: 1; margin-bottom: 0;">
+              <label for="season-industry-select">주제/업종 클러스터</label>
+              <select class="select-input" id="season-industry-select">
+                <option value="all">전체 업종</option>
+                <option value="travel">여행 & 휴가</option>
+                <option value="edu">교육 & 신학기</option>
+                <option value="shopping">이커머스 & 패션</option>
+                <option value="beauty">뷰티 & 헬스</option>
+                <option value="finance">금융 & 마케팅</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-container" style="margin-top: 8px;">
+            <table class="trend-table">
+              <thead>
+                <tr>
+                  <th>키워드</th>
+                  <th>월평균 검색량</th>
+                  <th>검색량 배수</th>
+                  <th>집중 시기</th>
+                  <th style="text-align: right; width: 100px;">액션</th>
+                </tr>
+              </thead>
+              <tbody id="seasonal-keywords-tbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Content Calendar right block -->
+        <section class="glass-panel" style="display: flex; flex-direction: column; gap: 16px;">
+          <h3 class="glass-panel-title"><i class="fa-solid fa-calendar"></i> 콘텐츠 캘린더 (Publishing Calendar)</h3>
+          <div class="calendar-wrapper">
+            <div class="calendar-header">
+              <span id="calendar-title-label" style="font-weight: 700; font-size: 15px; color: var(--color-primary);">2026년 6월</span>
+              <span style="font-size: 11px; color: var(--text-muted);">캘린더의 일정은 브라우저에 저장됩니다.</span>
+            </div>
+            <div class="calendar-grid" id="calendar-days-grid">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- 3. Keyword Discovery & Recommendation Panel -->
+    <div class="tab-panel" id="tab-recommend">
+      <!-- Keyword Expansion top block -->
+      <section class="glass-panel" style="display: flex; flex-direction: column; gap: 16px;">
+        <h3 class="glass-panel-title"><i class="fa-solid fa-arrows-to-eye"></i> 키워드 확장 (Keyword Expansion)</h3>
+        <div class="grid-2col">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="expansion-seeds">시드(Seed) 키워드 입력 (한 줄에 하나씩)</label>
+            <textarea class="textarea-input" id="expansion-seeds" rows="4" placeholder="예시:&#10;인공지능&#10;메타버스"></textarea>
+          </div>
+          <div style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="display: flex; gap: 12px;">
+              <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                <label for="expansion-include">포함할 단어 (쉼표 구분)</label>
+                <input type="text" class="input-text" id="expansion-include" placeholder="예: 추천, 툴">
+              </div>
+              <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                <label for="expansion-exclude">제외할 단어 (쉼표 구분)</label>
+                <input type="text" class="input-text" id="expansion-exclude" placeholder="예: 교육, 유료">
+              </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
+              <span style="font-size: 12px; color: var(--text-secondary);">
+                <i class="fa-solid fa-circle-info"></i> 시드 키워드와 필터를 토대로 숏테일 연관검색어를 발굴합니다. (5 KIWI 소모)
+              </span>
+              <button class="submit-btn" id="btn-run-expansion">확장 분석 실행</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Keyword Recommendation middle block -->
+      <section class="glass-panel" style="display: flex; flex-direction: column; gap: 16px;">
+        <h3 class="glass-panel-title"><i class="fa-solid fa-wand-magic-sparkles"></i> 조건 검색 & 유망 키워드 추천</h3>
+        <div class="grid-2col">
+          <!-- Filters Left -->
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div class="grid-2col" style="gap: 12px;">
+              <div class="range-slider-container">
+                <div class="range-slider-header">
+                  <span>최소 월간 검색량</span>
+                  <span id="label-min-search">1,000</span>
+                </div>
+                <input type="range" class="range-slider" id="filter-min-search" min="100" max="50000" step="100" value="1000">
+              </div>
+              <div class="range-slider-container">
+                <div class="range-slider-header">
+                  <span>최대 월간 발행량</span>
+                  <span id="label-max-posts">10,000</span>
+                </div>
+                <input type="range" class="range-slider" id="filter-max-posts" min="500" max="100000" step="500" value="10000">
+              </div>
+            </div>
+
+            <div class="grid-2col" style="gap: 12px;">
+              <div class="range-slider-container">
+                <div class="range-slider-header">
+                  <span>성별 타겟 (여성 비율)</span>
+                  <span id="label-gender-ratio">50%</span>
+                </div>
+                <input type="range" class="range-slider" id="filter-gender-ratio" min="10" max="90" step="5" value="50">
+              </div>
+              <div class="range-slider-container">
+                <div class="range-slider-header">
+                  <span>시즌성 지수 (특정월 집중도)</span>
+                  <span id="label-season-idx">30</span>
+                </div>
+                <input type="range" class="range-slider" id="filter-season-idx" min="0" max="100" step="5" value="30">
+              </div>
+            </div>
+
+            <div class="grid-2col" style="gap: 12px;">
+              <div class="range-slider-container">
+                <div class="range-slider-header">
+                  <span>상업성/광고 지수</span>
+                  <span id="label-commercial-idx">40</span>
+                </div>
+                <input type="range" class="range-slider" id="filter-commercial-idx" min="0" max="100" step="5" value="40">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="filter-rec-category">추천 키워드 업종</label>
+                <select class="select-input" id="filter-rec-category">
+                  <option value="all">전체 분야</option>
+                  <option value="tech">테크/IT</option>
+                  <option value="living">생활/리빙</option>
+                  <option value="finance">비즈니스/금융</option>
+                  <option value="beauty">뷰티/패션</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Age and action Right -->
+          <div style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="form-group">
+              <label>주 타겟 연령대 선택 (복수 가능)</label>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;">
+                <label class="action-btn" style="cursor: pointer; gap: 4px;"><input type="checkbox" id="age-10" checked> 10대</label>
+                <label class="action-btn" style="cursor: pointer; gap: 4px;"><input type="checkbox" id="age-20" checked> 20대</label>
+                <label class="action-btn" style="cursor: pointer; gap: 4px;"><input type="checkbox" id="age-30" checked> 30대</label>
+                <label class="action-btn" style="cursor: pointer; gap: 4px;"><input type="checkbox" id="age-40" checked> 40대 이상</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="btn-save-filter-set">필터 리서치 조건 저장</label>
+              <div style="display: flex; gap: 10px;">
+                <input type="text" class="input-text" id="filter-set-name" placeholder="예시: IT 20대 기획용 필터">
+                <button class="secondary-btn" id="btn-save-filter-set" style="white-space: nowrap;">조건 저장</button>
+              </div>
+              <div id="saved-filters-list" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;">
+                <!-- Saved filters injected here -->
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 12px; color: var(--text-secondary);">
+                <i class="fa-solid fa-lemon"></i> 다차원 조건 필터링 추천은 5 KIWI를 소모합니다.
+              </span>
+              <button class="submit-btn" id="btn-run-recommendation">추천받기</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Discovery Results Table -->
+      <section class="glass-panel" id="rec-results-section" style="display: none; flex-direction: column; gap: 16px;">
+        <h3 class="glass-panel-title"><i class="fa-solid fa-list-check"></i> 발굴 / 추천 분석 결과</h3>
+        <div class="table-container">
+          <table class="trend-table">
+            <thead>
+              <tr>
+                <th>키워드</th>
+                <th>월간 검색량</th>
+                <th>월간 발행량</th>
+                <th>포화 지수</th>
+                <th>여성 비율</th>
+                <th>주 연령대</th>
+                <th>시즌 지수</th>
+                <th>상업 지수</th>
+                <th style="text-align: right; width: 140px;">액션</th>
+              </tr>
+            </thead>
+            <tbody id="discovery-results-tbody">
+              <!-- Dynamic rows -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- 4. In-depth Keyword Analysis Panel -->
+    <div class="tab-panel" id="tab-analysis">
+      <!-- Search keyword query -->
+      <section class="glass-panel" style="display: flex; flex-direction: column; gap: 16px;">
+        <h3 class="glass-panel-title"><i class="fa-solid fa-magnifying-glass"></i> 검색 키워드 심층 검증</h3>
+        <div style="display: flex; gap: 12px;">
+          <div style="flex: 1; position: relative;">
+            <input type="text" class="input-text" id="analysis-search-input" placeholder="분석할 키워드를 입력해 주세요 (예: 인공지능, 여름 휴가, 캠핑용품...)">
+            <div id="analysis-autocomplete-box" style="position: absolute; top: 100%; left: 0; right: 0; background-color: #111827; border: 1px solid var(--border-color); border-top: none; border-radius: 0 0 6px 6px; z-index: 10; display: none; max-height: 200px; overflow-y: auto;">
+              <!-- Dynamic suggestions -->
+            </div>
+          </div>
+          <button class="submit-btn" id="btn-run-analysis" style="white-space: nowrap;">키워드 심층 분석</button>
+        </div>
+      </section>
+
+      <!-- Main Analysis dashboard content (Initially hidden) -->
+      <div id="analysis-dashboard-wrapper" style="display: none; flex-direction: column; gap: 24px;">
+        <div class="grid-2col">
+          <!-- Left: Saturation block -->
+          <div style="display: flex; flex-direction: column; gap: 24px;">
+            <section class="glass-panel" style="display: flex; flex-direction: column; gap: 12px; height: 100%;">
+              <h3 class="glass-panel-title"><i class="fa-solid fa-gauge-high"></i> 키워드 경쟁 포화도</h3>
+              <div class="saturation-gauge-container">
+                <div class="saturation-grade-badge" id="analysis-grade">A+</div>
+                <div class="saturation-gauge-bar">
+                  <div class="saturation-indicator" id="analysis-gauge-indicator" style="left: 30%;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; width: 100%; font-size: 11px; color: var(--text-muted);">
+                  <span>안전 (낮은 경쟁)</span>
+                  <span>보통</span>
+                  <span>과포화 (높은 경쟁)</span>
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 8px; margin-top: auto;">
+                <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                  <span style="color: var(--text-secondary);">월간 검색량:</span>
+                  <span id="analysis-monthly-searches" style="font-weight: 700;">-</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                  <span style="color: var(--text-secondary);">누적 발행 콘텐츠 수:</span>
+                  <span id="analysis-total-posts" style="font-weight: 700;">-</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                  <span style="color: var(--text-secondary);">콘텐츠 포화지수:</span>
+                  <span id="analysis-saturation-index" style="font-weight: 700; color: var(--color-secondary);">-</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                  <span style="color: var(--text-secondary);">키워드 광고 효율 등급:</span>
+                  <span id="analysis-ad-efficiency" style="font-weight: 700; color: var(--color-success);">-</span>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- Right: Charts block -->
+          <section class="glass-panel" style="display: flex; flex-direction: column; gap: 16px;">
+            <h3 class="glass-panel-title"><i class="fa-solid fa-chart-column"></i> 검색 추이 및 타겟 통계</h3>
+            <div class="grid-2col" style="gap: 16px;">
+              <div>
+                <span style="font-size: 11px; color: var(--text-secondary); display: block; text-align: center; margin-bottom: 8px;">연령/성별 타겟 검색 비율</span>
+                <div style="height: 160px; position: relative;">
+                  <canvas id="analysis-demographics-chart"></canvas>
+                </div>
+              </div>
+              <div>
+                <span style="font-size: 11px; color: var(--text-secondary); display: block; text-align: center; margin-bottom: 8px;">연간 월별 검색 추이</span>
+                <div style="height: 160px; position: relative;">
+                  <canvas id="analysis-seasonality-chart"></canvas>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="grid-2col">
+          <!-- SERP sequences & items -->
+          <section class="glass-panel" style="display: flex; flex-direction: column; gap: 16px;">
+            <h3 class="glass-panel-title"><i class="fa-solid fa-list-ol"></i> 검색 섹션 순서 및 상위 노출 현황 (SERP)</h3>
+            <div>
+              <span style="font-size: 12px; color: var(--text-secondary); display: block; margin-bottom: 8px;">스마트블록/섹션 배치 순서</span>
+              <div class="serp-sequence" id="analysis-serp-sequence">
+                <!-- Dynamic sequence pills -->
+              </div>
+            </div>
+            <div class="table-container">
+              <table class="trend-table">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;">노출</th>
+                    <th>콘텐츠 제목</th>
+                    <th>채널 지수</th>
+                    <th>키워드 매칭</th>
+                  </tr>
+                </thead>
+                <tbody id="analysis-serp-tbody">
+                  <!-- Dynamic rows -->
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- AI assistant insights -->
+          <section class="glass-panel" style="display: flex; flex-direction: column; gap: 16px; justify-content: space-between;">
+            <div>
+              <h3 class="glass-panel-title"><i class="fa-solid fa-robot"></i> AI 키워드 진단 및 추천 문서 앵글</h3>
+              <div style="display: flex; flex-direction: column; gap: 12px;" id="analysis-ai-diagnose-container">
+                <!-- Dynamic text content -->
+              </div>
+            </div>
+            <div style="border-top: 1px solid var(--border-color); padding-top: 16px; margin-top: 16px;">
+              <span style="font-size: 12px; color: var(--text-secondary); display: block; margin-bottom: 8px;">추천하는 콘텐츠 제목 안안</span>
+              <ul style="font-size: 13px; padding-left: 20px; color: #bae6fd; display: flex; flex-direction: column; gap: 6px;" id="analysis-ai-titles-list">
+                <!-- Title templates -->
+              </ul>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Quick Search Panel -->
+    <div class="tab-panel" id="tab-quick">
+      <section class="glass-panel" style="display: flex; flex-direction: column; gap: 16px;">
+        <h3 class="glass-panel-title"><i class="fa-solid fa-table-cells"></i> 복수 키워드 일괄 간편 조회</h3>
+        <div>
+          <label for="quick-keywords-input" style="font-size: 12px; color: var(--text-secondary); display: block; margin-bottom: 6px;">
+            비교할 키워드 입력 (한 줄에 하나씩 입력, 최대 10개)
+          </label>
+          <textarea class="textarea-input" id="quick-keywords-input" rows="5" placeholder="예시:&#10;인공지능&#10;클라우드&#10;LLM모델&#10;챗봇추천"></textarea>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 12px; color: var(--text-secondary);">
+            <i class="fa-solid fa-circle-info"></i> 여러 키워드의 월간 검색량과 경쟁비율 데이터를 한눈에 대조합니다.
+          </span>
+          <button class="submit-btn" id="btn-run-quick">일괄 조회 실행</button>
+        </div>
+      </section>
+
+      <!-- Quick Search Results -->
+      <section class="glass-panel" id="quick-results-section" style="display: none; flex-direction: column; gap: 16px;">
+        <h3 class="glass-panel-title"><i class="fa-solid fa-square-poll-horizontal"></i> 핵심 지표 비교 분석 테이블</h3>
+        <div class="table-container">
+          <table class="trend-table">
+            <thead>
+              <tr>
+                <th>키워드</th>
+                <th>월간 검색량</th>
+                <th>누적 발행량</th>
+                <th>경쟁 비율</th>
+                <th>키워드 등급</th>
+                <th style="text-align: right; width: 140px;">액션</th>
+              </tr>
+            </thead>
+            <tbody id="quick-results-tbody">
+              <!-- Dynamic comparison rows -->
+            </tbody>
+          </table>
+        </div>
+        <div style="border-top: 1px solid var(--border-color); padding-top: 16px; margin-top: 8px; display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+          <div style="flex: 1;">
+            <label for="quick-hashtags-box" style="font-size: 12px; color: var(--text-secondary); display: block; margin-bottom: 4px;">SNS/해시태그 일괄 추출</label>
+            <input type="text" class="input-text" id="quick-hashtags-box" readonly placeholder="#키워드형태로_출력됩니다.">
+          </div>
+          <button class="secondary-btn" id="btn-copy-hashtags" style="margin-top: 16px; white-space: nowrap;">
+            <i class="fa-solid fa-copy"></i> 복사하기
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <!-- 6. Influence Ranking Panel -->
+    <div class="tab-panel" id="tab-influence">
+      <section class="glass-panel" style="display: flex; flex-direction: column; gap: 16px;">
+        <h3 class="glass-panel-title"><i class="fa-solid fa-bullseye"></i> 채널 영향력 진단 및 경쟁사 분석</h3>
+        <div style="display: flex; gap: 12px;">
+          <input type="url" class="input-text" id="influence-url-input" placeholder="네이버 블로그 주소 혹은 웹사이트 URL 입력 (예: blog.naver.com/id)">
+          <button class="submit-btn" id="btn-run-influence" style="white-space: nowrap;">영향력 진단</button>
+        </div>
+      </section>
+
+      <!-- Influence dashboard result (Initially hidden) -->
+      <div class="grid-2col" id="influence-dashboard-wrapper" style="display: none;">
+        <!-- Left details -->
+        <section class="glass-panel" style="display: flex; flex-direction: column; gap: 16px;">
+          <h3 class="glass-panel-title"><i class="fa-solid fa-shield-halved"></i> 채널 SEO 진단 스코어</h3>
+          <div style="display: flex; align-items: center; justify-content: center; gap: 24px; padding: 16px 0; border-bottom: 1px solid var(--border-color);">
+            <div class="saturation-grade-badge" id="influence-grade" style="font-size: 40px; color: var(--color-secondary); text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);">S-</div>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <span style="font-size: 15px; font-weight: 700;" id="influence-channel-name">지정된 채널</span>
+              <span style="font-size: 12px; color: var(--text-secondary);" id="influence-channel-url">URL 주소</span>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px;">
+            <div style="display: flex; justify-content: space-between; font-size: 13px;">
+              <span style="color: var(--text-secondary);">유효 키워드 수:</span>
+              <span id="influence-valid-keywords" style="font-weight: 700;">-</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 13px;">
+              <span style="color: var(--text-secondary);">최상위 노출률 (등급 S~B):</span>
+              <span id="influence-top-exposure" style="font-weight: 700; color: var(--color-success);">-</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 13px;">
+              <span style="color: var(--text-secondary);">콘텐츠 최신성 점수:</span>
+              <span id="influence-freshness-score" style="font-weight: 700;">-</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 13px;">
+              <span style="color: var(--text-secondary);">채널 분야 전문성 점수:</span>
+              <span id="influence-expertness-score" style="font-weight: 700;">-</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Right competitors overlap chart -->
+        <section class="glass-panel" style="display: flex; flex-direction: column; gap: 16px;">
+          <h3 class="glass-panel-title"><i class="fa-solid fa-users-viewfinder"></i> 검색 경쟁 구도 (SEO 키워드 중복 경쟁사)</h3>
+          <span style="font-size: 11px; color: var(--text-secondary); display: block; text-align: center; margin-bottom: 8px;">주요 키워드가 중복 매칭되는 경쟁 채널 분석</span>
+          <div style="height: 200px; position: relative;">
+            <canvas id="influence-overlap-chart"></canvas>
+          </div>
+        </section>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Status Overlay (Spinner) -->
+  <div class="status-overlay" id="status-overlay">
+    <div class="status-spinner"></div>
+    <div class="status-message" id="status-message">트렌드 데이터를 분석하고 있습니다...</div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-message" id="toast-message">클립보드에 복사되었습니다!</div>
+
+  <script src="app.js"></script>
+</body>
+</html>

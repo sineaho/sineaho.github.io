@@ -1,5 +1,15 @@
 // CineAHO Sudoku Pro Game Controller
 
+class SeededRandom {
+  constructor(seed) {
+    this.seed = seed;
+  }
+  next() {
+    const x = Math.sin(this.seed++) * 10000;
+    return x - Math.floor(x);
+  }
+}
+
 // ==========================================
 // 1. Core Sudoku Generator & Solver Engine
 // ==========================================
@@ -7,6 +17,7 @@
 class SudokuEngine {
   constructor() {
     this.resetBoard();
+    this.randomFunc = Math.random;
   }
 
   resetBoard() {
@@ -95,8 +106,8 @@ class SudokuEngine {
       const nums = [1, 2, 3, 4, 5, 6, 7, 8, 9];
       // Shuffle numbers
       for (let i = nums.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [nums[i], nums[nums[j]]] = [nums[j], nums[i]];
+        const j = Math.floor(this.randomFunc() * (i + 1));
+        [nums[i], nums[j]] = [nums[j], nums[i]];
       }
       // Populate box
       let idx = 0;
@@ -141,8 +152,8 @@ class SudokuEngine {
 
     // Shuffle coords
     for (let i = coords.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [coords[i], coords[coords[j]]] = [coords[j], coords[i]];
+      const j = Math.floor(this.randomFunc() * (i + 1));
+      [coords[i], coords[j]] = [coords[j], coords[i]];
     }
 
     // Try removing numbers one by one, checking uniqueness
@@ -414,6 +425,7 @@ class SudokuGame {
     this.btnNewGame.addEventListener('click', () => this.startNewGame());
     this.selectDifficulty.addEventListener('change', (e) => {
       this.difficulty = e.target.value;
+      this.startNewGame();
     });
 
     // Pause/Play
@@ -524,6 +536,16 @@ class SudokuGame {
     // Set status tags
     this.updateMistakesDisplay();
     this.labelHintsUsed.textContent = "0회 사용";
+
+    // Seed generator if in daily mode
+    if (this.gameMode === 'daily') {
+      const today = new Date();
+      const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+      const rng = new SeededRandom(seed);
+      this.engine.randomFunc = () => rng.next();
+    } else {
+      this.engine.randomFunc = Math.random;
+    }
 
     // Generate puzzle
     this.engine.generatePuzzle(this.difficulty);
@@ -861,15 +883,66 @@ class SudokuGame {
     this.btnRedo.disabled = (this.redoStack.length === 0);
   }
 
+  getConflicts() {
+    const conflicts = Array.from({ length: 9 }, () => Array(9).fill(false));
+    for (let r = 0; r < 9; r++) {
+      for (let c = 0; c < 9; c++) {
+        const val = this.engine.userGrid[r][c];
+        if (val === 0) continue;
+
+        // Check row
+        for (let i = 0; i < 9; i++) {
+          if (i !== c && this.engine.userGrid[r][i] === val) {
+            conflicts[r][c] = true;
+            conflicts[r][i] = true;
+          }
+        }
+
+        // Check col
+        for (let i = 0; i < 9; i++) {
+          if (i !== r && this.engine.userGrid[i][c] === val) {
+            conflicts[r][c] = true;
+            conflicts[i][c] = true;
+          }
+        }
+
+        // Check 3x3 box
+        const boxRow = Math.floor(r / 3) * 3;
+        const boxCol = Math.floor(c / 3) * 3;
+        for (let br = 0; br < 3; br++) {
+          for (let bc = 0; bc < 3; bc++) {
+            const tr = boxRow + br;
+            const tc = boxCol + bc;
+            if ((tr !== r || tc !== c) && this.engine.userGrid[tr][tc] === val) {
+              conflicts[r][c] = true;
+              conflicts[tr][tc] = true;
+            }
+          }
+        }
+      }
+    }
+    return conflicts;
+  }
+
   renderBoard() {
     const cells = this.gridContainer.querySelectorAll('.sudoku-cell');
+    const conflicts = this.getConflicts();
     
     cells.forEach(cell => {
       const r = parseInt(cell.getAttribute('data-row'));
       const c = parseInt(cell.getAttribute('data-col'));
       
       const isStartClue = (this.engine.startGrid[r][c] !== 0);
-      if (isStartClue) return; // Keep clues alone
+      if (isStartClue) {
+        cell.className = 'sudoku-cell starting-num';
+        if (r === this.selectedRow && c === this.selectedCol) {
+          cell.classList.add('selected-cell');
+        }
+        if (conflicts[r][c]) {
+          cell.classList.add('conflict-num');
+        }
+        return; // Keep clues alone but highlight conflicts
+      }
 
       const currentVal = this.engine.userGrid[r][c];
       const correctVal = this.engine.solvedGrid[r][c];
@@ -889,8 +962,13 @@ class SudokuGame {
         notesGrid.style.display = 'none';
 
         // Check correct/error highlights
-        if (this.showErrors && currentVal !== correctVal) {
-          cell.classList.add('error-num');
+        if (this.showErrors) {
+          if (currentVal !== correctVal || conflicts[r][c]) {
+            cell.classList.add('error-num');
+          }
+        } else if (conflicts[r][c]) {
+          // Highlight conflicts in orange even if showErrors is off
+          cell.classList.add('conflict-num');
         }
       } else {
         // Pencil marks candidates visible
@@ -1031,11 +1109,12 @@ class SudokuGame {
         const remains = 9 - numCounts[i];
         subBadge.textContent = remains > 0 ? remains : '✓';
 
+        btn.disabled = false; // Never disable keypads (UX improvement)
         if (remains === 0) {
-          btn.disabled = true;
+          btn.classList.add('completed');
           subBadge.style.color = '#10b981'; // Green completed check
         } else {
-          btn.disabled = false;
+          btn.classList.remove('completed');
           subBadge.style.color = 'var(--text-muted)';
         }
       }
@@ -1115,10 +1194,7 @@ class SudokuGame {
         // Check if number key entered
         const num = parseInt(e.key);
         if (num >= 1 && num <= 9) {
-          const btn = this.keypadNums.querySelector(`.btn-num[data-num="${num}"]`);
-          if (btn && !btn.disabled) {
-            this.inputNumber(num);
-          }
+          this.inputNumber(num);
         }
         return;
     }

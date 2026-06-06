@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>야추 다이스 3D - 프리미엄 3D 보드게임</title>
+  <meta name="description" content="웹 브라우저에서 즐기는 리얼한 3D 야추 다이스(Yacht Dice) 게임. 최대 8인 멀티플레이어 지원, 정교한 3D 물리 시뮬레이션 및 커스텀 테마를 제공합니다.">
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Ambient background glow effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-cyan"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-panel">
+    <div class="header-left">
+      <a href="../index.html" class="back-btn" id="btn-back-home" title="CineAHO 홈으로 이동">
+        <i class="fa-solid fa-chevron-left"></i>
+      </a>
+      <div class="app-logo">
+        <i class="fa-solid fa-dice logo-icon"></i>
+        <h1 class="logo-text">야추 다이스<span>3D</span></h1>
+      </div>
+      <span class="app-version">v1.0 Premium</span>
+    </div>
+    <div class="header-right">
+      <button class="header-action-btn" id="btn-rules-trigger" title="게임 규칙 보기">
+        <i class="fa-solid fa-circle-question"></i> 규칙 설명
+      </button>
+      <div class="theme-select-capsule">
+        <i class="fa-solid fa-palette"></i>
+        <select id="theme-selector" class="theme-select">
+          <option value="classic">클래식 아이보리</option>
+          <option value="cyber">네온 사이버</option>
+          <option value="gold">럭셔리 골드</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Game Container -->
+  <main class="game-container">
+    
+    <!-- 1. Setup / Pre-game Card -->
+    <section class="setup-section glass-panel" id="setup-panel">
+      <div class="setup-header">
+        <h2><i class="fa-solid fa-users-gear"></i> 게임 대기실</h2>
+        <p>게임 모드를 선택하고 함께 즐길 플레이어 혹은 AI 대전 상대를 구성해보세요.</p>
+      </div>
+
+      <!-- Game Mode Tabs -->
+      <div class="mode-tabs-capsule">
+        <button type="button" class="mode-tab active" id="tab-vs-ai" data-mode="vs-ai">
+          <i class="fa-solid fa-robot"></i> AI 대전 (싱글)
+        </button>
+        <button type="button" class="mode-tab" id="tab-local-multi" data-mode="local-multi">
+          <i class="fa-solid fa-users"></i> 로컬 멀티플레이
+        </button>
+      </div>
+
+      <div class="setup-grid">
+        <!-- Left: Player configuration -->
+        <div class="setup-left">
+          <h3>플레이어 설정</h3>
+          
+          <!-- VS AI Mode Config Panel -->
+          <div id="vs-ai-config-container" class="vs-ai-config-panel">
+            <div class="name-input-group" style="margin-bottom: 15px;">
+              <span class="human-badge-label"><i class="fa-solid fa-user"></i> 플레이어 1</span>
+              <input type="text" class="player-name-input" id="input-pname-vs-ai-human" placeholder="내 이름 입력" value="플레이어 1">
+            </div>
+            
+            <div class="pref-item">
+              <label><i class="fa-solid fa-brain"></i> AI 난이도 및 상대 선택</label>
+              <div class="ai-difficulty-selector-wrapper">
+                <select id="ai-difficulty-select" class="theme-select select-styled">
+                  <option value="easy">초보 봇 (Easy) - 실수도 하고 가볍게 즐기는 모드</option>
+                  <option value="normal" selected>일반 봇 (Normal) - 표준적인 인공지능 모드</option>
+                  <option value="hard">AI 마스터 (Hard) - 기댓값 수학적 확률을 극대화한 최고 난이도</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Local Multi Mode Config Panel -->
+          <div id="local-multi-config-container" class="local-multi-config-panel" style="display: none;">
+            <div class="player-count-control">
+              <label>인원 선택:</label>
+              <div class="count-buttons">
+                <button type="button" class="btn-count-adjust" id="btn-player-dec"><i class="fa-solid fa-minus"></i></button>
+                <span id="player-count-display">2</span>
+                <button type="button" class="btn-count-adjust" id="btn-player-inc"><i class="fa-solid fa-plus"></i></button>
+              </div>
+            </div>
+            
+            <div class="player-names-list" id="player-names-container">
+              <!-- Player name inputs will be generated here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Game preferences -->
+        <div class="setup-right">
+          <h3>게임 설정</h3>
+          <div class="pref-item">
+            <label><i class="fa-solid fa-cubes"></i> 기본 주사위 테마</label>
+            <div class="theme-radio-group">
+              <label class="theme-radio-label active" data-theme="classic">
+                <input type="radio" name="dice-theme-radio" value="classic" checked>
+                <span class="theme-radio-custom"></span>
+                <span class="theme-radio-text">클래식 아이보리</span>
+              </label>
+              <label class="theme-radio-label" data-theme="cyber">
+                <input type="radio" name="dice-theme-radio" value="cyber">
+                <span class="theme-radio-custom"></span>
+                <span class="theme-radio-text">네온 사이버</span>
+              </label>
+              <label class="theme-radio-label" data-theme="gold">
+                <input type="radio" name="dice-theme-radio" value="gold">
+                <span class="theme-radio-custom"></span>
+                <span class="theme-radio-text">럭셔리 골드</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="pref-item">
+            <label><i class="fa-solid fa-volume-high"></i> 사운드 효과</label>
+            <label class="toggle-switch">
+              <input type="checkbox" id="sound-toggle" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <button class="btn-start-game" id="btn-start-game">
+            <i class="fa-solid fa-play"></i> 게임 시작하기
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Active Game Panel (Hidden initially) -->
+    <section class="gameplay-panel" id="gameplay-panel" style="display: none;">
+      
+      <!-- Top HUD Stats -->
+      <div class="game-hud glass-panel">
+        <div class="hud-item active-player-hud">
+          <span class="hud-label">현재 차례</span>
+          <span class="hud-value" id="hud-current-player">플레이어 1</span>
+        </div>
+        <div class="hud-item round-hud">
+          <span class="hud-label">라운드</span>
+          <span class="hud-value" id="hud-current-round">1 / 12</span>
+        </div>
+        <div class="hud-item rolls-hud">
+          <span class="hud-label">남은 롤 횟수</span>
+          <span class="hud-value" id="hud-rolls-left">3</span>
+        </div>
+        <div class="hud-item roll-status-hud">
+          <span class="hud-label">상태</span>
+          <span class="hud-value neon-blue" id="hud-game-status">주사위를 굴려주세요</span>
+        </div>
+      </div>
+
+      <div class="game-layout-grid">
+        <!-- Left: 3D Rolling Board -->
+        <div class="board-column glass-panel">
+          <div class="canvas-header">
+            <span><i class="fa-solid fa-cube"></i> 3D ROLL TRAY</span>
+            <span class="dice-instructions"><i class="fa-solid fa-hand-pointer"></i> 주사위를 클릭하여 킵(보관)할 수 있습니다.</span>
+          </div>
+
+          <!-- 3D Canvas container -->
+          <div id="three-canvas-container">
+            <!-- Loading indicator inside canvas -->
+            <div id="loading-overlay">
+              <div class="loader"></div>
+              <p>3D 물리 엔진 및 주사위 테마 텍스처 렌더링 중...</p>
+            </div>
+          </div>
+
+          <!-- Roll Controls -->
+          <div class="roll-controls">
+            <button class="btn-roll" id="btn-roll-dice">
+              <i class="fa-solid fa-rotate"></i>
+              <span id="btn-roll-text">주사위 굴리기 (3회 남음)</span>
+            </button>
+            <button class="btn-reset-turn" id="btn-reset-roll" disabled>
+              <i class="fa-solid fa-arrow-rotate-left"></i> 재시도
+            </button>
+          </div>
+          
+          <!-- Accessibility 2D Keep Area indicator list -->
+          <div class="keep-indicator-panel">
+            <span class="keep-panel-title">보관함 (KEEP SHELF):</span>
+            <div class="keep-slots-container" id="keep-slots-container">
+              <!-- Dynamically populated 2D indicators representing locked dice status -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Yacht Scorecard -->
+        <div class="scorecard-column glass-panel">
+          <div class="scorecard-header">
+            <span><i class="fa-solid fa-table-list"></i> YACHT SCOREBOARD</span>
+            <button class="btn-reset-game" id="btn-forfeit-game" title="게임 그만두고 초기화"><i class="fa-solid fa-trash-can"></i> 게임 포기</button>
+          </div>
+          
+          <!-- Horizontal scrollable container for scores -->
+          <div class="scorecard-table-wrapper">
+            <table class="scorecard-table" id="scorecard-table">
+              <thead>
+                <tr id="score-table-header-row">
+                  <th>족보 카테고리</th>
+                  <!-- Player columns added dynamically -->
+                </tr>
+              </thead>
+              <tbody id="score-table-body">
+                <!-- Yacht Score Rows will be generated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Realtime Terminal Console Logs -->
+  <section class="console-section glass-panel">
+    <div class="console-header">
+      <div class="console-title"><i class="fa-solid fa-terminal"></i> 게임 로그 터미널</div>
+      <button class="console-clear-btn" id="btn-clear-console">Clear</button>
+    </div>
+    <div class="console-logs" id="console-logs-container">
+      <div class="log-line system-log">[System] 야추 다이스 3D에 오신 것을 환영합니다. 대기실에서 시작을 눌러주세요.</div>
+    </div>
+  </section>
+
+  <!-- 3. Rules / Info Modal -->
+  <div class="modal-overlay" id="rules-modal">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <h2>야추 다이스 규칙 설명</h2>
+        <button class="modal-close-btn" id="btn-rules-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>야추 다이스(Yacht Dice)</strong>는 5개의 주사위를 굴려 족보 칸을 채워 가장 높은 총점을 획득하는 보드게임입니다.</p>
+        
+        <h3>1. 기본 진행</h3>
+        <ul>
+          <li>차례마다 총 <strong>3번</strong>까지 주사위를 굴릴 수 있습니다.</li>
+          <li>첫 번째 롤은 5개 주사위를 모두 굴립니다.</li>
+          <li>두 번째, 세 번째 롤에서는 원하는 주사위만 <strong>선택(KEEP)</strong>하고 나머지 주사위만 다시 굴릴 수 있습니다.</li>
+          <li>원한다면 3번을 모두 채우지 않고 중간에 점수판의 원하는 빈 칸에 득점하여 차례를 마칠 수 있습니다.</li>
+          <li>각 턴마다 반드시 하나의 족보 칸을 채워야 하며, 채울 칸이 마땅치 않다면 **0점**을 감수하고 칸을 채워야 합니다.</li>
+        </ul>
+
+        <h3>2. 족보 점수 계산법</h3>
+        <table class="rules-table">
+          <thead>
+            <tr>
+              <th>카테고리</th>
+              <th>영어명</th>
+              <th>조건 / 점수 계산법</th>
+              <th>예시</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1 (Ones)</strong></td>
+              <td>Aces</td>
+              <td>1의 눈금 합계</td>
+              <td>1, 1, 1, 3, 5 &rarr; 3점</td>
+            </tr>
+            <tr>
+              <td><strong>2 (Twos)</strong></td>
+              <td>Deuces</td>
+              <td>2의 눈금 합계</td>
+              <td>2, 2, 4, 5, 6 &rarr; 4점</td>
+            </tr>
+            <tr>
+              <td><strong>3 (Threes)</strong></td>
+              <td>Threes</td>
+              <td>3의 눈금 합계</td>
+              <td>3, 3, 3, 3, 1 &rarr; 12점</td>
+            </tr>
+            <tr>
+              <td><strong>4 (Fours)</strong></td>
+              <td>Fours</td>
+              <td>4의 눈금 합계</td>
+              <td>4, 4, 1, 2, 5 &rarr; 8점</td>
+            </tr>
+            <tr>
+              <td><strong>5 (Fives)</strong></td>
+              <td>Fives</td>
+              <td>5의 눈금 합계</td>
+              <td>5, 5, 5, 2, 6 &rarr; 15점</td>
+            </tr>
+            <tr>
+              <td><strong>6 (Sixes)</strong></td>
+              <td>Sixes</td>
+              <td>6의 눈금 합계</td>
+              <td>6, 6, 2, 3, 4 &rarr; 12점</td>
+            </tr>
+            <tr class="highlight-row">
+              <td><strong>보너스 (+35)</strong></td>
+              <td>Subtotal Bonus</td>
+              <td>위 1~6 항목의 총점이 **63점 이상**일 때 보너스 **+35점** 획득</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td><strong>초이스 (Choice)</strong></td>
+              <td>Choice</td>
+              <td>주사위 5개의 눈금 총합 (제한 없음)</td>
+              <td>1, 2, 5, 6, 6 &rarr; 20점</td>
+            </tr>
+            <tr>
+              <td><strong>포오브어카인드</strong></td>
+              <td>4 of a Kind</td>
+              <td>동일한 눈금이 **4개 이상**일 때, 주사위 5개 총합</td>
+              <td>3, 3, 3, 3, 6 &rarr; 18점</td>
+            </tr>
+            <tr>
+              <td><strong>풀하우스</strong></td>
+              <td>Full House</td>
+              <td>동일한 눈금 3개 & 다른 동일 눈금 2개 구성 시, 주사위 5개 총합</td>
+              <td>5, 5, 5, 2, 2 &rarr; 19점</td>
+            </tr>
+            <tr>
+              <td><strong>소형 스트레이트</strong></td>
+              <td>Little Straight</td>
+              <td>이어지는 눈금이 **4개 이상**일 때 (15점 고정)</td>
+              <td>1-2-3-4-6 &rarr; 15점</td>
+            </tr>
+            <tr>
+              <td><strong>대형 스트레이트</strong></td>
+              <td>Big Straight</td>
+              <td>이어지는 눈금이 **5개 모두**일 때 (30점 고정)</td>
+              <td>1-2-3-4-5 또는 2-3-4-5-6 &rarr; 30점</td>
+            </tr>
+            <tr class="highlight-row">
+              <td><strong>야추 (Yacht)</strong></td>
+              <td>Yacht</td>
+              <td>5개 주사위 눈금이 **모두 같을 때** (50점 고정)</td>
+              <td>4, 4, 4, 4, 4 &rarr; 50점</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Victory / Game Over Modal -->
+  <div class="modal-overlay" id="victory-modal">
+    <div class="modal-card glass-panel text-center">
+      <div class="victory-crown">🏆</div>
+      <h2 id="victory-title">게임 종료!</h2>
+      <p class="victory-subtitle">최종 스코어 랭킹</p>
+      
+      <!-- Victory list / ranking -->
+      <div class="victory-ranking-container" id="victory-ranking-container">
+        <!-- Populated dynamically -->
+      </div>
+
+      <div class="victory-actions">
+        <button class="btn-victory-action" id="btn-replay-game"><i class="fa-solid fa-rotate-right"></i> 다시 하기</button>
+        <a href="../index.html" class="btn-victory-action secondary"><i class="fa-solid fa-house"></i> 포털 메인으로</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

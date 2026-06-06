@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>실시간 유튜브 랭킹 & 순위 - CineAHO</title>
+  <meta name="description" content="전 세계 2.4천만 유튜브 채널 데이터 기반 실시간 슈퍼챗, 라이브 시청자 수, 인기 및 구독자 급상승 순위 정보를 제공합니다.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>SandBox</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="../index.html#tools-section">무료 앱</a></li>
+        <li><a href="https://blog.naver.com/sineaho" target="_blank" rel="noopener noreferrer" class="active">CineAHO</a></li>
+        <li><a href="../prompt.html">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>허브 홈</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Rank Container -->
+  <main class="hub-container ranking-page-container">
+    
+    <!-- Hero Title Action Bar -->
+    <section class="rank-hero-section glass-panel">
+      <div class="hero-left-info">
+        <h2 class="hero-rank-title">전 세계 2.4천만 유튜브 채널을<br>전문가용 필터로 검색하고 분석하세요.</h2>
+      </div>
+      <div class="hero-right-action">
+        <a href="index.html" class="btn btn-primary btn-search-channel"><i class="fa-solid fa-magnifying-glass"></i> 채널 검색</a>
+      </div>
+    </section>
+
+    <!-- 3x2 Grid Rank Section -->
+    <section class="rankings-grid">
+      
+      <!-- 1. Super Chat Rank -->
+      <article class="rank-card glass-panel" id="card-superchat">
+        <div class="rank-card-header">
+          <h3>슈퍼챗 순위</h3>
+          <div class="tab-triggers" data-target="superchat">
+            <button class="tab-btn active" data-tab="daily">일간</button>
+            <button class="tab-btn" data-tab="weekly">주간</button>
+          </div>
+        </div>
+        <div class="rank-card-content">
+          <!-- Daily Data -->
+          <ol class="rank-list list-daily">
+            <li>
+              <span class="rank-num">1</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-1"></div>
+                <span class="channel-name">샤머호라방</span>
+              </div>
+              <span class="rank-val val-plus">+₩5,104,162</span>
+            </li>
+            <li>
+              <span class="rank-num">2</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-2"></div>
+                <span class="channel-name">한두자니S2</span>
+              </div>
+              <span class="rank-val val-plus">+₩2,864,415</span>
+            </li>
+            <li>
+              <span class="rank-num">3</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-3"></div>
+                <span class="channel-name">김어준의 겸손은힘들다 운동장</span>
+              </div>
+              <span class="rank-val val-plus">+₩2,796,331</span>
+            </li>
+            <li>
+              <span class="rank-num">4</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-4"></div>
+                <span class="channel-name">시동위키</span>
+              </div>
+              <span class="rank-val val-plus">+₩2,535,890</span>
+            </li>
+            <li>
+              <span class="rank-num">5</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-5"></div>
+                <span class="channel-name">백곰사령관</span>
+              </div>
+              <span class="rank-val val-plus">+₩2,512,438</span>
+            </li>
+          </ol>
+          <!-- Weekly Data (Hidden initially) -->
+          <ol class="rank-list list-weekly hidden">
+            <li>
+              <span class="rank-num">1</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-3"></div>
+                <span class="channel-name">김어준의 겸손은힘들다 운동장</span>
+              </div>
+              <span class="rank-val val-plus">+₩28,452,190</span>
+            </li>
+            <li>
+              <span class="rank-num">2</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-1"></div>
+                <span class="channel-name">샤머호라방</span>
+              </div>
+              <span class="rank-val val-plus">+₩24,103,425</span>
+            </li>
+            <li>
+              <span class="rank-num">3</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-2"></div>
+                <span class="channel-name">한두자니S2</span>
+              </div>
+              <span class="rank-val val-plus">+₩18,294,002</span>
+            </li>
+            <li>
+              <span class="rank-num">4</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-5"></div>
+                <span class="channel-name">백곰사령관</span>
+              </div>
+              <span class="rank-val val-plus">+₩15,102,400</span>
+            </li>
+            <li>
+              <span class="rank-num">5</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-4"></div>
+                <span class="channel-name">시동위키</span>
+              </div>
+              <span class="rank-val val-plus">+₩14,235,901</span>
+            </li>
+          </ol>
+          <div class="dots-btn-wrapper"><button class="btn-more-dots">•••</button></div>
+        </div>
+      </article>
+
+      <!-- 2. Live Viewers Rank -->
+      <article class="rank-card glass-panel" id="card-liveviewers">
+        <div class="rank-card-header">
+          <h3>라이브 시청자 순위</h3>
+          <div class="tab-triggers" data-target="liveviewers">
+            <button class="tab-btn active" data-tab="daily">일간</button>
+            <button class="tab-btn" data-tab="weekly">주간</button>
+          </div>
+        </div>
+        <div class="rank-card-content">
+          <!-- Daily Data -->
+          <ol class="rank-list list-daily">
+            <li>
+              <span class="rank-num">1</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-3"></div>
+                <span class="channel-name">김어준의 겸손은힘들다 운동장</span>
+              </div>
+              <span class="rank-val val-people">240,159명</span>
+            </li>
+            <li>
+              <span class="rank-num">2</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-6"></div>
+                <span class="channel-name">스튜디오시원 StudioC1</span>
+              </div>
+              <span class="rank-val val-people">221,425명</span>
+            </li>
+            <li>
+              <span class="rank-num">3</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-7"></div>
+                <span class="channel-name">[팟빵] 최욱의 매불쇼</span>
+              </div>
+              <span class="rank-val val-people">142,192명</span>
+            </li>
+            <li>
+              <span class="rank-num">4</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-8"></div>
+                <span class="channel-name">삼프로TV 3PROTV</span>
+              </div>
+              <span class="rank-val val-people">69,003명</span>
+            </li>
+            <li>
+              <span class="rank-num">5</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-9"></div>
+                <span class="channel-name">오선의 미국 증시 라이브</span>
+              </div>
+              <span class="rank-val val-people">59,135명</span>
+            </li>
+          </ol>
+          <!-- Weekly Data -->
+          <ol class="rank-list list-weekly hidden">
+            <li>
+              <span class="rank-num">1</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-3"></div>
+                <span class="channel-name">김어준의 겸손은힘들다 운동장</span>
+              </div>
+              <span class="rank-val val-people">324,500명</span>
+            </li>
+            <li>
+              <span class="rank-num">2</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-7"></div>
+                <span class="channel-name">[팟빵] 최욱의 매불쇼</span>
+              </div>
+              <span class="rank-val val-people">189,200명</span>
+            </li>
+            <li>
+              <span class="rank-num">3</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-6"></div>
+                <span class="channel-name">스튜디오시원 StudioC1</span>
+              </div>
+              <span class="rank-val val-people">235,100명</span>
+            </li>
+            <li>
+              <span class="rank-num">4</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-8"></div>
+                <span class="channel-name">삼프로TV 3PROTV</span>
+              </div>
+              <span class="rank-val val-people">82,400명</span>
+            </li>
+            <li>
+              <span class="rank-num">5</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-9"></div>
+                <span class="channel-name">오선의 미국 증시 라이브</span>
+              </div>
+              <span class="rank-val val-people">75,000명</span>
+            </li>
+          </ol>
+          <div class="dots-btn-wrapper"><button class="btn-more-dots">•••</button></div>
+        </div>
+      </article>
+
+      <!-- 3. Popularity Rank -->
+      <article class="rank-card glass-panel" id="card-popularity">
+        <div class="rank-card-header">
+          <h3>인기 순위</h3>
+          <div class="tab-triggers" data-target="popularity">
+            <button class="tab-btn active" data-tab="daily">일간</button>
+            <button class="tab-btn" data-tab="weekly">주간</button>
+          </div>
+        </div>
+        <div class="rank-card-content">
+          <!-- Daily Data -->
+          <ol class="rank-list list-daily">
+            <li>
+              <span class="rank-num">1</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-10"></div>
+                <span class="channel-name">MBCNEWS</span>
+              </div>
+              <span class="rank-val trend-up"><i class="fa-solid fa-arrow-trend-up"></i></span>
+            </li>
+            <li>
+              <span class="rank-num">2</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-11"></div>
+                <span class="channel-name">SnapWorks</span>
+              </div>
+              <span class="rank-val trend-flat"><i class="fa-solid fa-minus"></i></span>
+            </li>
+            <li>
+              <span class="rank-num">3</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-12"></div>
+                <span class="channel-name">TREASURE (트레저)</span>
+              </div>
+              <span class="rank-val trend-new">NEW</span>
+            </li>
+            <li>
+              <span class="rank-num">4</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-13"></div>
+                <span class="channel-name">JTBC News</span>
+              </div>
+              <span class="rank-val trend-up"><i class="fa-solid fa-arrow-trend-up"></i></span>
+            </li>
+            <li>
+              <span class="rank-num">5</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-14"></div>
+                <span class="channel-name">aespa</span>
+              </div>
+              <span class="rank-val trend-up"><i class="fa-solid fa-arrow-trend-up"></i></span>
+            </li>
+          </ol>
+          <!-- Weekly Data -->
+          <ol class="rank-list list-weekly hidden">
+            <li>
+              <span class="rank-num">1</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-12"></div>
+                <span class="channel-name">TREASURE (트레저)</span>
+              </div>
+              <span class="rank-val trend-up"><i class="fa-solid fa-arrow-trend-up"></i></span>
+            </li>
+            <li>
+              <span class="rank-num">2</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-10"></div>
+                <span class="channel-name">MBCNEWS</span>
+              </div>
+              <span class="rank-val trend-flat"><i class="fa-solid fa-minus"></i></span>
+            </li>
+            <li>
+              <span class="rank-num">3</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-14"></div>
+                <span class="channel-name">aespa</span>
+              </div>
+              <span class="rank-val trend-up"><i class="fa-solid fa-arrow-trend-up"></i></span>
+            </li>
+            <li>
+              <span class="rank-num">4</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-11"></div>
+                <span class="channel-name">SnapWorks</span>
+              </div>
+              <span class="rank-val trend-down"><i class="fa-solid fa-arrow-trend-down"></i></span>
+            </li>
+            <li>
+              <span class="rank-num">5</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-13"></div>
+                <span class="channel-name">JTBC News</span>
+              </div>
+              <span class="rank-val trend-flat"><i class="fa-solid fa-minus"></i></span>
+            </li>
+          </ol>
+          <div class="dots-btn-wrapper"><button class="btn-more-dots">•••</button></div>
+        </div>
+      </article>
+
+      <!-- 4. Subscriber Gain Rank -->
+      <article class="rank-card glass-panel" id="card-subscriber-gain">
+        <div class="rank-card-header">
+          <h3>구독자 급상승 순위</h3>
+          <div class="tab-triggers" data-target="subscriber-gain">
+            <button class="tab-btn active" data-tab="daily">일간</button>
+            <button class="tab-btn" data-tab="weekly">주간</button>
+          </div>
+        </div>
+        <div class="rank-card-content">
+          <!-- Daily Data -->
+          <ol class="rank-list list-daily">
+            <li>
+              <span class="rank-num">1</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-15"></div>
+                <span class="channel-name">안녕하세요원이입니다잘부탁드립니다</span>
+              </div>
+              <span class="rank-val val-plus">+34,000명</span>
+            </li>
+            <li>
+              <span class="rank-num">2</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-16"></div>
+                <span class="channel-name">YUSUF</span>
+              </div>
+              <span class="rank-val val-plus">+23,000명</span>
+            </li>
+            <li>
+              <span class="rank-num">3</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-11"></div>
+                <span class="channel-name">SnapWorks</span>
+              </div>
+              <span class="rank-val val-plus">+22,000명</span>
+            </li>
+            <li>
+              <span class="rank-num">4</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-17"></div>
+                <span class="channel-name">SEUNGJAENIM 승재님</span>
+              </div>
+              <span class="rank-val val-plus">+13,000명</span>
+            </li>
+            <li>
+              <span class="rank-num">5</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-18"></div>
+                <span class="channel-name">0.1톤 라이더</span>
+              </div>
+              <span class="rank-val val-plus">+13,000명</span>
+            </li>
+          </ol>
+          <!-- Weekly Data -->
+          <ol class="rank-list list-weekly hidden">
+            <li>
+              <span class="rank-num">1</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-15"></div>
+                <span class="channel-name">안녕하세요원이입니다잘부탁드립니다</span>
+              </div>
+              <span class="rank-val val-plus">+184,000명</span>
+            </li>
+            <li>
+              <span class="rank-num">2</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-11"></div>
+                <span class="channel-name">SnapWorks</span>
+              </div>
+              <span class="rank-val val-plus">+142,000명</span>
+            </li>
+            <li>
+              <span class="rank-num">3</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-16"></div>
+                <span class="channel-name">YUSUF</span>
+              </div>
+              <span class="rank-val val-plus">+95,000명</span>
+            </li>
+            <li>
+              <span class="rank-num">4</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-17"></div>
+                <span class="channel-name">SEUNGJAENIM 승재님</span>
+              </div>
+              <span class="rank-val val-plus">+68,000명</span>
+            </li>
+            <li>
+              <span class="rank-num">5</span>
+              <div class="channel-info">
+                <div class="channel-avatar av-18"></div>
+                <span class="channel-name">0.1톤 라이더</span>
+              </div>
+              <span class="rank-val val-plus">+54,000명</span>
+            </li>
+          </ol>
+          <div class="dots-btn-wrapper"><button class="btn-more-dots">•••</button></div>
+        </div>
+      </article>
+
+      <!-- 5. Most Viewed Videos -->
+      <article class="rank-card glass-panel" id="card-viewed-videos">
+        <div class="rank-card-header">
+          <h3>최다 조회 영상</h3>
+          <div class="tab-triggers" data-target="viewed-videos">
+            <button class="tab-btn active" data-tab="daily">일간</button>
+            <button class="tab-btn" data-tab="weekly">주간</button>
+          </div>
+        </div>
+        <div class="rank-card-content media-content">
+          <!-- Daily Media Grid -->
+          <div class="media-grid list-daily">
+            <div class="media-item">
+              <div class="media-thumb-wrapper">
+                <div class="media-thumb thumb-v1">
+                  <span class="media-badge">1</span>
+                </div>
+              </div>
+              <div class="media-meta">
+                <h4>TREASURE - 'IF I' M/V</h4>
+                <span class="media-views">+3.8백만 회</span>
+                <span class="media-channel">TREASURE (트레저)</span>
+              </div>
+            </div>
+            <div class="media-item">
+              <div class="media-thumb-wrapper">
+                <div class="media-thumb thumb-v2">
+                  <span class="media-badge">2</span>
+                </div>
+              </div>
+              <div class="media-meta">
+                <h4>[올영세일] 6월 올영세일 할인 부스터 ON! 🚀</h4>
+                <span class="media-views">+3.1백만 회</span>
+                <span class="media-channel">올리브영 AD</span>
+              </div>
+            </div>
+          </div>
+          <!-- Weekly Media Grid -->
+          <div class="media-grid list-weekly hidden">
+            <div class="media-item">
+              <div class="media-thumb-wrapper">
+                <div class="media-thumb thumb-v1">
+                  <span class="media-badge">1</span>
+                </div>
+              </div>
+              <div class="media-meta">
+                <h4>TREASURE - 'IF I' M/V</h4>
+                <span class="media-views">+26.5백만 회</span>
+                <span class="media-channel">TREASURE (트레저)</span>
+              </div>
+            </div>
+            <div class="media-item">
+              <div class="media-thumb-wrapper">
+                <div class="media-thumb thumb-v3">
+                  <span class="media-badge">2</span>
+                </div>
+              </div>
+              <div class="media-meta">
+                <h4>NewJeans (뉴진스) 'Bubble Gum' Official MV</h4>
+                <span class="media-views">+18.2백만 회</span>
+                <span class="media-channel">HYBE LABELS</span>
+              </div>
+            </div>
+          </div>
+          <div class="dots-btn-wrapper"><button class="btn-more-dots">•••</button></div>
+        </div>
+      </article>
+
+      <!-- 6. Most Viewed Ads -->
+      <article class="rank-card glass-panel" id="card-viewed-ads">
+        <div class="rank-card-header">
+          <h3>최다 조회 광고</h3>
+          <div class="tab-triggers" data-target="viewed-ads">
+            <button class="tab-btn active" data-tab="daily">일간</button>
+            <button class="tab-btn" data-tab="weekly">주간</button>
+          </div>
+        </div>
+        <div class="rank-card-content media-content">
+          <!-- Daily Media Grid -->
+          <div class="media-grid list-daily">
+            <div class="media-item">
+              <div class="media-thumb-wrapper">
+                <div class="media-thumb thumb-a1">
+                  <span class="media-badge">1</span>
+                </div>
+              </div>
+              <div class="media-meta">
+                <h4>반드시 심판해야 할 악성 지배자들! (서소문고가사고...</h4>
+                <span class="media-views">+48.6만 회</span>
+                <span class="media-channel">[팟빵] 최욱의 매불쇼</span>
+              </div>
+            </div>
+            <div class="media-item">
+              <div class="media-thumb-wrapper">
+                <div class="media-thumb thumb-a2">
+                  <span class="media-badge">2</span>
+                </div>
+              </div>
+              <div class="media-meta">
+                <h4>LE SSERAFIM (르세라핌) 'BOOMPALA' OFFICIAL MV</h4>
+                <span class="media-views">+44.1만 회</span>
+                <span class="media-channel">HYBE LABELS</span>
+              </div>
+            </div>
+          </div>
+          <!-- Weekly Media Grid -->
+          <div class="media-grid list-weekly hidden">
+            <div class="media-item">
+              <div class="media-thumb-wrapper">
+                <div class="media-thumb thumb-a2">
+                  <span class="media-badge">1</span>
+                </div>
+              </div>
+              <div class="media-meta">
+                <h4>LE SSERAFIM (르세라핌) 'BOOMPALA' OFFICIAL MV</h4>
+                <span class="media-views">+3.8백만 회</span>
+                <span class="media-channel">HYBE LABELS</span>
+              </div>
+            </div>
+            <div class="media-item">
+              <div class="media-thumb-wrapper">
+                <div class="media-thumb thumb-a1">
+                  <span class="media-badge">2</span>
+                </div>
+              </div>
+              <div class="media-meta">
+                <h4>반드시 심판해야 할 악성 지배자들! (서소문고가사고...</h4>
+                <span class="media-views">+2.9백만 회</span>
+                <span class="media-channel">[팟빵] 최욱의 매불쇼</span>
+              </div>
+            </div>
+          </div>
+          <div class="dots-btn-wrapper"><button class="btn-more-dots">•••</button></div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- Bottom Horizontal Popular Lives -->
+    <section class="popular-lives-section glass-panel">
+      
+      <!-- Left side info box -->
+      <div class="lives-info-box">
+        <h3>실시간 인기 라이브</h3>
+        <span class="live-broadcast-count-badge">방송중 75,932개</span>
+        <a href="#" class="btn-all-lives">전체보기</a>
+      </div>
+
+      <!-- Right side horizontal cards container -->
+      <div class="lives-cards-track-wrapper">
+        <div class="lives-cards-track">
+          
+          <!-- Card 1 -->
+          <div class="live-card">
+            <div class="live-card-thumb thumb-live-1">
+              <span class="live-badge">1</span>
+              <span class="live-viewer-count">40,038명 시청 중</span>
+            </div>
+            <div class="live-card-info">
+              <h4>한 발 빠른 오늘의 D-뉴스.. "고마운줄 모르고...."</h4>
+              <div class="live-channel">
+                <div class="live-channel-logo logo-mbc"></div>
+                <span>MBCNEWS</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="live-card">
+            <div class="live-card-thumb thumb-live-2">
+              <span class="live-badge">2</span>
+              <span class="live-viewer-count">15,373명 시청 중</span>
+            </div>
+            <div class="live-card-info">
+              <h4>아스테룸 워터 페스티벌</h4>
+              <div class="live-channel">
+                <div class="live-channel-logo logo-plave"></div>
+                <span>PLAVE 플레이브</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="live-card">
+            <div class="live-card-thumb thumb-live-3">
+              <span class="live-badge">3</span>
+              <span class="live-viewer-count">10,279명 시청 중</span>
+            </div>
+            <div class="live-card-info">
+              <h4>구포시장 쌈지공원 피날레</h4>
+              <div class="live-channel">
+                <div class="live-channel-logo logo-hdh"></div>
+                <span>한동훈</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="live-card">
+            <div class="live-card-thumb thumb-live-4">
+              <span class="live-badge">4</span>
+              <span class="live-viewer-count">9,424명 시청 중</span>
+            </div>
+            <div class="live-card-info">
+              <h4>[긴급속보]김세의 구속영장 기각 콩밥1일차 2천만원...</h4>
+              <div class="live-channel">
+                <div class="live-channel-logo logo-jss"></div>
+                <span>장사의 신</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="live-card">
+            <div class="live-card-thumb thumb-live-5">
+              <span class="live-badge">5</span>
+              <span class="live-viewer-count">7,450명 시청 중</span>
+            </div>
+            <div class="live-card-info">
+              <h4>로블록스 99밤생존 & 라이벌시참 쭈현이와...</h4>
+              <div class="live-channel">
+                <div class="live-channel-logo logo-jc"></div>
+                <span>잼춘</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 6 -->
+          <div class="live-card">
+            <div class="live-card-thumb thumb-live-6">
+              <span class="live-badge">6</span>
+              <span class="live-viewer-count">7,062명 시청 중</span>
+            </div>
+            <div class="live-card-info">
+              <h4>[충격속보] 파이널 유세!...</h4>
+              <div class="live-channel">
+                <div class="live-channel-logo logo-jy"></div>
+                <span>종이의...</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <p>&copy; 2026 CineAHO's SandBox. All rights reserved.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

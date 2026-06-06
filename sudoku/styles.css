@@ -514,6 +514,16 @@ body::before {
   animation: shake 0.3s ease-in-out;
 }
 
+/* Conflict/duplicate value (Orange soft highlight with underline) */
+.sudoku-cell.conflict-num {
+  background-color: rgba(249, 115, 22, 0.08) !important;
+}
+.sudoku-cell.conflict-num .cell-value {
+  color: #fb923c;
+  font-weight: 700;
+  text-decoration: underline dotted #fb923c;
+}
+
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   25% { transform: translateX(-3px); }
@@ -789,6 +799,12 @@ body::before {
   background: rgba(255, 255, 255, 0.08);
   border-color: #3b82f6;
   box-shadow: 0 0 10px rgba(59, 130, 246, 0.15);
+}
+
+.btn-num.completed {
+  border-color: #10b981;
+  color: #10b981;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.15);
 }
 
 .btn-num:disabled {

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO 수박게임 - 과일 합성 퍼즐</title>
+  <meta name="description" content="자연스러운 물리 엔진을 통해 떨어지는 과일을 조종하고 같은 종류를 합쳐 가장 큰 수박을 만들어보세요!">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Ambient Glow Backgrounds -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>SandBox</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="../index.html#tools-section">무료 앱</a></li>
+        <li><a href="https://blog.naver.com/sineaho" target="_blank" rel="noopener noreferrer" class="active">CineAHO</a></li>
+        <li><a href="../prompt.html">프롬프트</a></li>
+        <li><a href="../coming-soon.html">칼럼</a></li>
+        <li><a href="../coming-soon.html">PPT</a></li>
+        <li><a href="../coming-soon.html">위키</a></li>
+        <li><a href="../coming-soon.html">엔터테인먼트</a></li>
+        <li><a href="../coming-soon.html">AI 이미지</a></li>
+        <li><a href="../coming-soon.html">AI 툴</a></li>
+        <li><a href="../coming-soon.html">프로그램</a></li>
+        <li><a href="../coming-soon.html">쇼핑 핫딜</a></li>
+        <li><a href="../coming-soon.html">부업 백과</a></li>
+        <li><a href="../coming-soon.html">RSS</a></li>
+        <li><a href="../coming-soon.html">개발</a></li>
+        <li><a href="../coming-soon.html">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button id="theme-toggle" class="btn-theme">
+        <i class="fa-solid fa-sun"></i>
+        <span>라이트</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="hub-container wm-page-container">
+    
+    <!-- Hero Header -->
+    <section class="wm-hero-section glass-panel">
+      <div class="hero-left-info">
+        <div class="badge-capsule">
+          <span class="pulse-dot"></span>
+          <span>CineAHO Physics engine Suika Game v1.0</span>
+        </div>
+        <h2 class="hero-wm-title">CineAHO 물리 수박게임</h2>
+        <p>마우스와 터치를 사용해 과일을 떨어뜨리고, 같은 과일끼리 닿게 하여 최종 수박(Watermelon)에 도전하세요!</p>
+      </div>
+    </section>
+
+    <!-- Game Layout Grid -->
+    <section class="game-layout">
+      
+      <!-- Left: Fruit Evolution Panel -->
+      <article class="evolution-panel glass-panel">
+        <div class="panel-header">
+          <h3><i class="fa-solid fa-dna text-purple"></i> 과일 도감 & 진화 체인</h3>
+          <p>합쳐질 때마다 다음 단계의 과일로 진화합니다.</p>
+        </div>
+        
+        <div class="evolution-chain-list">
+          <div class="chain-item" data-level="1"><span class="fruit-badge" style="background:#e11d48"></span>체리 (Cherry)</div>
+          <div class="chain-item" data-level="2"><span class="fruit-badge" style="background:#ec4899"></span>딸기 (Strawberry)</div>
+          <div class="chain-item" data-level="3"><span class="fruit-badge" style="background:#a855f7"></span>포도 (Grape)</div>
+          <div class="chain-item" data-level="4"><span class="fruit-badge" style="background:#fb923c"></span>귤 (Mandarin)</div>
+          <div class="chain-item" data-level="5"><span class="fruit-badge" style="background:#ea580c"></span>감 (Persimmon)</div>
+          <div class="chain-item" data-level="6"><span class="fruit-badge" style="background:#ef4444"></span>사과 (Apple)</div>
+          <div class="chain-item" data-level="7"><span class="fruit-badge" style="background:#facc15"></span>배 (Pear)</div>
+          <div class="chain-item" data-level="8"><span class="fruit-badge" style="background:#fca5a5"></span>복숭아 (Peach)</div>
+          <div class="chain-item" data-level="9"><span class="fruit-badge" style="background:#eab308"></span>파인애플 (Pineapple)</div>
+          <div class="chain-item" data-level="10"><span class="fruit-badge" style="background:#22c55e"></span>멜론 (Melon)</div>
+          <div class="chain-item" data-level="11"><span class="fruit-badge" style="background:#047857"></span>수박 (Watermelon)</div>
+        </div>
+      </article>
+
+      <!-- Center: Game Canvas Panel -->
+      <article class="canvas-panel-wrapper">
+        <div class="next-preview-box glass-panel">
+          <span class="preview-label">대기 중인 과일</span>
+          <div class="preview-display" id="next-fruit-preview">
+            <div class="preview-fruit-circle" id="preview-fruit-dot"></div>
+            <span class="preview-fruit-name" id="preview-fruit-name">체리</span>
+          </div>
+        </div>
+        
+        <div class="canvas-container glass-panel" id="canvas-container-box">
+          <!-- Matter.js Canvas will be injected here -->
+          <div class="warning-line-indicator" id="warning-line"></div>
+          <div class="drop-guide-line" id="drop-guide"></div>
+          <div class="countdown-overlay" id="countdown-alert">3</div>
+        </div>
+      </article>
+
+      <!-- Right: Control Dashboard Panel -->
+      <article class="control-panel glass-panel">
+        <div class="scoreboard">
+          <div class="score-card">
+            <span class="score-label"><i class="fa-solid fa-star text-gold"></i> 현재 점수</span>
+            <h3 class="score-val" id="current-score">0</h3>
+          </div>
+          <div class="score-card">
+            <span class="score-label"><i class="fa-solid fa-trophy text-gold"></i> 최고 점수</span>
+            <h3 class="score-val" id="best-score">0</h3>
+          </div>
+        </div>
+
+        <div class="panel-header" style="border-bottom:none; padding-bottom:0;">
+          <h3><i class="fa-solid fa-gamepad text-blue"></i> 조작 및 가이드</h3>
+          <ul class="guide-list">
+            <li><i class="fa-solid fa-mouse-pointer"></i> <strong>마우스 이동 / 터치 이동</strong>: 과일 낙하 위치 설정</li>
+            <li><i class="fa-solid fa-circle-down"></i> <strong>클릭 / 화면 터치</strong>: 과일 떨어뜨리기</li>
+            <li><i class="fa-solid fa-triangle-exclamation"></i> <strong>데드라인 경고</strong>: 과일이 상단 붉은 점선을 3초간 넘으면 게임 오버!</li>
+          </ul>
+        </div>
+
+        <div class="game-controls">
+          <button class="btn btn-restart" id="btn-restart-game"><i class="fa-solid fa-rotate-right"></i> 새 게임 시작</button>
+          <button class="btn btn-sound" id="btn-sound-toggle"><i class="fa-solid fa-volume-high"></i> 소리 켜짐</button>
+        </div>
+      </article>
+
+    </section>
+
+  </main>
+
+  <!-- Detailed Game Over Modal -->
+  <div class="modal-overlay" id="game-over-modal">
+    <div class="modal-box glass-panel">
+      <div class="modal-header">
+        <span class="game-over-badge"><i class="fa-solid fa-circle-exclamation"></i> GAME OVER</span>
+        <h3>게임이 종료되었습니다!</h3>
+      </div>
+      <div class="modal-body">
+        <div class="final-stats-grid">
+          <div class="final-stat-item">
+            <span class="final-label">최종 득점</span>
+            <strong class="final-val text-blue" id="modal-final-score">0점</strong>
+          </div>
+          <div class="final-stat-item">
+            <span class="final-label">최대 달성 과일</span>
+            <strong class="final-val text-purple" id="modal-max-fruit">딸기</strong>
+          </div>
+        </div>
+        
+        <div class="modal-section" style="margin-top: 1.5rem; text-align: center;">
+          <button class="btn-restart-modal" id="btn-restart-modal-btn"><i class="fa-solid fa-rotate"></i> 다시 도전하기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="rich-footer">
+    <div class="footer-top-grid">
+
+      <!-- Footer Left: Branding & Visitor Stats -->
+      <div class="footer-left-brand">
+        <div class="brand-title">
+          <span class="cdb-badge">CDB</span>
+          <h2>Cineaho's SandBox</h2>
+        </div>
+
+        <div class="brand-links">
+          <span>🧰 웹앱</span>
+          <span class="divider-dot">•</span>
+          <span>💻 Cineaho</span>
+          <span class="divider-dot">•</span>
+          <span>📝 이슈트래커</span>
+          <span class="divider-dot">•</span>
+          <span>📄 기타 페이지를 한 곳에서. 모든 도구를 쉽고 빠르게 사용하세요.</span>
+        </div>
+
+        <div class="visitor-stats">
+          <div class="stat-group">
+            <h4>사이트 방문</h4>
+            <p>전체 <span id="site-visit-total">0</span> · 오늘 <span id="site-visit-today">0</span> · 고유 전체 <span id="site-visit-utotal">0</span> · 고유 오늘 <span id="site-visit-utoday">0</span></p>
+          </div>
+          <div class="stat-group">
+            <h4>이 앱 방문</h4>
+            <p>전체 <span id="apps-visit-total">0</span> · 오늘 <span id="apps-visit-today">0</span> · 고유 전체 <span id="apps-visit-utotal">0</span> · 고유 오늘 <span id="apps-visit-utoday">0</span></p>
+          </div>
+          <a href="#" class="stats-link">방문 통계 / 인기 앱 순위 보러 가기 &rarr;</a>
+        </div>
+      </div>
+
+      <!-- Footer Right: Columns -->
+      <div class="footer-right-columns">
+        <div class="footer-col">
+          <h3>제품</h3>
+          <ul>
+            <li><a href="../all-tools.html">모든 도구</a></li>
+            <li><a href="../category.html">카테고리</a></li>
+            <li><a href="../popular.html">인기 도구</a></li>
+            <li><a href="../new-tools.html">새로운 도구</a></li>
+            <li><a href="../sitemap.html">사이트맵</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3>지원</h3>
+          <ul>
+            <li><a href="../coming-soon.html">통계</a></li>
+            <li><a href="../updates.html">업데이트</a></li>
+            <li><a href="../help.html">도움말</a></li>
+            <li><a href="mailto:growplant@gmail.com">문의하기</a></li>
+            <li><a href="mailto:growplant@gmail.com?subject=CineAHO%20%EB%B2%85%EA%B7%B8%20%EC%8B%A0%EA%B3%A0">버그 신고</a>
+            </li>
+            <li><a href="../faq.html">FAQ</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3>법적 고지</h3>
+          <ul>
+            <li><a href="../privacy.html" style="color: var(--text-main); font-weight: 500;">개인정보처리방침</a></li>
+            <li><a href="../terms.html">이용약관</a></li>
+            <li><a href="../cookie-policy.html">쿠키 정책</a></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer Bottom Bar -->
+    <div class="footer-bottom-bar">
+      <div class="footer-copyright">
+        CineAHO's SandBox - 모든 도구를 한 곳에서 &copy; 2025 Cineaho. All right reserved.
+      </div>
+      <div class="footer-built-with">
+        Built on Cloudflare Pages, Workers, D1, R2 and Turso
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

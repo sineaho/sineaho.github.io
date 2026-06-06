@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO 주식 동향 트렌드 조사 - 실시간 시장 분석 및 등락 순위</title>
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- ==========================================
+       1. PORTAL HEADER
+       ========================================== -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>SandBox</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="../index.html#tools-section">무료 앱</a></li>
+        <li><a href="https://blog.naver.com/sineaho" target="_blank" rel="noopener noreferrer" class="active">CineAHO</a></li>
+        <li><a href="../prompt.html">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==========================================
+       2. MAIN CONTENT CONTAINER
+       ========================================== -->
+  <main class="calculator-container">
+    
+    <!-- Sub-navigation Back Link -->
+    <div class="sub-nav-back">
+      <a href="../index.html" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>비즈니스·금융 계산기로 돌아가기</span>
+      </a>
+    </div>
+
+    <!-- App Title Header Banner -->
+    <section class="app-banner glass-panel">
+      <div class="banner-info">
+        <span class="badge-capsule">실시간 시장 리포터 v1.2</span>
+        <h2>주식 동향 트렌드 조사</h2>
+        <p>국내 KOSPI, KOSDAQ 주요 지수 및 등락 등급 주식들과 미국, 일본 글로벌 주식장의 트렌드를 실시간 분석하고 수집합니다.</p>
+      </div>
+      <div class="banner-decor">
+        <i class="fa-solid fa-chart-line"></i>
+      </div>
+    </section>
+
+    <!-- Tab navigation -->
+    <section class="tabs-control-wrapper">
+      <div class="market-tabs-wrapper">
+        <button class="market-tab-btn active" data-target="tab-domestic"><i class="fa-solid fa-house-chimney"></i> 국내 시장</button>
+        <button class="market-tab-btn" data-target="tab-us"><i class="fa-solid fa-earth-americas"></i> 미국 시장</button>
+        <button class="market-tab-btn" data-target="tab-jp"><i class="fa-solid fa-earth-asia"></i> 일본 시장</button>
+        <button class="market-tab-btn" data-target="tab-trends"><i class="fa-solid fa-square-rss"></i> 트렌드 & 뉴스 요약</button>
+        <button class="market-tab-btn" data-target="tab-live"><i class="fa-solid fa-circle-play"></i> 실시간 분석 센터</button>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 1: DOMESTIC MARKET PANEL
+         ========================================== -->
+    <section id="tab-domestic" class="market-tab-panel active">
+      
+      <!-- Index overview cards -->
+      <div class="indices-grid">
+        <!-- KOSPI -->
+        <div class="index-card glass-panel" id="card-kospi">
+          <div class="index-card-header">
+            <h3>KOSPI 코스피</h3>
+            <span class="badge">KRX</span>
+          </div>
+          <div class="index-value-block">
+            <span class="index-price" id="val-kospi-price">2,654.21</span>
+            <div class="index-change-row stock-up" id="val-kospi-change-wrap">
+              <i class="fa-solid fa-caret-up"></i>
+              <span id="val-kospi-change">+32.41 (+1.24%)</span>
+            </div>
+          </div>
+          <canvas class="index-sparkline-canvas" id="spark-kospi"></canvas>
+        </div>
+
+        <!-- KOSDAQ -->
+        <div class="index-card glass-panel" id="card-kosdaq">
+          <div class="index-card-header">
+            <h3>KOSDAQ 코스닥</h3>
+            <span class="badge">KRX</span>
+          </div>
+          <div class="index-value-block">
+            <span class="index-price" id="val-kosdaq-price">842.15</span>
+            <div class="index-change-row stock-down" id="val-kosdaq-change-wrap">
+              <i class="fa-solid fa-caret-down"></i>
+              <span id="val-kosdaq-change">-3.81 (-0.45%)</span>
+            </div>
+          </div>
+          <canvas class="index-sparkline-canvas" id="spark-kosdaq"></canvas>
+        </div>
+
+        <!-- KOSPI 200 -->
+        <div class="index-card glass-panel" id="card-kospi200">
+          <div class="index-card-header">
+            <h3>KOSPI 200</h3>
+            <span class="badge">KRX</span>
+          </div>
+          <div class="index-value-block">
+            <span class="index-price" id="val-kospi200-price">358.45</span>
+            <div class="index-change-row stock-up" id="val-kospi200-change-wrap">
+              <i class="fa-solid fa-caret-up"></i>
+              <span id="val-kospi200-change">+5.10 (+1.44%)</span>
+            </div>
+          </div>
+          <canvas class="index-sparkline-canvas" id="spark-kospi200"></canvas>
+        </div>
+
+        <!-- Won/Dollar Exchange Rate -->
+        <div class="index-card glass-panel" id="card-usd-krw">
+          <div class="index-card-header">
+            <h3>원/달러 환율</h3>
+            <span class="badge">FX</span>
+          </div>
+          <div class="index-value-block">
+            <span class="index-price" id="val-exchange-price">1,374.50</span>
+            <div class="index-change-row stock-down" id="val-exchange-change-wrap">
+              <i class="fa-solid fa-caret-down"></i>
+              <span id="val-exchange-change">-6.20 (-0.45%)</span>
+            </div>
+          </div>
+          <canvas class="index-sparkline-canvas" id="spark-usd-krw"></canvas>
+        </div>
+      </div>
+
+      <!-- Segment filtering buttons -->
+      <div class="segment-filter-row">
+        <button class="segment-btn active" id="btn-segment-kospi">KOSPI 코스피 종목</button>
+        <button class="segment-btn" id="btn-segment-kosdaq">KOSDAQ 코스닥 종목</button>
+      </div>
+
+      <!-- Tables splits: Top 10 상승 / 하락 -->
+      <div class="tables-split-layout">
+        
+        <!-- Top 10 Gainers -->
+        <div class="table-panel-box glass-panel">
+          <div class="table-panel-header">
+            <h3 class="stock-up"><i class="fa-solid fa-circle-arrow-up"></i> 당일 등락 상승률 TOP 10</h3>
+            <span style="font-size:11px;color:var(--text-muted);">실시간 거래 가격 기준</span>
+          </div>
+          <div class="stock-table-wrap">
+            <table class="stock-table" id="table-gainers">
+              <thead>
+                <tr>
+                  <th style="width: 40px;">순위</th>
+                  <th>종목명</th>
+                  <th>현재가</th>
+                  <th style="text-align: right;">대비</th>
+                  <th style="text-align: right;">등락률</th>
+                  <th style="text-align: right;">거래량</th>
+                </tr>
+              </thead>
+              <tbody id="body-gainers">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Top 10 Decliners -->
+        <div class="table-panel-box glass-panel">
+          <div class="table-panel-header">
+            <h3 class="stock-down"><i class="fa-solid fa-circle-arrow-down"></i> 당일 등락 하락률 TOP 10</h3>
+            <span style="font-size:11px;color:var(--text-muted);">실시간 거래 가격 기준</span>
+          </div>
+          <div class="stock-table-wrap">
+            <table class="stock-table" id="table-decliners">
+              <thead>
+                <tr>
+                  <th style="width: 40px;">순위</th>
+                  <th>종목명</th>
+                  <th>현재가</th>
+                  <th style="text-align: right;">대비</th>
+                  <th style="text-align: right;">등락률</th>
+                  <th style="text-align: right;">거래량</th>
+                </tr>
+              </thead>
+              <tbody id="body-decliners">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ==========================================
+         TAB 2: US MARKET PANEL
+         ========================================== -->
+    <section id="tab-us" class="market-tab-panel">
+      
+      <!-- US Indices -->
+      <div class="indices-grid">
+        <!-- S&P 500 -->
+        <div class="index-card glass-panel" id="card-sp500">
+          <div class="index-card-header">
+            <h3>S&P 500</h3>
+            <span class="badge">US</span>
+          </div>
+          <div class="index-value-block">
+            <span class="index-price" id="val-sp500-price">5,280.12</span>
+            <div class="index-change-row stock-up" id="val-sp500-change-wrap">
+              <i class="fa-solid fa-caret-up"></i>
+              <span id="val-sp500-change">+44.20 (+0.84%)</span>
+            </div>
+          </div>
+          <canvas class="index-sparkline-canvas" id="spark-sp500"></canvas>
+        </div>
+
+        <!-- NASDAQ -->
+        <div class="index-card glass-panel" id="card-nasdaq">
+          <div class="index-card-header">
+            <h3>NASDAQ</h3>
+            <span class="badge">US</span>
+          </div>
+          <div class="index-value-block">
+            <span class="index-price" id="val-nasdaq-price">16,820.45</span>
+            <div class="index-change-row stock-up" id="val-nasdaq-change-wrap">
+              <i class="fa-solid fa-caret-up"></i>
+              <span id="val-nasdaq-change">+185.12 (+1.11%)</span>
+            </div>
+          </div>
+          <canvas class="index-sparkline-canvas" id="spark-nasdaq"></canvas>
+        </div>
+
+        <!-- Dow Jones -->
+        <div class="index-card glass-panel" id="card-dow">
+          <div class="index-card-header">
+            <h3>Dow Jones</h3>
+            <span class="badge">US</span>
+          </div>
+          <div class="index-value-block">
+            <span class="index-price" id="val-dow-price">39,120.40</span>
+            <div class="index-change-row stock-down" id="val-dow-change-wrap">
+              <i class="fa-solid fa-caret-down"></i>
+              <span id="val-dow-change">-45.20 (-0.12%)</span>
+            </div>
+          </div>
+          <canvas class="index-sparkline-canvas" id="spark-dow"></canvas>
+        </div>
+
+        <!-- Philadelphia Semi -->
+        <div class="index-card glass-panel" id="card-soxx">
+          <div class="index-card-header">
+            <h3>필라델피아 반도체</h3>
+            <span class="badge">US</span>
+          </div>
+          <div class="index-value-block">
+            <span class="index-price" id="val-soxx-price">5,142.10</span>
+            <div class="index-change-row stock-up" id="val-soxx-change-wrap">
+              <i class="fa-solid fa-caret-up"></i>
+              <span id="val-soxx-change">+98.24 (+1.95%)</span>
+            </div>
+          </div>
+          <canvas class="index-sparkline-canvas" id="spark-soxx"></canvas>
+        </div>
+      </div>
+
+      <!-- US Stock Tables splits: Top 10 상승 / 하락 -->
+      <div class="tables-split-layout">
+        <!-- Top 10 Gainers -->
+        <div class="table-panel-box glass-panel">
+          <div class="table-panel-header">
+            <h3 class="stock-up"><i class="fa-solid fa-circle-arrow-up"></i> 미국 당일 상승률 TOP 10</h3>
+            <span style="font-size:11px;color:var(--text-muted);">실시간 거래 가격 기준</span>
+          </div>
+          <div class="stock-table-wrap">
+            <table class="stock-table" id="table-us-gainers">
+              <thead>
+                <tr>
+                  <th style="width: 40px;">순위</th>
+                  <th>종목명</th>
+                  <th>현재가</th>
+                  <th style="text-align: right;">대비</th>
+                  <th style="text-align: right;">등락률</th>
+                  <th style="text-align: right;">거래량</th>
+                </tr>
+              </thead>
+              <tbody id="body-us-gainers">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Top 10 Decliners -->
+        <div class="table-panel-box glass-panel">
+          <div class="table-panel-header">
+            <h3 class="stock-down"><i class="fa-solid fa-circle-arrow-down"></i> 미국 당일 하락률 TOP 10</h3>
+            <span style="font-size:11px;color:var(--text-muted);">실시간 거래 가격 기준</span>
+          </div>
+          <div class="stock-table-wrap">
+            <table class="stock-table" id="table-us-decliners">
+              <thead>
+                <tr>
+                  <th style="width: 40px;">순위</th>
+                  <th>종목명</th>
+                  <th>현재가</th>
+                  <th style="text-align: right;">대비</th>
+                  <th style="text-align: right;">등락률</th>
+                  <th style="text-align: right;">거래량</th>
+                </tr>
+              </thead>
+              <tbody id="body-us-decliners">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 3: JP MARKET PANEL
+         ========================================== -->
+    <section id="tab-jp" class="market-tab-panel">
+      
+      <!-- Japan Indices -->
+      <div class="indices-grid" style="grid-template-columns: repeat(2, 1fr);">
+        <!-- Nikkei 225 -->
+        <div class="index-card glass-panel" id="card-nikkei">
+          <div class="index-card-header">
+            <h3>Nikkei 225 (닛케이 225)</h3>
+            <span class="badge">JP</span>
+          </div>
+          <div class="index-value-block">
+            <span class="index-price" id="val-nikkei-price">38,920.15</span>
+            <div class="index-change-row stock-down" id="val-nikkei-change-wrap">
+              <i class="fa-solid fa-caret-down"></i>
+              <span id="val-nikkei-change">-85.40 (-0.22%)</span>
+            </div>
+          </div>
+          <canvas class="index-sparkline-canvas" id="spark-nikkei"></canvas>
+        </div>
+
+        <!-- TOPIX -->
+        <div class="index-card glass-panel" id="card-topix">
+          <div class="index-card-header">
+            <h3>TOPIX (토픽스)</h3>
+            <span class="badge">JP</span>
+          </div>
+          <div class="index-value-block">
+            <span class="index-price" id="val-topix-price">2,762.45</span>
+            <div class="index-change-row stock-up" id="val-topix-change-wrap">
+              <i class="fa-solid fa-caret-up"></i>
+              <span id="val-topix-change">+12.10 (+0.44%)</span>
+            </div>
+          </div>
+          <canvas class="index-sparkline-canvas" id="spark-topix"></canvas>
+        </div>
+      </div>
+
+      <!-- JP Stock Tables splits: Top 10 상승 / 하락 -->
+      <div class="tables-split-layout">
+        <!-- Top 10 Gainers -->
+        <div class="table-panel-box glass-panel">
+          <div class="table-panel-header">
+            <h3 class="stock-up"><i class="fa-solid fa-circle-arrow-up"></i> 일본 당일 상승률 TOP 10</h3>
+            <span style="font-size:11px;color:var(--text-muted);">실시간 거래 가격 기준</span>
+          </div>
+          <div class="stock-table-wrap">
+            <table class="stock-table" id="table-jp-gainers">
+              <thead>
+                <tr>
+                  <th style="width: 40px;">순위</th>
+                  <th>종목명</th>
+                  <th>현재가</th>
+                  <th style="text-align: right;">대비</th>
+                  <th style="text-align: right;">등락률</th>
+                  <th style="text-align: right;">거래량</th>
+                </tr>
+              </thead>
+              <tbody id="body-jp-gainers">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Top 10 Decliners -->
+        <div class="table-panel-box glass-panel">
+          <div class="table-panel-header">
+            <h3 class="stock-down"><i class="fa-solid fa-circle-arrow-down"></i> 일본 당일 하락률 TOP 10</h3>
+            <span style="font-size:11px;color:var(--text-muted);">실시간 거래 가격 기준</span>
+          </div>
+          <div class="stock-table-wrap">
+            <table class="stock-table" id="table-jp-decliners">
+              <thead>
+                <tr>
+                  <th style="width: 40px;">순위</th>
+                  <th>종목명</th>
+                  <th>현재가</th>
+                  <th style="text-align: right;">대비</th>
+                  <th style="text-align: right;">등락률</th>
+                  <th style="text-align: right;">거래량</th>
+                </tr>
+              </thead>
+              <tbody id="body-jp-decliners">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 4: TRENDS & NEWS SUMMARY PANEL
+         ========================================== -->
+    <section id="tab-trends" class="market-tab-panel">
+      <!-- 1. Interactive Trend Investigation Search -->
+      <div class="glass-panel" style="padding: 2.2rem; display: flex; flex-direction: column; gap: 1.5rem;">
+        <div class="info-header-block">
+          <h3><i class="fa-solid fa-magnifying-glass-chart text-purple"></i> 주식·경제 트렌드 키워드 조사</h3>
+          <p>분석하고자 하는 주식 테마, 경제 이슈 키워드를 입력해 주시면 실시간 포털 검색량 및 뉴스 데이터를 크롤링하여 영향도 지수와 핵심 코멘터리를 도출합니다.</p>
+        </div>
+        
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <input type="text" class="input-text" id="trends-search-input" placeholder="조사할 주식/경제 키워드를 입력하세요 (예: HBM, 초전도체, 연준 금리, 밸류업...)" style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--border-light); border-radius: 8px; padding: 12px 16px; color: #fff; outline: none; font-size: 0.9rem;">
+          <button class="submit-btn" id="btn-trigger-trends-search" style="padding: 12px 24px; border-radius: 8px; font-weight: 700; white-space: nowrap;">
+            <i class="fa-solid fa-magnifying-glass"></i> 트렌드 조사 실행
+          </button>
+          <button class="submit-btn" id="btn-back-to-summary" style="display: none; padding: 12px 24px; border-radius: 8px; font-weight: 700; white-space: nowrap; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: #fff;">
+            <i class="fa-solid fa-rotate-left"></i> 요약으로 돌아가기
+          </button>
+        </div>
+
+        <!-- Investigation Result Card (Hidden initially, shown after click) -->
+        <div class="glass-panel-inner" id="trends-search-result-card" style="display: none; padding: 1.5rem; flex-direction: column; gap: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 1.2rem; font-weight: 800; color: #fff;" id="lbl-trend-searched-keyword">HBM</span>
+              <span class="badge" id="lbl-trend-market-impact" style="font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: rgba(168, 85, 247, 0.2); color: var(--brand-purple);">S-Class 영향력</span>
+            </div>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">조사 시각: <strong id="lbl-trend-search-time" style="color:#fff;">오전 9:15:32</strong></span>
+          </div>
+
+          <div class="indices-grid" style="grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+            <div class="glass-panel" style="padding: 1rem; border-radius: 12px; display: flex; flex-direction: column; gap: 4px;">
+              <span style="font-size: 0.75rem; color: var(--text-muted);">실시간 관심 지수</span>
+              <strong style="font-family: 'Outfit', sans-serif; font-size: 1.4rem; color: var(--brand-purple);" id="lbl-trend-interest-index">94%</strong>
+            </div>
+            <div class="glass-panel" style="padding: 1rem; border-radius: 12px; display: flex; flex-direction: column; gap: 4px;">
+              <span style="font-size: 0.75rem; color: var(--text-muted);">시장 여론 감성</span>
+              <strong style="font-size: 1.1rem; color: var(--brand-green);" id="lbl-trend-sentiment">매우 긍정적 (Bullish)</strong>
+            </div>
+            <div class="glass-panel" style="padding: 1rem; border-radius: 12px; display: flex; flex-direction: column; gap: 4px;">
+              <span style="font-size: 0.75rem; color: var(--text-muted);">투자 위험도 등급</span>
+              <strong style="font-size: 1.1rem; color: var(--brand-orange);" id="lbl-trend-risk">주의 (Moderate)</strong>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">연관 영향 종목</span>
+            <div id="lbl-trend-related-stocks" style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <!-- Related stock pills e.g. 삼성전자, SK하이닉스 -->
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">AI 트렌드 영향도 분석 요약</span>
+            <p style="font-size: 0.85rem; line-height: 1.5; color: var(--text-light);" id="lbl-trend-ai-analysis">
+              HBM 관련 공급망 확장에 따른 대형 반도체 소부장 기업들의 실적 개선세가 뚜렷합니다. AI 연산 칩 수요 폭발이 하반기까지 이어져 상승 압력이 우세하나 고평가 부담이 있습니다.
+            </p>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;" id="trends-related-articles-wrap">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">실시간 트렌드 관련 주요 뉴스 (3개)</span>
+            <div id="lbl-trend-related-articles" style="display: flex; flex-direction: column; gap: 8px;">
+              <!-- Related news items with links -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Domestic & International News Summaries side-by-side -->
+      <div class="tables-split-layout" id="news-summary-layout">
+        
+        <!-- Domestic News Summary Column -->
+        <div class="table-panel-box glass-panel" style="display: flex; flex-direction: column; gap: 1.5rem;">
+          <div class="table-panel-header" style="border-bottom: 1px solid var(--border-light); padding-bottom: 0.75rem; margin-bottom: 0;">
+            <h3 style="color: var(--brand-purple);"><i class="fa-solid fa-newspaper"></i> 국내 주요 경제 뉴스 요약</h3>
+            <span style="font-size: 11px; color: var(--text-muted);">네이버 금융 & KRX 연동 요약</span>
+          </div>
+
+          <div id="domestic-news-container" style="display: flex; flex-direction: column; gap: 20px;">
+            <!-- Domestic news items -->
+          </div>
+        </div>
+
+        <!-- International News Summary Column -->
+        <div class="table-panel-box glass-panel" style="display: flex; flex-direction: column; gap: 1.5rem;">
+          <div class="table-panel-header" style="border-bottom: 1px solid var(--border-light); padding-bottom: 0.75rem; margin-bottom: 0;">
+            <h3 style="color: var(--brand-blue);"><i class="fa-solid fa-earth-americas"></i> 국외 주요 경제 뉴스 요약</h3>
+            <span style="font-size: 11px; color: var(--text-muted);">Yahoo Finance & 외신 연동 요약</span>
+          </div>
+
+          <div id="international-news-container" style="display: flex; flex-direction: column; gap: 20px;">
+            <!-- International news items -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 3: LIVE ANALYSIS CENTER
+         ========================================== -->
+    <section id="tab-live" class="market-tab-panel">
+      <div class="analysis-center-layout">
+        
+        <!-- Left details / config -->
+        <div class="scheduler-config-panel glass-panel">
+          <div class="info-header-block">
+            <h3><i class="fa-solid fa-clock text-purple"></i> 정기 조사 스케줄러</h3>
+            <p>본 플랫폼은 정기 업데이트 시간에 주요 거래소 API 데이터를 동기화하여 분석 보고서를 구축합니다.</p>
+          </div>
+
+          <!-- Schedule specs -->
+          <div class="schedule-details-box">
+            <div class="sched-row">
+              <span class="lbl">오전 정기 조사</span>
+              <span class="val">매일 09:00 AM (장 시작 기준)</span>
+            </div>
+            <div class="sched-row">
+              <span class="lbl">오후 정기 조사</span>
+              <span class="val">매일 09:00 PM (해외 장 시작/국내 정리)</span>
+            </div>
+            <div class="sched-row">
+              <span class="lbl">최근 데이터 동기화</span>
+              <span class="val highlight" id="lbl-last-sync-time">2026-06-03 21:00:15</span>
+            </div>
+            <div class="sched-row">
+              <span class="lbl">다음 스케줄링 예정</span>
+              <span class="val highlight" id="lbl-next-sync-time">2026-06-04 09:00:00</span>
+            </div>
+          </div>
+
+          <div class="update-badge">
+            <span class="pulse-dot"></span>
+            <span>데이터 동기화 대기중 (09:00 / 21:00 자동 실행)</span>
+          </div>
+
+          <!-- Interactive Action trigger -->
+          <button class="btn-run-analysis" id="btn-trigger-live-analysis">
+            <i class="fa-solid fa-bolt-lightning"></i>
+            <span>실시간 주식 동향 분석 실행</span>
+          </button>
+        </div>
+
+        <!-- Right console output logs -->
+        <div class="console-logs-panel glass-panel">
+          <div class="info-header-block">
+            <h3><i class="fa-solid fa-terminal text-purple"></i> 실시간 분석 콘솔 로그</h3>
+            <p>실시간 분석 실행 시 연동되는 거래소 및 지표 계산 연산 데이터 흐름이 출력됩니다.</p>
+          </div>
+          
+          <div class="console-screen" id="console-logs-screen">
+            <div class="log-line success">CineAHO Stock Analysis Engine v1.2 가동 완료. 대기중...</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Comprehensive Guide Section -->
+    <section class="guide-details-section glass-panel">
+      <h3><i class="fa-solid fa-graduation-cap text-purple"></i> 주식 트렌드 조사 완벽 가이드</h3>
+      <p class="guide-intro">본 분석기는 한국 거래소(KRX), 뉴욕 증권거래소(NYSE), 나스닥(NASDAQ) 및 도쿄 증권거래소(TSE)의 정기 공시 정보 및 거래 통계 모델에 기초하여 시뮬레이션 데이터를 제공합니다.</p>
+
+      <div class="guide-grid">
+        
+        <!-- Usage Card -->
+        <div class="guide-card">
+          <h4><i class="fa-solid fa-circle-question"></i> 주식 동향 계산기 사용법</h4>
+          <ul class="guide-list">
+            <li><span class="num">1</span> <strong>국내 시장 파악</strong>: '국내 시장' 탭에서 코스피와 코스닥 지수 흐름을 보고, 필터 버튼을 눌러 각 시장의 급등락 10위 종목을 확인합니다.</li>
+            <li><span class="num">2</span> <strong>해외 장 동향 분석</strong>: '해외 시장' 탭을 통해 미국 메이저 3대 지수, 필라델피아 반도체 지수 및 일본 닛케이 225 지수의 흐름을 한눈에 비교 분석합니다.</li>
+            <li><span class="num">3</span> <strong>종목 상세 조회</strong>: 상승/하락 순위표에서 관심 있는 종목명을 마우스로 클릭하면, 개별 주가의 당일 차트 궤적과 거래 정보를 확인해 볼 수 있습니다.</li>
+            <li><span class="num">4</span> <strong>실시간 수동 수집</strong>: '실시간 분석 센터' 탭에서 버튼을 누르면 실시간 시세 반영 시뮬레이션이 동작해 지수 변동과 순위가 즉석에서 업데이트됩니다.</li>
+          </ul>
+        </div>
+
+        <!-- Target Info Card -->
+        <div class="guide-card">
+          <h4><i class="fa-solid fa-lightbulb"></i> 주식 용어 간단 정리 (FAQ)</h4>
+          <ul class="faq-list">
+            <li>
+              <strong>Q. 등락 상승/하락 TOP 10의 기준은 무엇인가요?</strong>
+              <p>A. 당일 시초가 대비 현재가의 변동비율(%)이 가장 높은 종목 10개와 가장 낮은 종목 10개를 의미합니다. 거래량이 너무 적은 품목은 왜곡을 방지하기 위해 필터링 처리됩니다.</p>
+            </li>
+            <li>
+              <strong>Q. 주식 거래량(Volume)은 왜 중요한가요?</strong>
+              <p>A. 거래량은 주가 상승/하락의 신뢰도를 결정합니다. 낮은 거래량에서의 급등락은 소수의 거래로 요동친 것일 수 있으나, 대량 거래량을 동반한 급등락은 시장의 강력한 합의가 이루어졌음을 보여줍니다.</p>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       3. DETAILED STOCK MODAL POPUP
+       ========================================== -->
+  <div class="modal-overlay" id="stock-details-modal">
+    <div class="modal-box glass-panel">
+      <button class="modal-close" id="btn-close-modal">&times;</button>
+      
+      <div class="modal-header">
+        <div class="stock-title-row">
+          <h3 id="lbl-modal-stock-name">삼성전자</h3>
+          <span class="stock-code" id="lbl-modal-stock-code">005930</span>
+        </div>
+        <div class="stock-meta-row">
+          <span>시장 구분: <strong id="lbl-modal-stock-market">KOSPI</strong></span>
+          <span>현재가: <strong id="lbl-modal-stock-price" class="stock-up">78,500원</strong></span>
+          <span>등락률: <strong id="lbl-modal-stock-pct" class="stock-up">+2.45%</strong></span>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <!-- Period Selection Tabs -->
+        <div class="chart-period-tabs">
+          <button class="period-btn active" data-period="1d">1일</button>
+          <button class="period-btn" data-period="1mo">1달</button>
+          <button class="period-btn" data-period="1y">1년</button>
+          <button class="period-btn" data-period="10y">10년</button>
+        </div>
+
+        <!-- Daily chart line canvas -->
+        <div class="modal-chart-wrapper">
+          <canvas class="modal-chart-canvas" id="canvas-stock-chart"></canvas>
+        </div>
+
+        <!-- Specs grid -->
+        <div class="modal-stats-grid">
+          <div class="modal-stat-card glass-panel-inner">
+            <span class="lbl">당일 고가 (High)</span>
+            <span class="val" id="lbl-modal-stock-high">79,200원</span>
+          </div>
+          <div class="modal-stat-card glass-panel-inner">
+            <span class="lbl">당일 저가 (Low)</span>
+            <span class="val" id="lbl-modal-stock-low">77,100원</span>
+          </div>
+          <div class="modal-stat-card glass-panel-inner">
+            <span class="lbl">거래량 (Volume)</span>
+            <span class="val" id="lbl-modal-stock-vol">18.5M</span>
+          </div>
+        </div>
+
+        <!-- AI analyst commentary -->
+        <div class="modal-analysis-section">
+          <h4>📊 시장 트렌드 및 주가 코멘터리</h4>
+          <p id="lbl-modal-stock-commentary">반도체 메모리 수출 가격 상승세 지속으로 외인 및 기관의 대규모 순매수세가 유입되었습니다. 고대역폭메모리(HBM) 5세대 물량 출하 증대 기대감이 당일 주가 상승 흐름을 이끈 것으로 판단됩니다.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Floating Scroll progress ring -->
+  <div class="floating-controls-panel">
+    <div class="progress-ring-wrap" id="scroll-progress-ring" title="스크롤 위치">
+      <svg class="progress-ring-svg" width="50" height="50">
+        <circle class="progress-ring-circle-bg" cx="25" cy="25" r="20" />
+        <circle class="progress-ring-circle-indicator" id="progress-circle-indicator" cx="25" cy="25" r="20" />
+      </svg>
+      <span class="progress-txt" id="scroll-percentage-lbl">0%</span>
+    </div>
+
+    <!-- Quick Scroll Top -->
+    <button class="floating-btn" id="btn-scroll-top" title="맨 위로 가기">
+      <i class="fa-solid fa-arrow-up"></i>
+    </button>
+    <!-- Quick Scroll Bottom -->
+    <button class="floating-btn" id="btn-scroll-bottom" title="맨 아래로 가기">
+      <i class="fa-solid fa-arrow-down"></i>
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <p>&copy; 2026 CineAHO's SandBox. All rights reserved.</p>
+    <p class="footer-note">Cineaho 포털 하위에 여러 독립적인 웹 애플리케이션을 유연하게 마운트하여 관리할 수 있습니다.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

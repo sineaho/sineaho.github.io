@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>일일 권장 수분 섭취량 계산기 - CineAHO</title>
+  <meta name="description" content="사용자의 체중, 운동 시간, 날씨, 활동량 및 카페인 섭취량을 기반으로 최적의 일일 권장 수분 섭취량을 실시간으로 계산하고 스마트 가이드를 제공합니다.">
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Ambient background glow effects -->
+  <div class="bg-glow bg-glow-blue"></div>
+  <div class="bg-glow bg-glow-purple"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-panel">
+    <div class="header-left">
+      <a href="../index.html" class="back-btn" id="btn-back-home" title="CineAHO 홈으로 이동">
+        <i class="fa-solid fa-chevron-left"></i>
+      </a>
+      <div class="app-logo">
+        <i class="fa-solid fa-droplet logo-icon"></i>
+        <h1 class="logo-text">일일 권장 수분 섭취량 <span>계산기</span></h1>
+      </div>
+      <span class="app-version">v1.0 Premium</span>
+    </div>
+    <div class="header-right">
+      <button class="header-action-btn" id="btn-reset-inputs" title="입력값 초기화">
+        <i class="fa-solid fa-rotate-left"></i> 초기화
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Calculator Container -->
+  <main class="calculator-container">
+    
+    <div class="calculator-grid">
+      
+      <!-- Left Panel: Lifestyle Inputs -->
+      <section class="input-section glass-panel">
+        <div class="panel-header">
+          <h2><i class="fa-solid fa-sliders"></i> 라이프스타일 입력</h2>
+          <p>하루 권장 수분 섭취량을 계산하기 위한 사용자 맞춤 기본 정보를 조절해 주세요.</p>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="range-weight"><i class="fa-solid fa-weight-scale"></i> 체중</label>
+            <span class="value-display"><strong id="val-weight">70</strong> kg</span>
+          </div>
+          <div class="slider-wrapper">
+            <input type="range" id="range-weight" min="30" max="150" value="70" class="styled-slider">
+          </div>
+          <div class="preset-buttons" id="presets-weight">
+            <button type="button" class="btn-preset" data-value="50">50kg</button>
+            <button type="button" class="btn-preset" data-value="60">60kg</button>
+            <button type="button" class="btn-preset" data-value="70">70kg</button>
+            <button type="button" class="btn-preset" data-value="80">80kg</button>
+            <button type="button" class="btn-preset" data-value="90">90kg</button>
+            <button type="button" class="btn-preset" data-value="100">100kg</button>
+            <button type="button" class="btn-preset" data-value="110">110kg</button>
+            <button type="button" class="btn-preset" data-value="120">120kg</button>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="range-exercise"><i class="fa-solid fa-person-running"></i> 하루 운동 시간</label>
+            <span class="value-display"><strong id="val-exercise">30</strong> 분</span>
+          </div>
+          <div class="slider-wrapper">
+            <input type="range" id="range-exercise" min="0" max="180" value="30" step="10" class="styled-slider">
+          </div>
+          <div class="preset-buttons" id="presets-exercise">
+            <button type="button" class="btn-preset" data-value="0">0분</button>
+            <button type="button" class="btn-preset" data-value="15">15분</button>
+            <button type="button" class="btn-preset" data-value="30">30분</button>
+            <button type="button" class="btn-preset" data-value="45">45분</button>
+            <button type="button" class="btn-preset" data-value="60">60분</button>
+            <button type="button" class="btn-preset" data-value="90">90분</button>
+            <button type="button" class="btn-preset" data-value="120">120분</button>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label class="section-label"><i class="fa-solid fa-cloud-sun"></i> 기후 조건</label>
+          <div class="option-grid option-4-cols" id="options-climate">
+            <button type="button" class="btn-option active" data-value="normal">
+              <i class="fa-solid fa-sun-cloud option-icon"></i>
+              <span class="option-title">보통</span>
+              <span class="option-sub">+0 ml</span>
+            </button>
+            <button type="button" class="btn-option" data-value="hot">
+              <i class="fa-solid fa-temperature-arrow-up option-icon"></i>
+              <span class="option-title">더운 날씨</span>
+              <span class="option-sub">+250 ml</span>
+            </button>
+            <button type="button" class="btn-option" data-value="humid">
+              <i class="fa-solid fa-droplet-slash option-icon"></i>
+              <span class="option-title">습한 날씨</span>
+              <span class="option-sub">+150 ml</span>
+            </button>
+            <button type="button" class="btn-option" data-value="cold">
+              <i class="fa-solid fa-snowflake option-icon"></i>
+              <span class="option-title">추운 날씨</span>
+              <span class="option-sub">-100 ml</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label class="section-label"><i class="fa-solid fa-briefcase"></i> 일상 활동량</label>
+          <div class="option-grid option-4-cols" id="options-activity">
+            <button type="button" class="btn-option active" data-value="sitting">
+              <i class="fa-solid fa-chair option-icon"></i>
+              <span class="option-title">거의 앉아 있음</span>
+              <span class="option-sub">+0 ml</span>
+            </button>
+            <button type="button" class="btn-option" data-value="light">
+              <i class="fa-solid fa-walking option-icon"></i>
+              <span class="option-title">가벼운 활동</span>
+              <span class="option-sub">+150 ml</span>
+            </button>
+            <button type="button" class="btn-option" data-value="moderate">
+              <i class="fa-solid fa-person-walking option-icon"></i>
+              <span class="option-title">보통 활동</span>
+              <span class="option-sub">+300 ml</span>
+            </button>
+            <button type="button" class="btn-option" data-value="active">
+              <i class="fa-solid fa-child-reaching option-icon"></i>
+              <span class="option-title">활발한 활동</span>
+              <span class="option-sub">+500 ml</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="range-caffeine"><i class="fa-solid fa-mug-hot"></i> 하루 커피/카페인 음료</label>
+            <span class="value-display"><strong id="val-caffeine">1</strong> 잔</span>
+          </div>
+          <div class="slider-wrapper">
+            <input type="range" id="range-caffeine" min="0" max="10" value="1" step="1" class="styled-slider">
+          </div>
+          <div class="preset-buttons" id="presets-caffeine">
+            <button type="button" class="btn-preset" data-value="0">0잔</button>
+            <button type="button" class="btn-preset" data-value="1">1잔</button>
+            <button type="button" class="btn-preset" data-value="2">2잔</button>
+            <button type="button" class="btn-preset" data-value="3">3잔</button>
+            <button type="button" class="btn-preset" data-value="4">4잔</button>
+            <button type="button" class="btn-preset" data-value="5">5잔</button>
+          </div>
+          <p class="input-tip-desc"><i class="fa-solid fa-circle-info"></i> 카페인의 이뇨 작용으로 배출되는 수분을 보충하기 위해 추가 섭취가 필요합니다.</p>
+        </div>
+      </section>
+
+      <!-- Right Panel: Calculation Results -->
+      <section class="result-section">
+        
+        <!-- Droplet Widget Card -->
+        <div class="result-card glass-panel main-result-glow">
+          <div class="droplet-container">
+            <div class="water-droplet">
+              <div class="water-wave" id="wave-bg"></div>
+              <div class="droplet-content">
+                <span class="droplet-title">미세 조정 권장 수분 섭취량</span>
+                <span class="droplet-number"><strong id="total-liters">3.1</strong></span>
+                <span class="droplet-unit">리터 (L)</span>
+                <span class="droplet-sub-desc">약 <span id="total-ml">3,076</span> ml | 물컵 약 <span id="total-cups">13</span>잔 (250ml 기준)</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Visual Cups Grid inside Droplet Panel -->
+          <div class="cups-visualizer">
+            <div class="cups-grid" id="grid-cups-container">
+              <!-- Dynamically populated cup icons -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Breakdown Details Table Card -->
+        <div class="detail-card glass-panel">
+          <h3><i class="fa-solid fa-list-check"></i> 수분 필요량 분석</h3>
+          <div class="breakdown-list">
+            <div class="breakdown-item">
+              <span class="item-label">기본 권장량 (체중 기준)</span>
+              <span class="item-val" id="breakdown-base">2,310 ml</span>
+            </div>
+            <div class="breakdown-item">
+              <span class="item-label">운동 추가분</span>
+              <span class="item-val text-plus" id="breakdown-exercise">+350 ml</span>
+            </div>
+            <div class="breakdown-item">
+              <span class="item-label">기후 조건 보정</span>
+              <span class="item-val" id="breakdown-climate">+150 ml</span>
+            </div>
+            <div class="breakdown-item">
+              <span class="item-label">활동량 보정</span>
+              <span class="item-val text-plus" id="breakdown-activity">+300 ml</span>
+            </div>
+            <div class="breakdown-item">
+              <span class="item-label">카페인 보충 요구량</span>
+              <span class="item-val text-plus" id="breakdown-caffeine">+150 ml</span>
+            </div>
+            <div class="breakdown-total">
+              <span class="total-label">하루/활동량 포함 총 총합</span>
+              <span class="total-val" id="breakdown-total">3,076 ml</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Time of Day Slots Card -->
+        <div class="time-slots-card glass-panel">
+          <h3><i class="fa-solid fa-clock"></i> 시간대별 권장 섭취량</h3>
+          <p class="section-sub-desc">하루 동안 나누어 마실 때 가장 흡수 효율이 좋은 가이드라인입니다.</p>
+          
+          <div class="slots-grid">
+            <div class="slot-item">
+              <div class="slot-icon-box morning">
+                <i class="fa-solid fa-sun-rising"></i>
+              </div>
+              <div class="slot-info">
+                <span class="slot-name">오전</span>
+                <span class="slot-val" id="slot-morning">923 ml</span>
+                <span class="slot-pct">30%</span>
+              </div>
+            </div>
+            
+            <div class="slot-item">
+              <div class="slot-icon-box afternoon">
+                <i class="fa-solid fa-sun"></i>
+              </div>
+              <div class="slot-info">
+                <span class="slot-name">오후</span>
+                <span class="slot-val" id="slot-afternoon">1,230 ml</span>
+                <span class="slot-pct">40%</span>
+              </div>
+            </div>
+            
+            <div class="slot-item">
+              <div class="slot-icon-box evening">
+                <i class="fa-solid fa-moon"></i>
+              </div>
+              <div class="slot-info">
+                <span class="slot-name">저녁</span>
+                <span class="slot-val" id="slot-evening">923 ml</span>
+                <span class="slot-pct">30%</span>
+              </div>
+            </div>
+          </div>
+          <span class="slot-hint-text"><i class="fa-solid fa-circle-exclamation"></i> 취침 직전 지나치게 마시면 수면 방해가 됩니다.</span>
+        </div>
+
+      </section>
+
+    </div>
+
+    <!-- Panel: High Water Content Food -->
+    <section class="food-section glass-panel">
+      <div class="section-title-wrapper">
+        <h2><i class="fa-solid fa-lemon"></i> 수분 함량이 높은 음식</h2>
+        <p>음식을 통해서도 수분을 많이 보충할 수 있습니다. 아래 식품들은 85% 이상의 수분 함유량을 가집니다.</p>
+      </div>
+
+      <div class="food-grid">
+        <div class="food-card">
+          <div class="food-emoji">🍉</div>
+          <div class="food-info">
+            <div class="food-name-row">
+              <span class="food-name">수박</span>
+              <span class="food-percent">92%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-bar bar-watermelon" style="width: 92%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="food-card">
+          <div class="food-emoji">🥒</div>
+          <div class="food-info">
+            <div class="food-name-row">
+              <span class="food-name">오이</span>
+              <span class="food-percent">95%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-bar bar-cucumber" style="width: 95%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="food-card">
+          <div class="food-emoji">🍅</div>
+          <div class="food-info">
+            <div class="food-name-row">
+              <span class="food-name">토마토</span>
+              <span class="food-percent">94%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-bar bar-tomato" style="width: 94%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="food-card">
+          <div class="food-emoji">🍓</div>
+          <div class="food-info">
+            <div class="food-name-row">
+              <span class="food-name">딸기</span>
+              <span class="food-percent">91%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-bar bar-strawberry" style="width: 91%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="food-card">
+          <div class="food-emoji">🍊</div>
+          <div class="food-info">
+            <div class="food-name-row">
+              <span class="food-name">오렌지</span>
+              <span class="food-percent">87%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-bar bar-orange" style="width: 87%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="food-card">
+          <div class="food-emoji">🥬</div>
+          <div class="food-info">
+            <div class="food-name-row">
+              <span class="food-name">양상추</span>
+              <span class="food-percent">96%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-bar bar-lettuce" style="width: 96%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="food-tip-desc">* 식사와 과일도로 하루 수분 요구량의 20% 내외가 이미 섭취됩니다.</p>
+    </section>
+
+    <!-- Panel: Drink Equivalents Grid -->
+    <section class="drink-equivalents-section glass-panel">
+      <div class="section-title-wrapper">
+        <h2><i class="fa-solid fa-glass-water"></i> 음료 환산 (<span id="equivalent-ml">3076</span>ml 채우려면)</h2>
+        <p>각종 음료들의 용량 및 유효 수분 흡수율을 고려했을 때, 목표 섭취량을 채우기 위해 필요한 갯수입니다.</p>
+      </div>
+
+      <div class="drinks-grid">
+        <!-- 1. Water -->
+        <div class="drink-card">
+          <div class="drink-header-row">
+            <span class="drink-icon"><i class="fa-solid fa-glass-water text-blue"></i></span>
+            <span class="drink-badge badge-safe">100% 흡수</span>
+          </div>
+          <div class="drink-body">
+            <h3>물컵 (250ml)</h3>
+            <p class="drink-count-display"><strong id="eq-water">12.3</strong> 잔</p>
+          </div>
+          <div class="drink-footer">
+            <span>가장 완벽하고 부작용 없는 청정 수분 공급원</span>
+          </div>
+        </div>
+
+        <!-- 2. Milk -->
+        <div class="drink-card">
+          <div class="drink-header-row">
+            <span class="drink-icon">🥛</span>
+            <span class="drink-badge badge-safe">100% 흡수</span>
+          </div>
+          <div class="drink-body">
+            <h3>우유 (200ml)</h3>
+            <p class="drink-count-display"><strong id="eq-milk">15.4</strong> 개</p>
+          </div>
+          <div class="drink-footer">
+            <span>단백질/지방 함유로 체내 보존 시간이 길어 흡수력 우수</span>
+          </div>
+        </div>
+
+        <!-- 3. Sports Drink -->
+        <div class="drink-card">
+          <div class="drink-header-row">
+            <span class="drink-icon">🥤</span>
+            <span class="drink-badge badge-safe">100% 흡수</span>
+          </div>
+          <div class="drink-body">
+            <h3>이온음료 (250ml)</h3>
+            <p class="drink-count-display"><strong id="eq-sports">12.3</strong> 개</p>
+          </div>
+          <div class="drink-footer">
+            <span>전해질이 풍부하여 탈수 시 빠른 전해질/수분 밸런스 회복</span>
+          </div>
+        </div>
+
+        <!-- 4. Americano (Warning) -->
+        <div class="drink-card warning-card">
+          <div class="drink-header-row">
+            <span class="drink-icon">☕</span>
+            <span class="drink-badge badge-warn">이뇨작용 주의</span>
+          </div>
+          <div class="drink-body">
+            <h3>아메리카노 (250ml)</h3>
+            <p class="drink-count-display text-warn"><strong id="eq-coffee">20.5</strong> 잔</p>
+          </div>
+          <div class="drink-footer warn-footer">
+            <i class="fa-solid fa-triangle-exclamation"></i> <span>1잔당 마신 양의 약 1.5배 수분 강제 배출 (탈수 유발)</span>
+          </div>
+        </div>
+
+        <!-- 5. Beer (Warning) -->
+        <div class="drink-card warning-card">
+          <div class="drink-header-row">
+            <span class="drink-icon">🍺</span>
+            <span class="drink-badge badge-warn">알코올 이뇨작용</span>
+          </div>
+          <div class="drink-body">
+            <h3>맥주 (350ml)</h3>
+            <p class="drink-count-display text-warn"><strong id="eq-beer">20.5</strong> 잔</p>
+          </div>
+          <div class="drink-footer warn-footer">
+            <i class="fa-solid fa-triangle-exclamation"></i> <span>알코올은 항이뇨호르몬 억제, 섭취 용량 이상 탈수 유발</span>
+          </div>
+        </div>
+
+        <!-- 6. Soda (Warning) -->
+        <div class="drink-card warning-card">
+          <div class="drink-header-row">
+            <span class="drink-icon">🥤</span>
+            <span class="drink-badge badge-warn">당분·카페인</span>
+          </div>
+          <div class="drink-body">
+            <h3>탄산음료 (200ml)</h3>
+            <p class="drink-count-display text-warn"><strong id="eq-soda">15.4</strong> 개</p>
+          </div>
+          <div class="drink-footer warn-footer">
+            <i class="fa-solid fa-triangle-exclamation"></i> <span>과도한 삼투압과 카페인 성분으로 수분 흡수 방해</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Guide Section -->
+    <section class="guide-section glass-panel">
+      <div class="guide-header">
+        <h2><i class="fa-solid fa-book-open"></i> 일일 수분 섭취량 완벽 가이드</h2>
+        <p>인체의 약 60%는 물로 구성되어 있습니다. 올바른 수분 공급은 체온 조절, 노폐물 배출, 세포 기능에 필수적입니다.</p>
+      </div>
+
+      <div class="guide-grid">
+        
+        <!-- Part 1: How to use -->
+        <div class="guide-card">
+          <h3><i class="fa-solid fa-circle-info"></i> 수분 섭취량 계산기 사용법</h3>
+          <ol class="guide-steps">
+            <li><span>1</span> <strong>체중 슬라이더</strong>를 조절하거나 퀵 <strong>kg 버튼</strong>을 클릭하여 본인의 몸무게를 정확히 설정합니다.</li>
+            <li><span>2</span> 헬스, 러닝 등 하루 <strong>운동 시간</strong>을 입력하면 신체 수분 손실량을 보정해 줍니다.</li>
+            <li><span>3</span> 오늘 <strong>기후 조건</strong>과 본인의 <strong>일상 활동 수준</strong>을 체크하여 가산치를 추가합니다.</li>
+            <li><span>4</span> <strong>커피 섭취 수</strong>를 조절하면 카페인으로 유도되는 이뇨 손실량을 감안하여 추가 필요량이 계산됩니다.</li>
+            <li><span>5</span> 우측 <strong>물방울 위젯</strong>에서 일일 권장량, 권장 시간대, 음료별 환산 잔 수를 확인하세요.</li>
+          </ol>
+        </div>
+
+        <!-- Part 2: Math Formula -->
+        <div class="guide-card">
+          <h3><i class="fa-solid fa-calculator"></i> 수분 섭취량 계산 공식</h3>
+          <div class="formula-box">
+            <p>본 계산기는 학술 가이드와 스포츠 의학 연구를 기반으로 한 하이브리드 가산 방식으로 작동합니다.</p>
+            <div class="formula-math">
+              <strong>기본 수분량</strong> = 체중 (kg) × 33 ml<br>
+              <strong>운동 시간 추가</strong> = (운동 분 / 30) × 350 ml<br>
+              <strong>기후 추가</strong> = 보통 (+0) | 더운 날씨 (+250) | 습한 날씨 (+150) | 추운 날씨 (-100)<br>
+              <strong>활동량 추가</strong> = 거의 앉아 있음 (+0) | 가벼운 활동 (+150) | 보통 활동 (+300) | 활발한 활동 (+500)<br>
+              <strong>카페인 추가</strong> = 커피 잔수 × 150 ml (이뇨 효과 상쇄 보정)<br>
+            </div>
+            <p class="formula-example">예: 체중 70kg, 운동 30분, 습함, 보통 활동, 커피 1잔일 경우:<br>
+            (70×33) + 350 + 150 + 300 + 150 = <strong>3,260 ml</strong> 권장</p>
+          </div>
+        </div>
+
+        <!-- Part 3: Symptoms Checklist -->
+        <div class="guide-card">
+          <h3><i class="fa-solid fa-triangle-exclamation"></i> 탈수 증상 체크리스트</h3>
+          <div class="dehydration-checklist">
+            <div class="check-box check-mild">
+              <h4>🟡 가벼운 탈수 (수분 1~2% 부족)</h4>
+              <ul>
+                <li><i class="fa-solid fa-circle"></i> 갈증과 입술 건조감</li>
+                <li><i class="fa-solid fa-circle"></i> 짙은 노란색 소변 및 배출 빈도 감소</li>
+                <li><i class="fa-solid fa-circle"></i> 이유 없는 만성 피로와 약한 두통</li>
+                <li><i class="fa-solid fa-circle"></i> 피부 탄력성 저하 및 메마름</li>
+              </ul>
+            </div>
+            <div class="check-box check-severe">
+              <h4>🔴 심한 탈수 (의료 진료 필요)</h4>
+              <ul>
+                <li><i class="fa-solid fa-circle-xmark"></i> 극심한 갈증 및 입안 마름</li>
+                <li><i class="fa-solid fa-circle-xmark"></i> 소변이 나오지 않거나 매우 어두운 색</li>
+                <li><i class="fa-solid fa-circle-xmark"></i> 현기증, 두통, 무기력증 및 맥박의 비정상적 가속</li>
+                <li><i class="fa-solid fa-circle-xmark"></i> 피부를 잡아당겼을 때 원 상태로 복구되지 않음</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Part 4: Hydration Tips -->
+        <div class="guide-card">
+          <h3><i class="fa-solid fa-lightbulb"></i> 효과적인 수분 섭취 팁</h3>
+          <ul class="tips-list">
+            <li><i class="fa-solid fa-circle-check"></i> <strong>한 번에 많이 마시지 마세요:</strong> 위장에 부담이 되며 1회 최대 200~300ml씩 나눠 마시는 것이 흡수가 잘 됩니다.</li>
+            <li><i class="fa-solid fa-circle-check"></i> <strong>기상 직후 물 한 잔:</strong> 자는 동안 소실된 수분을 보충하고 대사를 원활하게 해줍니다.</li>
+            <li><i class="fa-solid fa-circle-check"></i> <strong>운동 전, 중, 후 수시 섭취:</strong> 운동 시작 30분 전 250ml, 운동 중 15분마다 150ml 이상을 섭취해 체온과 혈류를 유지합니다.</li>
+            <li><i class="fa-solid fa-circle-check"></i> <strong>소변 색으로 확인하기:</strong> 맑은 미황색(연한 노란색) 소변을 유지하는 것이 가장 이상적인 수분 충전 상태입니다.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- FAQ Container -->
+      <div class="faq-container">
+        <h3><i class="fa-solid fa-circle-question"></i> 자주 묻는 질문 (FAQ)</h3>
+        
+        <div class="faq-item">
+          <h4 class="faq-question">Q. 커피나 탄산음료도 수분 섭취량에 포함해도 되나요?</h4>
+          <p class="faq-answer">A. 순수한 물 외에 커피나 차, 탄산음료 등은 오히려 이뇨 작용을 자극하여 체내 수분을 밖으로 빼냅니다. 따라서 이들은 수분 충전 용으로 간주하기보다 되레 물 섭취량을 늘리는 요인으로 보아야 합니다. 본 계산기에서는 커피를 마실 때마다 그만큼 추가적으로 마셔야 하는 수분 보정량을 더하는 방식으로 계산을 반영하고 있습니다.</p>
+        </div>
+
+        <div class="faq-item">
+          <h4 class="faq-question">Q. 물을 너무 많이 마시면 위험한가요?</h4>
+          <p class="faq-answer">A. 짧은 시간 내에 급격하게 과도한 수분을 섭취하면 혈중 나트륨 농도가 묽어지는 '저나트륨혈증(물 중독)'이 발생할 수 있습니다. 정상 성인의 신장이 처리할 수 있는 시간당 최대 수분 배설량은 약 800ml~1L 수준이므로, 한 시간에 이 범위를 초과해서 폭음하지 않고 천천히 나누어 드시는 것이 중요합니다.</p>
+        </div>
+
+        <div class="faq-item">
+          <h4 class="faq-question">Q. 차가운 물과 미지근한 물 중 어떤 것이 더 좋나요?</h4>
+          <p class="faq-answer">A. 위장에서의 수분 흡수 속도는 상온 또는 약간 차가운 물(11℃~15℃)이 가장 신속합니다. 다만, 평소 위장이 약하거나 소화 기능이 떨어지는 분들의 경우 지나치게 찬 물은 내장 온도를 떨어뜨려 소화불량을 유발할 수 있으므로 상온의 미지근한 물을 마시는 것이 좋습니다.</p>
+        </div>
+      </div>
+
+      <!-- Precautions Alert -->
+      <div class="precautions-alert">
+        <h4>⚠️ 주의사항 및 제한 사항</h4>
+        <ul>
+          <li>본 계산기는 보편적인 성인을 기준으로 산출된 가이드라인입니다.</li>
+          <li><strong>신장(콩팥) 질환, 심장 질환(심부전 등), 갑상선 기능 저하증</strong> 등 수분 조절 능력이 저하되는 질환을 앓고 계신 경우, 수분을 과다하게 섭취하면 부종이나 폐수종 등 위험한 합병증이 생길 수 있으므로 <strong>반드시 담당 전문의와 상담하여 하루 수분 섭취량을 제한 및 조절</strong>하셔야 합니다.</li>
+          <li>영유아, 임산부 및 수유부의 경우 활동량과 체중에 따른 수분 요구량이 다를 수 있으므로 별도의 특별 가이드를 참고하시기 바랍니다.</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer copyright bar -->
+  <footer class="calculator-footer">
+    <div class="footer-inner">
+      <p>CineAHO's SandBox - 일일 권장 수분 섭취량 계산기 Pro &copy; 2026 CineAHO. All right reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>

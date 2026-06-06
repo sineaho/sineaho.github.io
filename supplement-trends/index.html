@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO 건강보조식품 트렌드 분석기 (Health Supplement Trends)</title>
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Ambient Glow Background Orbs -->
+  <div class="bg-glow bg-glow-green"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- PORTAL HEADER (Visible in Dashboard Apps) -->
+  <header class="main-header glass-header" id="portal-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>SandBox</span></span>
+    </div>
+    
+    <nav class="header-nav">
+      <ul class="nav-list">
+        <li><a href="../index.html">홈</a></li>
+        <li><a href="../index.html#tools-section">무료 앱</a></li>
+        <li><a href="https://blog.naver.com/sineaho" target="_blank" rel="noopener noreferrer" class="active">CineAHO</a></li>
+        <li><a href="../prompt.html">프롬프트</a></li>
+        <li><a href="#">칼럼</a></li>
+        <li><a href="#">PPT</a></li>
+        <li><a href="#">위키</a></li>
+        <li><a href="#">엔터테인먼트</a></li>
+        <li><a href="#">AI 이미지</a></li>
+        <li><a href="#">AI 툴</a></li>
+        <li><a href="#">프로그램</a></li>
+        <li><a href="#">쇼핑 핫딜</a></li>
+        <li><a href="#">부업 백과</a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">개발</a></li>
+        <li><a href="#">용어 사전</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <button id="theme-toggle" class="btn-theme">
+        <i class="fa-solid fa-sun"></i>
+        <span>라이트</span>
+      </button>
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="trends-container">
+    
+    <!-- Hero Header Title & Quick stats -->
+    <section class="trends-hero-section glass-panel">
+      <div class="hero-left">
+        <div class="badge-capsule">
+          <span class="pulse-dot"></span>
+          <span>CineAHO Health Supplement Analytics Engine v1.2</span>
+        </div>
+        <h2 class="hero-trends-title">건강보조식품 트렌드 분석기</h2>
+        <p class="hero-desc">
+          최신 의료 뉴스, 건강 포털 검색 쿼리, 기능성 성분 트렌드를 취합하여 분석합니다. 매일 오전 9시 뉴스 크롤러가 동작해 실시간 영양제 관심 순위를 자동 업데이트합니다.
+        </p>
+      </div>
+      <div class="hero-right">
+        <!-- Interactive scheduler control widget -->
+        <div class="scheduler-widget">
+          <div class="widget-header">
+            <span class="indicator-title"><i class="fa-solid fa-clock-rotate-left"></i> 다음 크롤러 갱신 스케줄</span>
+            <span class="status-badge" id="scheduler-status">대기 중</span>
+          </div>
+          <div class="time-display-wrapper">
+            <span class="cron-time-val">매일 오전 09:00:00 (KST)</span>
+            <div class="countdown-timer" id="countdown-timer">00시간 00분 00초 남음</div>
+          </div>
+          <div class="scheduler-actions">
+            <button class="btn btn-primary btn-run-crawler" id="btn-trigger-crawler">
+              <i class="fa-solid fa-cloud-arrow-down"></i> 즉시 뉴스 수집 (마크 갱신)
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Crawler Logs Terminal Emulator Section (Hidden or Collapsed by default, triggers on Run) -->
+    <section class="terminal-logs-section glass-panel hidden" id="terminal-logs-panel">
+      <div class="terminal-header">
+        <div class="terminal-controls">
+          <span class="dot-close"></span>
+          <span class="dot-minimize"></span>
+          <span class="dot-expand"></span>
+        </div>
+        <span class="terminal-title"><i class="fa-solid fa-terminal"></i> Live Crawler Task Executable (Cron Runner @09:00 KST)</span>
+      </div>
+      <div class="terminal-body" id="terminal-log-content">
+        <!-- Log lines dynamically injected here -->
+      </div>
+    </section>
+
+    <!-- KPI Summary Cards -->
+    <section class="kpi-summary-row">
+      <!-- KPI 1 -->
+      <div class="kpi-card glass-panel">
+        <div class="kpi-icon icon-green"><i class="fa-solid fa-circle-arrow-up"></i></div>
+        <div class="kpi-meta">
+          <span class="kpi-title">금주 급상승 트렌드 원료</span>
+          <h3 class="kpi-val" id="kpi-fastest-rising">락토페린 (+48.2%)</h3>
+        </div>
+      </div>
+      <!-- KPI 2 -->
+      <div class="kpi-card glass-panel">
+        <div class="kpi-icon icon-blue"><i class="fa-solid fa-newspaper"></i></div>
+        <div class="kpi-meta">
+          <span class="kpi-title">24H 수집 뉴스 데이터</span>
+          <h3 class="kpi-val" id="kpi-news-count">134개 뉴스 기사</h3>
+        </div>
+      </div>
+      <!-- KPI 3 -->
+      <div class="kpi-card glass-panel">
+        <div class="kpi-icon icon-purple"><i class="fa-solid fa-heart-pulse"></i></div>
+        <div class="kpi-meta">
+          <span class="kpi-title">최대 관심 보조 분류</span>
+          <h3 class="kpi-val" id="kpi-top-category">스트레스 및 면역 케어</h3>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chart & Category Grid Layout -->
+    <section class="main-dashboard-grid">
+      
+      <!-- Left: Category Tabs & Trends Cards -->
+      <div class="grid-left-col">
+        <div class="category-tabs-wrapper glass-panel">
+          <div class="tabs-header">
+            <h3><i class="fa-solid fa-flask-vial"></i> 기능별 영양제 트렌드</h3>
+            <span class="sub-indicator">카테고리를 클릭하여 필터링하세요</span>
+          </div>
+          <div class="tabs-row">
+            <button class="tab-btn active" data-category="all">전체보기</button>
+            <button class="tab-btn" data-category="immune">면역력</button>
+            <button class="tab-btn" data-category="fatigue">피로/스트레스</button>
+            <button class="tab-btn" data-category="gut">장 건강</button>
+            <button class="tab-btn" data-category="joint">관절/뼈</button>
+            <button class="tab-btn" data-category="beauty">이너뷰티</button>
+          </div>
+        </div>
+
+        <!-- Trends cards container -->
+        <div class="trends-cards-list" id="trends-cards-container">
+          <!-- Dynamically populated cards -->
+        </div>
+      </div>
+
+      <!-- Right: Detailed Statistics & Custom Interactive Calculator -->
+      <div class="grid-right-col">
+        <!-- SVG Interactive Chart Panel -->
+        <div class="glass-panel stats-chart-panel">
+          <h3><i class="fa-solid fa-chart-line-up"></i> 주요 영양 성분 검색 지수 (최근 7일)</h3>
+          <p class="chart-desc">아침 9시 집계된 포털 검색 데이터와 미디어 인용 빈도를 기반으로 한 트렌드 지수입니다.</p>
+          
+          <div class="custom-chart-wrapper" id="custom-chart-container">
+            <!-- Custom CSS/SVG Bar Chart rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Personalized Supplement Recommendation survey callout -->
+        <div class="glass-panel recommendation-survey-panel">
+          <div class="survey-icon-box">
+            <i class="fa-solid fa-stethoscope"></i>
+          </div>
+          <div class="survey-meta">
+            <h3>나만을 위한 맞춤 영양제 처방받기</h3>
+            <p>나이, 성별, 평소 생활 습관 및 주된 건강 고민을 바탕으로 현재 가장 핫한 추천 영양제 조합(스택)을 구성해 드립니다.</p>
+            <button class="btn btn-secondary btn-launch-survey" id="btn-open-survey">
+              <i class="fa-solid fa-notes-medical"></i> 맞춤 진단 시작하기
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Interactive Recommender Quiz Modal -->
+  <div class="modal-overlay hidden" id="survey-modal">
+    <div class="modal-box glass-panel">
+      <button class="modal-close" id="btn-close-modal">&times;</button>
+      
+      <!-- Step 1: Demographics -->
+      <div class="survey-step" id="survey-step-1">
+        <div class="step-header">
+          <span class="step-num">Step 1 of 3</span>
+          <h3>기본 인적 사항 선택</h3>
+        </div>
+        <div class="step-body">
+          <div class="form-group">
+            <label>성별</label>
+            <div class="btn-group-toggle">
+              <button class="btn-toggle active" data-gender="male">남성</button>
+              <button class="btn-toggle" data-gender="female">여성</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="survey-age">연령대</label>
+            <select id="survey-age" class="form-select">
+              <option value="20">20대 이하</option>
+              <option value="30">30대</option>
+              <option value="40">40대</option>
+              <option value="50">50대 이상</option>
+            </select>
+          </div>
+        </div>
+        <div class="step-footer">
+          <button class="btn btn-primary btn-next-step" data-next="2">다음 단계로 <i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Step 2: Health Concerns -->
+      <div class="survey-step hidden" id="survey-step-2">
+        <div class="step-header">
+          <span class="step-num">Step 2 of 3</span>
+          <h3>주요 건강 고민 (최대 2개 선택)</h3>
+        </div>
+        <div class="step-body">
+          <div class="checkbox-grid">
+            <div class="check-item-card" data-concern="fatigue">
+              <i class="fa-solid fa-battery-empty text-purple"></i>
+              <strong>만성 피로 / 스트레스</strong>
+            </div>
+            <div class="check-item-card" data-concern="immune">
+              <i class="fa-solid fa-shield-virus text-green"></i>
+              <strong>면역력 약화 / 감기</strong>
+            </div>
+            <div class="check-item-card" data-concern="gut">
+              <i class="fa-solid fa-bacteria text-blue"></i>
+              <strong>소화 불량 / 장 건강</strong>
+            </div>
+            <div class="check-item-card" data-concern="joint">
+              <i class="fa-solid fa-bone text-red"></i>
+              <strong>관절 통증 / 뼈 건강</strong>
+            </div>
+            <div class="check-item-card" data-concern="skin">
+              <i class="fa-solid fa-face-smile text-gold"></i>
+              <strong>피부 노화 / 칙칙한 톤</strong>
+            </div>
+            <div class="check-item-card" data-concern="eyes">
+              <i class="fa-solid fa-eye text-cyan"></i>
+              <strong>안구 건조 / 시력 감퇴</strong>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer">
+          <button class="btn btn-secondary btn-prev-step" data-prev="1"><i class="fa-solid fa-chevron-left"></i> 이전</button>
+          <button class="btn btn-primary btn-next-step" data-next="3">다음 단계로 <i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Step 3: Lifestyle -->
+      <div class="survey-step hidden" id="survey-step-3">
+        <div class="step-header">
+          <span class="step-num">Step 3 of 3</span>
+          <h3>생활 습관 정보</h3>
+        </div>
+        <div class="step-body">
+          <div class="form-group">
+            <label for="survey-workout">일주일 운동 횟수</label>
+            <select id="survey-workout" class="form-select">
+              <option value="0">거의 안 함 (주 0회)</option>
+              <option value="2">가벼운 운동 (주 1~2회)</option>
+              <option value="5">활발한 운동 (주 3~5회)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="survey-sleep">하루 평균 수면 시간</label>
+            <select id="survey-sleep" class="form-select">
+              <option value="short">6시간 미만</option>
+              <option value="normal">6~8시간</option>
+              <option value="long">8시간 초과</option>
+            </select>
+          </div>
+        </div>
+        <div class="step-footer">
+          <button class="btn btn-secondary btn-prev-step" data-prev="2"><i class="fa-solid fa-chevron-left"></i> 이전</button>
+          <button class="btn btn-success" id="btn-submit-survey"><i class="fa-solid fa-square-poll-horizontal"></i> 진단 결과 보기</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Results -->
+      <div class="survey-step hidden" id="survey-step-result">
+        <div class="step-header">
+          <span class="step-num text-green"><i class="fa-solid fa-square-check"></i> 진단 완료</span>
+          <h3>나만을 위한 맞춤 영양제 처방</h3>
+        </div>
+        <div class="step-body" id="survey-result-content">
+          <!-- Dynamically injected results -->
+        </div>
+        <div class="step-footer">
+          <button class="btn btn-secondary" id="btn-restart-survey"><i class="fa-solid fa-arrows-rotate"></i> 다시 진단하기</button>
+          <button class="btn btn-primary" id="btn-close-result-modal">확인</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <p>&copy; 2026 CineAHO's SandBox. All rights reserved.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>
