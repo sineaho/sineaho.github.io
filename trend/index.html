@@ -7,21 +7,24 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1607063568131489"
+     crossorigin="anonymous"></script>
 </head>
 <body>
 
   <!-- App Header & Toolbar -->
-  <header class="main-header">
+  <header class="main-header glass-header">
     <div class="header-left">
-      <!-- Back to CineAHO Portal Home -->
-      <a href="../index.html" class="action-btn" style="background-color: rgba(255,255,255,0.05); border: 1px solid var(--border-color); text-decoration: none; display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 6px; color: var(--text-main); margin-right: 8px;" title="CineAHO 홈으로 이동">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      <a href="../index.html" class="back-btn" title="CineAHO 홈으로 이동">
+        <i class="fa-solid fa-chevron-left"></i>
       </a>
       <div class="app-logo">
-        <i class="fa-solid fa-chart-line"></i> Keyword & Trend Analyzer
+        <i class="fa-solid fa-chart-line logo-icon text-purple"></i>
+        <h1 class="logo-text">키워드 & 트렌드 분석기 <span class="engine-sub">Keyword Interest Trends</span></h1>
       </div>
     </div>
-    <div class="header-right" style="display: flex; align-items: center; gap: 16px;">
+
+    <div class="header-right">
       <!-- Trend Re-analyzer Button -->
       <button class="action-btn" id="btn-reanalyze-trends" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3); color: #a7f3d0;" title="네이버/구글 API로부터 현재 트렌드 데이터 및 지수를 실시간 재수집하고 분석합니다.">
         <i class="fa-solid fa-arrows-rotate"></i> 트렌드 재분석
@@ -32,6 +35,10 @@
         <span>500 KIWI</span>
       </div>
       <button class="action-btn" id="btn-reset-app">데이터 초기화</button>
+            <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
     </div>
   </header>
 

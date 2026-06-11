@@ -12,6 +12,8 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1607063568131489"
+     crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -20,20 +22,24 @@
   <div class="bg-glow bg-glow-purple"></div>
 
   <!-- Header Navigation -->
-  <header class="main-header glass-panel">
+  <header class="main-header glass-header">
     <div class="header-left">
-      <a href="../index.html" class="back-btn" id="btn-back-home" title="CineAHO 홈으로 이동">
+      <a href="../index.html" class="back-btn" title="CineAHO 홈으로 이동">
         <i class="fa-solid fa-chevron-left"></i>
       </a>
       <div class="app-logo">
-        <i class="fa-solid fa-droplet logo-icon"></i>
-        <h1 class="logo-text">일일 권장 수분 섭취량 <span>계산기</span></h1>
+        <i class="fa-solid fa-droplet logo-icon text-blue"></i>
+        <h1 class="logo-text">일일 권장 수분 섭취량 계산기 <span class="engine-sub">Daily Hydration Tracker</span></h1>
       </div>
-      <span class="app-version">v1.0 Premium</span>
     </div>
+
     <div class="header-right">
       <button class="header-action-btn" id="btn-reset-inputs" title="입력값 초기화">
         <i class="fa-solid fa-rotate-left"></i> 초기화
+      </button>
+            <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
       </button>
     </div>
   </header>
