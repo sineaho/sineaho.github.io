@@ -159,6 +159,9 @@ const APP_METADATA = {
   'naver-seo': { name: '네이버 SEO', icon: 'fa-solid fa-square-rss', link: './naver-seo/index.html' },
   'ai-rss-news': { name: 'AI 뉴스', icon: 'fa-solid fa-square-rss', link: './ai-rss-news/index.html' },
   'youtube-hub': { name: '유튜브 분석', icon: 'fa-brands fa-youtube', link: './youtube-hub/index.html' },
+  'youtube-search': { name: '유튜브 검색', icon: 'fa-solid fa-magnifying-glass-chart', link: './youtube-search/index.html' },
+  'youtube-miner': { name: '떡상 소재 채굴기', icon: 'fa-solid fa-fire', link: './youtube-miner/index.html' },
+  'ai-video-generator': { name: 'AI 영상 제작기', icon: 'fa-solid fa-wand-magic-sparkles', link: './ai-video-generator/index.html' },
   'checklist': { name: '체크리스트', icon: 'fa-solid fa-clipboard-check', link: './checklist/index.html' },
   'lotto': { name: '로또 생성기', icon: 'fa-solid fa-dice', link: './lotto/index.html' },
   'omok': { name: '오목 대국실', icon: 'fa-solid fa-gamepad', link: './omok/index.html' },
@@ -199,7 +202,8 @@ const APP_METADATA = {
   'game-news': { name: '게임 뉴스', icon: 'fa-solid fa-gamepad', link: './game-news/index.html' },
   'neuro-game': { name: '신경 게임', icon: 'fa-solid fa-brain', link: './neuro-game/index.html' },
   'memory-game': { name: '카드 맞추기', icon: 'fa-solid fa-clone', link: './memory-game/index.html' },
-  'blackjack': { name: '블랙잭 3D', icon: 'fa-solid fa-diamond', link: './blackjack/index.html' }
+  'blackjack': { name: '블랙잭 3D', icon: 'fa-solid fa-diamond', link: './blackjack/index.html' },
+  'vampire-survivors': { name: '비행기 서바이벌', icon: 'fa-solid fa-jet-fighter', link: './vampire-survivors/index.html' }
 };
 
 // --- 카테고리별 앱 개수 및 전체 개수 동적 집계 ---
