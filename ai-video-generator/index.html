@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 영상 제작기 - CineAHO</title>
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1607063568131489"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <a href="../index.html" class="back-btn" title="CineAHO 홈으로 이동">
+        <i class="fa-solid fa-chevron-left"></i>
+      </a>
+      <div class="app-logo">
+        <i class="fa-solid fa-wand-magic-sparkles logo-icon text-purple"></i>
+        <h1 class="logo-text">AI 영상 제작기 <span class="engine-sub">Gemini Timeline Video Builder v1.0</span></h1>
+      </div>
+    </div>
+
+    <div class="header-right">
+            <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="workspace-container">
+    
+    <div class="workspace-grid">
+      
+      <!-- Left Column: Config, API Key, AI generation -->
+      <section class="left-col">
+        
+        <!-- API Config Card -->
+        <div class="glass-card">
+          <h2 class="card-title"><i class="fa-solid fa-key text-purple"></i> Gemini API 설정</h2>
+          <div class="card-body">
+            
+            <div class="form-group">
+              <label for="api-key-input">Gemini API 키</label>
+              <div class="input-password-wrapper">
+                <input type="password" id="api-key-input" placeholder="AI 자동 대본 생성을 위한 API 키 입력...">
+                <button id="btn-toggle-key" class="btn-icon-toggle" title="비밀번호 보기/숨기기">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+              </div>
+              <div class="toggle-row">
+                <label class="switch-label">
+                  <input type="checkbox" id="save-key-toggle">
+                  <span class="switch-slider"></span>
+                  <span class="switch-text">로컬 스토리지에 키 저장</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-row-2col">
+              <div class="form-group">
+                <label for="model-select">Gemini 모델 선택</label>
+                <select id="model-select">
+                  <option value="gemini-2.5-flash" selected>Gemini 2.5 Flash (속도 권장)</option>
+                  <option value="gemini-2.5-pro">Gemini 2.5 Pro (추론/장편 권장)</option>
+                  <option value="gemini-1.5-pro">Gemini 1.5 Pro (레거시 프로)</option>
+                  <option value="gemini-1.5-flash">Gemini 1.5 Flash (레거시 플래시)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="generation-mode">AI 생성 모드</label>
+                <select id="generation-mode">
+                  <option value="segmented" selected>순차적 분할 생성 (장편 안정성)</option>
+                  <option value="singleshot">한 번에 전체 생성 (단편용)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row-2col">
+              <div class="form-group">
+                <label for="video-duration">타겟 동영상 길이</label>
+                <select id="video-duration">
+                  <option value="60">1분 내외 (4씬)</option>
+                  <option value="180">3분 내외 (12씬)</option>
+                  <option value="300" selected>5분 다큐 (20씬)</option>
+                  <option value="600">10분 영상 (40씬)</option>
+                  <option value="1200">20분 대작 (80씬)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="video-aspect">화면 비율 (비디오 포맷)</label>
+                <select id="video-aspect">
+                  <option value="16-9" selected>🎬 가로형 롱폼 (16:9)</option>
+                  <option value="9-16">📱 세로형 숏폼 (9:16)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row-2col">
+              <div class="form-group">
+                <label for="video-theme">영상 비주얼 테마</label>
+                <select id="video-theme">
+                  <option value="space" selected>🔭 우주 다큐 (Starfield/Nebula)</option>
+                  <option value="cyberpunk">👾 사이버펑크 (Neon Grid/Matrix)</option>
+                  <option value="education">💻 IT 코딩 강좌 (Code Editor/Node)</option>
+                  <option value="historical">⏳ 역사 아카이브 (Vintage/Old Film)</option>
+                  <option value="nature">🌱 자연 다큐 (Forest &amp; Fireflies)</option>
+                  <option value="retro-synth">☀️ 레트로 신스웨이브 (Neon Grid Sun)</option>
+                  <option value="corporate">📈 비즈니스 테크 (Dynamic Charts)</option>
+                  <option value="ocean">🌊 심해 다큐 (Deep Navy Abyss)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="bgm-theme">배경음악 스타일</label>
+                <select id="bgm-theme">
+                  <option value="space">우주 앰비언트 (Space Hum)</option>
+                  <option value="techno">네온 테크노 (Cyber Arpeggio)</option>
+                  <option value="piano" selected>잔잔한 클래식 (Dreamy Synth)</option>
+                  <option value="lofi">로파이 비트 (Chill Lofi Chord)</option>
+                  <option value="none">배경음 없음 (Bgm Off)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row-2col">
+              <div class="form-group">
+                <label for="tts-voice-persona">AI 음성 스타일 (Persona)</label>
+                <select id="tts-voice-persona">
+                  <option value="calm-male" selected>🎙️ 차분한 남성 AI 성우 (Calm Male)</option>
+                  <option value="calm-female">🎙️ 차분한 여성 AI 성우 (Calm Female)</option>
+                  <option value="deep-docu">🎥 중후한 다큐멘터리 성우 (Deep Voice)</option>
+                  <option value="energetic">⚡ 발랄한 크리에이터 (Energetic)</option>
+                  <option value="robot">🤖 사이버네틱 로봇 음성 (Robotic)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="tts-voice">낭독 언어 / 기본 음성</label>
+                <select id="tts-voice">
+                  <option value="default">기본 한글 낭독 목소리</option>
+                  <!-- Populated dynamically via JS -->
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row-2col">
+              <div class="form-group" style="justify-content: center; margin-bottom: 0;">
+                <label class="switch-label">
+                  <input type="checkbox" id="outline-first-toggle" checked>
+                  <span class="switch-slider"></span>
+                  <span class="switch-text">전체 아웃라인 선행 기획</span>
+                </label>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="generation-temp">창의성 수치 (Temp: <span id="temp-val">0.7</span>)</label>
+                <input type="range" id="generation-temp" min="0.0" max="1.0" step="0.1" value="0.7" style="height: 20px; cursor: pointer; padding: 0;">
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- AI Generator Prompt Card -->
+        <div class="glass-card">
+          <h2 class="card-title"><i class="fa-solid fa-wand-magic-sparkles text-purple"></i> AI 자동 대본 제작</h2>
+          <div class="card-body">
+            
+            <div class="form-group">
+              <label for="prompt-preset">추천 주제 사전 정의</label>
+              <select id="prompt-preset">
+                <option value="custom">-- 직접 입력 --</option>
+                <option value="space_explore">인류의 우주 탐험 역사와 화성 정착의 비밀</option>
+                <option value="ai_future">인공지능의 역사와 미래 사회의 윤리적 딜레마</option>
+                <option value="js_master">초보자를 위한 핵심 JavaScript 10분 마스터 코스</option>
+                <option value="universe_scale">우주의 광활함과 미시 세계와의 기묘한 연결성</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="prompt-input">동영상 주제 및 지침</label>
+              <textarea id="prompt-input" rows="4" placeholder="만들고 싶은 비디오 다큐멘터리 주제나 핵심 키워드를 한글로 상세히 적어보세요... (예: '우주의 크기 크리에이터 다큐멘터리 제작')"></textarea>
+            </div>
+
+            <button id="btn-generate-ai" class="btn btn-primary btn-full">
+              <i class="fa-solid fa-brain"></i>
+              <span>Gemini AI 스크립트 빌드</span>
+            </button>
+
+            <div class="info-alert info-alert-purple">
+              <i class="fa-solid fa-circle-question"></i>
+              <span>API 키가 없더라도 우측 하단의 <strong>데모 프리셋 불러오기</strong>를 활용해 20분 규모의 동영상 컴파일을 바로 체험할 수 있습니다.</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Format Guide Accordion -->
+        <div class="glass-card font-small">
+          <details class="accordion">
+            <summary class="accordion-header">
+              <span><i class="fa-solid fa-list-check text-purple"></i> 스크립트 작성 표준 포맷 안내</span>
+              <i class="fa-solid fa-chevron-down arrow-icon"></i>
+            </summary>
+            <div class="accordion-body">
+              <p>AI 영상 제작기는 다음의 세 가지 형식 중 하나를 자동 감지하여 실시간 동영상 타임라인을 생성합니다. 텍스트 파일을 드래그앤드롭하여 올려도 동작합니다.</p>
+              
+              <div class="format-guide-tabs" style="display: flex; flex-direction: column; gap: 0.85rem;">
+                <div>
+                  <strong style="color: var(--purple); font-size: 0.8rem; display: block; margin-bottom: 0.25rem;">1. Standard SCENE 포맷</strong>
+                  <pre class="code-block"><code style="font-size: 0.72rem; color: #a78bfa;">[SCENE 1]
+Duration: 15s
+Subtitle: 우주의 탄생, 그것은 거대한 폭발이었습니다.
+Background: 별빛이 회전하며 폭발하는 성운 이펙트
+Narration: 우주는 약 백삼십팔억 년 전 빅뱅과 함께 탄생했습니다.
+
+[SCENE 2]
+Duration: 12s
+...</code></pre>
+                </div>
+                
+                <div>
+                  <strong style="color: var(--blue); font-size: 0.8rem; display: block; margin-bottom: 0.25rem;">2. JSON 포맷 (배열 구조)</strong>
+                  <pre class="code-block"><code style="font-size: 0.72rem; color: #60a5fa;">[
+  {
+    "duration": 15,
+    "subtitle": "우주의 탄생, 그것은 거대한 폭발이었습니다.",
+    "background": "성운 이펙트",
+    "narration": "우주는 빅뱅과 함께 탄생했습니다."
+  }
+]</code></pre>
+                </div>
+                
+                <div>
+                  <strong style="color: var(--green); font-size: 0.8rem; display: block; margin-bottom: 0.25rem;">3. Simple Line-by-Line (구분자 '|' ) 포맷</strong>
+                  <pre class="code-block"><code style="font-size: 0.72rem; color: #34d399;">우주의 탄생 | 우주는 빅뱅과 함께 탄생했습니다 | 15s | 우주 폭발
+인류의 시작 | 지구 요람에서 태어났습니다 | 12s | 푸른 행성
+(재생시간과 배경은 생략 시 자동 지정됩니다: 자막 | 내레이션)</code></pre>
+                </div>
+              </div>
+            </div>
+          </details>
+        </div>
+
+      </section>
+
+      <!-- Right Column: Editor & Timeline Player -->
+      <section class="right-col">
+        
+        <!-- Storyboard Raw Script Editor -->
+        <div class="glass-card">
+          <div class="card-header-flex" style="flex-wrap: wrap; gap: 0.75rem;">
+            <h2 class="card-title" style="margin-bottom: 0; border: none; padding-bottom: 0;"><i class="fa-solid fa-code text-purple"></i> 시나리오 스크립트 에디터</h2>
+            <div class="header-actions-row" style="display: flex; align-items: center; gap: 0.75rem;">
+              <span id="detected-format-badge" class="format-badge" style="font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 4px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted);">포맷 미정</span>
+              <span class="scene-counter" id="scene-counter-badge">총 0개 씬</span>
+            </div>
+          </div>
+          <div class="card-body">
+            
+            <!-- Editor Toolbar -->
+            <div class="editor-toolbar" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; background: rgba(0,0,0,0.15); padding: 0.5rem 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.03);">
+              <div class="toolbar-left">
+                <label class="switch-label" style="display: flex; align-items: center; gap: 0.5rem;">
+                  <input type="checkbox" id="auto-compile-toggle" checked>
+                  <span class="switch-slider" style="width: 32px; height: 16px;"></span>
+                  <span class="switch-text" style="font-size: 0.75rem;">실시간 자동 컴파일</span>
+                </label>
+              </div>
+              <div class="toolbar-right" style="display: flex; align-items: center; gap: 0.5rem;">
+                <button id="btn-import-file" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.75rem; border-radius: 6px;" title="텍스트, JSON, CSV 파일 가져오기">
+                  <i class="fa-solid fa-file-import"></i> <span>파일 가져오기</span>
+                </button>
+                <input type="file" id="file-import-input" accept=".txt,.json,.csv,.tsv" style="display: none;">
+              </div>
+            </div>
+            
+            <!-- Compile error message area -->
+            <div id="editor-error-message" class="editor-error-message" style="display: none; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2); color: #f87171; padding: 0.6rem 0.85rem; border-radius: 6px; font-size: 0.78rem; margin-bottom: 0.75rem; font-family: var(--font-code); line-height: 1.4;"></div>
+
+            <div class="textarea-editor-wrapper" id="editor-drop-zone">
+              <textarea id="script-editor-text" spellcheck="false" placeholder="Gemini AI로 스크립트를 생성하거나 여기에 규격 포맷에 맞게 직접 작성하세요. 텍스트/JSON/CSV 파일을 이 창에 드래그하여 로드할 수도 있습니다..."></textarea>
+            </div>
+
+            <div class="btn-compile-row">
+              <button id="btn-compile-script" class="btn btn-action-compile">
+                <i class="fa-solid fa-gears"></i>
+                <span>비디오 타임라인 컴파일 & 로드</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Video Player Overlay -->
+        <div class="glass-card">
+          <h2 class="card-title"><i class="fa-solid fa-circle-play text-purple"></i> 16:9 렌더링 플레이어</h2>
+          <div class="card-body">
+            
+            <div class="video-renderer-layout">
+              <div class="canvas-aspect-wrapper">
+                <canvas id="video-canvas" width="854" height="480"></canvas>
+                
+                <!-- Overlay subtitle panel -->
+                <div class="subtitle-overlay-wrapper" id="subtitle-box-overlay">
+                  <span id="subtitle-text-element">영상 준비 대기 중</span>
+                </div>
+                
+                <!-- Buffering / Encoding progress layer -->
+                <div class="player-overlay-state" id="player-loading-overlay" style="display: none;">
+                  <div class="spinner-box">
+                    <div class="loading-spinner"></div>
+                    <span id="player-loading-text">Gemini AI 스크립트 처리 중...</span>
+                  </div>
+                </div>
+
+                <!-- Live Encoding / Recording banner -->
+                <div class="recording-indicator-banner" id="rec-indicator-banner" style="display: none;">
+                  <span class="rec-dot"></span>
+                  <span>RECORDING VIDEO FILE (최대 20분 내보내기 캡처 중...)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Timeline controls dashboard -->
+            <div class="timeline-dashboard">
+              
+              <!-- Progress slider track -->
+              <div class="slider-track-container">
+                <input type="range" id="timeline-progress-slider" min="0" max="100" value="0">
+              </div>
+
+              <!-- Control buttons and time indices -->
+              <div class="player-controls-row">
+                
+                <div class="controls-left">
+                  <button id="btn-play-pause" class="btn btn-control" title="재생/일시정지" disabled>
+                    <i class="fa-solid fa-play"></i>
+                  </button>
+                  <button id="btn-stop-player" class="btn btn-control" title="정지 및 처음으로" disabled>
+                    <i class="fa-solid fa-rotate-left"></i>
+                  </button>
+                  <button id="btn-volume-toggle" class="btn btn-control" title="음소거 토글">
+                    <i class="fa-solid fa-volume-high"></i>
+                  </button>
+                </div>
+
+                <div class="controls-center">
+                  <div class="time-readout">
+                    <span id="current-time-label" class="time-bold">00:00</span>
+                    <span class="time-slash">/</span>
+                    <span id="total-time-label">00:00</span>
+                  </div>
+                </div>
+
+                <div class="controls-right">
+                  <span class="scene-indicator" id="current-scene-indicator">SCENE 0 / 0</span>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Export & Preset Load Center -->
+        <div class="glass-card">
+          <h2 class="card-title"><i class="fa-solid fa-file-export text-purple"></i> 프로젝트 내보내기 & 퀵 프리셋</h2>
+          <div class="card-body">
+            
+            <div class="action-grid-buttons">
+              <button id="btn-export-video" class="btn btn-success" disabled>
+                <i class="fa-solid fa-circle-down"></i>
+                <span>비디오 캡처 & 인코딩 다운로드 (.webm)</span>
+              </button>
+              
+              <button id="btn-export-srt" class="btn btn-secondary" disabled>
+                <i class="fa-solid fa-closed-captioning"></i>
+                <span>자막 스크립트 (.srt) 내보내기</span>
+              </button>
+            </div>
+
+            <div class="preset-section">
+              <span class="preset-label">무작위 데모 프리셋 로드 (API 키 불필요):</span>
+              <div class="preset-btn-row">
+                <button class="btn btn-preset-load" data-preset="space">
+                  <i class="fa-solid fa-space-shuttle"></i> 3분 우주 다큐
+                </button>
+                <button class="btn btn-preset-load" data-preset="ai">
+                  <i class="fa-solid fa-robot"></i> 5분 AI 다큐
+                </button>
+                <button class="btn btn-preset-load" data-preset="js">
+                  <i class="fa-solid fa-code"></i> 20분 JS 마스터
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <p>&copy; 2026 CineAHO's SandBox. All rights reserved.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

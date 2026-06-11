@@ -5,27 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Tech News RSS Feeds Dashboard - CineAHO</title>
   <link rel="stylesheet" href="styles.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1607063568131489"
+     crossorigin="anonymous"></script>
 </head>
 <body>
 
   <!-- App Header & Toolbar Toolbar -->
-  <header class="main-header">
+  <header class="main-header glass-header">
     <div class="header-left">
-      <!-- Back to CineAHO Portal Home -->
-      <a href="../index.html" class="action-btn" style="background-color: rgba(255,255,255,0.05); border: 1px solid var(--border-color); text-decoration: none; display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 6px; color: var(--text-main); margin-right: 8px;" title="CineAHO 홈으로 이동">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      <a href="../index.html" class="back-btn" title="CineAHO 홈으로 이동">
+        <i class="fa-solid fa-chevron-left"></i>
       </a>
-      
-      <div class="app-logo">AI Tech News RSS Feeds</div>
-      <div class="search-box-container">
-        <!-- Search Icon -->
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="search-input" placeholder="검색: 제목·번역·소스명">
+      <div class="app-logo">
+        <i class="fa-solid fa-square-rss logo-icon text-blue"></i>
+        <h1 class="logo-text">AI Tech News RSS Feeds <span class="engine-sub">AI Tech RSS Translator</span></h1>
       </div>
-      <span class="subtext-mute">스크롤 시 열당 20건씩 추가 로드</span>
     </div>
 
-    <!-- Filters & Settings Bar -->
     <div class="header-right">
       <!-- RSS Manager Button -->
       <button class="action-btn rss-btn" id="btn-toggle-rss-drawer">
@@ -57,6 +53,10 @@
         <button class="action-btn" id="btn-toggle-duplicate">중복묶기OFF</button>
         <button class="action-btn" id="btn-reset">초기화</button>
       </div>
+            <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
     </div>
   </header>
 

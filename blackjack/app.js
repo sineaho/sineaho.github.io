@@ -12,7 +12,7 @@
   const TABLE_RADIUS = 8;
   const DEAL_DURATION = 400; // ms per card animation
   const SUITS = ['♠', '♥', '♦', '♣'];
-  const SUIT_COLORS = { '♠': '#e2e8f0', '♥': '#f43f5e', '♦': '#3b82f6', '♣': '#10b981' };
+  const SUIT_COLORS = { '♠': '#111827', '♥': '#e11d48', '♦': '#2563eb', '♣': '#059669' };
   const DEALER_STAND = 17;
   const TARGET = 21;
 
@@ -67,8 +67,8 @@
 
     // Camera
     camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
-    camera.position.set(0, 12, 10);
-    camera.lookAt(0, 0, 0);
+    camera.position.set(0, 8, 7.5);
+    camera.lookAt(0, 0, 0.5);
 
     // Renderer
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -110,11 +110,11 @@
 
   function setupLights() {
     // Ambient
-    const ambient = new THREE.AmbientLight(0x404060, 0.6);
+    const ambient = new THREE.AmbientLight(0xffffff, 0.45);
     scene.add(ambient);
 
     // Main overhead spot
-    const mainLight = new THREE.SpotLight(0xffeedd, 1.5, 30, Math.PI / 4, 0.5, 1);
+    const mainLight = new THREE.SpotLight(0xffeedd, 1.2, 30, Math.PI / 4, 0.5, 1);
     mainLight.position.set(0, 15, 0);
     mainLight.castShadow = true;
     mainLight.shadow.mapSize.set(2048, 2048);
@@ -123,17 +123,24 @@
     scene.add(mainLight);
     scene.add(mainLight.target);
 
+    // Dedicated front light for card clarity
+    const cardLight = new THREE.DirectionalLight(0xffffff, 0.85);
+    cardLight.position.set(0, 10, 10);
+    cardLight.castShadow = true;
+    cardLight.shadow.mapSize.set(1024, 1024);
+    scene.add(cardLight);
+
     // Accent warm point lights
-    const warmLeft = new THREE.PointLight(0xf59e0b, 0.4, 20);
+    const warmLeft = new THREE.PointLight(0xf59e0b, 0.25, 20);
     warmLeft.position.set(-6, 6, -3);
     scene.add(warmLeft);
 
-    const warmRight = new THREE.PointLight(0xf59e0b, 0.4, 20);
+    const warmRight = new THREE.PointLight(0xf59e0b, 0.25, 20);
     warmRight.position.set(6, 6, -3);
     scene.add(warmRight);
 
     // Cool fill
-    const coolFill = new THREE.PointLight(0x6366f1, 0.2, 20);
+    const coolFill = new THREE.PointLight(0x6366f1, 0.15, 20);
     coolFill.position.set(0, 8, 8);
     scene.add(coolFill);
   }
@@ -278,18 +285,18 @@
     if (!faceDown) {
       // Value text
       const canvas = document.createElement('canvas');
-      canvas.width = 256;
-      canvas.height = 384;
+      canvas.width = 512;
+      canvas.height = 768;
       const ctx = canvas.getContext('2d');
 
       // White background
       ctx.fillStyle = '#f5f5f0';
-      ctx.fillRect(0, 0, 256, 384);
+      ctx.fillRect(0, 0, 512, 768);
 
       // Border
-      ctx.strokeStyle = '#ddd';
-      ctx.lineWidth = 4;
-      ctx.roundRect ? ctx.roundRect(8, 8, 240, 368, 12) : ctx.strokeRect(8, 8, 240, 368);
+      ctx.strokeStyle = '#cccccc';
+      ctx.lineWidth = 8;
+      ctx.roundRect ? ctx.roundRect(16, 16, 480, 736, 24) : ctx.strokeRect(16, 16, 480, 736);
       ctx.stroke();
 
       // Suit color
@@ -297,34 +304,34 @@
 
       // Top-left value + suit
       ctx.fillStyle = suitColor;
-      ctx.font = 'bold 48px Outfit, Arial, sans-serif';
+      ctx.font = 'bold 88px Outfit, Arial, sans-serif';
       ctx.textAlign = 'left';
-      ctx.fillText(card.value.toString(), 20, 60);
-      ctx.font = '36px Arial, sans-serif';
-      ctx.fillText(card.suit, 22, 100);
+      ctx.fillText(card.value.toString(), 40, 100);
+      ctx.font = '64px Arial, sans-serif';
+      ctx.fillText(card.suit, 44, 170);
 
       // Center value large
-      ctx.font = 'bold 120px Outfit, Arial, sans-serif';
+      ctx.font = 'bold 240px Outfit, Arial, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(card.value.toString(), 128, 220);
+      ctx.fillText(card.value.toString(), 256, 400);
 
       // Center suit
-      ctx.font = '60px Arial, sans-serif';
-      ctx.fillText(card.suit, 128, 290);
+      ctx.font = '120px Arial, sans-serif';
+      ctx.fillText(card.suit, 256, 540);
 
       // Bottom-right value + suit (rotated)
       ctx.save();
-      ctx.translate(236, 350);
+      ctx.translate(472, 668);
       ctx.rotate(Math.PI);
-      ctx.font = 'bold 48px Outfit, Arial, sans-serif';
+      ctx.font = 'bold 88px Outfit, Arial, sans-serif';
       ctx.textAlign = 'left';
-      ctx.fillText(card.value.toString(), 0, 26);
-      ctx.font = '36px Arial, sans-serif';
-      ctx.fillText(card.suit, 2, 66);
+      ctx.fillText(card.value.toString(), 0, 0);
+      ctx.font = '64px Arial, sans-serif';
+      ctx.fillText(card.suit, 4, 70);
       ctx.restore();
 
       const texture = new THREE.CanvasTexture(canvas);
-      texture.anisotropy = 4;
+      texture.anisotropy = 8;
 
       // Apply texture to top face
       const texMat = new THREE.MeshStandardMaterial({
@@ -336,51 +343,51 @@
     } else {
       // Card back pattern
       const canvas = document.createElement('canvas');
-      canvas.width = 256;
-      canvas.height = 384;
+      canvas.width = 512;
+      canvas.height = 768;
       const ctx = canvas.getContext('2d');
 
       // Dark blue background
-      const grad = ctx.createLinearGradient(0, 0, 256, 384);
+      const grad = ctx.createLinearGradient(0, 0, 512, 768);
       grad.addColorStop(0, '#1a237e');
       grad.addColorStop(0.5, '#283593');
       grad.addColorStop(1, '#1a237e');
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 256, 384);
+      ctx.fillRect(0, 0, 512, 768);
 
       // Diamond pattern
-      ctx.strokeStyle = 'rgba(255,255,255,0.1)';
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+      ctx.lineWidth = 2;
       for (let i = 0; i < 20; i++) {
         for (let j = 0; j < 30; j++) {
-          const cx = i * 26 + (j % 2) * 13;
+          const cx = i * 52 + (j % 2) * 26;
           const cy = j * 26;
           ctx.beginPath();
-          ctx.moveTo(cx, cy - 8);
-          ctx.lineTo(cx + 8, cy);
-          ctx.lineTo(cx, cy + 8);
-          ctx.lineTo(cx - 8, cy);
+          ctx.moveTo(cx, cy - 16);
+          ctx.lineTo(cx + 16, cy);
+          ctx.lineTo(cx, cy + 16);
+          ctx.lineTo(cx - 16, cy);
           ctx.closePath();
           ctx.stroke();
         }
       }
 
       // Center emblem
-      ctx.fillStyle = 'rgba(245,158,11,0.3)';
-      ctx.font = 'bold 60px serif';
+      ctx.fillStyle = 'rgba(245,158,11,0.25)';
+      ctx.font = 'bold 120px serif';
       ctx.textAlign = 'center';
-      ctx.fillText('♠', 128, 205);
+      ctx.fillText('♠', 256, 410);
 
       // Border
       ctx.strokeStyle = 'rgba(245,158,11,0.4)';
-      ctx.lineWidth = 6;
-      ctx.strokeRect(12, 12, 232, 360);
+      ctx.lineWidth = 12;
+      ctx.strokeRect(24, 24, 464, 720);
       ctx.strokeStyle = 'rgba(245,158,11,0.2)';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(20, 20, 216, 344);
+      ctx.lineWidth = 4;
+      ctx.strokeRect(40, 40, 432, 688);
 
       const texture = new THREE.CanvasTexture(canvas);
-      texture.anisotropy = 4;
+      texture.anisotropy = 8;
 
       const texMat = new THREE.MeshStandardMaterial({
         map: texture,
@@ -855,18 +862,18 @@
     let targetPos, targetLookAt;
     switch (preset) {
       case 'default':
-        targetPos = { x: 0, y: 12, z: 10 };
-        targetLookAt = { x: 0, y: 0, z: 0 };
+        targetPos = { x: 0, y: 8, z: 7.5 };
+        targetLookAt = { x: 0, y: 0, z: 0.5 };
         btnCamDefault.classList.add('active');
         break;
       case 'overhead':
-        targetPos = { x: 0, y: 18, z: 0.5 };
-        targetLookAt = { x: 0, y: 0, z: 0 };
+        targetPos = { x: 0, y: 12, z: 0.5 };
+        targetLookAt = { x: 0, y: 0, z: 0.2 };
         btnCamOverhead.classList.add('active');
         break;
       case 'close':
-        targetPos = { x: 0, y: 5, z: 6 };
-        targetLookAt = { x: 0, y: 0, z: 1 };
+        targetPos = { x: 0, y: 4, z: 4.5 };
+        targetLookAt = { x: 0, y: 0, z: 1.5 };
         btnCamClose.classList.add('active');
         break;
     }

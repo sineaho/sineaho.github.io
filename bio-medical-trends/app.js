@@ -231,6 +231,81 @@ function loadBioTrendsState() {
   }
 }
 
+// Fetch papers from Server API
+async function fetchBioTrends(refresh = false) {
+  try {
+    const url = refresh ? '/api/bio-trends?refresh=true' : '/api/bio-trends';
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('API response not OK');
+    const result = await response.json();
+    if (result.success && Array.isArray(result.data) && result.data.length > 0) {
+      papersDataset = result.data;
+      saveBioTrendsState();
+      return true;
+    }
+  } catch (err) {
+    console.error('Failed to fetch bio trends from API:', err);
+  }
+  return false;
+}
+
+function updateSyncTimeLabel(statusText = '') {
+  const bioSyncTimeLabel = document.getElementById("bio-sync-time-label");
+  if (bioSyncTimeLabel) {
+    const now = new Date();
+    bioSyncTimeLabel.textContent = `최근 갱신: ${now.toLocaleTimeString("ko-KR")} (${statusText})`;
+    bioSyncTimeLabel.style.color = "#10b981";
+  }
+}
+
+function playSuccessChime() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    const t = audioCtx.currentTime;
+    osc.frequency.setValueAtTime(523.25, t);
+    osc.frequency.setValueAtTime(659.25, t + 0.1);
+    osc.frequency.setValueAtTime(783.99, t + 0.2);
+    gain.gain.setValueAtTime(0.08, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+    osc.start(t);
+    osc.stop(t + 0.4);
+  } catch(e) {}
+}
+
+// Sleek Custom Toast System
+function showToast(title, message, iconClass = 'fa-solid fa-circle-check') {
+  let container = document.querySelector('.toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement('div');
+  toast.className = 'custom-toast';
+  toast.innerHTML = `
+    <div class="toast-icon"><i class="${iconClass}"></i></div>
+    <div class="toast-content">
+      <div class="toast-title">${title}</div>
+      <div class="toast-msg">${message}</div>
+    </div>
+  `;
+
+  container.appendChild(toast);
+
+  // Auto remove
+  setTimeout(() => {
+    toast.classList.add('hide');
+    setTimeout(() => {
+      toast.remove();
+    }, 400);
+  }, 4000);
+}
+
 loadBioTrendsState();
 
 // Global Dashboard Charts reference
@@ -248,103 +323,53 @@ let currentSortColumn = 'id';
 let currentSortAsc = true;
 
 // 2. Initialize Charts, Navigation, Theme & Stats
-document.addEventListener('DOMContentLoaded', () => {
+async function initAll() {
   initTheme();
   initNavigation();
+  
+  // Try to load fresh data from backend. If it fails, fallback to local storage or static array
+  const loadSuccess = await fetchBioTrends(false);
+  
   initDashboardCharts();
   initExplorerTable();
   initSimulator();
   initPaperModal();
   updateVisitorStats();
 
+  updateSyncTimeLabel(loadSuccess ? 'API 동기화 완료' : '로컬 로드 완료');
+
   // Bind manual data sync button
   const btnSyncBio = document.getElementById("btn-sync-bio-trends");
-  const bioSyncTimeLabel = document.getElementById("bio-sync-time-label");
   if (btnSyncBio) {
-    btnSyncBio.addEventListener("click", () => {
+    btnSyncBio.addEventListener("click", async () => {
       btnSyncBio.disabled = true;
-      btnSyncBio.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>데이터 갱신 및 동기화 중...</span>`;
+      btnSyncBio.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>PubMed API 연동 실시간 데이터 수집 중...</span>`;
       
-      setTimeout(() => {
-        // 1. Wiggle existing citation metrics
-        papersDataset.forEach(paper => {
-          paper.citations += Math.floor(Math.random() * 15) + 5;
-          paper.altmetric += Math.floor(Math.random() * 40) + 10;
-        });
-        
-        // 2. Add new mock paper if not already added
-        const newPapersPool = [
-          {
-            id: 100 + papersDataset.length,
-            title: "Real-time AI mapping of neuro-circuits during deep brain stimulation",
-            authors: "Helen S. Mayberg, Mount Sinai School of Medicine",
-            journal: "Nature",
-            year: 2026,
-            citations: 12,
-            impactFactor: 64.8,
-            altmetric: 320,
-            subfield: "Neuroscience",
-            keywords: ["AI", "DBS", "Neuroscience", "Depression", "Brain Mapping"],
-            abstract: "A novel closed-loop deep brain stimulation protocol that dynamically adjusts electrical currents based on real-time AI mapping of the patient's emotional neural networks, showing significant clinical relief."
-          },
-          {
-            id: 100 + papersDataset.length,
-            title: "CRISPR-based epigenetic silencing of Huntington's disease gene in vivo",
-            authors: "Feng Zhang, MIT Broad Institute",
-            journal: "Science",
-            year: 2026,
-            citations: 8,
-            impactFactor: 56.9,
-            altmetric: 240,
-            subfield: "CRISPR Gene Editing",
-            keywords: ["CRISPR", "Epigenetics", "Huntington", "Gene Silencing"],
-            abstract: "Developed a non-cleaving CRISPR-Cas9 platform linked to epigenetic methyltransferases to permanently silence the mutant huntingtin gene in mouse models without making DNA double-strand breaks."
-          }
-        ];
-        
-        const toAdd = newPapersPool.find(p => !papersDataset.some(existing => existing.title === p.title));
-        if (toAdd) {
-          papersDataset.push(toAdd);
-        }
-        
-        saveBioTrendsState();
-        
-        // Re-render
+      const success = await fetchBioTrends(true);
+      
+      if (success) {
         initDashboardCharts();
         initExplorerTable();
         initSimulator();
         
-        btnSyncBio.disabled = false;
-        btnSyncBio.innerHTML = `<i class="fa-solid fa-arrows-rotate"></i> <span>실시간 논문 데이터 수집 및 갱신</span>`;
-        
-        const now = new Date();
-        if (bioSyncTimeLabel) {
-          bioSyncTimeLabel.textContent = `최근 갱신: ${now.toLocaleTimeString("ko-KR")} 완료`;
-          bioSyncTimeLabel.style.color = "#10b981";
-        }
-        
-        // Play success chime synthetically
-        try {
-          const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          const t = audioCtx.currentTime;
-          osc.frequency.setValueAtTime(523.25, t);
-          osc.frequency.setValueAtTime(659.25, t + 0.1);
-          osc.frequency.setValueAtTime(783.99, t + 0.2);
-          gain.gain.setValueAtTime(0.08, t);
-          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
-          osc.start(t);
-          osc.stop(t + 0.4);
-        } catch(e) {}
-        
-        alert("최신 학술 데이터베이스 갱신이 완료되었습니다! 신규 논문 등재 및 누적 인용 카운트가 실시간 업데이트되었습니다.");
-      }, 1500);
+        playSuccessChime();
+        updateSyncTimeLabel('실시간 동기화 완료');
+        showToast("동기화 성공", "NCBI PubMed API 연동이 완료되었습니다! 최근 발표된 논문 60편을 실시간으로 수집하고 트렌드 분석을 완료했습니다.", "fa-solid fa-circle-check");
+      } else {
+        showToast("동기화 실패", "실시간 데이터 수집에 실패했습니다. PubMed 서버 상태 또는 네트워크 설정을 확인해 주세요.", "fa-solid fa-triangle-exclamation");
+      }
+      
+      btnSyncBio.disabled = false;
+      btnSyncBio.innerHTML = `<i class="fa-solid fa-arrows-rotate"></i> <span>실시간 논문 데이터 수집 및 갱신</span>`;
     });
   }
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initAll);
+} else {
+  initAll();
+}
 
 // Theme Initializer (Sync with localStorage / default dark)
 function initTheme() {
@@ -474,7 +499,7 @@ function initDashboardCharts() {
 
   // Aggregate Data
   const subfields = {};
-  const years = { 2023: { sum: 0, count: 0 }, 2024: { sum: 0, count: 0 }, 2025: { sum: 0, count: 0 }, 2026: { sum: 0, count: 0 } };
+  const years = {};
   const journals = {};
   const keywordsPool = {};
 
@@ -494,10 +519,11 @@ function initDashboardCharts() {
     subfields[paper.subfield] = (subfields[paper.subfield] || 0) + paper.citations;
 
     // Year timeline aggregates (Line)
-    if (years[paper.year]) {
-      years[paper.year].sum += paper.citations;
-      years[paper.year].count += 1;
+    if (!years[paper.year]) {
+      years[paper.year] = { sum: 0, count: 0 };
     }
+    years[paper.year].sum += paper.citations;
+    years[paper.year].count += 1;
 
     // Journal shares (Doughnut)
     journals[paper.journal] = (journals[paper.journal] || 0) + 1;
@@ -511,8 +537,36 @@ function initDashboardCharts() {
   // Inject KPI values
   const avgCits = document.getElementById('kpi-avg-citations');
   const maxIFSpan = document.getElementById('kpi-max-if');
-  if (avgCits) avgCits.textContent = `${Math.round(totalCitations / papersDataset.length)}회`;
-  if (maxIFSpan) maxIFSpan.textContent = maxIFJournal;
+  const totalPapersSpan = document.getElementById('kpi-total-papers');
+  const topTopicSpan = document.getElementById('kpi-top-topic');
+
+  if (avgCits) avgCits.textContent = papersDataset.length > 0 ? `${Math.round(totalCitations / papersDataset.length)}회` : '0회';
+  if (maxIFSpan) maxIFSpan.textContent = maxIFJournal || '-';
+  if (totalPapersSpan) totalPapersSpan.textContent = `${papersDataset.length}편`;
+
+  // Find top topic (subfield with max citations)
+  let topTopic = 'N/A';
+  let maxTopicVal = -1;
+  for (const [subfield, val] of Object.entries(subfields)) {
+    if (val > maxTopicVal) {
+      maxTopicVal = val;
+      topTopic = subfield;
+    }
+  }
+  if (topTopicSpan) {
+    const koSubfields = {
+      'AI Drug Discovery': 'AI 신약개발',
+      'CRISPR Gene Editing': '유전자 교정',
+      'mRNA Tech': 'mRNA 백신공학',
+      'Immunotherapy': '면역 항암치료',
+      'Neural Interfaces': '뇌-컴퓨터 인터페이스',
+      'Longevity': '노화 방지',
+      'Microbiome': '마이크로바이옴',
+      'Genomics': '유전체학',
+      'General Medicine': '일반 의학'
+    };
+    topTopicSpan.textContent = koSubfields[topTopic] || topTopic;
+  }
 
   // Render Keyword Cloud tags
   const cloudContainer = document.getElementById('kws-cloud-container');
@@ -589,7 +643,7 @@ function initDashboardCharts() {
   if (ctxLine) {
     if (lineChart) lineChart.destroy();
 
-    const chartYears = Object.keys(years);
+    const chartYears = Object.keys(years).sort();
     const chartAvgCitations = chartYears.map(yr => {
       const item = years[yr];
       return item.count > 0 ? Math.round(item.sum / item.count) : 0;
