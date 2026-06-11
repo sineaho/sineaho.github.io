@@ -1380,3 +1380,106 @@ body::before {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* ==========================================================================
+   Antigravity Unified Header Styles
+   ========================================================================== */
+.main-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0.85rem 2rem !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+  margin: 1rem 1.5rem 0 1.5rem !important;
+  border-radius: 50px !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  background: rgba(15, 15, 26, 0.85) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+.header-left {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+}
+
+.back-btn {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #94a3b8 !important;
+  text-decoration: none !important;
+  transition: all 0.3s ease !important;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+}
+
+.app-logo {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+.app-logo i.logo-icon {
+  font-size: 1.15rem !important;
+}
+
+.app-logo i.logo-icon.text-purple { color: #a78bfa !important; }
+.app-logo i.logo-icon.text-blue { color: #60a5fa !important; }
+.app-logo i.logo-icon.text-red { color: #f87171 !important; }
+.app-logo i.logo-icon.text-green { color: #34d399 !important; }
+.app-logo i.logo-icon.text-orange { color: #fb923c !important; }
+.app-logo i.logo-icon.text-cyan { color: #22d3ee !important; }
+.app-logo i.logo-icon.text-gold { color: #fbbf24 !important; }
+
+.logo-text {
+  font-family: inherit !important;
+  font-weight: 800 !important;
+  font-size: 1.15rem !important;
+  display: flex !important;
+  align-items: baseline !important;
+  gap: 0.5rem !important;
+  color: #f1f5f9 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+.engine-sub {
+  font-size: 0.7rem !important;
+  color: #94a3b8 !important;
+  font-weight: 400 !important;
+}
+
+.btn-back-dashboard {
+  background: rgba(168, 85, 247, 0.1) !important;
+  border: 1px solid rgba(168, 85, 247, 0.2) !important;
+  color: #f1f5f9 !important;
+  font-weight: 600 !important;
+  font-size: 0.82rem !important;
+  padding: 0.5rem 1.25rem !important;
+  border-radius: 30px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.4rem !important;
+  transition: all 0.3s ease !important;
+}
+
+.btn-back-dashboard:hover {
+  background: #a855f7 !important;
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3) !important;
+}

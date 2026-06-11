@@ -11,6 +11,8 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1607063568131489"
+     crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -123,16 +125,19 @@
   <div class="game-screen hidden" id="game-screen">
     
     <!-- Top Header Bar -->
-    <header class="game-header">
-      <div class="header-left">
-        <span class="logo-small">GOD FIELD</span>
-        <div class="turn-banner" id="turn-banner">
-          <span class="pulse-dot-green"></span>
-          <span id="turn-txt">경기 대기 중</span>
-        </div>
+    <header class="main-header glass-header">
+    <div class="header-left">
+      <a href="../index.html" class="back-btn" title="CineAHO 홈으로 이동">
+        <i class="fa-solid fa-chevron-left"></i>
+      </a>
+      <div class="app-logo">
+        <i class="fa-solid fa-crown logo-icon text-gold"></i>
+        <h1 class="logo-text">갓 필드 카드 배틀 <span class="engine-sub">Turn-Based Prophet Duel</span></h1>
       </div>
-      <div class="header-right">
-        <button class="btn-header" id="btn-open-bible">
+    </div>
+
+    <div class="header-right">
+      <button class="btn-header" id="btn-open-bible">
           <i class="fa-solid fa-book-bible"></i>
           <span>교전(敎典)</span>
         </button>
@@ -140,8 +145,12 @@
           <i class="fa-solid fa-circle-xmark"></i>
           <span>포기하기</span>
         </button>
-      </div>
-    </header>
+            <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
 
     <!-- Play Workspace Split Layout -->
     <div class="game-workspace">

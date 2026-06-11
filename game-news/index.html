@@ -6,6 +6,8 @@
   <title>CineAHO Game News & Free Games Aggregator</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1607063568131489"
+     crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -14,17 +16,18 @@
   <div style="position: fixed; bottom: -10%; right: -10%; width: 50%; height: 50%; border-radius: 50%; background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, rgba(0,0,0,0) 70%); z-index: -1; pointer-events: none;"></div>
 
   <!-- Header -->
-  <header class="main-header">
+  <header class="main-header glass-header">
     <div class="header-left">
-      <!-- Back to CineAHO Portal Home -->
-      <a href="../index.html" class="action-btn" style="background-color: rgba(255,255,255,0.05); border: 1px solid var(--border-color); text-decoration: none; display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 6px; color: var(--text-main); margin-right: 8px;" title="CineAHO 홈으로 이동">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      <a href="../index.html" class="back-btn" title="CineAHO 홈으로 이동">
+        <i class="fa-solid fa-chevron-left"></i>
       </a>
       <div class="app-logo">
-        <i class="fa-solid fa-gamepad"></i> CineAHO Game Aggregator
+        <i class="fa-solid fa-gamepad logo-icon text-purple"></i>
+        <h1 class="logo-text">게임 뉴스 애그리게이터 <span class="engine-sub">Free Games Feed Aggregator</span></h1>
       </div>
     </div>
-    <div class="header-right" style="display: flex; align-items: center; gap: 16px;">
+
+    <div class="header-right">
       <!-- Real-time Update Button -->
       <button class="action-btn" id="btn-refresh-news" style="background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.3); color: #93c5fd;" title="국내외 게임 언론사 및 스팀/에픽 API로부터 실시간으로 뉴스를 수집합니다.">
         <i class="fa-solid fa-arrows-rotate"></i> 실시간 업데이트
@@ -33,6 +36,10 @@
         <i class="fa-solid fa-users" style="color: var(--color-primary);"></i>
         <span style="font-size: 11px; margin-left: 4px;">조회수: <strong id="app-counter">0</strong></span>
       </div>
+            <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
     </div>
   </header>
 
