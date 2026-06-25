@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>쿠팡·네이버쇼핑 인기 순위 및 가격 분석기</title>
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Client JavaScript -->
+  <script src="app.js" defer></script>
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header">
+    <div class="header-left">
+      <a href="../index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+      <div class="app-logo">
+        <i class="fa-solid fa-bag-shopping logo-icon text-cyan"></i>
+        <span class="logo-text">쇼핑 실시간 인기 & 가격 분석기 <span class="engine-sub">Coupang vs Naver Shopping</span></span>
+      </div>
+    </div>
+    <div class="header-right">
+      <button id="theme-toggle" class="btn-theme">
+        <i class="fa-solid fa-sun"></i>
+        <span>라이트</span>
+      </button>
+      <a href="../index.html" class="btn-back-dashboard"><i class="fa-solid fa-house"></i> <span>포털 홈</span></a>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-container">
+
+    <!-- Search Hero Section -->
+    <section class="search-hero glass-panel">
+      <h2 class="hero-title">어떤 상품을 찾으시나요?</h2>
+      <p class="hero-subtitle">쿠팡과 네이버쇼핑의 상품 정보를 종합 분석하여 가격 스펙트럼과 통합 인기 순위를 시각화합니다.</p>
+      
+      <div class="search-form-wrapper">
+        <div class="search-input-box">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" id="shopping-query-input" placeholder="상품명 또는 키워드를 입력하세요 (예: 맥북 에어, 아이폰 15, 갤럭시 S24)...">
+          <button id="btn-shopping-search" class="btn-search">
+            <i class="fa-solid fa-chart-simple"></i> <span>분석하기</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="quick-tags">
+        <span class="tag-label">인기 키워드:</span>
+        <button class="quick-tag" data-query="맥북 에어">맥북 에어</button>
+        <button class="quick-tag" data-query="아이폰 15">아이폰 15</button>
+        <button class="quick-tag" data-query="갤럭시 S24">갤럭시 S24</button>
+        <button class="quick-tag" data-query="에어팟 프로">에어팟 프로</button>
+        <button class="quick-tag" data-query="신라면">신라면</button>
+      </div>
+    </section>
+
+    <!-- App State: Welcome / Empty State -->
+    <section class="state-container" id="empty-state">
+      <div class="empty-box glass-panel">
+        <i class="fa-solid fa-search-dollar empty-icon"></i>
+        <h3>분석 대기 중</h3>
+        <p>검색창에 상품명을 입력하고 분석하기 버튼을 클릭하면 실시간 쇼핑몰 분석 대시보드가 활성화됩니다.</p>
+      </div>
+    </section>
+
+    <!-- App State: Loading State -->
+    <section class="state-container" id="loading-state" style="display: none;">
+      <div class="loading-box glass-panel">
+        <i class="fa-solid fa-spinner fa-spin loading-spinner"></i>
+        <h3>쇼핑몰 실시간 크롤링 및 데이터 수집 중...</h3>
+        <p>쿠팡과 네이버쇼핑에서 상품 정보, 가격 지표 및 리뷰 점수를 수합하여 인기도 가중치 순위를 연산하고 있습니다.</p>
+        <div class="skeleton-bar-wrapper">
+          <div class="skeleton-bar"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- App State: Analysis Dashboard (Initially Hidden) -->
+    <section class="state-container" id="dashboard-state" style="display: none;">
+
+      <!-- KPI Summary Grid -->
+      <div class="kpi-grid">
+        <div class="kpi-card glass-panel">
+          <div class="kpi-icon icon-cyan"><i class="fa-solid fa-tags"></i></div>
+          <div class="kpi-data">
+            <span class="kpi-label">최저가 (Minimum)</span>
+            <h3 class="kpi-value" id="kpi-min-price">₩0</h3>
+          </div>
+        </div>
+        <div class="kpi-card glass-panel">
+          <div class="kpi-icon icon-red"><i class="fa-solid fa-chart-line-up"></i></div>
+          <div class="kpi-data">
+            <span class="kpi-label">최고가 (Maximum)</span>
+            <h3 class="kpi-value" id="kpi-max-price">₩0</h3>
+          </div>
+        </div>
+        <div class="kpi-card glass-panel">
+          <div class="kpi-icon icon-purple"><i class="fa-solid fa-calculator"></i></div>
+          <div class="kpi-data">
+            <span class="kpi-label">평균 가격 (Average)</span>
+            <h3 class="kpi-value" id="kpi-avg-price">₩0</h3>
+          </div>
+        </div>
+        <div class="kpi-card glass-panel">
+          <div class="kpi-icon icon-gold"><i class="fa-solid fa-trophy"></i></div>
+          <div class="kpi-data">
+            <span class="kpi-label">통합 인기 1위 상품</span>
+            <h3 class="kpi-value" id="kpi-top-product" title="로딩 중">로딩 중</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Analysis Charts Row -->
+      <div class="charts-row">
+        <!-- Chart Card 1: Price Distribution -->
+        <article class="chart-card glass-panel">
+          <div class="chart-header">
+            <h3><i class="fa-solid fa-chart-bar text-cyan"></i> 가격대 구간별 상품 분포</h3>
+            <span>수집된 상품들의 주요 가격대 집중도 분석</span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="chart-price-distribution"></canvas>
+          </div>
+        </article>
+
+        <!-- Chart Card 2: Mall Competition -->
+        <article class="chart-card glass-panel">
+          <div class="chart-header">
+            <h3><i class="fa-solid fa-scale-balanced text-purple"></i> 쇼핑몰 평균 가격 비교</h3>
+            <span>쿠팡과 네이버쇼핑의 평균 지출 비용 격차</span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="chart-mall-compare"></canvas>
+          </div>
+        </article>
+      </div>
+
+      <!-- Rankings Table & Filter Section -->
+      <div class="rankings-section">
+        
+        <!-- Filter Toolbar -->
+        <div class="filter-toolbar glass-panel">
+          <div class="filter-title">
+            <i class="fa-solid fa-sliders text-cyan"></i>
+            <h3>실시간 필터 및 정렬</h3>
+          </div>
+          
+          <div class="filter-controls">
+            <!-- Price Slider -->
+            <div class="slider-control-group">
+              <div class="slider-label-row">
+                <span>가격 필터: <strong id="filter-price-label">₩0 ~ ₩0</strong></span>
+              </div>
+              <div class="range-sliders-container">
+                <input type="range" id="price-slider-min" class="price-slider" min="0" max="100" value="0">
+                <input type="range" id="price-slider-max" class="price-slider" min="0" max="100" value="100">
+              </div>
+            </div>
+
+            <!-- Mall Filter Selector -->
+            <div class="select-control-group">
+              <span>쇼핑몰 필터:</span>
+              <select id="filter-mall-select" class="shopping-select">
+                <option value="all">전체 쇼핑몰</option>
+                <option value="coupang">쿠팡(Coupang)만 보기</option>
+                <option value="naver">네이버쇼핑만 보기</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Products Table -->
+        <div class="products-table-wrapper glass-panel">
+          <div class="table-scroll-container">
+            <table class="products-table">
+              <thead>
+                <tr>
+                  <th style="width: 80px;">통합 순위</th>
+                  <th style="width: 80px;">이미지</th>
+                  <th>상품 이름</th>
+                  <th style="width: 140px;">판매 쇼핑몰</th>
+                  <th style="width: 140px;">가격</th>
+                  <th style="width: 100px;">평점</th>
+                  <th style="width: 110px;">리뷰수</th>
+                  <th style="width: 110px;">인기도 점수</th>
+                  <th style="width: 110px;">리뷰 분석</th>
+                  <th style="width: 100px;">구매</th>
+                </tr>
+              </thead>
+              <tbody id="products-table-body">
+                <!-- Injected via Javascript -->
+              </tbody>
+            </table>
+          </div>
+          <div class="products-table-footer">
+            <span>검색된 상품수: <strong id="result-match-count">0</strong>개</span>
+            <span id="backend-source-badge" class="source-badge">실시간 연동 데이터</span>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="rich-footer">
+    <div class="footer-top-grid">
+      <div class="footer-left-brand">
+        <div class="brand-title">
+          <span class="cdb-badge">CDB</span>
+          <h2>Cineaho's SandBox</h2>
+        </div>
+        <div class="brand-links">
+          <span>🧰 웹앱</span>
+          <span class="divider-dot">•</span>
+          <span>💻 Cineaho</span>
+          <span class="divider-dot">•</span>
+          <span>📄 쇼핑 비교 분석 도구. 쿠팡과 네이버의 순위 및 최저가 범위를 다차원 데이터로 제공합니다.</span>
+        </div>
+        <div class="visitor-stats">
+          <div class="stat-group">
+            <h4>사이트 방문</h4>
+            <p>전체 <span id="site-visit-total">839,692</span> · 오늘 <span id="site-visit-today">363</span></p>
+          </div>
+          <div class="stat-group">
+            <h4>이 앱 방문</h4>
+            <p>전체 <span id="apps-visit-total">0</span> · 오늘 <span id="apps-visit-today">0</span></p>
+          </div>
+        </div>
+      </div>
+      <div class="footer-right-columns">
+        <div class="footer-col">
+          <h3>제품</h3>
+          <ul>
+            <li><a href="../all-tools.html">모든 도구</a></li>
+            <li><a href="../category.html">카테고리</a></li>
+            <li><a href="../popular.html">인기 도구</a></li>
+            <li><a href="../new-tools.html">새로운 도구</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>지원</h3>
+          <ul>
+            <li><a href="../updates.html">업데이트</a></li>
+            <li><a href="../help.html">도움말</a></li>
+            <li><a href="../faq.html">FAQ</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- AI Review Analysis Modal -->
+  <div id="review-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content glass-panel">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span id="modal-mall-badge" class="mall-badge">쇼핑몰</span>
+          <h3 id="modal-product-name">상품명</h3>
+        </div>
+        <button id="btn-close-modal" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="modal-product-summary">
+          <img id="modal-product-img" src="" alt="상품 이미지" onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=150&h=150&q=80'">
+          <div class="modal-product-info">
+            <div class="modal-price-row">
+              <span class="price-label">판매가</span>
+              <span id="modal-product-price" class="price-val">₩0</span>
+            </div>
+            <div class="modal-rating-row">
+              <span class="rating-label">평가도</span>
+              <div class="rating-stars" id="modal-rating-stars">
+                <!-- Stars -->
+              </div>
+              <span id="modal-review-count" class="review-count-val">(0개 리뷰)</span>
+            </div>
+            <div class="modal-link-row">
+              <a id="modal-product-link" href="#" target="_blank" class="btn-direct-link">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> <span>공식 상품 링크 바로가기</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI review analysis content -->
+        <div class="review-analysis-container">
+          <h4 class="analysis-section-title"><i class="fa-solid fa-robot text-cyan"></i> AI 상품 리뷰 요약 리포트</h4>
+          
+          <!-- Sentiment Bar -->
+          <div class="sentiment-box">
+            <div class="sentiment-labels">
+              <span class="sentiment-pos"><i class="fa-solid fa-face-smile"></i> 긍정적 평가 (<span id="modal-pos-ratio">0</span>%)</span>
+              <span class="sentiment-neg">부정적 평가 (<span id="modal-neg-ratio">0</span>%) <i class="fa-solid fa-face-frown"></i></span>
+            </div>
+            <div class="sentiment-bar-track">
+              <div id="modal-sentiment-bar-fill" class="sentiment-bar-fill" style="width: 50%;"></div>
+            </div>
+          </div>
+
+          <!-- AI Summary text -->
+          <div class="summary-paragraph-box">
+            <p id="modal-summary-text">리뷰 내용을 요약하는 중입니다...</p>
+          </div>
+
+          <!-- Keyword tags -->
+          <div class="keyword-tags-grid">
+            <div class="keyword-col positive-col">
+              <h5><i class="fa-solid fa-thumbs-up text-emerald"></i> 주요 긍정 키워드</h5>
+              <div id="modal-pos-keywords" class="keyword-badges">
+                <!-- badges -->
+              </div>
+            </div>
+            <div class="keyword-col negative-col">
+              <h5><i class="fa-solid fa-thumbs-down text-rose"></i> 주요 아쉬운 점</h5>
+              <div id="modal-neg-keywords" class="keyword-badges">
+                <!-- badges -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

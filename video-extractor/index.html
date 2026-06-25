@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO 비디오 GIF/WebP 추출기 - Video to GIF & WebP Converter</title>
+  <meta name="description" content="로컬 비디오 파일 또는 유튜브 영상에서 원하는 구간을 고화질 GIF 또는 WebP 애니메이션으로 추출합니다. 포맷, 사이즈, FPS, 퀄리티를 자유롭게 설정하세요.">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-magenta"></div>
+  <div class="bg-glow bg-glow-cyan"></div>
+  <div class="bg-glow bg-glow-purple"></div>
+
+  <!-- ==========================================
+       1. PORTAL HEADER
+       ========================================== -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <a href="../index.html" class="back-btn" title="CineAHO 홈으로 이동">
+        <i class="fa-solid fa-chevron-left"></i>
+      </a>
+      <div class="app-logo">
+        <i class="fa-solid fa-film logo-icon text-magenta"></i>
+        <h1 class="logo-text">비디오 GIF/WebP 추출기 <span class="engine-sub">Video Extractor</span></h1>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==========================================
+       2. MAIN CONTENT CONTAINER
+       ========================================== -->
+  <main class="app-container">
+
+    <!-- Sub-navigation Back Link -->
+    <div class="sub-nav-back">
+      <a href="../index.html#tools-section" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>디자인 & 미디어 도구로 돌아가기</span>
+      </a>
+    </div>
+
+    <!-- App Title Header Banner -->
+    <section class="app-banner glass-panel">
+      <div class="banner-info">
+        <span class="badge-capsule">미디어 변환 v1.0</span>
+        <h2>비디오 GIF/WebP 추출기</h2>
+        <p>로컬 비디오 파일 또는 유튜브 영상에서 원하는 구간을 고화질 GIF 또는 WebP 애니메이션으로 추출합니다.</p>
+      </div>
+      <div class="banner-decor">
+        <i class="fa-solid fa-clapperboard"></i>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         INPUT SOURCE SECTION
+         ========================================== -->
+    <section class="source-section">
+      <!-- Source Mode Tabs -->
+      <div class="source-tabs">
+        <button class="source-tab active" data-source="upload" id="tab-upload">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          <span>파일 업로드</span>
+        </button>
+        <button class="source-tab" data-source="youtube" id="tab-youtube">
+          <i class="fa-brands fa-youtube"></i>
+          <span>유튜브 URL</span>
+        </button>
+      </div>
+
+      <!-- Upload Mode Panel -->
+      <div class="source-panel active" id="panel-upload">
+        <div class="upload-zone glass-panel" id="drop-zone">
+          <div class="upload-content">
+            <div class="upload-icon-wrap">
+              <i class="fa-solid fa-video upload-icon"></i>
+              <div class="upload-icon-ring"></div>
+            </div>
+            <p class="upload-text">비디오 파일을 여기에 드래그하거나 <span class="browse-link" id="btn-browse-file">파일 선택</span></p>
+            <span class="upload-subtext">지원 포맷: MP4, AVI, MOV, MKV, WEBM (최대 500MB)</span>
+          </div>
+          <input type="file" id="file-input" accept="video/*" style="display: none;">
+        </div>
+      </div>
+
+      <!-- YouTube Mode Panel -->
+      <div class="source-panel" id="panel-youtube">
+        <div class="youtube-input-box glass-panel">
+          <div class="youtube-input-row">
+            <div class="youtube-icon-wrap">
+              <i class="fa-brands fa-youtube"></i>
+            </div>
+            <input type="text" id="input-youtube-url" placeholder="유튜브 영상 주소를 붙여넣으세요 (예: https://www.youtube.com/watch?v=...)" spellcheck="false">
+            <button class="btn-load-youtube" id="btn-load-youtube">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <span>불러오기</span>
+            </button>
+          </div>
+          <div class="youtube-info-bar" id="youtube-info-bar" style="display: none;">
+            <img id="youtube-thumb" class="youtube-thumb" src="" alt="썸네일">
+            <div class="youtube-meta">
+              <span class="youtube-title" id="youtube-title"></span>
+              <span class="youtube-duration" id="youtube-duration"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         VIDEO PREVIEW & TIMELINE SECTION
+         ========================================== -->
+    <section class="preview-section glass-panel" id="preview-section" style="display: none;">
+      <!-- Video Player -->
+      <div class="video-player-wrap">
+        <video id="video-player" preload="metadata" playsinline>
+          브라우저가 비디오 재생을 지원하지 않습니다.
+        </video>
+        <!-- YouTube IFrame Player (shown only for YouTube mode) -->
+        <div id="youtube-player-wrap" class="youtube-player-wrap" style="display:none;">
+          <div id="youtube-player-container"></div>
+        </div>
+        <div class="video-overlay" id="video-overlay">
+          <button class="btn-play-overlay" id="btn-play-overlay">
+            <i class="fa-solid fa-play"></i>
+          </button>
+        </div>
+        <!-- Video Controls Bar -->
+        <div class="video-controls-bar">
+          <button class="vc-btn" id="btn-play-pause" title="재생/일시정지">
+            <i class="fa-solid fa-play" id="icon-play-pause"></i>
+          </button>
+          <button class="vc-btn vc-range-play" id="btn-range-play" title="선택 구간만 재생">
+            <i class="fa-solid fa-rotate" id="icon-range-play"></i>
+            <span class="vc-range-label">구간 재생</span>
+          </button>
+          <span class="vc-time" id="lbl-current-time">00:00</span>
+          <span class="vc-separator">/</span>
+          <span class="vc-time" id="lbl-total-duration">00:00</span>
+          <div class="vc-spacer"></div>
+          <button class="vc-btn vc-screenshot-btn" id="btn-screenshot" title="현재 프레임 스크린샷 캡처">
+            <i class="fa-solid fa-camera"></i>
+            <span class="vc-ss-label">스크린샷</span>
+          </button>
+          <button class="vc-btn" id="btn-mute" title="음소거">
+            <i class="fa-solid fa-volume-high" id="icon-mute"></i>
+          </button>
+        </div>
+        <!-- Hidden canvas for screenshot capture -->
+        <canvas id="screenshot-canvas" style="display:none;"></canvas>
+      </div>
+
+      <!-- Dual-Handle Timeline Slider -->
+      <div class="timeline-section">
+        <div class="timeline-labels">
+          <span class="tl-label"><i class="fa-solid fa-scissors"></i> 추출 범위 설정</span>
+          <div class="tl-range-info">
+            <div class="tl-time-badge">
+              <span>시작:</span>
+              <input type="number" id="input-start-time" class="tl-time-input" min="0" step="0.1" value="0.0">
+              <span class="tl-time-formatted" id="lbl-start-time-formatted">(00:00.0)</span>
+            </div>
+            <span class="tl-time-badge tl-duration-badge" id="lbl-segment-duration">구간: 0.0초</span>
+            <div class="tl-time-badge">
+              <span>종료:</span>
+              <input type="number" id="input-end-time" class="tl-time-input" min="0" step="0.1" value="0.0">
+              <span class="tl-time-formatted" id="lbl-end-time-formatted">(00:00.0)</span>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-slider-wrap" id="timeline-slider-wrap">
+          <div class="timeline-track" id="timeline-track">
+            <div class="timeline-range" id="timeline-range"></div>
+            <div class="timeline-handle handle-start" id="handle-start" title="시작 시간 드래그">
+              <div class="handle-line"></div>
+            </div>
+            <div class="timeline-handle handle-end" id="handle-end" title="종료 시간 드래그">
+              <div class="handle-line"></div>
+            </div>
+            <div class="timeline-playhead" id="timeline-playhead"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         CONVERSION OPTIONS PANEL
+         ========================================== -->
+    <section class="options-section" id="options-section" style="display: none;">
+      <div class="options-grid">
+        
+        <!-- Output Format -->
+        <div class="option-card glass-panel">
+          <div class="option-header">
+            <i class="fa-solid fa-file-image opt-icon"></i>
+            <span class="opt-title">출력 포맷</span>
+          </div>
+          <div class="option-body">
+            <div class="format-toggle" id="format-toggle">
+              <button class="fmt-btn active" data-format="gif" id="btn-fmt-gif">
+                <span class="fmt-label">GIF</span>
+                <span class="fmt-desc">고호환성</span>
+              </button>
+              <button class="fmt-btn" data-format="webp" id="btn-fmt-webp">
+                <span class="fmt-label">WebP</span>
+                <span class="fmt-desc">고압축률</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scale Ratio -->
+        <div class="option-card glass-panel">
+          <div class="option-header">
+            <i class="fa-solid fa-expand opt-icon"></i>
+            <span class="opt-title">사이즈 비율</span>
+          </div>
+          <div class="option-body">
+            <div class="scale-buttons" id="scale-buttons">
+              <button class="scale-btn" data-scale="1.0">100%</button>
+              <button class="scale-btn active" data-scale="0.75">75%</button>
+              <button class="scale-btn" data-scale="0.5">50%</button>
+              <button class="scale-btn" data-scale="0.25">25%</button>
+              <button class="scale-btn scale-shorts" data-scale="shorts" title="9:16 세로 비율 (유튜브 숏츠)">
+                <i class="fa-solid fa-mobile-screen"></i> Shorts 9:16
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- FPS -->
+        <div class="option-card glass-panel">
+          <div class="option-header">
+            <i class="fa-solid fa-gauge-high opt-icon"></i>
+            <span class="opt-title">프레임 레이트 (FPS)</span>
+          </div>
+          <div class="option-body">
+            <div class="fps-slider-wrap">
+              <input type="range" class="styled-range" id="range-fps" min="5" max="30" value="15" step="1">
+              <div class="range-value-display">
+                <span id="lbl-fps-value">15</span> <span class="range-unit">FPS</span>
+              </div>
+            </div>
+            <div class="fps-presets" id="fps-presets">
+              <button class="fps-btn" data-fps="5">5</button>
+              <button class="fps-btn" data-fps="10">10</button>
+              <button class="fps-btn active" data-fps="15">15</button>
+              <button class="fps-btn" data-fps="24">24</button>
+              <button class="fps-btn" data-fps="30">30</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quality -->
+        <div class="option-card glass-panel">
+          <div class="option-header">
+            <i class="fa-solid fa-sliders opt-icon"></i>
+            <span class="opt-title">인코딩 퀄리티</span>
+          </div>
+          <div class="option-body">
+            <div class="quality-slider-wrap">
+              <input type="range" class="styled-range range-quality" id="range-quality" min="10" max="100" value="80" step="5">
+              <div class="range-value-display">
+                <span id="lbl-quality-value">80</span><span class="range-unit">%</span>
+              </div>
+            </div>
+            <div class="quality-hint">
+              <span class="hint-low">낮은 용량</span>
+              <span class="hint-high">높은 화질</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================
+         CONVERT ACTION SECTION
+         ========================================== -->
+    <section class="action-section" id="action-section" style="display: none;">
+      <button class="btn-extract" id="btn-extract">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <span>GIF/WebP 추출 시작</span>
+      </button>
+
+      <!-- Progress Bar -->
+      <div class="progress-wrap" id="progress-wrap" style="display: none;">
+        <div class="progress-bar-outer">
+          <div class="progress-bar-inner" id="progress-bar-inner"></div>
+        </div>
+        <span class="progress-label" id="progress-label">변환 중...</span>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         RESULT SECTION
+         ========================================== -->
+    <section class="result-section glass-panel" id="result-section" style="display: none;">
+      <div class="result-header">
+        <div class="result-title-row">
+          <i class="fa-solid fa-circle-check result-check"></i>
+          <h3>추출 완료!</h3>
+        </div>
+        <div class="result-meta">
+          <div class="meta-item">
+            <span class="meta-label">포맷</span>
+            <span class="meta-value" id="result-format">-</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">파일 크기</span>
+            <span class="meta-value meta-highlight" id="result-filesize">-</span>
+          </div>
+        </div>
+      </div>
+      <div class="result-preview-wrap">
+        <img id="result-preview" class="result-preview-img" src="" alt="추출 결과 미리보기">
+      </div>
+      <div class="result-actions">
+        <button class="btn-download" id="btn-download">
+          <i class="fa-solid fa-download"></i>
+          <span>저장 (다운로드)</span>
+        </button>
+        <button class="btn-retry" id="btn-retry">
+          <i class="fa-solid fa-rotate-right"></i>
+          <span>다시 추출</span>
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <p>&copy; 2026 CineAHO's SandBox. All rights reserved.</p>
+    <p class="footer-note">비디오에서 고화질 GIF/WebP 이미지를 쉽고 빠르게 추출하세요.</p>
+  </footer>
+
+  <!-- YouTube IFrame API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="app.js"></script>
+</body>
+</html>

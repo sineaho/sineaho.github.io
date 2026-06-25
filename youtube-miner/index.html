@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube 떡상 소재 채굴기 - CineAHO</title>
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1607063568131489"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <a href="../index.html" class="back-btn" title="CineAHO 홈으로 이동">
+        <i class="fa-solid fa-chevron-left"></i>
+      </a>
+      <div class="app-logo">
+        <i class="fa-solid fa-fire logo-icon text-red"></i>
+        <h1 class="logo-text">YouTube 떡상 소재 채굴기 <span class="engine-sub">Powered by Gemini 2.5</span></h1>
+      </div>
+    </div>
+
+    <div class="header-api-panel">
+      <div class="api-field">
+        <input type="password" id="yt-key-input" placeholder="YouTube API Key" title="YouTube Data API v3 Key">
+      </div>
+      <div class="api-field">
+        <input type="password" id="gemini-key-input" placeholder="Gemini API Key" title="Google Gemini API Key">
+      </div>
+      
+      <!-- Toggle switch for saving keys -->
+      <label class="toggle-switch-label" title="입력된 API 키 정보를 브라우저에 저장하거나 삭제합니다.">
+        <input type="checkbox" id="key-save-toggle">
+        <span class="slider-toggle"></span>
+        <span class="toggle-text">API 키 저장</span>
+      </label>
+    </div>
+
+    <div class="header-right">
+            <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="miner-container">
+    
+    <!-- Hero Title Section -->
+    <section class="hero-title-section">
+      <h1 class="miner-title">떡상 소재 발굴하기</h1>
+      <p class="miner-subtitle">성과 좋은 영상을 찾고 AI로 대본까지 한 번에!</p>
+    </section>
+
+    <!-- Search Bar Section -->
+    <section class="search-bar-section">
+      <div class="miner-search-box">
+        <input type="text" id="miner-search-input" placeholder="주제나 키워드를 입력하세요 (예: AI, 쿠팡템, 다이소)" value="AI">
+        <button id="btn-run-miner" class="btn-miner-search" title="소재 검색">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- Filter Configuration Board -->
+    <section class="filters-board glass-panel">
+      <div class="filter-controls">
+        
+        <div class="filter-item">
+          <i class="fa-regular fa-clock icon-gray"></i>
+          <label for="select-duration">길이:</label>
+          <select id="select-duration">
+            <option value="any">전체</option>
+            <option value="shorts" selected>쇼츠 (4분 미만)</option>
+            <option value="medium">중간 (4~20분)</option>
+            <option value="long">롱폼 (20분 초과)</option>
+          </select>
+        </div>
+
+        <div class="filter-item slider-item">
+          <i class="fa-solid fa-gauge-high icon-gray"></i>
+          <label for="slider-performance">최소 성과도:</label>
+          <input type="range" id="slider-performance" min="10" max="1000" step="10" value="130">
+          <span id="slider-value-display" class="performance-value-badge">130%</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Demo Indicator -->
+    <div id="miner-demo-banner" class="demo-banner-box" style="display: none;">
+      <i class="fa-solid fa-circle-info"></i>
+      <span>현재 <strong>데모 모드(모의 데이터)</strong>로 실행 중입니다. 실시간 떡상 채널 수집 및 Gemini AI 대본 생성을 하시려면 상단 헤더에 API 키들을 입력하고 <strong>[API 키 저장]</strong>을 켜주세요.</span>
+    </div>
+
+    <!-- Spinner / Loading -->
+    <div id="miner-loading-status" class="search-status-container" style="display: none;">
+      <div class="spinner"></div>
+      <span id="miner-status-text">YouTube 떡상 소재 영상을 채굴하는 중입니다...</span>
+    </div>
+
+    <!-- Results Section -->
+    <section id="miner-results-container" class="miner-cards-grid">
+      <!-- Cards dynamically generated via JS -->
+      <div class="empty-state">
+        <i class="fa-solid fa-cubes-stacked"></i>
+        <h3>발굴된 소재가 없습니다</h3>
+        <p>검색어를 입력하고 검색 버튼을 눌러보세요.</p>
+      </div>
+    </section>
+
+    <!-- API Guide Section at the bottom of the main container -->
+    <section class="api-guide-section glass-panel">
+      <h2 class="guide-title"><i class="fa-solid fa-circle-question"></i> API 키 발급 가이드</h2>
+      <div class="guide-grid">
+        <div class="guide-card">
+          <h3><i class="fa-brands fa-youtube icon-red"></i> YouTube Data API v3 발급 방법</h3>
+          <ol>
+            <li><a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer">Google Cloud 콘솔</a>에 로그인합니다.</li>
+            <li>새 프로젝트를 생성하거나 기존 프로젝트를 선택합니다.</li>
+            <li><strong>[API 및 서비스] > [라이브러리]</strong>로 이동하여 <strong>"YouTube Data API v3"</strong>를 검색하고 [사용]을 클릭합니다.</li>
+            <li><strong>[API 및 서비스] > [사용자 인증 정보]</strong> 탭으로 이동합니다.</li>
+            <li><strong>[사용자 인증 정보 만들기] > [API 키]</strong>를 클릭하면 키가 생성됩니다.</li>
+          </ol>
+        </div>
+        <div class="guide-card">
+          <h3><i class="fa-solid fa-robot icon-blue"></i> Google Gemini API 발급 방법</h3>
+          <ol>
+            <li><a href="https://aistudio.google.com/" target="_blank" rel="noopener noreferrer">Google AI Studio</a> 사이트에 접속하여 로그인합니다.</li>
+            <li>왼쪽 메뉴 상단의 <strong>[Get API key]</strong> 버튼을 클릭합니다.</li>
+            <li><strong>[Create API key]</strong> 버튼을 클릭합니다.</li>
+            <li>이용할 프로젝트를 연동하거나 신규 프로젝트에서 키를 만들고, 생성된 API 키를 복사합니다.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- AI Analysis & Script Generator Modal -->
+  <div class="modal-overlay" id="analysis-modal" style="display: none;">
+    <div class="modal-box glass-panel modal-large">
+      <button class="modal-close" id="btn-close-modal">&times;</button>
+      
+      <div class="modal-header-section">
+        <i class="fa-solid fa-robot text-blue modal-header-icon"></i>
+        <div>
+          <h3 id="modal-video-title">동영상 AI 분석 결과</h3>
+          <span id="modal-video-channel" class="text-muted">채널명</span>
+        </div>
+      </div>
+
+      <!-- Tab Controller -->
+      <div class="modal-tab-bar">
+        <button class="tab-btn active" data-tab="tab-viral">
+          <i class="fa-solid fa-chart-line"></i> 떡상 요인 분석
+        </button>
+        <button class="tab-btn" data-tab="tab-comments">
+          <i class="fa-solid fa-comments"></i> 시청자 댓글 반응
+        </button>
+        <button class="tab-btn" data-tab="tab-script">
+          <i class="fa-solid fa-file-pen"></i> AI 추천 대본
+        </button>
+      </div>
+
+      <!-- Tab Contents -->
+      <div class="modal-body-section">
+        
+        <!-- Tab 1: Viral Factors -->
+        <div class="tab-content active" id="tab-viral">
+          <div class="analysis-loading spinner-container" style="display: none;">
+            <div class="spinner spinner-small"></div>
+            <p>Gemini AI가 영상을 정밀 분석하는 중입니다...</p>
+          </div>
+          <div class="analysis-result-markdown" id="viral-analysis-text">
+            <!-- Rendered markdown/text -->
+          </div>
+        </div>
+
+        <!-- Tab 2: Comments Analysis -->
+        <div class="tab-content" id="tab-comments">
+          <div class="analysis-loading spinner-container" style="display: none;">
+            <div class="spinner spinner-small"></div>
+            <p>시청자 여론과 피드백을 요약하는 중입니다...</p>
+          </div>
+          <div class="analysis-result-markdown" id="comments-analysis-text">
+            <!-- Rendered markdown/text -->
+          </div>
+        </div>
+
+        <!-- Tab 3: Generated Script -->
+        <div class="tab-content" id="tab-script">
+          <div class="analysis-loading spinner-container" style="display: none;">
+            <div class="spinner spinner-small"></div>
+            <p>떡상 요인을 조합하여 벤치마킹 대본을 작성하는 중입니다...</p>
+          </div>
+          <div class="script-header-actions" id="script-actions" style="display: none;">
+            <span class="text-muted text-xs">* 제작할 채널 색깔에 맞게 수정하여 사용하세요.</span>
+            <button id="btn-copy-script" class="btn btn-copy">
+              <i class="fa-regular fa-copy"></i> 대본 복사하기
+            </button>
+          </div>
+          <div class="analysis-result-markdown script-box" id="script-generation-text">
+            <!-- Rendered script text -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <p>&copy; 2026 CineAHO's SandBox. All rights reserved.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

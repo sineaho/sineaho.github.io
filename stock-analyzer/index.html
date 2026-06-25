@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>글로벌 주식 AI 투자 등급 진단기 - CineAHO</title>
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="app-header glass-panel">
+      <div class="header-left">
+        <a href="../index.html" class="btn-back">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>포털 홈으로</span>
+        </a>
+        <div class="logo-circle">AI</div>
+        <div>
+          <h1 class="app-title">글로벌 주식 AI 투자 등급 진단기</h1>
+          <p class="app-subtitle">최신 재무제표 및 뉴스 기사를 빅데이터 분석하여 투자 등급과 인컴 모델을 도출합니다.</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="badge badge-market">KR / US / JP 지원</span>
+      </div>
+    </header>
+
+    <!-- Search Section -->
+    <section class="search-section glass-panel">
+      <div class="search-box-wrapper">
+        <div class="input-group">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" id="stock-search-input" placeholder="종목코드(6자리) 또는 해외 티커를 입력하세요 (예: 005930, AAPL, 7203)...">
+        </div>
+        <button id="btn-diagnose" class="btn-primary">
+          <span>진단하기</span>
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </button>
+      </div>
+
+      <!-- Quick Suggest Links -->
+      <div class="quick-suggest">
+        <span class="suggest-label"><i class="fa-solid fa-fire"></i> 추천 검색:</span>
+        <button class="suggest-link" data-code="005930">삼성전자 (KR)</button>
+        <button class="suggest-link" data-code="086520">에코프로 (KR)</button>
+        <button class="suggest-link" data-code="AAPL">애플 (US)</button>
+        <button class="suggest-link" data-code="NVDA">엔비디아 (US)</button>
+        <button class="suggest-link" data-code="TSLA">테슬라 (US)</button>
+        <button class="suggest-link" data-code="7203">도요타 (JP)</button>
+      </div>
+    </section>
+
+    <!-- Loading State -->
+    <section id="loading-card" class="loading-card glass-panel" style="display: none;">
+      <div class="spinner-wrapper">
+        <div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+      </div>
+      <div class="loading-text-wrapper">
+        <h3 id="loading-status">데이터 수집 중...</h3>
+        <p id="loading-message">재무제표와 최신 뉴스 데이터를 불러오고 있습니다. 잠시만 기다려 주세요.</p>
+      </div>
+    </section>
+
+    <!-- Dashboard Section (Hidden Initially) -->
+    <main id="dashboard" class="dashboard-grid" style="display: none;">
+      
+      <!-- Left: Company Profile & Grade Radar -->
+      <div class="column-left">
+        <!-- Profile Card -->
+        <div class="card profile-card glass-panel">
+          <div class="profile-header">
+            <div>
+              <span class="company-market" id="company-market">KR (KOSPI)</span>
+              <h2 class="company-name" id="company-name">삼성전자</h2>
+              <span class="company-ticker" id="company-ticker">005930.KS</span>
+            </div>
+            <div class="price-wrapper">
+              <span class="current-price" id="current-price">72,000원</span>
+              <span class="price-change" id="price-change">+1,500원 (+2.1%)</span>
+            </div>
+          </div>
+          <div class="profile-meta-grid">
+            <div class="meta-item">
+              <span class="meta-label">시가총액</span>
+              <span class="meta-value" id="meta-market-cap">429.8조원</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">산업군</span>
+              <span class="meta-value" id="meta-industry">반도체 및 전자장비</span>
+            </div>
+          </div>
+          <div class="company-desc">
+            <h4>기업 개요</h4>
+            <p id="company-desc">동사는 글로벌 전자 기업으로 DX, DS, SDC, Harman 부문을 영위하고 있습니다...</p>
+          </div>
+        </div>
+
+        <!-- Grade Card -->
+        <div class="card grade-card glass-panel">
+          <h3 class="card-title"><i class="fa-solid fa-chart-pie"></i> 종합 투자 평가</h3>
+          <div class="grade-main-row">
+            <div class="grade-circle-wrapper">
+              <svg class="progress-ring" width="120" height="120">
+                <circle class="progress-ring__background" stroke="#1e293b" stroke-width="8" fill="transparent" r="50" cx="60" cy="60"/>
+                <circle class="progress-ring__circle" id="grade-progress-circle" stroke="#eab308" stroke-width="8" fill="transparent" r="50" cx="60" cy="60" stroke-dasharray="314.16" stroke-dashoffset="78.5"/>
+              </svg>
+              <div class="grade-letter" id="grade-letter">A</div>
+            </div>
+            <div class="grade-info">
+              <div class="recommendation-badge badge-buy" id="recommendation-text">매수 (Buy)</div>
+              <div class="grade-score-text">종합 평점: <strong id="grade-score">82점</strong></div>
+              <p class="grade-summary">5대 투자 대가 알고리즘 스펙트럼 채점 결과 안정적인 재무 지표와 우수한 시장 지표를 충족하고 있습니다.</p>
+            </div>
+          </div>
+          <!-- Radar Chart -->
+          <div class="chart-container">
+            <canvas id="radar-chart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Word Cloud & News -->
+      <div class="column-right">
+        <!-- Word Cloud Card -->
+        <div class="card wordcloud-card glass-panel">
+          <h3 class="card-title"><i class="fa-solid fa-cloud"></i> AI 뉴스 트렌드 키워드</h3>
+          <p class="card-desc">실시간 수집된 뉴스 기사를 인공지능이 형태소 정제 및 형태 분석한 핵심 토픽 워드클라우드입니다.</p>
+          <div class="wordcloud-wrapper">
+            <canvas id="wordcloud-canvas" width="480" height="280"></canvas>
+          </div>
+        </div>
+
+        <!-- News Feed Card -->
+        <div class="card news-card glass-panel">
+          <div class="card-header-row">
+            <h3 class="card-title"><i class="fa-solid fa-newspaper"></i> 실시간 관련 뉴스</h3>
+            <a href="#" id="link-news-origin" target="_blank" class="btn-link">뉴스 전문 보기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+          </div>
+          <div class="news-list" id="news-list-container">
+            <!-- News items dynamically loaded here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Full Width: Financial Table -->
+      <div class="card financial-card glass-panel grid-span-all">
+        <div class="card-header-row">
+          <h3 class="card-title"><i class="fa-solid fa-table"></i> 연간 재무제표 요약 (최근 4개년)</h3>
+          <a href="#" id="link-financial-origin" target="_blank" class="btn-link">상세 재무정보 링크 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+        </div>
+        <div class="table-responsive">
+          <table class="financial-table">
+            <thead>
+              <tr>
+                <th>연도 / 분기</th>
+                <th>매출액</th>
+                <th>영업이익</th>
+                <th>당기순이익</th>
+                <th>ROE</th>
+                <th>부채비율</th>
+                <th>PER</th>
+                <th>PBR</th>
+              </tr>
+            </thead>
+            <tbody id="financial-table-body">
+              <!-- Loaded via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Full Width: Algorithm Checklists -->
+      <div class="card algorithm-card glass-panel grid-span-all">
+        <h3 class="card-title"><i class="fa-solid fa-list-check"></i> 5대 투자 대가 알고리즘 검증 기준</h3>
+        <p class="card-desc">해당 기업이 5대 투자 알고리즘의 세부 통과 조건을 얼마나 충족했는지 상세 분석 결과입니다.</p>
+
+        <div class="algorithm-grid">
+          <!-- Graham -->
+          <div class="algo-box">
+            <div class="algo-header">
+              <span class="algo-title">벤저민 그레이엄 (Benjamin Graham)</span>
+              <span class="algo-score" id="algo-score-graham">80점</span>
+            </div>
+            <p class="algo-desc">가치투자의 창시자로, 가격 대 자산 가치와 부채 안전마진을 철저하게 평가합니다.</p>
+            <ul class="check-list" id="check-list-graham"></ul>
+            <div class="algo-extra-info" id="graham-extra-info"></div>
+          </div>
+
+          <!-- Peter Lynch -->
+          <div class="algo-box">
+            <div class="algo-header">
+              <span class="algo-title">피터 린치 (Peter Lynch)</span>
+              <span class="algo-score" id="algo-score-lynch">60점</span>
+            </div>
+            <p class="algo-desc">PEG 비율(PER 대비 성장률)을 통해 성장률 대비 합리적인 가격의 성장주를 사냥합니다.</p>
+            <ul class="check-list" id="check-list-lynch"></ul>
+          </div>
+
+          <!-- Warren Buffett -->
+          <div class="algo-box">
+            <div class="algo-header">
+              <span class="algo-title">워렌 버핏 (Warren Buffett)</span>
+              <span class="algo-score" id="algo-score-buffett">75점</span>
+            </div>
+            <p class="algo-desc">지속적인 고효율 사업성(ROE) 및 해자(Gross Margin), 부채 상환력을 최고 중요시합니다.</p>
+            <ul class="check-list" id="check-list-buffett"></ul>
+          </div>
+
+          <!-- Financial Stability -->
+          <div class="algo-box">
+            <div class="algo-header">
+              <span class="algo-title">재무 안정성 지표 (Stability)</span>
+              <span class="algo-score" id="algo-score-financial">100점</span>
+            </div>
+            <p class="algo-desc">유동/당좌비율 및 부채 비율을 가중 계산하여 극심한 불황에도 파산하지 않는지 확인합니다.</p>
+            <ul class="check-list" id="check-list-financial"></ul>
+          </div>
+
+          <!-- Dividend & Income -->
+          <div class="algo-box">
+            <div class="algo-header">
+              <span class="algo-title">배당 및 인컴 지표 (Income)</span>
+              <span class="algo-score" id="algo-score-dividend">80점</span>
+            </div>
+            <p class="algo-desc">배당수익률, 배당 성향 및 시장 방어 특성(Beta)을 분석해 배당 소득원으로서의 가치를 측정합니다.</p>
+            <ul class="check-list" id="check-list-dividend"></ul>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

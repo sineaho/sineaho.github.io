@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>네이버 블로그 종합 평가 및 통계 분석기 - CineAHO</title>
+  <meta name="description" content="특정 네이버 블로그 전체의 포스트별 방문자 수, 평균 체류 시간, 이탈률 등의 통계 데이터를 시뮬레이션 분석하고 종합적인 블로그 등급 및 최적화 솔루션을 진단합니다.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-green"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <a href="../index.html" class="back-btn" title="CineAHO 홈으로 이동">
+        <i class="fa-solid fa-chevron-left"></i>
+      </a>
+      <div class="app-logo">
+        <i class="fa-solid fa-chart-bar logo-icon text-green"></i>
+        <h1 class="logo-text">네이버 블로그 종합 진단기 <span class="engine-sub">Blog Quality & Traffic Analyzer</span></h1>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <button id="theme-toggle" class="btn-theme" style="margin-right: 10px;">
+        <i class="fa-solid fa-sun"></i>
+        <span>라이트</span>
+      </button>
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="hub-container blog-page-container">
+    
+    <!-- Hero Header -->
+    <section class="blog-hero-section glass-panel">
+      <div class="hero-left-info">
+        <div class="badge-capsule">
+          <span class="pulse-dot"></span>
+          <span>CineAHO Blog Diagnostic Engine v1.0</span>
+        </div>
+        <h2 class="hero-blog-title">네이버 블로그 종합 진단 및 통계 분석기</h2>
+        <p>네이버 블로그 아이디 또는 URL을 입력하면, 최근 등록된 모든 게시글의 조회수, 체류 시간, 인게이지먼트를 다차원으로 분석하여 최적화 등급과 리포트를 도출합니다.</p>
+      </div>
+      <div class="hero-right-search">
+        <form id="blog-search-form" class="blog-search-form">
+          <div class="search-input-wrapper">
+            <i class="fa-solid fa-square-rss text-green"></i>
+            <input type="text" id="blog-id-input" placeholder="네이버 블로그 ID 또는 주소 입력 (예: sineaho)" required>
+          </div>
+          <button type="submit" class="btn btn-search-submit">
+            <span>블로그 종합 분석</span>
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Loading Panel -->
+    <section id="analysis-loading" class="analysis-loading glass-panel hidden">
+      <div class="loader-content">
+        <i class="fa-solid fa-circle-notch fa-spin text-green loader-icon"></i>
+        <h3>네이버 블로그 데이터 수집 및 품질 진단 중...</h3>
+        <p>실시간 RSS 피드를 파싱하고 개별 포스트의 트래픽 모델링을 계산하고 있습니다. 잠시만 기다려주세요.</p>
+      </div>
+    </section>
+
+    <!-- Error Panel -->
+    <section id="analysis-error" class="analysis-error glass-panel hidden">
+      <div class="error-content">
+        <i class="fa-solid fa-triangle-exclamation text-red error-icon"></i>
+        <h3>블로그 데이터 수집 실패</h3>
+        <p id="error-message">입력하신 블로그 ID가 올바르지 않거나 비공개 상태입니다. 네트워크 연결을 확인하고 다시 시도하세요.</p>
+        <button id="btn-error-retry" class="btn btn-error-retry">다시 시도하기</button>
+      </div>
+    </section>
+
+    <!-- Analysis Result Section -->
+    <div id="analysis-results" class="analysis-results-wrapper hidden">
+      
+      <!-- Blog Metadata Header -->
+      <section class="blog-meta-card glass-panel">
+        <div class="meta-avatar">
+          <i class="fa-solid fa-user-gear"></i>
+        </div>
+        <div class="meta-info">
+          <h2 id="result-blog-title">CineAHO 블로그</h2>
+          <p id="result-blog-desc">주요 디지털 가전 리뷰 및 일상 정보 아카이브</p>
+          <div class="meta-badges">
+            <span class="meta-badge" id="badge-blog-id">ID: sineaho</span>
+            <span class="meta-badge" id="badge-blog-mode"><i class="fa-solid fa-circle-check"></i> 실시간 RSS 동기화</span>
+          </div>
+        </div>
+        <div class="meta-tabs-wrapper">
+          <button class="blog-tab-btn active" data-target="tab-report"><i class="fa-solid fa-file-invoice-dollar"></i> 종합 진단서</button>
+          <button class="blog-tab-btn" data-target="tab-posts"><i class="fa-solid fa-table-list"></i> 게시글별 통계</button>
+          <button class="blog-tab-btn" data-target="tab-solution"><i class="fa-solid fa-lightbulb"></i> 최적화 솔루션</button>
+        </div>
+      </section>
+
+      <!-- KPI Dashboard Grid -->
+      <section class="blog-kpi-grid">
+        <div class="kpi-card glass-panel">
+          <div class="kpi-icon icon-green"><i class="fa-solid fa-eye"></i></div>
+          <div class="kpi-data">
+            <span class="kpi-label">평균 조회수 (방문수)</span>
+            <h3 class="kpi-value" id="kpi-avg-views">0회</h3>
+          </div>
+        </div>
+        <div class="kpi-card glass-panel">
+          <div class="kpi-icon icon-blue"><i class="fa-solid fa-stopwatch"></i></div>
+          <div class="kpi-data">
+            <span class="kpi-label">평균 체류 시간 (머문시간)</span>
+            <h3 class="kpi-value" id="kpi-avg-dwell">00:00</h3>
+          </div>
+        </div>
+        <div class="kpi-card glass-panel">
+          <div class="kpi-icon icon-red"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
+          <div class="kpi-data">
+            <span class="kpi-label">평균 이탈률 (Bounce Rate)</span>
+            <h3 class="kpi-value" id="kpi-avg-bounce">0%</h3>
+          </div>
+        </div>
+        <div class="kpi-card glass-panel">
+          <div class="kpi-icon icon-purple"><i class="fa-solid fa-heart-pulse"></i></div>
+          <div class="kpi-data">
+            <span class="kpi-label">참여 지수 (인게이지먼트)</span>
+            <h3 class="kpi-value" id="kpi-engagement">0%</h3>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 1: Comprehensive Diagnosis Report -->
+      <section id="tab-report" class="blog-tab-panel active">
+        <div class="report-grid">
+          
+          <!-- Score Summary Card -->
+          <article class="report-card glass-panel score-card">
+            <div class="chart-header">
+              <h3><i class="fa-solid fa-square-poll-vertical text-green"></i> 종합 최적화 점수 및 등급</h3>
+              <span>C-Rank 및 D.I.A.+ 가중치 종합 평가 지수</span>
+            </div>
+            
+            <div class="score-display-wrapper">
+              <div class="radial-progress-wrapper">
+                <svg class="progress-ring" width="180" height="180">
+                  <circle class="progress-ring__circle-bg" stroke="rgba(255,255,255,0.04)" stroke-width="12" fill="transparent" r="80" cx="90" cy="90" />
+                  <circle class="progress-ring__circle" id="score-ring" stroke="url(#greenGradient)" stroke-width="12" fill="transparent" r="80" cx="90" cy="90" />
+                  <defs>
+                    <linearGradient id="greenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#10b981" />
+                      <stop offset="100%" stop-color="#06b6d4" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div class="score-center-value">
+                  <span id="overall-score-number">0</span>
+                  <span class="total-label">점</span>
+                </div>
+              </div>
+              
+              <div class="grade-banner">
+                <div class="grade-badge" id="overall-grade">B</div>
+                <div class="grade-title" id="overall-grade-title">준수한 품질 발전소</div>
+                <p class="grade-desc" id="overall-grade-desc">콘텐츠 가치와 가독성은 준수하나, 트래픽 유입 다양화 및 체류시간 보강을 통해 C-Rank 강화를 유도할 수 있습니다.</p>
+              </div>
+            </div>
+          </article>
+
+          <!-- Radar Chart: 5 Dimensions Evaluation -->
+          <article class="report-card glass-panel">
+            <div class="chart-header">
+              <h3><i class="fa-solid fa-chart-pie text-purple"></i> 5대 평가지표 방사형 분석</h3>
+              <span>SEO, 트래픽, 참여도, 활동성, 전문성 정밀 점수 분포</span>
+            </div>
+            <div class="chart-canvas-wrapper">
+              <canvas id="chart-radar-evaluation"></canvas>
+            </div>
+          </article>
+
+          <!-- Line Chart: Post Traffic Trend -->
+          <article class="report-card glass-panel" style="grid-column: span 2;">
+            <div class="chart-header">
+              <h3><i class="fa-solid fa-chart-line text-blue"></i> 포스트별 유입/트래픽 성과 곡선</h3>
+              <span>최신 게시물 등록 시점 대비 추정 누적 조회수 트렌드</span>
+            </div>
+            <div class="chart-canvas-wrapper" style="height: 280px;">
+              <canvas id="chart-line-traffic"></canvas>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- Tab 2: Post-by-Post Detailed Statistics Table -->
+      <section id="tab-posts" class="blog-tab-panel">
+        
+        <!-- Search and Filter Toolbar -->
+        <div class="table-toolbar glass-panel">
+          <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="post-search-input" placeholder="게시글 제목 또는 키워드 필터링...">
+          </div>
+          <div class="filter-controls">
+            <select id="filter-post-category" class="blog-select">
+              <option value="all">전체 카테고리</option>
+              <!-- Populated dynamically -->
+            </select>
+            <button class="btn btn-reset-filters" id="btn-reset-table-filters">
+              <i class="fa-solid fa-rotate-left"></i> <span>필터 초기화</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Posts Table Grid -->
+        <div class="posts-table-wrapper glass-panel">
+          <div class="table-scroll-container">
+            <table class="posts-table">
+              <thead>
+                <tr>
+                  <th class="sortable" data-sort="idx">순서 <i class="fa-solid fa-sort"></i></th>
+                  <th>게시글 제목</th>
+                  <th>카테고리</th>
+                  <th class="sortable" data-sort="pubDate">발행일 <i class="fa-solid fa-sort"></i></th>
+                  <th class="sortable" data-sort="views">조회수 <i class="fa-solid fa-sort"></i></th>
+                  <th class="sortable" data-sort="likes">공감 <i class="fa-solid fa-sort"></i></th>
+                  <th class="sortable" data-sort="comments">댓글 <i class="fa-solid fa-sort"></i></th>
+                  <th class="sortable" data-sort="stayTime">머문시간 <i class="fa-solid fa-sort"></i></th>
+                  <th class="sortable" data-sort="bounceRate">이탈률 <i class="fa-solid fa-sort"></i></th>
+                  <th>분석</th>
+                </tr>
+              </thead>
+              <tbody id="posts-table-body">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+          <div class="table-footer">
+            <span>수집 게시글: <strong id="visible-posts-count">0</strong>개 / 전체 <strong id="total-posts-count">0</strong>개</span>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Tab 3: Blog Optimization Solutions -->
+      <section id="tab-solution" class="blog-tab-panel">
+        <div class="solution-layout-grid">
+          
+          <!-- Core Strengths & Weaknesses -->
+          <article class="solution-card glass-panel">
+            <div class="solution-header text-green">
+              <i class="fa-solid fa-circle-check"></i>
+              <h3>블로그의 주요 강점 (Strengths)</h3>
+            </div>
+            <ul class="solution-list" id="list-strengths">
+              <!-- Dynamically populated -->
+            </ul>
+          </article>
+
+          <article class="solution-card glass-panel">
+            <div class="solution-header text-red">
+              <i class="fa-solid fa-circle-xmark"></i>
+              <h3>집중 보강 항목 (Weaknesses)</h3>
+            </div>
+            <ul class="solution-list" id="list-weaknesses">
+              <!-- Dynamically populated -->
+            </ul>
+          </article>
+
+          <!-- Tailored Action Plans -->
+          <article class="solution-card glass-panel" style="grid-column: span 2;">
+            <div class="solution-header text-blue">
+              <i class="fa-solid fa-compass-drafting"></i>
+              <h3>블로그 상위 노출(C-Rank / D.I.A.+) 개선 행동 로드맵</h3>
+            </div>
+            
+            <div class="roadmap-steps" id="roadmap-container">
+              <!-- Dynamically populated step cards -->
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- Detailed Post Diagnostic Modal -->
+  <div class="modal-overlay" id="post-detail-modal">
+    <div class="modal-box glass-panel">
+      <button class="modal-close" id="btn-close-modal">&times;</button>
+      
+      <div class="modal-header">
+        <span class="category-badge" id="modal-post-category">IT/테크</span>
+        <h3 id="modal-post-title">포스트 제목 예시</h3>
+        <p class="modal-pubdate" id="modal-post-date">발행일: 2026.06.20 12:00</p>
+      </div>
+
+      <div class="modal-body">
+        
+        <!-- Post Metric Grid -->
+        <div class="modal-metric-grid">
+          <div class="metric-block">
+            <span class="m-label">추정 조회수</span>
+            <strong class="m-val" id="modal-views">0회</strong>
+          </div>
+          <div class="metric-block">
+            <span class="m-label">공감 / 댓글</span>
+            <strong class="m-val text-green" id="modal-engagement">0 / 0</strong>
+          </div>
+          <div class="metric-block">
+            <span class="m-label">평균 머문시간</span>
+            <strong class="m-val text-blue" id="modal-dwell">00:00</strong>
+          </div>
+          <div class="metric-block">
+            <span class="m-label">이탈률</span>
+            <strong class="m-val text-red" id="modal-bounce">0%</strong>
+          </div>
+        </div>
+
+        <!-- Post Content Preview -->
+        <div class="modal-section">
+          <h4>포스팅 개요 및 미리보기 (Preview)</h4>
+          <p class="post-preview-text" id="modal-post-preview">포스팅 요약 텍스트...</p>
+        </div>
+
+        <!-- Post SEO Diagnosis -->
+        <div class="modal-section">
+          <h4>글자 수 및 키워드 배치 진단</h4>
+          <div class="seo-audit-block">
+            <div class="audit-item">
+              <span class="audit-label">본문 추정 글자수:</span>
+              <span class="audit-val" id="modal-char-count">0자</span>
+            </div>
+            <div class="audit-item">
+              <span class="audit-label">글자수 권장 충족도:</span>
+              <span class="audit-val" id="modal-char-status">양호 (2,000자 내외)</span>
+            </div>
+            <div class="audit-item">
+              <span class="audit-label">타겟 핵심 키워드:</span>
+              <div class="keyword-tags-wrapper" id="modal-keywords-container">
+                <!-- Keyword badges -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Outer link buttons -->
+        <div class="modal-actions">
+          <a href="#" target="_blank" class="btn btn-outer-link" id="modal-btn-link">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            <span>네이버 블로그 실제 글 보기</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="rich-footer">
+    <div class="footer-top-grid">
+      <!-- Footer Left -->
+      <div class="footer-left-brand">
+        <div class="brand-title">
+          <span class="cdb-badge">CDB</span>
+          <h2>Cineaho's SandBox</h2>
+        </div>
+        <div class="brand-links">
+          <span>🧰 웹앱</span>
+          <span class="divider-dot">•</span>
+          <span>💻 Cineaho</span>
+          <span class="divider-dot">•</span>
+          <span>📄 네이버 블로그 전체 평가기</span>
+        </div>
+        <div class="footer-copyright" style="margin-top: 15px; font-size: 11px; color: var(--text-muted);">
+          CineAHO's SandBox - 모든 도구를 한 곳에서 &copy; 2026 Cineaho. All right reserved.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

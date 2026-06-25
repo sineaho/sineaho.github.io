@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>블랙잭 3D – CineAHO</title>
+  <meta name="description" content="원근감이 느껴지는 3D Felt 테이블에서 즐기는 프리미엄 블랙잭 게임. AI 플레이어들과 함께 배팅하고 승부를 겨뤄보세요.">
+  <!-- Google Fonts for Premium Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1607063568131489"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <!-- Ambient background orbs -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-gold"></div>
+
+  <!-- Header Navigation (CineAHO Unified Portal Header) -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <a href="../index.html" class="back-btn" title="CineAHO 홈으로 이동">
+        <i class="fa-solid fa-chevron-left"></i>
+      </a>
+      <div class="app-logo">
+        <i class="fa-solid fa-diamond logo-icon text-gold"></i>
+        <h1 class="logo-text">블랙잭 3D <span class="engine-sub">Classic Blackjack 3D</span></h1>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="chip-display" id="chip-display">
+        <i class="fa-solid fa-coins"></i>
+        <span id="chip-count">100,000</span>
+      </div>
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Game Container -->
+  <main class="game-container">
+
+    <!-- 3D Viewport Section (Green Felt Table & HUD) -->
+    <section class="viewport-section glass-panel">
+      <!-- Background Ambient Glows inside viewport -->
+      <div class="viewport-glow cyan"></div>
+      <div class="viewport-glow purple"></div>
+
+      <!-- Dealer Panel Overlay -->
+      <div class="dealer-panel">
+        <div class="dealer-avatar-container">
+          <img src="assets/dealer.png" alt="딜러" class="dealer-avatar" id="dealer-img">
+          <div class="dealer-glow"></div>
+        </div>
+        <div class="dealer-speech-bubble" id="dealer-speech">
+          배팅해 주세요.
+        </div>
+      </div>
+
+      <!-- Central Round Timer Overlay -->
+      <div class="center-timer-overlay" id="timer-container">
+        <div class="timer-circle-wrap">
+          <svg class="timer-svg" viewBox="0 0 100 100">
+            <circle class="timer-bg" cx="50" cy="50" r="45"></circle>
+            <circle class="timer-progress" id="timer-progress" cx="50" cy="50" r="45"></circle>
+          </svg>
+          <div class="timer-text">
+            <span id="timer-sec">15</span>
+            <span class="timer-unit">초</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3D Tablefelt Workspace -->
+      <div class="table-outer">
+        <div class="table-felt">
+          <!-- Golden markings -->
+          <div class="table-gold-lines">
+            <div class="gold-arc-outer"></div>
+            <div class="gold-arc-inner"></div>
+            <div class="insurance-banner">
+              <span>DEALER MUST STAND ON 17 & DRAW TO 16</span>
+              <span class="ins-text">INSURANCE PAYS 2 TO 1</span>
+            </div>
+          </div>
+
+          <!-- Dealer Cards slot -->
+          <div class="dealer-hand-container">
+            <div class="hand-score" id="dealer-score">0</div>
+            <div class="card-slots" id="dealer-cards"></div>
+          </div>
+
+          <!-- Card Shoe -->
+          <div class="card-shoe" id="card-shoe">
+            <div class="shoe-body"></div>
+            <div class="shoe-deck-glow"></div>
+          </div>
+
+          <!-- 5 Player Seats -->
+          <div class="spots-container">
+            <!-- Spot 0: AI 1 -->
+            <div class="player-spot" id="spot-0" data-spot-idx="0">
+              <div class="spot-bet-ring"></div>
+              <div class="spot-cards" id="cards-0"></div>
+              <div class="spot-score" id="score-0">0</div>
+              <div class="spot-chip-pile" id="chips-0"></div>
+              <div class="player-tag">
+                <img class="avatar" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23e05a47'/><text y='60' x='10' font-size='60' fill='white'>🦊</text></svg>">
+                <div class="info">
+                  <span class="name">카지노로얄</span>
+                  <span class="balance" id="balance-0">50,000</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Spot 1: AI 2 -->
+            <div class="player-spot" id="spot-1" data-spot-idx="1">
+              <div class="spot-bet-ring"></div>
+              <div class="spot-cards" id="cards-1"></div>
+              <div class="spot-score" id="score-1">0</div>
+              <div class="spot-chip-pile" id="chips-1"></div>
+              <div class="player-tag">
+                <img class="avatar" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2347b3e0'/><text y='60' x='10' font-size='60' fill='white'>🐼</text></svg>">
+                <div class="info">
+                  <span class="name">casino</span>
+                  <span class="balance" id="balance-1">20,000</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Spot 2: Main Player (User) -->
+            <div class="player-spot main-player-spot active" id="spot-2" data-spot-idx="2">
+              <div class="spot-active-arrow">▼</div>
+              <div class="spot-bet-ring"></div>
+              <div class="spot-cards" id="cards-2"></div>
+              <div class="spot-score" id="score-2">0</div>
+              <div class="spot-chip-pile" id="chips-2"></div>
+              <div class="player-tag">
+                <img class="avatar" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23f1c40f'/><text y='60' x='10' font-size='60' fill='white'>👑</text></svg>">
+                <div class="info">
+                  <span class="name">나 (Player)</span>
+                  <span class="balance" id="balance-2">100,000</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Spot 3: AI 3 -->
+            <div class="player-spot" id="spot-3" data-spot-idx="3">
+              <div class="spot-bet-ring"></div>
+              <div class="spot-cards" id="cards-3"></div>
+              <div class="spot-score" id="score-3">0</div>
+              <div class="spot-chip-pile" id="chips-3"></div>
+              <div class="player-tag">
+                <img class="avatar" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%239b59b6'/><text y='60' x='10' font-size='60' fill='white'>🐶</text></svg>">
+                <div class="info">
+                  <span class="name">magiccater5</span>
+                  <span class="balance" id="balance-3">15,000</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Spot 4: Seat / Joinable -->
+            <div class="player-spot empty-spot" id="spot-4" data-spot-idx="4">
+              <div class="spot-bet-ring"></div>
+              <div class="spot-cards" id="cards-4"></div>
+              <div class="spot-score" id="score-4">0</div>
+              <div class="spot-chip-pile" id="chips-4"></div>
+              <button class="join-btn" id="btn-join-4">참가</button>
+              <div class="player-tag hidden">
+                <img class="avatar" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%232ecc71'/><text y='60' x='10' font-size='60' fill='white'>🦁</text></svg>">
+                <div class="info">
+                  <span class="name">사자왕</span>
+                  <span class="balance" id="balance-4">30,000</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result Banner Overlay -->
+      <div class="floating-banner" id="game-banner">
+        <h1 class="banner-title" id="banner-text">BLACKJACK</h1>
+      </div>
+    </section>
+
+    <!-- Controls Panel (Chips selection & Action button layouts) -->
+    <section class="controls-section glass-panel">
+      <div class="controls-container">
+        <!-- Left: Reset Button -->
+        <div class="control-side-left">
+          <button id="btn-reset" class="action-bar-btn reset-btn">
+            <i class="fa-solid fa-arrows-rotate"></i>
+            <span>배팅 리셋</span>
+          </button>
+        </div>
+
+        <!-- Center: Betting Chips slider -->
+        <div class="betting-chip-wrapper">
+          <h3 class="section-title"><i class="fa-solid fa-coins"></i> 베팅 칩 설정</h3>
+          <div class="bet-chips">
+            <button class="bet-chip green active" data-value="500">
+              <div class="chip-inner">500</div>
+            </button>
+            <button class="bet-chip red" data-value="2000">
+              <div class="chip-inner">2000</div>
+            </button>
+            <button class="bet-chip blue" data-value="10000">
+              <div class="chip-inner">1만</div>
+            </button>
+            <button class="bet-chip purple" data-value="50000">
+              <div class="chip-inner">5만</div>
+            </button>
+            <button class="bet-chip black" data-value="max">
+              <div class="chip-inner">MAX</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Action Game Operations -->
+        <div class="control-side-right">
+          <!-- Betting Lock button -->
+          <button id="btn-bet" class="control-action-btn primary bet-btn">
+            <i class="fa-solid fa-play"></i>
+            <span>베팅 확정 (Bet)</span>
+          </button>
+
+          <!-- Action buttons for user's turn -->
+          <div class="play-actions-container hidden" id="play-actions">
+            <button id="btn-double" class="control-action-btn secondary double-btn" disabled>더블 다운</button>
+            <button id="btn-hit" class="control-action-btn secondary hit-btn" disabled>힛 (Hit)</button>
+            <button id="btn-stand" class="control-action-btn secondary stand-btn" disabled>스탠드</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Stats Panel -->
+      <div class="game-stats">
+        <div class="stat-item">
+          <span class="stat-label">승리</span>
+          <span class="stat-value win" id="stat-wins">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">패배</span>
+          <span class="stat-value lose" id="stat-losses">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">무승부</span>
+          <span class="stat-value tie" id="stat-ties">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">연승</span>
+          <span class="stat-value streak" id="stat-streak">0</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Guide Section -->
+    <section class="guide-section glass-panel">
+      <div class="guide-header">
+        <i class="fa-solid fa-book-open"></i>
+        <h2>블랙잭 3D 게임 가이드</h2>
+      </div>
+      <div class="guide-content-wrapper">
+        <article class="guide-article">
+          <h3>게임 규칙</h3>
+          <p>카드의 합이 <strong>21점</strong>에 가장 가깝게 도달하도록 딜러와 대결하세요. 21을 초과하면 <strong>버스트(Bust)</strong>로 패배합니다.</p>
+          <ul>
+            <li><strong>카드 계산:</strong> A는 1 또는 11 중 플레이어에게 유리하게 계산되며, J, Q, K는 10점, 2~10 카드는 숫자 값 그대로 계산됩니다.</li>
+            <li><strong>딜:</strong> 게임 시작 시 플레이어와 딜러는 2장씩 받습니다. 딜러의 2번째 카드는 뒷면이 비공개(Hole Card) 상태입니다.</li>
+            <li><strong>힛 (Hit):</strong> 카드를 추가로 한 장 받습니다.</li>
+            <li><strong>스탠드 (Stand):</strong> 추가 카드를 받지 않고 딜러에게 턴을 넘깁니다.</li>
+            <li><strong>더블 다운 (Double):</strong> 배팅 금액을 2배로 올리면서 오직 한 장의 카드만 더 받습니다.</li>
+          </ul>
+        </article>
+        <article class="guide-article">
+          <h3>3D 카지노 Felt 테이블</h3>
+          <p>경사진 각도의 3D Felt 테이블에서 실시간 배팅 및 카드 슬라이드 효과를 느껴보세요.</p>
+          <ul>
+            <li><strong>베팅:</strong> 아래의 칩을 클릭해 활성화한 후, 본인의 노란색 화살표(Spot 2) 내부 링 구역을 누르면 배팅액이 증가하고 칩 스택이 쌓입니다.</li>
+            <li><strong>딜러 전략:</strong> 딜러는 자신의 카드 총합이 17점 이상이 될 때까지 무조건 카드를 드로우합니다.</li>
+            <li><strong>AI 플레이어:</strong> 양옆의 AI 플레이어들의 차례 대기 및 카드 히트 과정을 직관적으로 관찰할 수 있습니다.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="rich-footer">
+    <div class="footer-top-grid">
+      <div class="footer-left-brand">
+        <div class="brand-title">
+          <span class="cdb-badge">CDB</span>
+          <h2>CineAHO's SandBox</h2>
+        </div>
+        <div class="brand-links">
+          <span>🧰 웹앱</span><span class="divider-dot">•</span><span>💻 Cineaho</span><span class="divider-dot">•</span><span>📝 이슈트래커</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom-bar">
+      <div class="footer-copyright">CineAHO's SandBox &copy; 2026 Cineaho. All right reserved.</div>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Area -->
+  <div id="toast-container"></div>
+
+  <!-- Game Logic Script -->
+  <script src="app.js"></script>
+</body>
+</html>

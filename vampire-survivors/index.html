@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>비행기 서바이벌 슈터 - CineAHO</title>
+  <!-- Google Fonts Inter, Noto Sans KR, Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1607063568131489"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <a href="../index.html" class="back-btn" title="CineAHO 홈으로 이동">
+        <i class="fa-solid fa-chevron-left"></i>
+      </a>
+      <div class="app-logo">
+        <i class="fa-solid fa-jet-fighter logo-icon text-purple"></i>
+        <h1 class="logo-text">비행기 서바이벌 슈터 <span class="engine-sub">Vampire Planes v1.0</span></h1>
+      </div>
+    </div>
+
+    <div class="header-right">
+            <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="game-container">
+    
+    <!-- Lobby Settings Section (Visible initially) -->
+    <section id="lobby-panel" class="lobby-panel-wrapper glass-panel">
+      <div class="lobby-header">
+        <h2 class="lobby-title">비행기 서바이벌 슈터</h2>
+        <p class="lobby-subtitle">절대 멈추지 않는 초고속 기체를 제어하고, 끝없이 몰려드는 적을 물리쳐 살아남으세요!</p>
+      </div>
+
+      <!-- Settings Block Grid -->
+      <div class="lobby-settings-grid">
+        
+        <!-- Left: Stage Select -->
+        <div class="settings-col">
+          <h3 class="setting-col-title"><i class="fa-solid fa-map"></i> 스테이지 선택 (5 난이도)</h3>
+          <div class="stage-cards-list">
+            
+            <div class="stage-card glass-panel active" data-stage="1">
+              <div class="stage-badge badge-easy">EASY</div>
+              <div class="stage-info">
+                <h4>스테이지 1: 초보자의 숲</h4>
+                <p>풀과 나무가 많은 평화로운 숲. 적들의 이동 속도가 느리며 생존이 쉬운 편입니다.</p>
+              </div>
+            </div>
+
+            <div class="stage-card glass-panel" data-stage="2">
+              <div class="stage-badge badge-normal">NORMAL</div>
+              <div class="stage-info">
+                <h4>스테이지 2: 사막의 무덤</h4>
+                <p>모래와 몬스터 뼈대가 있는 황무지. 적들의 체력이 소폭 증가하고 스폰 빈도가 높아집니다.</p>
+              </div>
+            </div>
+
+            <div class="stage-card glass-panel" data-stage="3">
+              <div class="stage-badge badge-hard">HARD</div>
+              <div class="stage-info">
+                <h4>스테이지 3: 얼어붙은 호수</h4>
+                <p>눈과 얼음으로 덮인 한겨울 호수. 적들의 공격력이 강해지며 얼음 몬스터가 출몰합니다.</p>
+              </div>
+            </div>
+
+            <div class="stage-card glass-panel" data-stage="4">
+              <div class="stage-badge badge-veryhard">V.HARD</div>
+              <div class="stage-info">
+                <h4>스테이지 4: 화산 동굴</h4>
+                <p>용암이 흐르는 위험천만한 대지. 원거리 탄막을 쏘는 적들이 많이 등장합니다.</p>
+              </div>
+            </div>
+
+            <div class="stage-card glass-panel" data-stage="5">
+              <div class="stage-badge badge-chaos">CHAOS</div>
+              <div class="stage-info">
+                <h4>스테이지 5: 지옥의 심연</h4>
+                <p>극한의 생존 전장. 모든 적들의 공격과 방어 능력이 최대치로 상승합니다.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right: Time Limit and Plane Config -->
+        <div class="settings-col">
+          <div class="sub-setting-box">
+            <h3 class="setting-col-title"><i class="fa-solid fa-hourglass-half"></i> 제한 시간 선택</h3>
+            <div class="time-select-row">
+              <button class="btn btn-time active" data-time="600">10분 생존</button>
+              <button class="btn btn-time" data-time="1200">20분 생존</button>
+              <button class="btn btn-time" data-time="1800">30분 생존</button>
+            </div>
+            <div class="scaling-info-notice">
+              <i class="fa-solid fa-circle-exclamation"></i>
+              <span>생존 시간이 흐를수록 난이도가 가파르게 올라갑니다. **매 2분마다 모든 적이 10%씩 강해집니다.**</span>
+            </div>
+          </div>
+
+          <div class="sub-setting-box">
+            <h3 class="setting-col-title"><i class="fa-solid fa-crosshairs"></i> 주무기 사격 타입 선택</h3>
+            <div class="bullet-select-row">
+              <button class="btn btn-bullet-type active" data-type="straight_3way">
+                <i class="fa-solid fa-arrow-up-90"></i> 직선 3-Way
+              </button>
+              <button class="btn btn-bullet-type" data-type="radial">
+                <i class="fa-solid fa-circle-notch"></i> 원형 방사
+              </button>
+              <button class="btn btn-bullet-type" data-type="rear_3way">
+                <i class="fa-solid fa-arrow-down"></i> 후방 3-Way
+              </button>
+            </div>
+          </div>
+
+          <div class="sub-setting-box flight-controls-info glass-panel">
+            <h3 class="setting-col-title"><i class="fa-solid fa-gamepad"></i> 기본 조작 가이드</h3>
+            <div class="controls-desc">
+              <p>비행기는 이륙 후 <strong>절대 정지하지 않으며</strong> 지속적으로 활공 전진합니다.</p>
+              <ul>
+                <li><strong>마우스 조작(추천)</strong>: 화면의 마우스 커서 위치를 향해 부드럽게 기체가 자동 선회합니다.</li>
+                <li><strong>키보드 조작</strong>: <strong>← , →</strong> 또는 <strong>A , D</strong> 키를 꾹 눌러 기체를 왼쪽/오른쪽으로 회전시킵니다.</li>
+                <li><strong>ESC / P 키</strong>: 게임 일시 정지 및 설정.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Quick Game Start Action -->
+          <button id="btn-start-game" class="btn btn-start-action">
+            <i class="fa-solid fa-circle-play"></i> 엔진 시동 & 비행 시작
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Gameplay Board Section (Hidden initially) -->
+    <section id="game-panel" class="gameplay-panel-wrapper" style="display: none;">
+      
+      <!-- Top HUD Dash -->
+      <div class="hud-dashboard glass-panel">
+        
+        <div class="hud-main-bar-row">
+          <div class="hud-item flex-item">
+            <span class="label">LEVEL</span>
+            <span class="value purple" id="hud-level">1</span>
+          </div>
+          
+          <div class="hud-item flex-item">
+            <span class="label">SURVIVORS TIME</span>
+            <span class="value" id="hud-timer">00:00</span>
+          </div>
+
+          <div class="hud-item flex-item">
+            <span class="label">KILLS</span>
+            <span class="value red" id="hud-kills">0</span>
+          </div>
+
+          <div class="hud-item-btn">
+            <button id="btn-pause-game" class="btn btn-pause" title="일시 정지"><i class="fa-solid fa-pause"></i></button>
+          </div>
+        </div>
+
+        <!-- Experience Bar -->
+        <div class="exp-bar-container">
+          <div class="exp-bar-fill" id="exp-bar-fill" style="width: 0%;"></div>
+          <span class="exp-bar-value" id="exp-bar-text">EXP 0%</span>
+        </div>
+
+        <!-- Health and Shield Bar Row -->
+        <div class="health-shield-bar-row">
+          <div class="bar-col">
+            <div class="bar-label"><i class="fa-solid fa-heart text-red"></i> 기체 내구도 (HP) <span id="hp-value-text">100/100</span></div>
+            <div class="hud-bar-track hp-track">
+              <div class="hud-bar-fill hp-fill" id="hp-bar-fill" style="width: 100%;"></div>
+            </div>
+          </div>
+          <div class="bar-col">
+            <div class="bar-label"><i class="fa-solid fa-shield-halved text-blue"></i> 에너지 보호막 (SHIELD) <span id="shield-value-text">50/50</span></div>
+            <div class="hud-bar-track shield-track">
+              <div class="hud-bar-fill shield-fill" id="shield-bar-fill" style="width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Slots Row (Weapons and Passives) -->
+        <div class="slots-dashboard-row">
+          <div class="slots-col">
+            <span class="slots-title">장착 무기:</span>
+            <div class="slots-list" id="weapon-slots-container">
+              <!-- Dynamically populated slots -->
+            </div>
+          </div>
+          <div class="slots-col">
+            <span class="slots-title">강화 부품:</span>
+            <div class="slots-list" id="passive-slots-container">
+              <!-- Dynamically populated slots -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Play Workspace Grid (Canvas Screen + Mobile Pad) -->
+      <div class="game-workspace-layout">
+        
+        <!-- Canvas view container -->
+        <div class="canvas-screen-panel glass-panel">
+          <div class="game-canvas-relative-wrapper">
+            <canvas id="game-canvas" width="640" height="640"></canvas>
+            
+            <!-- Scaling Notify Banner (Appears briefly every 2 mins) -->
+            <div class="game-alert-banner" id="scaling-alert-banner" style="display: none;">
+              <div class="alert-content">
+                <i class="fa-solid fa-skull-crossbones"></i>
+                <span>경고: 2분 경과! 시공간 폭동으로 적들이 10% 강해집니다!</span>
+              </div>
+            </div>
+
+            <!-- Start / Retry / Resume / Result Screen Overlays -->
+            <div class="game-overlay-container" id="game-overlay" style="display: none;">
+              <div class="overlay-modal glass-panel">
+                <h2 class="overlay-title" id="overlay-title">비행 시뮬레이터</h2>
+                <p class="overlay-desc" id="overlay-desc">게임 정보 메시지 영역</p>
+                <div class="overlay-btn-row" id="overlay-btn-group">
+                  <!-- Dynamic buttons -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Level Up Upgrade Option Selector Overlay -->
+            <div class="game-overlay-container" id="levelup-overlay" style="display: none;">
+              <div class="levelup-modal glass-panel">
+                <div class="levelup-header">
+                  <i class="fa-solid fa-circle-chevron-up text-purple pulse-icon"></i>
+                  <h2>부품 및 성능 레벨업!</h2>
+                  <p>비행기 성능을 보강할 무기 또는 장착 카드를 선택하세요.</p>
+                </div>
+                <div class="upgrade-cards-container" id="upgrade-cards-list">
+                  <!-- 3 Dynamic upgrade cards -->
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Mobile Handheld controller (Fades on desktop, shows on mobile) -->
+        <div class="mobile-controller-panel glass-panel" id="mobile-gamepad">
+          <span class="mobile-pad-title">터치 컨트롤 선회</span>
+          <div class="touch-control-joystick-area" id="touch-steer-zone">
+            <div class="touch-joystick-inner">
+              <i class="fa-solid fa-arrow-left"></i>
+              <span>좌우로 밀기</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- Bottom Encyclopedia Guide Board -->
+    <section class="explanation-board-section">
+      <div class="board-header">
+        <i class="fa-solid fa-book text-purple"></i>
+        <div>
+          <h2>비행 서바이벌 도감 및 백서</h2>
+          <span>5대 전장의 무기 조합 시너지, 적기 스폰 주기 및 생존 전략 지침서입니다.</span>
+        </div>
+      </div>
+
+      <div class="explanation-layout">
+        <!-- 8-part Navigation Index -->
+        <nav class="explanation-index-list">
+          <ul>
+            <li class="active" data-index="1"><span class="index-num">01</span> 서바이벌 개요</li>
+            <li data-index="2"><span class="index-num">02</span> 비행기 활공 조작법</li>
+            <li data-index="3"><span class="index-num">03</span> 무기 체계 백서 (4종)</li>
+            <li data-index="4"><span class="index-num">04</span> 보조 부품 리스트 (4종)</li>
+            <li data-index="5"><span class="index-num">05</span> 적 군단 스폰 & 보스</li>
+            <li data-index="6"><span class="index-num">06</span> 2분 주기 복리 강화 공식</li>
+            <li data-index="7"><span class="index-num">07</span> 5대 작전 스테이지 세부 정보</li>
+            <li data-index="8"><span class="index-num">08</span> 생존 초점 가이드 & 팁</li>
+          </ul>
+        </nav>
+
+        <!-- Display Box -->
+        <div class="explanation-display-box glass-panel">
+          <div class="display-content-inner" id="explanation-board-content">
+            <div class="display-top-badge">
+              <i class="fa-solid fa-circle-info text-purple"></i>
+              <span id="explanation-title-badge">가이드 01</span>
+            </div>
+            
+            <h3 id="explanation-display-title">서바이벌 개요</h3>
+            
+            <div class="display-text-body" id="explanation-display-text">
+              로딩 중...
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <p>&copy; 2026 CineAHO's SandBox. All rights reserved.</p>
+  </footer>
+
+  <!-- Unified floating dashboard rings -->
+  <aside class="floating-panel">
+    <button class="float-btn" id="btn-scroll-top" title="최상단으로 이동">
+      <i class="fa-solid fa-chevron-up"></i>
+    </button>
+  </aside>
+
+  <script src="app.js"></script>
+</body>
+</html>

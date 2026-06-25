@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D 쿼리도 (Quoridor 3D) - CineAHO</title>
+  <meta name="description" content="CSS 3D Transforms 기반의 아름답고 입체적인 쿼리도 보드게임입니다. 2인/4인 플레이, 사람 및 스마트 AI 대전을 지원합니다.">
+  
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>Quoridor 3D</span></span>
+    </div>
+    <div class="header-right">
+      <button id="btn-rules" class="btn btn-secondary">
+        <i class="fa-solid fa-circle-question"></i>
+        <span>게임 방법</span>
+      </button>
+      <a href="../index.html" class="btn btn-back-home">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </a>
+      <button id="theme-toggle" class="btn-theme">
+        <i class="fa-solid fa-sun"></i>
+        <span>라이트</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-container">
+    
+    <!-- Game Lobby (Lobby Panel) -->
+    <section id="lobby-panel" class="lobby-card glass-panel">
+      <div class="lobby-header">
+        <i class="fa-solid fa-gamepad icon-accent"></i>
+        <h2>쿼리도 3D 게임 설정</h2>
+      </div>
+      
+      <div class="lobby-content">
+        <!-- Select Max Players -->
+        <div class="lobby-section">
+          <h3>1. 참가 인원 선택</h3>
+          <div class="player-count-buttons">
+            <button class="btn-count-toggle active" data-count="2">
+              <i class="fa-solid fa-user-group"></i> 2인용 플레이
+            </button>
+            <button class="btn-count-toggle" data-count="4">
+              <i class="fa-solid fa-users"></i> 4인용 플레이
+            </button>
+          </div>
+        </div>
+
+        <!-- Setup Player Details -->
+        <div class="lobby-section">
+          <h3>2. 플레이어 슬롯 설정</h3>
+          <p class="section-desc">플레이 방식(사람 또는 AI)을 설정하세요. 전원 AI 설정 시 자동 시뮬레이션 관전이 가능합니다.</p>
+          
+          <div class="slots-container" id="player-slots-container">
+            <!-- Dynamically populated via JS depending on count -->
+          </div>
+        </div>
+
+        <!-- Start Button -->
+        <div class="lobby-actions">
+          <button id="btn-start-game" class="btn btn-start">
+            <i class="fa-solid fa-play"></i> 대전 시작하기
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Game Section (Initially Hidden) -->
+    <section id="game-panel" class="game-layout" style="display: none;">
+      
+      <!-- Side Panels: Player lists / Info (Left Side) -->
+      <div class="side-info-panel flex-col gap-1">
+        
+        <!-- Turn Indicator Banner -->
+        <div class="turn-card glass-panel">
+          <div class="turn-header">
+            <span class="pulse-dot" id="turn-indicator-dot"></span>
+            <span id="turn-title-text">Beige Player 턴</span>
+          </div>
+          <p id="turn-timer">남은 시간: 15초</p>
+        </div>
+
+        <!-- Players List Dashboard -->
+        <div class="players-dashboard glass-panel">
+          <h3>플레이어 정보</h3>
+          <div class="player-list-items" id="hud-players-list">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- Interactive Controls Card -->
+        <div class="controls-card glass-panel">
+          <h3>인게임 도구</h3>
+          <div class="controls-grid">
+            <button id="btn-toggle-wall-direction" class="btn btn-control active" title="단축키: Space">
+              <i class="fa-solid fa-arrows-rotate"></i>
+              <span>벽 방향: <strong id="wall-direction-text">가로(H)</strong></span>
+            </button>
+            <button id="btn-reset-camera" class="btn btn-control">
+              <i class="fa-solid fa-camera"></i>
+              <span>카메라 각도 리셋</span>
+            </button>
+            <button id="btn-undo" class="btn btn-control" disabled>
+              <i class="fa-solid fa-rotate-left"></i>
+              <span>한 수 되돌리기</span>
+            </button>
+            <button id="btn-quit" class="btn btn-control btn-danger">
+              <i class="fa-solid fa-flag"></i>
+              <span>기권 (로비로)</span>
+            </button>
+          </div>
+
+          <!-- Auto AI Play speed adjustment for spectator mode -->
+          <div class="ai-speed-controller" id="ai-speed-wrapper" style="display: none; margin-top: 1rem;">
+            <label for="range-ai-speed">AI 진행 속도: <span id="ai-speed-val">1.0</span>초</label>
+            <input type="range" id="range-ai-speed" min="0.3" max="3" step="0.1" value="1.0">
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Center 3D Board Canvas Area -->
+      <div class="board-3d-scene-container glass-panel">
+        <div class="scene-instructions">
+          <i class="fa-solid fa-arrows-to-eye"></i> 마우스로 보드를 드래그하여 회전할 수 있습니다.
+        </div>
+
+        <!-- 3D Perspective Scene -->
+        <div class="scene-3d" id="scene-3d-canvas">
+          <div class="board-3d-wrapper" id="board-wrapper-element">
+            
+            <!-- The 3D Wooden Board itself -->
+            <div class="board-3d" id="board-element">
+              
+              <!-- Board Core Grid: 9x9 cells -->
+              <div class="board-grid" id="board-grid-element"></div>
+              
+              <!-- Wall Preview Overlay guides -->
+              <div class="board-wall-previews" id="wall-previews-element"></div>
+
+              <!-- Placed Walls container -->
+              <div class="board-placed-walls" id="placed-walls-element"></div>
+
+              <!-- Standing Pawns container -->
+              <div class="board-pawns" id="pawns-element"></div>
+
+              <!-- Board 3D Edges/Frames (thickness) -->
+              <div class="board-side board-front"></div>
+              <div class="board-side board-back"></div>
+              <div class="board-side board-left"></div>
+              <div class="board-side board-right"></div>
+              <div class="board-side board-bottom"></div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Wall Stack Rack Indicator Visuals (Bottom of the board canvas) -->
+        <div class="hud-walls-rack" id="hud-walls-rack-element">
+          <!-- Visually represents remaining walls in slots -->
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Modals & Overlays -->
+  <!-- Rules Modal -->
+  <div id="rules-modal" class="modal-overlay" style="display: none;">
+    <div class="rules-card glass-panel">
+      <div class="modal-header">
+        <i class="fa-solid fa-circle-question"></i>
+        <h3>쿼리도(Quoridor) 게임 룰 안내</h3>
+      </div>
+      
+      <div class="modal-body">
+        <h4>🏁 게임 목표</h4>
+        <p>자신의 말(Pawn)을 조종하여 **상대방의 출발선(반대편 끝 행/열)**에 가장 먼저 도달하는 플레이어가 승리합니다.</p>
+        
+        <h4>🎮 자신의 턴에 할 수 있는 행동 (택 1)</h4>
+        <ol>
+          <li><strong>말 이동 (Move):</strong> 상, 하, 좌, 우 방향으로 인접한 빈 칸으로 1칸 이동합니다 (벽으로 막힌 방향 제외).
+            <ul>
+              <li><strong>상대편과 마주친 경우:</strong> 상대의 머리 위를 점프하여 그 뒤 칸으로 이동할 수 있습니다.</li>
+              <li><strong>상대 뒤가 벽으로 막힌 경우:</strong> 상대편 좌/우 사선 칸으로 꺾어서 점프할 수 있습니다.</li>
+            </ul>
+          </li>
+          <li><strong>벽 설치 (Place Wall):</strong> 2칸 길이의 벽(가로 또는 세로)을 격자 홈 사이에 배치하여 상대방의 진로를 방해합니다.
+            <ul>
+              <li><strong>잔여 벽 개수:</strong> 2인 대전 시 각각 10개, 4인 대전 시 각각 5개의 벽이 주어집니다.</li>
+              <li>벽은 다른 벽을 가로지르거나 완전히 겹치게 놓을 수 없습니다.</li>
+              <li><strong>★ 가장 중요한 규칙:</strong> **어떤 플레이어라도 목표지점(골라인)에 도달할 수 있는 최단 경로를 완전히 차단하는 벽은 설치할 수 없습니다.** 반드시 탈출할 수 있는 통로를 최소 1칸 이상 비워둬야 합니다.</li>
+            </ul>
+          </li>
+        </ol>
+
+        <h4>💡 카메라 회전 조작</h4>
+        <p>게임 중 보드판 영역을 **마우스로 드래그**하거나 모바일에서 **스와이프**하면 보드판을 비스듬히 기울이고 3D 회전시켜 다각도에서 공간을 탐색할 수 있습니다.</p>
+      </div>
+
+      <div class="modal-actions">
+        <button id="btn-close-rules" class="btn btn-primary">확인 완료</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Winner Modal -->
+  <div id="winner-modal" class="modal-overlay" style="display: none;">
+    <div class="winner-card glass-panel">
+      <div class="winner-icon">
+        <i class="fa-solid fa-trophy"></i>
+      </div>
+      <h3 class="winner-title" id="winner-title-name">Beige Player 승리!</h3>
+      <p class="winner-desc" id="winner-desc-text">목표 지점에 가장 먼저 도달하였습니다.</p>
+      
+      <div class="winner-actions">
+        <button id="btn-lobby-return" class="btn btn-primary">대기실로 돌아가기</button>
+        <button id="btn-restart-game" class="btn btn-secondary">재대결</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <p>© 2026 CineAHO. Quoridor 3D Strategy Board Game Engine.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

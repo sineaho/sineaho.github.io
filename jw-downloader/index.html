@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JW Player 동영상 다운로더</title>
+  <!-- Google Fonts Outfit & Inter & Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Glowing Orbs -->
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="glass-header">
+      <div class="header-left">
+        <a href="../index.html" class="back-btn" title="CineAHO 홈으로 이동">
+          <i class="fa-solid fa-chevron-left"></i>
+        </a>
+        <div class="app-logo">
+          <i class="fa-solid fa-download logo-icon text-orange"></i>
+          <h1 class="logo-text">JW Player 동영상 다운로더 <span class="engine-sub">JW Player Downloader</span></h1>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+          <i class="fa-solid fa-house"></i>
+          <span>포털 메인</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="workspace">
+      <!-- Left Panel: Input Form -->
+      <section class="panel control-panel glass-panel">
+        <div class="panel-header">
+          <i class="fa-solid fa-link"></i>
+          <h2>분석 대상 입력</h2>
+        </div>
+
+        <form id="extractor-form" class="extractor-form">
+          <div class="input-group">
+            <label for="page-url">JW Player 재생 웹페이지 URL <span class="required">*</span></label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-globe"></i>
+              <input type="url" id="page-url" placeholder="https://example.com/video-page" required>
+            </div>
+            <p class="input-tip">JW Player로 영상을 재생하는 웹페이지 주소를 입력하세요. (상대경로/iframe 내장 플레이어도 다차원 탐색합니다)</p>
+          </div>
+
+          <button type="submit" id="btn-extract" class="btn btn-primary">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span>동영상 소스 추출하기</span>
+          </button>
+        </form>
+
+        <div class="divider"></div>
+
+        <div class="guide-box">
+          <h3><i class="fa-solid fa-circle-info"></i> 사용 가이드</h3>
+          <ul>
+            <li>1. **웹페이지 URL 입력**: JW Player를 탑재한 외부 페이지 주소를 붙여넣습니다.</li>
+            <li>2. **분석 및 추출**: 페이지 내 스크립트 코드와 다중 iframe을 파싱하여 비디오 소스를 찾아냅니다.</li>
+            <li>3. **다운로드**: 
+              - **MP4/Direct**: 브라우저 다운로드 프록시를 통해 즉시 다운로드됩니다.
+              - **HLS (M3U8)**: 서버의 `ffmpeg` 엔진이 고속으로 동영상을 병합하여 단일 MP4 파일로 변환한 후 제공합니다.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Right Panel: Results & Status -->
+      <section class="panel result-panel glass-panel">
+        <div class="panel-header">
+          <i class="fa-solid fa-video"></i>
+          <h2 id="result-title">추출된 동영상 목록</h2>
+          <div id="status-tag" class="editor-status hidden">
+            <span class="dot pulse"></span>
+            <span id="status-text">준비 완료</span>
+          </div>
+        </div>
+
+        <!-- Initial Placeholder State -->
+        <div id="placeholder-view" class="placeholder-view">
+          <i class="fa-solid fa-clapperboard placeholder-icon"></i>
+          <p>분석할 웹페이지 주소를 입력하고 추출하기를 눌러주세요.</p>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading-view" class="loading-view hidden">
+          <div class="loader"></div>
+          <p id="loading-text">웹페이지의 미디어 소스를 다차원 수집 중입니다...</p>
+        </div>
+
+        <!-- Results Table View -->
+        <div id="results-view" class="results-view hidden">
+          <div class="video-meta">
+            <div class="meta-label">분석된 페이지 제목</div>
+            <h3 id="extracted-page-title">JW Player Video Source</h3>
+          </div>
+
+          <div class="sources-container">
+            <table class="sources-table">
+              <thead>
+                <tr>
+                  <th>미디어 타입</th>
+                  <th>화질/라벨</th>
+                  <th>소스 주소</th>
+                  <th>다운로드</th>
+                </tr>
+              </thead>
+              <tbody id="sources-list">
+                <!-- Dynamic Content -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Progress Overlay (HLS converting) -->
+        <div id="conversion-overlay" class="conversion-overlay hidden">
+          <div class="overlay-card glass-panel">
+            <h3 id="overlay-status-title">HLS 스트림 병합 및 MP4 변환 중</h3>
+            <div class="spinner-container">
+              <div class="big-spinner"></div>
+            </div>
+            <div class="progress-info">
+              <p id="overlay-progress-text">서버에서 동영상을 다운로드 중입니다...</p>
+              <div class="progress-bar-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+              </div>
+              <div class="speed-info">
+                <span>다운로드 크기: <strong id="download-size">0.0 MB</strong></span>
+              </div>
+            </div>
+            <button id="btn-cancel-conversion" class="btn btn-secondary">
+              <i class="fa-solid fa-xmark"></i>
+              <span>취소</span>
+            </button>
+          </div>
+        </div>
+
+      </section>
+    </div>
+  </div>
+
+  <!-- Toast system -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>K-WAIS-IV 성인 지능검사 및 인지능력 진단기 - CineAHO</title>
+  <meta name="description" content="웩슬러 성인 지능검사(K-WAIS-IV)의 4대 핵심 지표(언어이해, 지각추리, 작업기억, 처리속도)를 자가진단하고 전체 지능지수(FSIQ)와 인지 능력 백분위 리포트를 확인해보세요.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <a href="../index.html" class="back-btn" title="CineAHO 홈으로 이동">
+        <i class="fa-solid fa-chevron-left"></i>
+      </a>
+      <div class="app-logo">
+        <i class="fa-solid fa-brain logo-icon text-purple"></i>
+        <h1 class="logo-text">K-WAIS-IV 인지능력 진단기 <span class="engine-sub">Wechsler Intelligence Test Simulator</span></h1>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <button id="theme-toggle" class="btn-theme" style="margin-right: 10px;">
+        <i class="fa-solid fa-sun"></i>
+        <span>라이트</span>
+      </button>
+      <button onclick="location.href='../index.html'" class="btn-back-dashboard">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="hub-container wais-page-container">
+
+    <!-- 1. Intro Panel -->
+    <section id="wais-intro-panel" class="wais-panel glass-panel">
+      <div class="intro-badge">
+        <span class="pulse-dot"></span>
+        <span>CineAHO Wechsler Diagnostic Engine v1.0</span>
+      </div>
+      
+      <div class="intro-content-grid">
+        <div class="intro-text-section">
+          <h2>웩슬러 성인 지능검사<br><span class="gradient-text">(K-WAIS-IV) 인지능력 진단</span></h2>
+          <p class="intro-description">
+            웩슬러 지능검사는 전 세계에서 가장 널리 사용되는 신뢰성 높은 개인용 지능검사 표준입니다. 본 진단기는 <strong>K-WAIS-IV의 4대 핵심 인지 지표</strong>를 브라우저에서 측정할 수 있도록 구성된 자가진단형 단축 시뮬레이터입니다.
+          </p>
+
+          <div class="test-guide-box">
+            <h4><i class="fa-solid fa-circle-info"></i> 검사 전 주의사항</h4>
+            <ul>
+              <li>본 검사는 약 5~7분의 시간이 소요됩니다.</li>
+              <li>중간에 정지할 수 없으므로, 소음이 없고 집중할 수 있는 환경에서 시작해 주세요.</li>
+              <li>반응 속도와 시간 제한이 채점에 포함되므로, 가능한 신속하고 정확하게 답변해 주시기 바랍니다.</li>
+            </ul>
+          </div>
+
+          <button id="btn-start-test" class="btn btn-start-test">
+            <span>지능검사 시작하기</span>
+            <i class="fa-solid fa-play"></i>
+          </button>
+        </div>
+
+        <div class="intro-indices-grid">
+          <div class="index-intro-card">
+            <div class="card-icon icon-purple"><i class="fa-solid fa-comments"></i></div>
+            <div class="card-text">
+              <h4>언어이해 (VCI)</h4>
+              <p>어휘력, 공통성 파악, 상식 등 언어적 개념 형성과 추론 능력을 측정합니다.</p>
+            </div>
+          </div>
+          <div class="index-intro-card">
+            <div class="card-icon icon-blue"><i class="fa-solid fa-circle-nodes"></i></div>
+            <div class="card-text">
+              <h4>지각추리 (PRI)</h4>
+              <p>도형 패턴 추리, 시각 조각 퍼즐 등 비언어적 유동 지능과 시공간 조직화 능력을 평가합니다.</p>
+            </div>
+          </div>
+          <div class="index-intro-card">
+            <div class="card-icon icon-gold"><i class="fa-solid fa-layer-group"></i></div>
+            <div class="card-text">
+              <h4>작업기억 (WMI)</h4>
+              <p>숫자 순서 기억, 계산 문제 등을 통한 청각적 기억 용량과 일시적 정보 유지/조작 능력을 평가합니다.</p>
+            </div>
+          </div>
+          <div class="index-intro-card">
+            <div class="card-icon icon-red"><i class="fa-solid fa-bolt"></i></div>
+            <div class="card-text">
+              <h4>처리속도 (PSI)</h4>
+              <p>제한 시간 내에 기호를 식별하고 부호화하는 능력으로, 주의 집중력과 뇌신경 처리 속도를 진단합니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Test Container Panel -->
+    <section id="wais-test-panel" class="wais-panel glass-panel hidden">
+      <!-- Progress Indicator -->
+      <div class="test-progress-header">
+        <div class="progress-info">
+          <span id="current-index-label" class="current-index-label">언어이해 영역</span>
+          <span id="question-index-label" class="question-index-label">문항 1 / 3</span>
+        </div>
+        <div class="progress-bar-container">
+          <div id="progress-bar-fill" class="progress-bar-fill"></div>
+        </div>
+      </div>
+
+      <!-- Test Domains Content Area -->
+      <div class="test-body-container">
+        
+        <!-- Verbal Comprehension Index (VCI) -->
+        <div id="domain-vci" class="test-domain-panel">
+          <div class="domain-guide">
+            <i class="fa-solid fa-comments text-purple"></i>
+            <div>
+              <h3>언어이해 (VCI) 검사</h3>
+              <p>제시된 두 단어의 공통점을 찾거나, 어휘의 알맞은 뜻 및 상식을 선택하세요.</p>
+            </div>
+          </div>
+          <div class="question-box" id="vci-question-container">
+            <!-- Dynamically generated VCI question -->
+          </div>
+        </div>
+
+        <!-- Perceptual Reasoning Index (PRI) -->
+        <div id="domain-pri" class="test-domain-panel hidden">
+          <div class="domain-guide">
+            <i class="fa-solid fa-circle-nodes text-blue"></i>
+            <div>
+              <h3>지각추리 (PRI) 검사</h3>
+              <p>제시된 도형 매트릭스 또는 퍼즐을 보고 물음표(?)에 들어갈 올바른 보기를 선택하세요.</p>
+            </div>
+          </div>
+          <div class="question-box" id="pri-question-container">
+            <!-- Dynamically generated PRI question -->
+          </div>
+        </div>
+
+        <!-- Working Memory Index (WMI) -->
+        <div id="domain-wmi" class="test-domain-panel hidden">
+          <div class="domain-guide">
+            <i class="fa-solid fa-layer-group text-gold"></i>
+            <div>
+              <h3>작업기억 (WMI) 검사</h3>
+              <p>화면에 차례대로 나타나는 숫자를 지시에 맞게 외운 후 정답을 입력하세요.</p>
+            </div>
+          </div>
+          <div class="question-box" id="wmi-question-container">
+            <!-- Digit Span visual board and Arithmetic questions -->
+          </div>
+        </div>
+
+        <!-- Processing Speed Index (PSI) -->
+        <div id="domain-psi" class="test-domain-panel hidden">
+          <div class="domain-guide">
+            <i class="fa-solid fa-bolt text-red"></i>
+            <div>
+              <h3>처리속도 (PSI) 검사 - 기호 찾기</h3>
+              <p>좌측의 <strong>타겟 기호</strong>가 우측 보기 배열에 존재하는지 판별하여 클릭하세요. 없을 경우 '없음'을 선택하세요. (제한시간 30초)</p>
+            </div>
+          </div>
+          <div class="psi-game-wrapper">
+            <div class="psi-timer-bar-container">
+              <div id="psi-timer-fill" class="psi-timer-fill"></div>
+            </div>
+            <div class="psi-scoreboard">
+              <span>남은 시간: <strong id="psi-time-left">30</strong>초</span>
+              <span>처리 개수: <strong id="psi-score-counter">0</strong>개</span>
+            </div>
+            <div class="psi-game-board" id="psi-game-board">
+              <!-- Dynamically updated target and choice buttons -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. Scoring Loading Panel -->
+    <section id="wais-scoring-panel" class="wais-panel glass-panel hidden">
+      <div class="scoring-content">
+        <i class="fa-solid fa-circle-notch fa-spin text-purple scoring-icon"></i>
+        <h3 id="scoring-status-title">검사 결과를 전송하고 인지 프로필을 분석하는 중...</h3>
+        <p id="scoring-status-desc">언어이해 지표 채점 완료. 지각추리 및 작업기억 처리 데이터 인덱싱 중.</p>
+        
+        <div class="loading-matrix-simulation">
+          <div class="matrix-dot"></div>
+          <div class="matrix-dot"></div>
+          <div class="matrix-dot"></div>
+          <div class="matrix-dot"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Report Panel (Results Page) -->
+    <section id="wais-report-panel" class="wais-panel results-wrapper hidden">
+      
+      <!-- FSIQ Summary Card -->
+      <article class="report-hero-card glass-panel">
+        <div class="report-hero-left">
+          <div class="iq-badge-wrapper">
+            <span class="iq-label">전체 지능 지수 (FSIQ)</span>
+            <h2 id="report-fsiq-value">120</h2>
+            <span class="iq-percentile">상위 <strong id="report-percentile-value">9.1</strong>%</span>
+          </div>
+          <div class="iq-classification-box">
+            <div id="report-iq-grade" class="iq-grade-tag">우수 지능 (Superior)</div>
+            <p id="report-iq-desc" class="iq-brief-summary">언어이해와 지각추리 역량이 특히 고도로 발달되어 있으며, 작업기억 용량과 뇌신경 처리 속도 역시 평균 수준 이상을 유지하고 있는 상태입니다.</p>
+          </div>
+        </div>
+        <div class="report-hero-right">
+          <!-- Bell Curve Chart Container -->
+          <div class="bell-curve-header">
+            <h4><i class="fa-solid fa-chart-area"></i> 전체 지능 정규분포 곡선</h4>
+            <span>평균 IQ 100, 표준편차 15 기준 가우스 분포 모델</span>
+          </div>
+          <div class="canvas-container">
+            <canvas id="bell-curve-canvas" width="480" height="200"></canvas>
+          </div>
+        </div>
+      </article>
+
+      <!-- KPI Index Dashboard Grid -->
+      <div class="indices-kpi-grid">
+        <div class="kpi-index-card glass-panel border-purple">
+          <span class="kpi-index-label text-purple">언어이해 지수 (VCI)</span>
+          <div class="kpi-index-row">
+            <h3 id="score-vci">118</h3>
+            <span id="grade-vci" class="kpi-grade text-purple">우수</span>
+          </div>
+          <p>언어적 추론 능력과 개념 형성, 지식 탐색 범위</p>
+        </div>
+        <div class="kpi-index-card glass-panel border-blue">
+          <span class="kpi-index-label text-blue">지각추리 지수 (PRI)</span>
+          <div class="kpi-index-row">
+            <h3 id="score-pri">125</h3>
+            <span id="grade-pri" class="kpi-grade text-blue">최우수</span>
+          </div>
+          <p>시공간 조직화 능력 및 비언어적 논리 분석력</p>
+        </div>
+        <div class="kpi-index-card glass-panel border-gold">
+          <span class="kpi-index-label text-gold">작업기억 지수 (WMI)</span>
+          <div class="kpi-index-row">
+            <h3 id="score-wmi">110</h3>
+            <span id="grade-wmi" class="kpi-grade text-gold">보통상</span>
+          </div>
+          <p>정보의 일시적 보유 및 암산, 주의집중 용량</p>
+        </div>
+        <div class="kpi-index-card glass-panel border-red">
+          <span class="kpi-index-label text-red">처리속도 지수 (PSI)</span>
+          <div class="kpi-index-row">
+            <h3 id="score-psi">106</h3>
+            <span id="grade-psi" class="kpi-grade text-red">보통</span>
+          </div>
+          <p>시각적 정보의 빠른 탐색 및 단순 인지 반응 속도</p>
+        </div>
+      </div>
+
+      <!-- Detail Analysis Layout -->
+      <div class="report-details-layout">
+        
+        <!-- Radar Chart Card -->
+        <article class="detail-card glass-panel">
+          <div class="chart-header">
+            <h3><i class="fa-solid fa-chart-radar text-purple"></i> 4대 지표별 인지 능력 프로필</h3>
+            <span>영역별 지표 점수 균형성 비교</span>
+          </div>
+          <div class="chart-canvas-wrapper" style="height: 280px;">
+            <canvas id="chart-radar-indices"></canvas>
+          </div>
+        </article>
+
+        <!-- Detailed Index Score Table -->
+        <article class="detail-card glass-panel">
+          <div class="chart-header">
+            <h3><i class="fa-solid fa-table-list text-blue"></i> 상세 환산 점수 및 지표 해석</h3>
+            <span>검사 영역별 원점수 대비 환산(Scaled) 분석</span>
+          </div>
+          <div class="table-scroll-container">
+            <table class="report-table">
+              <thead>
+                <tr>
+                  <th>인지 지표</th>
+                  <th>측정 영역</th>
+                  <th>원점수</th>
+                  <th>환산점수(1-19)</th>
+                  <th>지표점수(50-150)</th>
+                </tr>
+              </thead>
+              <tbody id="report-table-body">
+                <!-- Dynamically populated table rows -->
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- Cognitive Strengths & Weaknesses -->
+        <article class="detail-card glass-panel" style="grid-column: span 2;">
+          <div class="chart-header">
+            <h3><i class="fa-solid fa-scale-balanced text-gold"></i> 강약점 정밀 분석 및 솔루션</h3>
+            <span>인간 인지 구조(C-Rank Cognitive Model) 기반 개별 해석</span>
+          </div>
+          
+          <div class="strengths-weaknesses-container">
+            <div class="cognitive-block border-green">
+              <h4 class="text-green"><i class="fa-solid fa-circle-check"></i> 인지적 강점 (Cognitive Strengths)</h4>
+              <ul id="list-cognitive-strengths" class="solution-list">
+                <!-- Dynamically populated strengths -->
+              </ul>
+            </div>
+            
+            <div class="cognitive-block border-red">
+              <h4 class="text-red"><i class="fa-solid fa-circle-xmark"></i> 인지적 보완점 (Cognitive Weaknesses)</h4>
+              <ul id="list-cognitive-weaknesses" class="solution-list">
+                <!-- Dynamically populated weaknesses -->
+              </ul>
+            </div>
+          </div>
+
+          <!-- Enhancement Action Roadmap -->
+          <div class="roadmap-block" style="margin-top: 25px; border-top: 1px solid var(--panel-border); padding-top: 20px;">
+            <h4 class="text-blue" style="margin-bottom: 15px;"><i class="fa-solid fa-compass-drafting"></i> 인지 능력 강화 행동 로드맵 (Action Plan)</h4>
+            <div class="roadmap-steps" id="roadmap-container">
+              <!-- Dynamically populated roadmap steps -->
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="report-actions">
+        <button id="btn-restart-test" class="btn btn-restart">
+          <i class="fa-solid fa-rotate-left"></i>
+          <span>지능검사 다시 하기</span>
+        </button>
+        <button onclick="location.href='../index.html'" class="btn btn-home">
+          <i class="fa-solid fa-house"></i>
+          <span>포털 대시보드로 이동</span>
+        </button>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="rich-footer">
+    <div class="footer-top-grid">
+      <div class="footer-left-brand">
+        <div class="brand-title">
+          <span class="cdb-badge">CDB</span>
+          <h2>Cineaho's SandBox</h2>
+        </div>
+        <div class="brand-links">
+          <span>🧰 웹앱</span>
+          <span class="divider-dot">•</span>
+          <span>💻 Cineaho</span>
+          <span class="divider-dot">•</span>
+          <span>🧠 K-WAIS-IV 인지능력 진단기</span>
+        </div>
+        <div class="footer-copyright" style="margin-top: 15px; font-size: 11px; color: var(--text-muted);">
+          CineAHO's SandBox - 모든 도구를 한 곳에서 &copy; 2026 Cineaho. All right reserved.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
