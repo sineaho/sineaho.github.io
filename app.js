@@ -38,6 +38,9 @@ function getCardCategoryKey(card) {
   if (!categorySpan) return 'all';
   const categoryText = (categorySpan.getAttribute('data-original') || categorySpan.textContent).trim();
   
+  if (categoryText.includes('유튜브') || categoryText.includes('YouTube') || categoryText.includes('유투브')) {
+    return 'youtube';
+  }
   if (categoryText.includes('빅데이터') || categoryText.includes('공공 데이터') || categoryText.includes('데이터 & 분석')) {
     return 'data';
   }
@@ -236,7 +239,8 @@ function initAppCounts() {
     productivity: 0,
     entertainment: 0,
     media: 0,
-    news: 0
+    news: 0,
+    youtube: 0
   };
 
   toolCards.forEach(card => {
@@ -841,6 +845,7 @@ function applyLanguage(lang) {
       else if (cat === 'entertainment') label = '엔터테인먼트';
       else if (cat === 'media') label = '디자인 & 마케팅';
       else if (cat === 'news') label = '뉴스 & 피드';
+      else if (cat === 'youtube') label = '유튜브';
     } else if (lang === 'en') {
       if (cat === 'all') label = 'Show All';
       else if (cat === 'data') label = 'Data & Analysis';
@@ -850,6 +855,7 @@ function applyLanguage(lang) {
       else if (cat === 'entertainment') label = 'Entertainment';
       else if (cat === 'media') label = 'Design & Marketing';
       else if (cat === 'news') label = 'News & Feeds';
+      else if (cat === 'youtube') label = 'YouTube';
     } else if (lang === 'ja') {
       if (cat === 'all') label = 'すべて見る';
       else if (cat === 'data') label = 'データ＆分析';
@@ -859,6 +865,7 @@ function applyLanguage(lang) {
       else if (cat === 'entertainment') label = 'エン터テインメント';
       else if (cat === 'media') label = 'デザイン＆マーケティング';
       else if (cat === 'news') label = 'ニュース＆フィード';
+      else if (cat === 'youtube') label = 'YouTube';
     }
     
     btn.innerHTML = `${icon} ${label} ${badgeHtml}`;
