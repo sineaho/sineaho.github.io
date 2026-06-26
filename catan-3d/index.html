@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D 카탄 보드게임 (Catan 3D) - CineAHO</title>
+  <meta name="description" content="Three.js 3D 뷰포트를 통해 입체적인 맵에서 즐기는 실시간 턴제 카탄 보드게임. 똑똑한 AI들과 영리한 주사위 자원 전투를 시작하세요.">
+  
+  <!-- Google Fonts: Inter, Noto Sans KR, Outfit, Orbitron -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Orbitron:wght@500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-blue"></div>
+  <div class="bg-glow bg-glow-orange"></div>
+
+  <!-- Main Game Container -->
+  <div class="game-wrapper">
+    
+    <!-- Left Area: 3D Viewport -->
+    <div class="viewport-container">
+      <header class="game-header glass-panel">
+        <div class="header-left">
+          <div class="logo-circle">AHO</div>
+          <span class="logo-text">Catan <span>3D</span></span>
+        </div>
+        <div class="header-right">
+          <button id="btn-camera-reset" class="btn-icon-round" title="카메라 리셋">
+            <i class="fa-solid fa-camera"></i>
+          </button>
+          <button id="btn-rules" class="btn-icon-round" title="게임 방법">
+            <i class="fa-solid fa-circle-question"></i>
+          </button>
+          <a href="../index.html" class="btn-icon-round btn-back" title="포털 메인">
+            <i class="fa-solid fa-house"></i>
+          </a>
+        </div>
+      </header>
+
+      <!-- Three.js Canvas Container -->
+      <div id="canvas-container">
+        <!-- Canvas will be injected by app.js -->
+        <div class="loading-overlay" id="loading-overlay">
+          <div class="spinner"></div>
+          <p>3D 월드를 생성하는 중...</p>
+        </div>
+      </div>
+
+      <!-- Action Floating Banner / State Tips -->
+      <div class="state-banner-container">
+        <div class="state-banner glass-panel" id="state-banner">
+          <i class="fa-solid fa-circle-info text-accent"></i>
+          <span id="state-banner-text">게임 대기 중...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Area: Control Panel -->
+    <aside class="control-panel glass-panel">
+      <!-- Players Score Board -->
+      <section class="panel-section scoreboard-section">
+        <div class="section-title">
+          <i class="fa-solid fa-users icon-accent"></i>
+          <h3>플레이어 스코어</h3>
+        </div>
+        <div class="players-list" id="players-list">
+          <!-- Populated dynamically -->
+        </div>
+      </section>
+
+      <!-- Resource Display -->
+      <section class="panel-section resources-section">
+        <div class="section-title">
+          <i class="fa-solid fa-wallet icon-accent"></i>
+          <h3>내 자원 카드</h3>
+        </div>
+        <div class="resources-grid" id="my-resources">
+          <div class="res-card" data-res="wood">
+            <div class="res-icon wood"><i class="fa-solid fa-tree"></i></div>
+            <span class="res-name">목재</span>
+            <strong class="res-count" id="count-wood">0</strong>
+          </div>
+          <div class="res-card" data-res="brick">
+            <div class="res-icon brick"><i class="fa-solid fa-cubes"></i></div>
+            <span class="res-name">점토</span>
+            <strong class="res-count" id="count-brick">0</strong>
+          </div>
+          <div class="res-card" data-res="sheep">
+            <div class="res-icon sheep"><i class="fa-solid fa-egg"></i></div>
+            <span class="res-name">양고기</span>
+            <strong class="res-count" id="count-sheep">0</strong>
+          </div>
+          <div class="res-card" data-res="wheat">
+            <div class="res-icon wheat"><i class="fa-solid fa-wheat-awn"></i></div>
+            <span class="res-name">밀</span>
+            <strong class="res-count" id="count-wheat">0</strong>
+          </div>
+          <div class="res-card" data-res="ore">
+            <div class="res-icon ore"><i class="fa-solid fa-gem"></i></div>
+            <span class="res-name">철광석</span>
+            <strong class="res-count" id="count-ore">0</strong>
+          </div>
+        </div>
+      </section>
+
+      <!-- Action Panel -->
+      <section class="panel-section actions-section">
+        <div class="section-title">
+          <i class="fa-solid fa-gears icon-accent"></i>
+          <h3>행동 컨트롤러</h3>
+        </div>
+        
+        <!-- Dice Rolling / Turn Area -->
+        <div class="turn-control-box">
+          <div class="dice-box">
+            <div class="dice-wrapper">
+              <div class="die" id="die-1">1</div>
+              <div class="die" id="die-2">1</div>
+            </div>
+            <span class="dice-sum" id="dice-sum">-</span>
+          </div>
+          <button id="btn-roll" class="btn btn-action btn-roll" disabled>
+            <i class="fa-solid fa-dice"></i> 주사위 굴리기
+          </button>
+          <button id="btn-end-turn" class="btn btn-action btn-end" disabled>
+            턴 종료 <i class="fa-solid fa-angle-right"></i>
+          </button>
+        </div>
+
+        <!-- Construction Tools -->
+        <div class="build-controls">
+          <h4>건설하기 (필요 자원 확인)</h4>
+          <div class="build-buttons">
+            <button id="btn-build-road" class="btn btn-build" data-cost="wood:1,brick:1" disabled>
+              <span class="build-title"><i class="fa-solid fa-road"></i> 도로</span>
+              <span class="build-cost"><i class="fa-solid fa-tree"></i>1 <i class="fa-solid fa-cubes"></i>1</span>
+            </button>
+            <button id="btn-build-settlement" class="btn btn-build" data-cost="wood:1,brick:1,sheep:1,wheat:1" disabled>
+              <span class="build-title"><i class="fa-solid fa-house-chimney"></i> 마을</span>
+              <span class="build-cost"><i class="fa-solid fa-tree"></i>1 <i class="fa-solid fa-cubes"></i>1 <i class="fa-solid fa-egg"></i>1 <i class="fa-solid fa-wheat-awn"></i>1</span>
+            </button>
+            <button id="btn-build-city" class="btn btn-build" data-cost="wheat:2,ore:3" disabled>
+              <span class="build-title"><i class="fa-solid fa-building"></i> 도시</span>
+              <span class="build-cost"><i class="fa-solid fa-wheat-awn"></i>2 <i class="fa-solid fa-gem"></i>3</span>
+            </button>
+            <button id="btn-buy-devcard" class="btn btn-build" data-cost="sheep:1,wheat:1,ore:1" disabled>
+              <span class="build-title"><i class="fa-solid fa-ticket"></i> 발전 카드</span>
+              <span class="build-cost"><i class="fa-solid fa-egg"></i>1 <i class="fa-solid fa-wheat-awn"></i>1 <i class="fa-solid fa-gem"></i>1</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Trade & Cards -->
+        <div class="action-grid-buttons">
+          <button id="btn-open-trade" class="btn btn-secondary w-full" disabled>
+            <i class="fa-solid fa-right-left"></i> 해상 / 은행 거래
+          </button>
+          <button id="btn-open-devcards" class="btn btn-secondary w-full" disabled>
+            <i class="fa-solid fa-hand-holding-hand"></i> 발전 카드 사용 (<span id="devcards-count">0</span>)
+          </button>
+        </div>
+      </section>
+
+      <!-- Game Log Console -->
+      <section class="panel-section log-section">
+        <div class="section-title">
+          <i class="fa-solid fa-terminal icon-accent"></i>
+          <h3>게임 로그</h3>
+        </div>
+        <div class="log-console" id="log-console">
+          <!-- Logs will go here -->
+          <div class="log-msg log-system">3D 카탄 보드게임에 오신 것을 환영합니다!</div>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- Game Setup Overlay (Lobby) -->
+  <div id="setup-modal" class="modal-overlay">
+    <div class="modal-card glass-panel text-center">
+      <div class="logo-accent">
+        <i class="fa-solid fa-globe"></i>
+      </div>
+      <h2>3D CATAN BOARDGAME</h2>
+      <p class="modal-desc">아름다운 3차원 육각 보드 위에서 자원을 모으고 건설하여 승점을 달성하세요.</p>
+      
+      <div class="setup-form">
+        <div class="form-group">
+          <label>게임 모드</label>
+          <div class="button-toggle-group" id="mode-toggle-group">
+            <button class="btn-toggle active" id="btn-mode-single" data-mode="single">싱글 플레이 (vs AI)</button>
+            <button class="btn-toggle" id="btn-mode-multi" data-mode="multi">로컬 대전 (Pass & Play)</button>
+          </div>
+        </div>
+        
+        <!-- Single Player Config -->
+        <div id="single-config-area">
+          <div class="form-group">
+            <label>내 이름</label>
+            <input type="text" id="player-name-input" value="플레이어" maxlength="8">
+          </div>
+          <div class="form-group">
+            <label>경쟁 인공지능 수</label>
+            <div class="button-toggle-group" id="ai-count-toggle">
+              <button class="btn-toggle active" data-value="3">AI 3명 (4인용)</button>
+              <button class="btn-toggle" data-value="2">AI 2명 (3인용)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Local Multiplayer Config -->
+        <div id="multi-config-area" style="display: none;">
+          <div class="form-group">
+            <label>플레이어 수</label>
+            <div class="button-toggle-group" id="player-count-toggle">
+              <button class="btn-toggle" data-value="2">2명</button>
+              <button class="btn-toggle active" data-value="3">3명</button>
+              <button class="btn-toggle" data-value="4">4명</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>플레이어 이름 설정</label>
+            <div id="player-names-inputs" class="player-names-grid">
+              <!-- Dynamically populated via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button id="btn-start-game" class="btn btn-primary btn-large">
+          <i class="fa-solid fa-play"></i> 게임 시작하기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bank/Maritime Trade Modal -->
+  <div id="trade-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-right-left"></i> 자원 거래소</h3>
+        <button class="btn-close" onclick="closeModal('trade-modal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <p class="trade-info-text">
+          보유한 항구 및 은행 비율을 적용하여 자원을 교환합니다.<br>
+          현재 기본 비율: <strong class="text-accent" id="trade-ratio-display">4 : 1</strong>
+        </p>
+        <div class="trade-columns">
+          <!-- Give Resource -->
+          <div class="trade-column">
+            <h4>지불할 자원</h4>
+            <div class="trade-list" id="trade-give-list">
+              <!-- Render dynamically with available ratios -->
+            </div>
+          </div>
+          <!-- Get Resource -->
+          <div class="trade-column">
+            <h4>받을 자원</h4>
+            <div class="trade-list" id="trade-get-list">
+              <!-- Render dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal('trade-modal')">취소</button>
+        <button id="btn-confirm-trade" class="btn btn-primary" disabled>거래 확정</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Development Cards Modal -->
+  <div id="devcard-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-ticket"></i> 발전 카드 보유함</h3>
+        <button class="btn-close" onclick="closeModal('devcard-modal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <p class="devcard-desc">한 턴에 한 장의 카드만 플레이할 수 있습니다. (새로 산 카드는 다음 턴부터 사용 가능)</p>
+        <div class="devcards-list" id="my-devcards-list">
+          <!-- Render dynamically -->
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal('devcard-modal')">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Robber Discard Modal -->
+  <div id="discard-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <h3>⚠️ 도둑 습격! 카드 버리기</h3>
+      </div>
+      <div class="modal-body">
+        <p class="discard-desc">주사위 7이 굴려졌습니다. 보유 카드가 7장보다 많으므로 절반(<span id="discard-count-needed">0</span>장)을 선택하여 버려야 합니다.</p>
+        <div class="discard-selector" id="discard-selector-container">
+          <!-- Render dynamically -->
+        </div>
+        <p class="discard-status-text">남은 선택 장수: <strong id="discard-remain-val">0</strong> / <span id="discard-total-needed">0</span></p>
+      </div>
+      <div class="modal-actions">
+        <button id="btn-confirm-discard" class="btn btn-primary" disabled>버리기 완료</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Robber Steal Modal -->
+  <div id="steal-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card glass-panel text-center">
+      <div class="modal-header">
+        <h3>🎯 자원 강탈하기</h3>
+      </div>
+      <div class="modal-body">
+        <p>도둑이 이동한 타일 주변에 마을을 소유한 상대 플레이어로부터 카드를 빼앗습니다.</p>
+        <div class="steal-targets-list" id="steal-targets-list">
+          <!-- Render dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Monopoly Resource Modal -->
+  <div id="monopoly-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card glass-panel text-center">
+      <div class="modal-header">
+        <h3>🎩 독점 자원 선택</h3>
+      </div>
+      <div class="modal-body">
+        <p>독점할 자원을 하나 선택하세요. 모든 플레이어로부터 해당 종류의 카드를 전부 강탈합니다.</p>
+        <div class="monopoly-buttons">
+          <button class="btn-monopoly" data-res="wood"><i class="fa-solid fa-tree text-wood"></i> 목재</button>
+          <button class="btn-monopoly" data-res="brick"><i class="fa-solid fa-cubes text-brick"></i> 점토</button>
+          <button class="btn-monopoly" data-res="sheep"><i class="fa-solid fa-egg text-sheep"></i> 양고기</button>
+          <button class="btn-monopoly" data-res="wheat"><i class="fa-solid fa-wheat-awn text-wheat"></i> 밀</button>
+          <button class="btn-monopoly" data-res="ore"><i class="fa-solid fa-gem text-ore"></i> 철광석</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rules / How to play Modal -->
+  <div id="rules-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <h3>📜 게임 규칙 및 방법</h3>
+        <button class="btn-close" onclick="closeModal('rules-modal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body text-left">
+        <h4>1. 게임의 목표</h4>
+        <p>도로, 마을, 도시를 건설하거나 발전 카드를 사서 **승점 10점**에 먼저 도달하는 플레이어가 승리합니다.</p>
+        
+        <h4>2. 승점 획득 방법</h4>
+        <ul>
+          <li><strong>마을 (Settlement)</strong>: 1점</li>
+          <li><strong>도시 (City)</strong>: 2점</li>
+          <li><strong>발전 카드 중 승점 카드</strong>: 1점 (보유 시 자동 합산)</li>
+          <li><strong>최장 도로 (Longest Road)</strong>: 2점 (가장 길게 연결된 도로가 5개 이상인 플레이어)</li>
+          <li><strong>최대 군대 (Largest Army)</strong>: 2점 (기사 카드를 3개 이상 가장 많이 사용한 플레이어)</li>
+        </ul>
+
+        <h4>3. 자원 획득 및 턴 진행</h4>
+        <ul>
+          <li>매 턴마다 주사위 2개를 굴려 합이 나옵니다.</li>
+          <li>해당 번호 토큰이 있는 타일에 마을이나 도시가 접해 있는 플레이어는 해당하는 자원을 얻습니다. (마을 1개, 도시 2개)</li>
+          <li>주사위가 **7**이 나오면 도둑이 움직입니다! 카드가 8장 이상인 플레이어는 절반을 반납하며, 턴 플레이어는 도둑을 새로운 타일로 이동시키고 인접 플레이어의 자원을 무작위로 1장 강탈합니다. 도둑이 위치한 타일은 주사위 숫자가 나와도 자원을 생산하지 못합니다.</li>
+        </ul>
+
+        <h4>4. 거래 및 건설</h4>
+        <ul>
+          <li>같은 종류의 자원 4장을 은행에 내고 원하는 자원 1장으로 교환할 수 있습니다 (4:1).</li>
+          <li>항구 근처 꼭짓점에 마을을 건설하면 항구 종류에 따라 3:1 또는 2:1 우대 거래가 가능합니다.</li>
+          <li>도로는 자신의 도로/마을에 인접해서만 건설 가능합니다.</li>
+          <li>마을은 기존에 건설된 마을들과 최소한 도로 2개 간격(꼭짓점 하나 이상 건너뛰어)이 있어야 합니다.</li>
+        </ul>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" onclick="closeModal('rules-modal')">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Winner Announcement Modal -->
+  <div id="winner-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card glass-panel text-center">
+      <div class="winner-trophy">
+        <i class="fa-solid fa-trophy text-accent"></i>
+      </div>
+      <h2 id="winner-title">승리자 발생!</h2>
+      <p id="winner-desc">플레이어가 게임에서 승리했습니다!</p>
+      <div class="modal-actions">
+        <a href="../index.html" class="btn btn-secondary">포털 메인</a>
+        <button onclick="location.reload()" class="btn btn-primary">다시 시작하기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- External CDN Libraries (Three.js and OrbitControls) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  
+  <!-- Main Game Javascript -->
+  <script src="app-new.js"></script>
+
+</body>
+</html>
