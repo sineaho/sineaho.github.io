@@ -219,6 +219,151 @@ const APP_METADATA = {
   'adhd-test': { name: '종합 ADHD 인지 검사기', icon: 'fa-solid fa-brain-circuit', link: './adhd-test/index.html' }
 };
 
+// --- Favorites (즐겨찾기) Logic ---
+function getFavorites() {
+  const favs = localStorage.getItem('user-favorites');
+  return favs ? JSON.parse(favs) : [];
+}
+
+function saveFavorites(favs) {
+  localStorage.setItem('user-favorites', JSON.stringify(favs));
+}
+
+function toggleFavorite(appKey) {
+  let favorites = getFavorites();
+  const index = favorites.indexOf(appKey);
+  
+  if (index > -1) {
+    favorites.splice(index, 1);
+  } else {
+    favorites.push(appKey);
+  }
+  saveFavorites(favorites);
+  
+  // Synchronize star states on main cards
+  const cards = document.querySelectorAll(`.tool-card[data-app-key="${appKey}"]`);
+  cards.forEach(card => {
+    const btn = card.querySelector('.tool-star-btn');
+    if (btn) {
+      const isFav = favorites.includes(appKey);
+      btn.innerHTML = isFav ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>';
+      if (isFav) btn.classList.add('active');
+      else btn.classList.remove('active');
+    }
+  });
+
+  // Re-render favorites section
+  renderFavorites();
+}
+
+function renderFavorites() {
+  const container = document.getElementById('favorites-container');
+  if (!container) return;
+  
+  const favorites = getFavorites();
+  
+  if (favorites.length === 0) {
+    let emptyTitle = '즐겨찾는 도구가 없습니다';
+    let emptyDesc = '도구 카드 우측 상단의 별표(☆) 아이콘을 눌러 나만의 즐겨찾기 리스트를 만들어보세요!';
+    
+    if (currentLang === 'en') {
+      emptyTitle = 'No favorite tools yet';
+      emptyDesc = 'Press the star (☆) icon on any tool card to build your own favorites list!';
+    } else if (currentLang === 'ja') {
+      emptyTitle = 'お気に入りのツールはありません';
+      emptyDesc = 'ツールカードの右上にある星（☆）アイコンを押して、自分のお気に入りリストを作成してください！';
+    }
+    
+    container.innerHTML = `
+      <div class="favorites-empty-state glass-panel">
+        <i class="fa-regular fa-star star-placeholder"></i>
+        <p class="empty-title">${emptyTitle}</p>
+        <p class="empty-desc">${emptyDesc}</p>
+      </div>
+    `;
+    return;
+  }
+  
+  container.innerHTML = '';
+  favorites.forEach((appKey) => {
+    const meta = APP_METADATA[appKey];
+    if (meta) {
+      const cardDiv = document.createElement('div');
+      cardDiv.className = `frequent-tool-card glass-panel`;
+      cardDiv.setAttribute('onclick', `location.href='${meta.link}'`);
+      
+      const appName = currentLang === 'ko' ? meta.name : (APP_NAME_TRANSLATIONS[meta.name] || meta.name);
+      
+      cardDiv.innerHTML = `
+        <button class="fav-card-star-btn" title="${currentLang === 'ko' ? '즐겨찾기 해제' : (currentLang === 'en' ? 'Remove Favorite' : 'お気に入り解除')}">
+          <i class="fa-solid fa-star"></i>
+        </button>
+        <div class="freq-icon-wrapper"><i class="${meta.icon}"></i></div>
+        <div class="freq-card-info">
+          <h3>${appName}</h3>
+          <span class="freq-visits">${meta.name}</span>
+        </div>
+        <div class="freq-launch-arrow">
+          <i class="fa-solid fa-arrow-right"></i>
+        </div>
+      `;
+      
+      // Handle unfavorite
+      const favStar = cardDiv.querySelector('.fav-card-star-btn');
+      favStar.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleFavorite(appKey);
+      });
+      
+      cardDiv.addEventListener('mousemove', (e) => {
+        const rect = cardDiv.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        cardDiv.style.setProperty('--x', `${x}px`);
+        cardDiv.style.setProperty('--y', `${y}px`);
+      });
+      
+      container.appendChild(cardDiv);
+    }
+  });
+}
+
+function initFavorites() {
+  const toolCards = document.querySelectorAll('.tool-card');
+  const favorites = getFavorites();
+  
+  toolCards.forEach(card => {
+    const launchBtn = card.querySelector('.btn-card-launch');
+    if (!launchBtn) return;
+    const href = launchBtn.getAttribute('href');
+    const match = href.match(/\.\/([a-zA-Z0-9_-]+)\//);
+    if (!match) return;
+    const appKey = match[1];
+    
+    // Set attribute
+    card.setAttribute('data-app-key', appKey);
+    
+    // Create star toggle button
+    const starBtn = document.createElement('button');
+    starBtn.className = 'tool-star-btn';
+    starBtn.setAttribute('title', currentLang === 'ko' ? '즐겨찾기 추가/해제' : (currentLang === 'en' ? 'Add/Remove Favorite' : 'お気に入り登録/解除'));
+    
+    const isFav = favorites.includes(appKey);
+    starBtn.innerHTML = isFav ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>';
+    if (isFav) starBtn.classList.add('active');
+    
+    starBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleFavorite(appKey);
+    });
+    
+    card.appendChild(starBtn);
+  });
+  
+  // Render favorites list
+  renderFavorites();
+}
+
 // --- 카테고리별 앱 개수 및 전체 개수 동적 집계 ---
 function initAppCounts() {
   const toolCards = document.querySelectorAll('.tool-card');
@@ -997,7 +1142,7 @@ function applyLanguage(lang) {
   const footerColLinks = document.querySelectorAll('.footer-right-columns .footer-col a');
   footerColLinks.forEach(link => {
     const text = link.textContent.trim();
-    if (ui[text]) {
+    if (ui && ui[text]) {
       link.textContent = ui[text];
     }
   });
@@ -1009,6 +1154,33 @@ function applyLanguage(lang) {
       "CineAHO's SandBox - All tools in one place © 2025 Cineaho. All right reserved.";
   }
 
+  // Favorites Section Translation
+  const favTitle = document.getElementById('fav-section-title');
+  const favSubtitle = document.getElementById('fav-section-subtitle');
+  if (favTitle && favSubtitle) {
+    if (lang === 'ko') {
+      favTitle.textContent = '내가 즐겨찾는 도구';
+      favSubtitle.textContent = '빠르게 접근하기 위해 즐겨찾기(별표)를 등록한 도구 목록입니다.';
+    } else if (lang === 'en') {
+      favTitle.textContent = 'My Favorites';
+      favSubtitle.textContent = 'A list of tools you bookmarked for quick access.';
+    } else if (lang === 'ja') {
+      favTitle.textContent = 'お気に入りツール';
+      favSubtitle.textContent = 'クイックアクセスのためにお気に入り（星印）에 登録したツールの一覧です。';
+    }
+  }
+
+  // Update star button titles for the main cards
+  toolCards.forEach(card => {
+    const starBtn = card.querySelector('.tool-star-btn');
+    if (starBtn) {
+      starBtn.setAttribute('title', lang === 'ko' ? '즐겨찾기 추가/해제' : (lang === 'en' ? 'Add/Remove Favorite' : 'お気に入り登録/解除'));
+    }
+  });
+
+  // Re-render favorites list to update empty state or category descriptions inside favorites cards
+  renderFavorites();
+
   // Refresh Naver Blog layout to match language
   renderNaverBlogFeed();
 }
@@ -1018,6 +1190,7 @@ window.addEventListener('DOMContentLoaded', () => {
   updateVisitorStats();
   initAppCounts();
   initBlogFeed();
+  initFavorites();
   
   // Initialize language dropdown selector
   const langDropdown = document.getElementById('lang-dropdown');
