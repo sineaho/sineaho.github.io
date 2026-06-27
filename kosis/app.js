@@ -79,9 +79,10 @@ function initDataStore() {
     },
     region: {
       title: "시도별 소비자물가지수(2020=100)",
-      desc: "지역별(서울, 부산, 경기 등) 물가 수준 가격 변동",
-      info: "시도별 소비자물가지수는 각 지방자치단체 단위의 유통 구조와 임대료 수준이 반영된 지역 맞춤 인플레이션 지수입니다.",
+      desc: "지역별(전국, 서울, 부산 등) 물가 수준 가격 변동",
+      info: "시도별 소비자물가지수는 각 지방자치단체 단위의 유통 구조와 임대료 수준이 반영된 지역 맞춤 인플레이션 지수입니다. 기본값으로 전국 평균 물가 지수를 보여줍니다.",
       subIndices: {
+        nationwide: { name: "전국 물가", data: generateTimeSeriesData(100.0, 0.0018, 0.08) },
         seoul: { name: "서울특별시 물가", data: generateTimeSeriesData(100.0, 0.0019, 0.08) },
         busan: { name: "부산광역시 물가", data: generateTimeSeriesData(100.0, 0.0017, 0.07) },
         gyeonggi: { name: "경기도 물가", data: generateTimeSeriesData(100.0, 0.0018, 0.09) },
@@ -181,10 +182,16 @@ async function fetchKosisData(category, subIndex, periodYears) {
 // 가상의 KOSIS Response 파서
 function parseKosisResponse(data) {
   // 통계청 원본 데이터에서 년월과 값 추출 매핑
-  return data.map(item => ({
-    time: item.PRD_DE, // 연월
-    val: parseFloat(item.DT) // 수치
-  }));
+  return data.map(item => {
+    let timeStr = item.PRD_DE;
+    if (timeStr && timeStr.length === 6 && !timeStr.includes('.')) {
+      timeStr = `${timeStr.substring(0, 4)}.${timeStr.substring(4, 6)}`;
+    }
+    return {
+      time: timeStr,
+      val: parseFloat(item.DT)
+    };
+  });
 }
 
 // ----------------------------------------------------
@@ -833,9 +840,6 @@ function runCompareRendering() {
 // ----------------------------------------------------
 
 async function refreshActiveData() {
-  // 로딩 상태 피드백
-  lcdOutput.innerText = 'FETCHING...';
-  
   // OpenAPI 통신 시도
   const fetched = await fetchKosisData(currentCategory, currentSubIndex, currentYears);
   
@@ -865,9 +869,6 @@ async function refreshActiveData() {
   } else if (currentTab === 'info') {
     renderInfoDoc();
   }
-
-  lcdOutput.innerText = activeChartData[activeChartData.length - 1].val;
-  lcdFormula.innerText = DATA_STORE[currentCategory].title;
 }
 
 // ----------------------------------------------------
