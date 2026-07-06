@@ -233,7 +233,7 @@
     <div class="tabs-wrapper">
       <button class="tab-btn active" id="tab-web-apps">
         <span>💻 웹 애플리케이션</span>
-        <span class="tab-count">69</span>
+        <span class="tab-count">70</span>
       </button>
       <button class="tab-btn" id="tab-calculators">
         <span>🧮 전문 계산기</span>
@@ -914,12 +914,73 @@
             <span class="badge badge-time">즉시</span>
           </div>
           <p class="card-desc">Three.js 기반 3D 카지노 테이블에서 즐기는 블랙잭. 1-6 카드 무한 데크, 딜러 AI, 베팅 시스템, 카드 딜링 애니메이션을 제공합니다.</p>
-        </div>
         <div class="card-tags">
           <span class="tag">#블랙잭</span>
           <span class="tag">#3D</span>
           <span class="tag">#카지노</span>
-          <span class="tag">#카드게임</span>
+        </div>
+      </a>
+
+      <!-- Card: Pinball 3D -->
+      <a href="./pinball-3d/index.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">🎳</span>
+            <h3>3D 핀볼 아케이드</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">Three.js 3D 그래픽과 물리 충돌 연산 엔진을 내장한 프리미엄 3D 핀볼 게임. 서부, 현대, 미래 3가지 컨셉 스테이지를 즐겨보세요.</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#핀볼</span>
+          <span class="tag">#3D게임</span>
+          <span class="tag">#Three.js</span>
+          <span class="tag">#아케이드</span>
+        </div>
+      </a>
+
+      <!-- Card: ADHD Test -->
+      <a href="./adhd-test/index.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">🧠</span>
+            <h3>종합 ADHD 인지 검사기</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">성인 ADHD 자가진단 표준 척도(ASRS)와 지속주의력, 선택적 인지 간섭 등 두 가지 기계적 두뇌 반응 게임 검사를 결합하여 종합 진단합니다.</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#ADHD</span>
+          <span class="tag">#인지검사</span>
+          <span class="tag">#부주의</span>
+          <span class="tag">#충동성</span>
+          <span class="tag">#건강</span>
+        </div>
+      </a>
+
+      <!-- Card: AI Youtube Blog Summarizer -->
+      <a href="./youtube-blog/index.html" class="tool-card">
+        <div class="card-top">
+          <div class="card-title-row">
+            <span class="app-icon">📝</span>
+            <h3>AI 유튜브 블로그 요약기</h3>
+          </div>
+          <div class="badge-row">
+            <span class="badge badge-level badge-adv">고급</span>
+            <span class="badge badge-time">즉시</span>
+          </div>
+          <p class="card-desc">유튜브 영상 링크를 입력하여 스크립트 핵심 요약을 도출하고, 드래그형 썸네일(Canvas) 및 SVG 기반 차트 인포그래픽을 융합한 블로그 HTML 포스팅을 제작합니다.</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">#유튜브</span>
+          <span class="tag">#AI요약</span>
+          <span class="tag">#블로그</span>
         </div>
       </a>
     </div>
@@ -1227,9 +1288,12 @@
         </div>
       </a>
 
-    </div>
-
   </div>
+
+  <footer style="margin-top: 60px; padding: 30px 20px; text-align: center; border-top: 1px solid #e2e8f0; font-size: 13px; color: #64748b; font-family: 'Inter', 'Noto Sans KR', sans-serif;">
+    <div style="margin-bottom: 8px;">CineAHO's SandBox - 모든 도구를 한 곳에서 &copy; 2025 Cineaho. All right reserved.</div>
+    <div style="font-size: 11px;">Built on Cloudflare Pages, Workers, D1, R2 and Turso · <a href="./admin/index.html" class="admin-dashboard-link" style="color: #64748b; text-decoration: none; font-size: 0.75rem; transition: color 0.2s;" onmouseover="this.style.color='#ff7e5f'" onmouseout="this.style.color='#64748b'">관리자</a></div>
+  </footer>
 
   <!-- Interactive Script -->
   <script>
@@ -1252,6 +1316,7 @@
       gridWebApps.classList.add('hidden');
     });
   </script>
+  <script src="js/app-status-loader.js" defer></script>
 
 </body>
 </html>

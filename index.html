@@ -38,17 +38,6 @@
         <li><a href="https://blog.naver.com/sineaho">CineAHO</a></li>
         <li><a href="prompt.html">프롬프트</a></li>
         <li><a href="#">칼럼</a></li>
-        <li><a href="#">PPT</a></li>
-        <li><a href="#">위키</a></li>
-        <li><a href="#">엔터테인먼트</a></li>
-        <li><a href="#">AI 이미지</a></li>
-        <li><a href="#">AI 툴</a></li>
-        <li><a href="#">프로그램</a></li>
-        <li><a href="#">쇼핑 핫딜</a></li>
-        <li><a href="#">부업 백과</a></li>
-        <li><a href="#">RSS</a></li>
-        <li><a href="#">개발</a></li>
-        <li><a href="#">용어 사전</a></li>
       </ul>
     </nav>
 
@@ -65,8 +54,47 @@
         <i class="fa-solid fa-sun"></i>
         <span>라이트</span>
       </button>
+      <div class="lang-dropdown glass-panel" id="lang-dropdown">
+        <button class="btn-lang-trigger" id="btn-lang-trigger">
+          <i class="fa-solid fa-globe"></i>
+          <span id="selected-lang-label">한국어</span>
+          <i class="fa-solid fa-chevron-down chevron"></i>
+        </button>
+        <div class="lang-dropdown-list glass-panel" id="lang-dropdown-list">
+          <button class="lang-dropdown-item active" data-lang="ko">
+            <span>한국어</span>
+            <i class="fa-solid fa-check check-icon"></i>
+          </button>
+          <button class="lang-dropdown-item" data-lang="en">
+            <span>English</span>
+            <i class="fa-solid fa-check check-icon"></i>
+          </button>
+          <button class="lang-dropdown-item" data-lang="ja">
+            <span>日本語</span>
+            <i class="fa-solid fa-check check-icon"></i>
+          </button>
+        </div>
+      </div>
     </div>
   </header>
+
+  <!-- Naver Blog Latest News Banner -->
+  <section class="blog-banner-section" id="blog-banner-section">
+    <div class="blog-banner-container glass-panel">
+      <div class="blog-banner-header">
+        <span class="blog-badge"><i class="fa-solid fa-square-rss"></i> NAVER BLOG</span>
+        <h3>sineaho 블로그 최신 요약 피드</h3>
+        <button id="btn-refresh-blog" class="btn-refresh-blog" title="새로고침">
+          <i class="fa-solid fa-rotate"></i>
+        </button>
+      </div>
+      <div class="blog-posts-wrapper" id="blog-posts-container">
+        <div class="blog-loading-spinner">
+          <i class="fa-solid fa-circle-notch fa-spin"></i> 최신 콘텐츠를 요약 정리하는 중...
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- Hero Section -->
   <main class="hero-container">
@@ -104,64 +132,6 @@
         </div>
       </section>
 
-      <!-- Hero Right: YouTube Feature Card -->
-      <section class="hero-right">
-        <div class="neon-backglow"></div>
-        <div class="main-feature-card glass-panel">
-
-          <!-- Card Interior Grid (Single Column) -->
-          <div class="card-grid">
-            <div class="card-left">
-              <div class="app-icon-wrapper">
-                <i class="fa-solid fa-chart-column"></i>
-              </div>
-              <div class="app-info">
-                <h3>YouTube 채널 분석</h3>
-                <span class="app-sub">실시간 데이터 분석 플랫폼</span>
-              </div>
-
-              <ul class="app-bullets">
-                <li><span class="bullet bullet-green"></span> 190,015개의 채널 데이터 분석</li>
-                <li><span class="bullet bullet-blue"></span> A1~C3 등급별 채널 분류</li>
-                <li><span class="bullet bullet-purple"></span> 성장률, 지역별 통계 제공</li>
-              </ul>
-
-              <a href="./youtube-hub/index.html" class="btn btn-app-launch">
-                <i class="fa-solid fa-chart-line"></i>
-                <span>분석 시작하기</span>
-              </a>
-            </div>
-          </div>
-
-          <!-- Divider -->
-          <div class="card-divider"></div>
-
-          <!-- Statistics Row -->
-          <div class="card-stats">
-            <div class="stat-item">
-              <span class="stat-num">190,015</span>
-              <span class="stat-label">채널 분석</span>
-            </div>
-            <div class="stat-divider"></div>
-            <div class="stat-item">
-              <span class="stat-num">A1~C3</span>
-              <span class="stat-label">등급 분류</span>
-            </div>
-            <div class="stat-divider"></div>
-            <div class="stat-item">
-              <span class="stat-num">실시간</span>
-              <span class="stat-label">데이터 업데이트</span>
-            </div>
-          </div>
-
-          <!-- Floating 3D Graphic Decors -->
-          <div class="decor decor-chart"><i class="fa-solid fa-square-poll-vertical"></i></div>
-          <div class="decor decor-search"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
-          <div class="decor decor-slate"><i class="fa-solid fa-clapperboard"></i></div>
-          <div class="decor decor-star"><i class="fa-solid fa-star"></i></div>
-          <div class="decor decor-sheet"><i class="fa-solid fa-table"></i></div>
-        </div>
-      </section>
 
     </div>
   </main>
@@ -176,6 +146,21 @@
       </div>
 
       <div class="frequent-tools-middle-grid" id="frequent-tools-middle-container">
+        <!-- Will be rendered dynamically via JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Favorites Section -->
+  <section class="favorites-section" id="favorites-section">
+    <div class="section-container">
+      <div class="middle-section-header">
+        <div class="portal-badge" id="fav-portal-badge"><i class="fa-solid fa-star"></i> MY FAVORITES</div>
+        <h2 class="middle-section-title" id="fav-section-title">내가 즐겨찾는 도구</h2>
+        <p class="middle-section-subtitle" id="fav-section-subtitle">빠르게 접근하기 위해 즐겨찾기(별표)를 등록한 도구 목록입니다.</p>
+      </div>
+
+      <div class="frequent-tools-middle-grid" id="favorites-container">
         <!-- Will be rendered dynamically via JS -->
       </div>
     </div>
@@ -214,6 +199,9 @@
       </button>
       <button class="category-tab-btn" data-category="news">
         <i class="fa-solid fa-newspaper"></i> 뉴스 & 피드
+      </button>
+      <button class="category-tab-btn" data-category="youtube">
+        <i class="fa-brands fa-youtube" style="color: #ff0000;"></i> 유튜브
       </button>
     </div>
 
@@ -262,6 +250,49 @@
         </div>
       </article>
 
+      <!-- App Card 1-2: 네이버 블로그 종합 진단기 -->
+      <article class="tool-card glass-panel" data-tags="naver blog stats rank visitor traffic evaluation 분석 통계 네이버 블로그 종합 진단기 방문자수 머문시간 이탈률 품질 평가">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-green"><i class="fa-solid fa-chart-bar"></i></div>
+        <div class="tool-meta">
+          <h3>네이버 블로그 종합 진단기</h3>
+          <p class="tool-desc">특정 네이버 블로그 주소나 ID를 대상으로 전체 게시글의 방문자 수, 체류 시간, 이탈률 등의 실시간 통계를 추정 진단하고 품질 평가 리포트를 제공합니다.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-chart-pie"></i> 데이터 & 분석</span>
+          <a href="./naver-blog-evaluator/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- App Card: 웩슬러 지능검사 (K-WAIS-IV) -->
+      <article class="tool-card glass-panel" data-tags="wais iq intelligence test cognitive verbal perceptual memory speed 웩슬러 지능검사 아이큐 인지능력 언어이해 지각추리 작업기억 처리속도 진단 리포트">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-purple"><i class="fa-solid fa-brain"></i></div>
+        <div class="tool-meta">
+          <h3>웩슬러 지능검사</h3>
+          <p class="tool-desc">웩슬러 성인 지능검사(K-WAIS-IV)의 4대 핵심 지표(언어이해, 지각추리, 작업기억, 처리속도)를 자가진단하고 전체 지능지수(FSIQ)와 인지 능력 백분위 리포트를 확인해보세요.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-brain"></i> 교육 및 학습툴</span>
+          <a href="./k-wais-test/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- App Card: 종합 ADHD 인지 검사기 -->
+      <article class="tool-card glass-panel" data-tags="adhd focus attention impulsivity test cognitive stroop gonogo ASRS 조절력 지속주의력 반응제어 선택주의력 진단 리포트">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-red"><i class="fa-solid fa-brain-circuit"></i></div>
+        <div class="tool-meta">
+          <h3>종합 ADHD 인지 검사기</h3>
+          <p class="tool-desc">성인 ADHD 자가진단 표준 척도(ASRS)와 지속주의력, 선택적 인지 간섭 등 두 가지 기계적 두뇌 반응 게임 검사를 결합하여 종합 진단합니다.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-heart-pulse"></i> 건강/헬스</span>
+          <a href="./adhd-test/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+
       <!-- App Card: AI Tech News RSS Feeds -->
       <article class="tool-card glass-panel" data-tags="ai rss news tech feed 에이아이 아르에스에스 뉴스 테크 피드 수집 번역">
         <div class="tool-badge badge-active">Active</div>
@@ -285,7 +316,7 @@
           <p class="tool-desc">전 세계 유튜브 채널 데이터를 기반으로 구독자 추이, 등급 분류 및 성장률 통계를 다차원 분석합니다.</p>
         </div>
         <div class="tool-footer">
-          <span class="tool-category"><i class="fa-solid fa-chart-line"></i> 빅데이터</span>
+          <span class="tool-category"><i class="fa-brands fa-youtube"></i> 유튜브</span>
           <a href="./youtube-hub/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
         </div>
       </article>
@@ -299,7 +330,7 @@
           <p class="tool-desc">유튜브 검색 결과 영상들의 조회수 대비 구독자수 비율을 다차원 분석하고 1~5단계 바이럴 성과 수치를 진단합니다.</p>
         </div>
         <div class="tool-footer">
-          <span class="tool-category"><i class="fa-solid fa-chart-pie"></i> 데이터 & 분석</span>
+          <span class="tool-category"><i class="fa-brands fa-youtube"></i> 유튜브</span>
           <a href="./youtube-search/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
         </div>
       </article>
@@ -313,8 +344,22 @@
           <p class="tool-desc">유튜브 채널 구독자수 대비 영상 조회수 비율을 분석하여 떡상 소재를 채굴하고, Gemini AI로 대본 구조 및 시청자 댓글을 자동 분석합니다.</p>
         </div>
         <div class="tool-footer">
-          <span class="tool-category"><i class="fa-solid fa-chart-pie"></i> 데이터 & 분석</span>
+          <span class="tool-category"><i class="fa-brands fa-youtube"></i> 유튜브</span>
           <a href="./youtube-miner/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- App Card 2-4: AI 유튜브 블로그 요약기 -->
+      <article class="tool-card glass-panel" data-tags="youtube 유투브 요약 블로그 포스팅 썸네일 인포그래픽 포스터 텍스트 칼럼 gemini ai">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-red"><i class="fa-solid fa-blog"></i></div>
+        <div class="tool-meta">
+          <h3>AI 유튜브 블로그 요약기</h3>
+          <p class="tool-desc">유튜브 영상 링크를 입력받아 내용을 분석 요약하고, 내용 기반의 썸네일(Canvas) 및 SVG 인포그래픽을 통합해 즉시 블로그 HTML 포스팅을 발행합니다.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-brands fa-youtube"></i> 유튜브</span>
+          <a href="./youtube-blog/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
         </div>
       </article>
 
@@ -327,7 +372,7 @@
           <p class="tool-desc">Gemini API와 내장 렌더링 엔진을 활용하여 씬/지속시간별 대본 컴파일, TTS 내레이션, 사운드 합성, 자막 삽입 및 최대 20분의 WebM 동영상 제작을 자동화합니다.</p>
         </div>
         <div class="tool-footer">
-          <span class="tool-category"><i class="fa-solid fa-chart-pie"></i> 데이터 & 분석</span>
+          <span class="tool-category"><i class="fa-brands fa-youtube"></i> 유튜브</span>
           <a href="./ai-video-generator/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
         </div>
       </article>
@@ -518,6 +563,34 @@
         </div>
       </article>
 
+      <!-- App Card 14-3: 티스토리 자동 발행기 (Tistory Auto-Poster) -->
+      <article class="tool-card glass-panel" data-tags="tistory poster auto post blog oauth html editor 티스토리 블로그 자동 발행 포스터 글쓰기 에디터 생산성 API">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-purple"><i class="fa-solid fa-paper-plane"></i></div>
+        <div class="tool-meta">
+          <h3>티스토리 자동 발행기</h3>
+          <p class="tool-desc">HTML 코드나 문서를 불러와 실시간 미리보기를 확인하며 티스토리 블로그에 바로 글을 작성/발행할 수 있는 유용한 자동 업데이터입니다.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-screwdriver-wrench"></i> 생산성 유틸리티</span>
+          <a href="./tistory-poster/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- App Card 14-4: 워드프레스 자동 발행기 (WordPress Auto-Poster) -->
+      <article class="tool-card glass-panel" data-tags="wordpress poster auto post blog api html editor basicauth 워드프레스 블로그 자동 발행 포스터 글쓰기 에디터 생산성 API">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-purple"><i class="fa-brands fa-wordpress"></i></div>
+        <div class="tool-meta">
+          <h3>워드프레스 자동 발행기</h3>
+          <p class="tool-desc">HTML 코드나 문서를 불러와 실시간 미리보기를 확인하며 본인의 워드프레스 블로그에 바로 글을 발행/대기/초안 상태로 업로드할 수 있습니다.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-screwdriver-wrench"></i> 생산성 유틸리티</span>
+          <a href="./wordpress-poster/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+
       <!-- App Card 15: QR코드 생성기 Pro -->
       <article class="tool-card glass-panel" data-tags="qrcode qr 코드 생성기 유틸리티 제작 다운로드 커스텀 로고 와이파이 연락처">
         <div class="tool-badge badge-active">Active</div>
@@ -607,6 +680,48 @@
         <div class="tool-footer">
           <span class="tool-category"><i class="fa-solid fa-chess-board"></i> 턴제 전략게임</span>
           <a href="./godfield/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- App Card 20-2: 3D 쿼리도 보드게임 (Quoridor 3D) -->
+      <article class="tool-card glass-panel" data-tags="quoridor game board strategy smart ai 3d 쿼리도 보드게임 게임 턴제 전략 인공지능 공간지각력">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-gold"><i class="fa-solid fa-chess-board"></i></div>
+        <div class="tool-meta">
+          <h3>3D 쿼리도 보드게임</h3>
+          <p class="tool-desc">마우스 드래그로 3D 보드판을 회전해가며 입체적으로 즐기는 추상 전략 보드게임입니다. 2인/4인 및 똑똑한 인공지능(AI) 대전 모드를 지원합니다.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-chess-board"></i> 3D 보드게임</span>
+          <a href="./quoridor/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- App Card 20-3: 3D 루두스 코리오발리 (Ludus Coriovalli 3D) -->
+      <article class="tool-card glass-panel" data-tags="ludus coriovalli game board strategy hunt roman smart ai 3d 루두스 코리오발리 고대로마 로마보드게임 게임 턴제 전략 인공지능 공간지각력 비대칭 사냥개 토끼">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-gold"><i class="fa-solid fa-chess-board"></i></div>
+        <div class="tool-meta">
+          <h3>3D 루두스 코리오발리</h3>
+          <p class="tool-desc">고대 로마의 석판 유적을 복원한 3D 비대칭 전략 보드게임입니다. 사냥개(Hounds)와 토끼(Hares) 진영을 선택해 똑똑한 AI와 세기의 대결을 즐기세요.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-chess-board"></i> 3D 보드게임</span>
+          <a href="./ludus-coriovalli/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- App Card 20-4: 3D 카탄 보드게임 (Catan 3D) -->
+      <article class="tool-card glass-panel" data-tags="catan catan-3d 카탄 3d game board strategy smart ai 보드게임 턴제 전략 인공지능 주사위 자원">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-gold"><i class="fa-solid fa-globe"></i></div>
+        <div class="tool-meta">
+          <h3>3D 카탄 보드게임</h3>
+          <p class="tool-desc">입체적인 3D 맵 위에서 자원을 채취하고 마을과 도로를 지어 경쟁하는 턴제 보드게임입니다. 똑똑한 인공지능(AI)들을 상대로 거래와 건설 전략을 겨뤄보세요.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-chess-board"></i> 3D 보드게임</span>
+          <a href="./catan-3d/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
         </div>
       </article>
 
@@ -802,6 +917,20 @@
         <div class="tool-footer">
           <span class="tool-category"><i class="fa-solid fa-wand-magic-sparkles"></i> 디자인/아트</span>
           <a href="./emoticon-maker/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- App Card: 비디오 GIF/WebP 추출기 -->
+      <article class="tool-card glass-panel" data-tags="video gif webp extractor converter 비디오 영상 추출 변환 유튜브 youtube 애니메이션 프레임 이미지">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-purple"><i class="fa-solid fa-film"></i></div>
+        <div class="tool-meta">
+          <h3>비디오 GIF/WebP 추출기</h3>
+          <p class="tool-desc">로컬 비디오 파일 또는 유튜브 영상에서 원하는 구간을 고화질 GIF 또는 WebP 애니메이션으로 추출합니다. 포맷, 사이즈 비율, FPS, 퀄리티를 자유롭게 설정할 수 있습니다.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-brands fa-youtube"></i> 유튜브</span>
+          <a href="./video-extractor/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
         </div>
       </article>
 
@@ -1098,6 +1227,34 @@
           <a href="./blackjack/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
         </div>
       </article>
+
+      <!-- App Card: JW Player 동영상 다운로더 -->
+      <article class="tool-card glass-panel" data-tags="jwplayer jw player download video downloader m3u8 mp4 extractor jw-downloader 동영상 다운로드 추출기">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-orange"><i class="fa-solid fa-download"></i></div>
+        <div class="tool-meta">
+          <h3>JW Player 동영상 다운로더</h3>
+          <p class="tool-desc">JW Player를 사용하는 외부 웹페이지의 미디어 소스를 추출하고, ffmpeg 엔진을 이용해 MP4 및 HLS(M3U8) 동영상을 쉽고 빠르게 다운로드합니다.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-screwdriver-wrench"></i> 생산성 유틸리티</span>
+          <a href="./jw-downloader/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- App Card: 3D 핀볼 아케이드 -->
+      <article class="tool-card glass-panel" data-tags="pinball pinball-3d 핀볼 3d game arcade physics western modern future space cadet Threejs 게임 시뮬레이션">
+        <div class="tool-badge badge-active">Active</div>
+        <div class="tool-icon icon-gold"><i class="fa-solid fa-gamepad"></i></div>
+        <div class="tool-meta">
+          <h3>3D 핀볼 아케이드</h3>
+          <p class="tool-desc">Three.js 3D 그래픽과 물리 충돌 연산 엔진을 내장한 프리미엄 3D 핀볼 게임. 서부, 현대, 미래 3가지 컨셉 스테이지를 즐겨보세요.</p>
+        </div>
+        <div class="tool-footer">
+          <span class="tool-category"><i class="fa-solid fa-gamepad"></i> 게임 & 시뮬레이션</span>
+          <a href="./pinball-3d/index.html" class="btn-card-launch">실행하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </article>
     </div>
   </section>
 
@@ -1179,14 +1336,15 @@
         CineAHO's SandBox - 모든 도구를 한 곳에서 &copy; 2025 Cineaho. All right reserved.
       </div>
       <div class="footer-built-with">
-        Built on Cloudflare Pages, Workers, D1, R2 and Turso
+        Built on Cloudflare Pages, Workers, D1, R2 and Turso · <a href="./admin/index.html" class="admin-dashboard-link" style="color: #64748b; text-decoration: none; font-size: 0.75rem; transition: color 0.2s;" onmouseover="this.style.color='#ff7e5f'" onmouseout="this.style.color='#64748b'">관리자</a>
       </div>
     </div>
   </footer>
 
 
   <!-- Scripts -->
-  <script src="app.js"></script>
+  <script src="app.js?v=1.0.2"></script>
+  <script src="js/app-status-loader.js" defer></script>
 </body>
 
 </html>

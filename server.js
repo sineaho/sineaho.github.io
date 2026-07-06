@@ -4,9 +4,15 @@ const express = require('express');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const cors = require('cors');
+const { YoutubeTranscript } = require('youtube-transcript');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 const path = require('path');
 const stockCollector = require('./utils/stock-collector');
 const historyLoader = require('./utils/history-loader');
+const multer = require('multer');
+const videoProcessor = require('./utils/video-processor');
+
+const upload = multer({ dest: path.join(__dirname, 'uploads/') });
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -227,40 +233,72 @@ app.post('/api/analyze', async (req, res) => {
 
     const components = mainContainer.find('.se-component, .se-component-content, .se_component');
     
-    if (components.length > 0) {
-      components.each((i, el) => {
+    // 중복 및 중첩된 하위 컴포넌트 제외 필터링 (가장 상위 컴포넌트만 남김)
+    const topLevelComponents = [];
+    components.each((i, el) => {
+      let isNested = false;
+      let parent = $(el).parent();
+      while (parent.length > 0 && parent[0] !== mainContainer[0]) {
+        if (parent.hasClass('se-component') || parent.hasClass('se-component-content') || parent.hasClass('se_component')) {
+          isNested = true;
+          break;
+        }
+        parent = parent.parent();
+      }
+      if (!isNested) {
+        topLevelComponents.push(el);
+      }
+    });
+
+    if (topLevelComponents.length > 0) {
+      topLevelComponents.forEach((el) => {
         const comp = $(el);
 
-        // 1. 텍스트 컴포넌트
-        if (comp.hasClass('se-component-text') || comp.find('.se-text-paragraph').length > 0) {
+        // 1. 인용구 컴포넌트 (소제목 대용으로 많이 쓰임) - 텍스트보다 먼저 체크하여 p태그 매칭 중복 방지
+        if (comp.hasClass('se-component-quote') || comp.find('.se-quote').length > 0) {
+          const quoteText = comp.find('.se-quote').text().trim();
+          if (quoteText) {
+            bodyMarkdown.push(`## ${quoteText}`);
+          }
+        }
+        // 2. 텍스트 컴포넌트
+        else if (comp.hasClass('se-component-text') || comp.find('.se-text-paragraph').length > 0) {
           comp.find('.se-text-paragraph, p').each((j, pEl) => {
             const p = $(pEl);
             let text = p.text().trim();
             if (!text) return;
 
             const classAttr = p.attr('class') || '';
-            const fsMatch = classAttr.match(/se-fs-fs(\d+)/) || classAttr.match(/se-fs(\d+)/) || classAttr.match(/se_fs_fs(\d+)/);
             
+            // 소제목 클래스 검출 (.se-title-paragraph)
+            const isTitleParagraph = p.hasClass('se-title-paragraph') || classAttr.includes('se-title-paragraph');
+
+            // 폰트 크기 클래스 감지 (p태그 자체 클래스 및 하위 span 태그 클래스 검사)
+            let size = 0;
+            const fsMatch = classAttr.match(/se-fs-fs(\d+)/) || classAttr.match(/se-fs(\d+)/) || classAttr.match(/se_fs_fs(\d+)/);
             if (fsMatch) {
-              const size = parseInt(fsMatch[1], 10);
-              if (size >= 19) {
-                bodyMarkdown.push(`## ${text}`);
-              } else if (size >= 16) {
-                bodyMarkdown.push(`### ${text}`);
-              } else {
-                bodyMarkdown.push(text);
-              }
+              size = parseInt(fsMatch[1], 10);
+            } else {
+              p.find('span').each((k, spanEl) => {
+                const spanClass = $(spanEl).attr('class') || '';
+                const spanFsMatch = spanClass.match(/se-fs-fs(\d+)/) || spanClass.match(/se-fs(\d+)/) || spanClass.match(/se_fs_fs(\d+)/);
+                if (spanFsMatch) {
+                  const spanSize = parseInt(spanFsMatch[1], 10);
+                  if (spanSize > size) {
+                    size = spanSize;
+                  }
+                }
+              });
+            }
+
+            if (isTitleParagraph || size >= 19) {
+              bodyMarkdown.push(`## ${text}`);
+            } else if (size >= 16) {
+              bodyMarkdown.push(`### ${text}`);
             } else {
               bodyMarkdown.push(text);
             }
           });
-        }
-        // 2. 인용구 컴포넌트 (소제목 대용으로 많이 쓰임)
-        else if (comp.hasClass('se-component-quote') || comp.find('.se-quote').length > 0) {
-          const quoteText = comp.find('.se-quote').text().trim();
-          if (quoteText) {
-            bodyMarkdown.push(`## ${quoteText}`);
-          }
         }
         // 3. 이미지 컴포넌트
         else if (comp.hasClass('se-component-image') || comp.find('img').length > 0) {
@@ -353,25 +391,75 @@ app.post('/api/analyze', async (req, res) => {
       }
     });
 
-    // 2단계: 모바일 클래스 선택자 보조 매칭
-    $('.wrap_tag a, .se-tag, .tag_area a, .tag_list a, .se-tag-text, .se_tag').each((i, el) => {
-      const tagText = $(el).text().replace('#', '').trim();
+    // 2단계: 모바일/PC 클래스 선택자 보조 매칭
+    $('.wrap_tag a, .se-tag, .tag_area a, .tag_list a, .se-tag-text, .se_tag, #tagList a, .post_tag a, .tag a').each((i, el) => {
+      let tagText = $(el).text().replace(/#/g, '').trim();
       if (tagText && !tags.includes(tagText)) {
         tags.push(tagText);
       }
     });
 
-    // 3단계: 본문 직접 타이핑 해시코드 추출
-    const fullText = bodyMarkdown.filter(val => val !== undefined).join('\n').replace(/\n{3,}/g, '\n\n');
-    const bodyTagRegex = /(?<!#)#([a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣_]+)/g;
-    let bodyTagMatch;
-    const searchArea = fullText.length > 1500 ? fullText.substring(fullText.length - 1500) : fullText;
-    while ((bodyTagMatch = bodyTagRegex.exec(searchArea)) !== null) {
-      const tagText = bodyTagMatch[1].trim();
-      if (tagText && !tags.includes(tagText)) {
-        tags.push(tagText);
+    // 3단계: script 태그 내부의 JSON/JS 변수 메타데이터 수집 (Naver React State 등)
+    $('script').each((i, el) => {
+      const jsCode = $(el).html() || '';
+      if (jsCode.includes('tagNames') || jsCode.includes('tagName') || jsCode.includes('tagList') || jsCode.includes('tags')) {
+        // 3-1: tagNames 매칭 (쉼표로 구분된 태그 목록)
+        const tagNamesRegex = /\\?"tagNames\\?"\s*:\s*\\?"(.*?)\\?"/g;
+        let match;
+        while ((match = tagNamesRegex.exec(jsCode)) !== null) {
+          const val = match[1];
+          const splitTags = val.split(',');
+          splitTags.forEach(t => {
+            let cleanTag = t.trim();
+            if (cleanTag.includes('\\u')) {
+              try {
+                cleanTag = cleanTag.replace(/\\u([0-9a-fA-F]{4})/g, (m, grp) => {
+                  return String.fromCharCode(parseInt(grp, 16));
+                });
+              } catch (e) {}
+            }
+            cleanTag = cleanTag.replace(/\\/g, '');
+            if (cleanTag && !tags.includes(cleanTag)) {
+              tags.push(cleanTag);
+            }
+          });
+        }
+
+        // 3-2: tagName 매칭 (개별 태그)
+        const tagNameRegex = /\\?"tagName\\?"\s*:\s*\\?"(.*?)\\?"/g;
+        let matchName;
+        while ((matchName = tagNameRegex.exec(jsCode)) !== null) {
+          let cleanTag = matchName[1].trim();
+          if (cleanTag.includes('\\u')) {
+            try {
+              cleanTag = cleanTag.replace(/\\u([0-9a-fA-F]{4})/g, (m, grp) => {
+                return String.fromCharCode(parseInt(grp, 16));
+              });
+            } catch (e) {}
+          }
+          cleanTag = cleanTag.replace(/\\/g, '');
+          if (cleanTag && !tags.includes(cleanTag)) {
+            tags.push(cleanTag);
+          }
+        }
       }
-    }
+    });
+
+    // 4단계: 본문 전체 직접 타이핑 해시코드 추출 (#태그)
+    const fullText = bodyMarkdown.filter(val => val !== undefined).join('\n').replace(/\n{3,}/g, '\n\n');
+    const lines = fullText.split('\n');
+    lines.forEach(line => {
+      if (line.trim().startsWith('##')) return; // 헤더 제외
+      
+      const bodyTagRegex = /(?<!#)#([a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣_]{1,30})/g;
+      let bodyTagMatch;
+      while ((bodyTagMatch = bodyTagRegex.exec(line)) !== null) {
+        const tagText = bodyTagMatch[1].trim();
+        if (tagText && !tags.includes(tagText)) {
+          tags.push(tagText);
+        }
+      }
+    });
 
     res.json({
       title,
@@ -621,6 +709,112 @@ app.get('/api/rss-proxy', async (req, res) => {
   }
 });
 
+// Helper function to translate text from Korean to target language using the free Google Translate API
+async function translateText(text, targetLang) {
+  if (!text) return '';
+  try {
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+    const res = await axios.get(url, { timeout: 3500 });
+    if (res.data && res.data[0]) {
+      return res.data[0].map(item => item[0]).join('').trim();
+    }
+    return text;
+  } catch (err) {
+    console.error(`[Naver Blog Translate] Translation to ${targetLang} failed:`, err.message);
+    return text;
+  }
+}
+
+// --- Naver Blog Feed API ---
+app.get('/api/naver-blog/latest', async (req, res) => {
+  try {
+    const rssUrl = 'https://rss.blog.naver.com/sineaho.xml';
+    const response = await axios.get(rssUrl, {
+      timeout: 10000,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'application/rss+xml, application/xml, text/xml, */*'
+      }
+    });
+
+    const $ = cheerio.load(response.data, { xmlMode: true });
+    const rawItems = [];
+
+    $('item').slice(0, 6).each((idx, el) => {
+      const title = $(el).find('title').text() || '';
+      const link = $(el).find('link').text() || '';
+      const description = $(el).find('description').text() || '';
+      const pubDate = $(el).find('pubDate').text() || '';
+      
+      // Clean up description HTML
+      const descDoc = cheerio.load(description);
+      let textContent = descDoc.text().trim();
+      
+      // Normalize whitespace
+      textContent = textContent.replace(/\s+/g, ' ');
+      
+      // Basic summary (limit to 180 characters)
+      let summary = textContent;
+      if (textContent.length > 180) {
+        summary = textContent.substring(0, 180) + '...';
+      }
+
+      // Format date beautifully: e.g. YYYY-MM-DD
+      let formattedDate = pubDate;
+      try {
+        const d = new Date(pubDate);
+        if (!isNaN(d.getTime())) {
+          const year = d.getFullYear();
+          const month = String(d.getMonth() + 1).padStart(2, '0');
+          const day = String(d.getDate()).padStart(2, '0');
+          formattedDate = `${year}-${month}-${day}`;
+        }
+      } catch (e) {
+        // Fallback to raw pubDate
+      }
+
+      rawItems.push({
+        title,
+        link,
+        pubDate: formattedDate,
+        summary
+      });
+    });
+
+    // Translate all titles and summaries to EN and JA in parallel
+    const items = await Promise.all(rawItems.map(async (item) => {
+      const titleEn = await translateText(item.title, 'en');
+      const summaryEn = await translateText(item.summary, 'en');
+      const titleJa = await translateText(item.title, 'ja');
+      const summaryJa = await translateText(item.summary, 'ja');
+      return {
+        ...item,
+        titleEn,
+        summaryEn,
+        titleJa,
+        summaryJa
+      };
+    }));
+
+    res.json(items);
+  } catch (error) {
+    console.error('[Naver Blog] Failed to fetch latest posts:', error.message);
+    // Return placeholder data in case feed is temporarily offline
+    res.json([
+      {
+        title: "sineaho의 네이버 블로그 연결 완료",
+        titleEn: "sineaho's Naver Blog connection completed",
+        titleJa: "sineahoのネイバーブログ接続完了",
+        link: "https://blog.naver.com/sineaho",
+        pubDate: new Date().toLocaleDateString('en-CA'),
+        summary: "sineaho 님의 네이버 블로그 RSS 피드에 일시적으로 연결할 수 없습니다. 원글 목록을 보려면 원글 보기 링크를 클릭해 블로그를 방문해 보세요.",
+        summaryEn: "Temporarily unable to connect to sineaho's Naver Blog RSS feed. Click the link to visit the blog and view original posts.",
+        summaryJa: "sineaho様のネイバーブログRSSフィードに一時的に接続できません。元の投稿リストを表示するには、元の投稿を表示リンクをクリックしてブログにアクセスしてください。"
+      }
+    ]);
+  }
+});
+
 // --- 맛집 탐색기 API 프록시 ---
 
 // API 키 상태 확인 (프론트엔드에서 어떤 API가 서버에 등록되어 있는지 확인)
@@ -809,6 +1003,131 @@ async function getYahooCredentials() {
     console.error('[YAHOO CREDENTIALS] Failed to fetch credentials:', err.message);
     return { cookie: '', crumb: '' };
   }
+}
+
+// 한국어 -> 영어 번역 헬퍼 함수
+async function translateKoToEn(query) {
+  try {
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl=en&dt=t&q=${encodeURIComponent(query)}`;
+    const res = await axios.get(url, { timeout: 5000 });
+    if (res.data && res.data[0] && res.data[0][0] && res.data[0][0][0]) {
+      return res.data[0][0][0].trim();
+    }
+  } catch (err) {
+    console.error('[RESOLVER] Translation error:', err.message);
+  }
+  return null;
+}
+
+// 회사명을 주식 티커/코드로 해독하는 함수
+async function resolveStockCode(query) {
+  if (!query) return query;
+  query = query.trim();
+  
+  // 한국 주식 코드(6자리 숫자) 또는 일본 주식 코드(4자리 숫자)인 경우 그대로 반환
+  if (/^[0-9]{6}$/.test(query) || /^[0-9]{4}$/.test(query)) {
+    return query;
+  }
+  
+  // 영문 티커 직접 입력 (1~5자리 대소문자 매칭 및 상위 알려진 티커 확인)
+  if (/^[A-Za-z]{1,5}$/.test(query)) {
+    const knownTickers = ['AAPL', 'MSFT', 'NVDA', 'AMZN', 'GOOGL', 'GOOG', 'META', 'TSLA', 'BRK-B', 'AVGO', 'LLY', 'AMD', 'NFLX', 'INTC', 'QCOM', 'MU'];
+    if (knownTickers.includes(query.toUpperCase())) {
+      return query.toUpperCase();
+    }
+  }
+
+  // 1. 네이버 주가 검색 결과에서 크롤링 시도 (국내 및 해외 주요 지수 대응)
+  try {
+    const url = `https://search.naver.com/search.naver?query=${encodeURIComponent(query + ' 주가')}`;
+    const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+    const res = await axios.get(url, {
+      headers: { 'User-Agent': userAgent },
+      timeout: 5000
+    });
+    
+    const $ = cheerio.load(res.data);
+    let resolved = null;
+    
+    $('a').each((i, el) => {
+      const href = $(el).attr('href') || '';
+      
+      // 국내 주식 다이렉트 링크 (PC)
+      if (href.includes('finance.naver.com/item/main')) {
+        const match = href.match(/code=(\d+)/);
+        if (match) {
+          resolved = match[1];
+          return false;
+        }
+      }
+      
+      // 국내 주식 다이렉트 링크 (모바일)
+      if (href.includes('m.stock.naver.com/domestic/stock/')) {
+        const match = href.match(/\/stock\/(\d+)/);
+        if (match) {
+          resolved = match[1];
+          return false;
+        }
+      }
+      
+      // 해외 주식 링크 (모바일)
+      if (href.includes('m.stock.naver.com/worldstock/stock/')) {
+        const match = href.match(/\/stock\/([^/]+)\/main/);
+        if (match) {
+          let sym = match[1];
+          // 접미사 제거 (.O: Nasdaq, .N: NYSE, .AM: AMEX, .K: ADR, .T: Tokyo 등)
+          if (sym.endsWith('.O') || sym.endsWith('.N') || sym.endsWith('.AM') || sym.endsWith('.K') || sym.endsWith('.T')) {
+            sym = sym.substring(0, sym.lastIndexOf('.'));
+          }
+          resolved = sym;
+          return false;
+        }
+      }
+    });
+    
+    if (resolved) {
+      console.log(`[RESOLVER] Resolved query "${query}" to ticker "${resolved}" via Naver`);
+      return resolved;
+    }
+  } catch (err) {
+    console.error(`[RESOLVER] Naver search failed for "${query}":`, err.message);
+  }
+
+  // 2. 검색어에 한글이 섞여있으면 영어로 번역 시도
+  let searchQuery = query;
+  if (/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(query)) {
+    const translated = await translateKoToEn(query);
+    if (translated) {
+      console.log(`[RESOLVER] Translated Korean query "${query}" to "${translated}"`);
+      searchQuery = translated;
+    }
+  }
+
+  // 3. 야후 파이낸스 오토컴플릿 검색 API로 최종 조회 시도
+  try {
+    const url = `https://query2.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(searchQuery)}&quotesCount=3&newsCount=0`;
+    const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+    const res = await axios.get(url, {
+      headers: { 'User-Agent': userAgent },
+      timeout: 5000
+    });
+    if (res.data && res.data.quotes && res.data.quotes.length > 0) {
+      const equity = res.data.quotes.find(q => q.quoteType === 'EQUITY');
+      const best = equity || res.data.quotes[0];
+      let sym = best.symbol;
+      if (sym) {
+        if (sym.endsWith('.T')) {
+          sym = sym.substring(0, sym.lastIndexOf('.'));
+        }
+        console.log(`[RESOLVER] Resolved query "${query}" to ticker "${sym}" via Yahoo (query: "${searchQuery}")`);
+        return sym;
+      }
+    }
+  } catch (err) {
+    console.error(`[RESOLVER] Yahoo fallback search failed for "${query}" (query: "${searchQuery}"):`, err.message);
+  }
+
+  return query;
 }
 
 // Google News RSS 뉴스 파싱 함수
@@ -1218,7 +1537,13 @@ app.get('/api/stock/analyze', async (req, res) => {
     return res.status(400).json({ success: false, error: '주식 코드(code)가 필요합니다.' });
   }
 
-  code = code.trim().toUpperCase();
+  code = code.trim();
+  try {
+    code = await resolveStockCode(code);
+  } catch (err) {
+    console.error('[ANALYZE] Ticker resolution error:', err.message);
+  }
+  code = code.toUpperCase();
   let market = 'US'; // 기본은 미국
   let symbol = code;
   let companyName = code;
@@ -1701,10 +2026,16 @@ app.get('/api/bio-trends', async (req, res) => {
       const journal = paper.source || 'Medical Journal';
       
       // 발행 연도 파싱
-      let year = 2026;
-      const yearMatch = paper.pubdate?.match(/\b(202\d)\b/);
+      const currentYear = new Date().getFullYear();
+      let year = currentYear;
+      const yearMatch = paper.pubdate?.match(/\b(19\d\d|20\d\d)\b/);
       if (yearMatch) {
         year = parseInt(yearMatch[1], 10);
+      }
+      
+      // 미래의 연도인 경우 현재 연도로 보정 (예: 2027, 2028 등 ahead-of-print로 인한 미래 날짜 표기)
+      if (year > currentYear) {
+        year = currentYear;
       }
       
       // Impact Factor 하드코딩 매핑 및 보정
@@ -1728,7 +2059,7 @@ app.get('/api/bio-trends', async (req, res) => {
       const subfield = classifyBioSubfield(title);
       
       // 인용수 시뮬레이션 (Impact Factor 및 발행 연도 차이 감안)
-      const ageInYears = Math.max(1, 2027 - year);
+      const ageInYears = Math.max(1, (currentYear + 1) - year);
       const citations = Math.round(impactFactor * (Math.random() * 1.5 + 0.5) * ageInYears);
       
       // Altmetric 스코어 시뮬레이션
@@ -1785,16 +2116,62 @@ app.get('/api/bio-trends', async (req, res) => {
 
 // --- 쿠팡·네이버쇼핑 인기 순위 및 가격 범위 분석 API ---
 
-const UNSPLASH_PRODUCT_IMAGES = [
-  '1505740420928-5e560c06d30e', // Headphones
-  '1523275335684-37898b6baf30', // Watch
-  '1583394838336-acd977736f90', // Controller
-  '1542291026-7eec264c27ff', // Sneaker
-  '1572635196237-14b3f281503f', // Sunglasses
-  '1491553895911-0055eca6402d', // Shoes
-  '1585386959984-a4155224a1ad', // Perfume
-  '1560343090-f0409e92791a'  // Shoe 2
-];
+const CATEGORY_IMAGES = {
+  game: [
+    '1612287230202-1bf1d85d1bdf', // Game controller
+    '1550745165-9bc0b252726f', // Gaming setup
+    '1551103782-8ab07afd45c1', // Retro gaming
+    '1553481187-be93c21490a9'  // Controller
+  ],
+  console: [
+    '1583394838336-acd977736f90', // Controller
+    '1605901309584-818e25960a8f', // Nintendo Switch
+    '1606144042614-b2417e99c4e3', // PS5
+    '1592832122594-c0c6bad74837'  // Gaming gear
+  ],
+  laptop: [
+    '1517336714731-489689fd1ca8', // MacBook
+    '1496181130207-89871836da5b', // Laptop
+    '1611186871348-b1ce696e52c9', // MacBook Pro
+    '1588872657578-7efd1f1555ed'  // Laptop desk
+  ],
+  phone: [
+    '1511707171634-5f897ff02aa9', // Smartphone
+    '1598327105666-5b89351aff97', // Smartphone
+    '1565849963762-d60322c17822', // Phone
+    '1580910051074-3eb694886505'  // Phone
+  ],
+  tablet: [
+    '1544244015-0df4b3ffc6b0', // iPad
+    '1589739900243-4b52cd9b104e', // iPad
+    '1561154464-82e9adf32764', // Tablet
+    '1585776245991-cf89dd7fc73a'  // Tablet 2
+  ],
+  audio: [
+    '1505740420928-5e560c06d30e', // Headphones
+    '1546435770-a3e426bf472b', // Headphones
+    '1618384887929-16ec33fab9ef', // AirPods
+    '1585386959984-a4155224a1ad'  // Perfume/Audio
+  ],
+  food: [
+    '1569718212165-3a8278d5f624', // Ramen
+    '1552611052-33e04de081de', // Ramen
+    '1612966608963-478a2a7522d1', // Ramen bowl
+    '1546069901-ba9599a7e63c'  // Salad bowl
+  ],
+  display: [
+    '1527443224154-c4a3942d3acf', // Monitor
+    '1547082299-de196ea013d6', // Monitor
+    '1560343090-f0409e92791a', // Shoe/Display
+    '1585776245991-cf89dd7fc73a'  // Display/Monitor
+  ],
+  general: [
+    '1523275335684-37898b6baf30', // Watch
+    '1572635196237-14b3f281503f', // Sunglasses
+    '1491553895911-0055eca6402d', // Shoes
+    '1560343090-f0409e92791a'  // Shoe 2
+  ]
+};
 
 function generateReviewAnalysis(name, rating, isCoupang) {
   const nameLower = name.toLowerCase();
@@ -1823,10 +2200,14 @@ function generateReviewAnalysis(name, rating, isCoupang) {
     summary = `특유의 얼큰하고 칼칼한 국물 맛과 꼬들꼬들한 면발에 대한 평이 매우 훌륭합니다. 야식이나 캠핑 요리로 최적이라는 반응입니다. 단, 매운맛에 쥐약인 이들에게는 속쓰림이 있을 수 있고, 건더기 야채 양이 아쉽다는 주장이 있습니다.`;
     posKeywords = ['칼칼하고 시원한 국물', '면발의 쫄깃함', '조리의 간편함', '가성비 최고'];
     negKeywords = ['매운맛 자극성', '스프 건더기 소량', '나트륨 함량 높음'];
-  } else if (nameLower.includes('에어팟') || nameLower.includes('airpods')) {
-    summary = `액티브 노이즈 캔슬링(ANC) 수준이 매우 강력하여 몰입도 높은 음악 감상이 가능합니다. 터치 컨트롤이 부드럽고 통화 품질도 선명합니다. 에어팁이 금방 지저분해지고 본체 케이스 외관 기스가 잘 생기는 재질이라는 점이 꼽힙니다.`;
-    posKeywords = ['완벽한 소음 차단', '자연스러운 주변음 허용', '통화 품질 우수', '공간 음향 몰입감'];
-    negKeywords = ['외관 흠집 발생 쉬움', '장시간 착용 시 귀 통증', '고가의 유상 리퍼 비용'];
+  } else if (nameLower.includes('포코피아')) {
+    summary = `닌텐도 스위치 전용 신작 어드벤처 게임 '포코피아'에 대해 구매자의 ${positiveRatio}%가 큰 만족감을 표시했습니다. 독창적인 스토리라인과 화려한 카툰 렌더링 그래픽, 매력적인 OST가 호평을 받았으나, 플레이 시간이 15시간 내외로 다소 짧고 엔딩 후 다회차 수집 요소가 부족하다는 점이 지적되었습니다.`;
+    posKeywords = ['수려한 카툰 그래픽', '몰입감 높은 스토리', '매력적인 사운드트랙', '스위치 휴대모드 최적화'];
+    negKeywords = ['다소 짧은 플레이 타임', '일부 구간 프레임 드랍', '다회차 수집 콘텐츠 부족'];
+  } else if (nameLower.includes('스위치') || nameLower.includes('switch') || nameLower.includes('닌텐도')) {
+    summary = `닌텐도 차세대 게임기 스위치2에 대해 구매자의 ${positiveRatio}%가 높은 만족감과 소유 가치를 보였습니다. 고화질 60fps 게이밍 및 개선된 Joy-Con 조작감이 강점이나, 초기 한정 수량 수급 불안정과 타이틀 라인업 부족이 지적되었습니다.`;
+    posKeywords = ['차세대 그래픽 만족', 'Joy-Con 개선 그립감', '로딩 속도 대폭 개선', '한정판 소장 가치'];
+    negKeywords = ['구입 경쟁 및 되팔이', '초기 라인업 부족', '충전기 어댑터 부피'];
   }
 
   return {
@@ -1880,6 +2261,16 @@ function generateShoppingFallback(query) {
     basePrice = 320000;
     brand = 'LG전자';
     specs = ['27인치 FHD IPS 75Hz', '32인치 4K UHD 사무용', '27인치 QHD 게이밍 144Hz', '34인치 울트라와이드 커브드'];
+  } else if (qClean.includes('포코피아') || qClean.includes('pocopia')) {
+    category = 'game';
+    basePrice = 64800;
+    brand = '닌텐도(Nintendo)';
+    specs = ['Switch 한국어판 일반판', 'Switch 한글판 초회한정 특전판', 'Switch 한글판 콜렉터즈 에디션', 'Switch 다운로드 번호(DL 코드)'];
+  } else if (qClean.includes('스위치') || qClean.includes('switch') || qClean.includes('닌텐도')) {
+    category = 'console';
+    basePrice = 450000;
+    brand = '닌텐도(Nintendo)';
+    specs = ['스위치2 프리미엄 번들', '스위치2 한정판 데럭스 패키지', '스위치2 스탠다드 에디션', '스위치2 OLED 본체 단품'];
   } else {
     // Deterministic hash based on query string to keep base price consistent for same queries
     let hash = 0;
@@ -1922,8 +2313,9 @@ function generateShoppingFallback(query) {
         ? `https://www.coupang.com/np/search?q=${encodeURIComponent(query)}`
         : `https://search.shopping.naver.com/search/all?query=${encodeURIComponent(query)}`;
       
-      // Mock image from unsplash list
-      const imgId = UNSPLASH_PRODUCT_IMAGES[(i + (isCoupang ? 4 : 0)) % UNSPLASH_PRODUCT_IMAGES.length];
+      // Mock image based on category
+      const imgList = CATEGORY_IMAGES[category] || CATEGORY_IMAGES.general;
+      const imgId = imgList[(i + (isCoupang ? 2 : 0)) % imgList.length];
       const image = `https://images.unsplash.com/photo-${imgId}?auto=format&fit=crop&w=150&h=150&q=80`;
 
       products.push({
@@ -1962,8 +2354,14 @@ app.get('/api/shopping/search', async (req, res) => {
   let products = [];
   let isFallback = false;
 
+  const qClean = query.replace(/\s+/g, '').toLowerCase();
+  const isFictional = qClean.includes('포코피아') || qClean.includes('pocopia');
+
   // Best-effort live scraping for Naver Shopping (standard HTML parser/NEXT DATA)
   try {
+    if (isFictional) {
+      throw new Error('Fictional sandbox product requested. Forcing mock data.');
+    }
     const naverUrl = `https://search.shopping.naver.com/search/all?query=${encodeURIComponent(query)}`;
     const naverRes = await axios.get(naverUrl, {
       headers: {
@@ -1986,10 +2384,13 @@ app.get('/api/shopping/search', async (req, res) => {
           const item = p.item;
           if (!item || !item.productName) return;
           const name = item.productName;
-          const price = parseInt(item.price, 10) || 0;
+          const price = parseInt(item.price || item.lowPrice, 10) || 0;
           const mall = item.mallName || '네이버쇼핑';
           const link = item.adcrUrl || item.crUrl || `https://search.shopping.naver.com/catalog/${item.id}`;
-          const image = item.imageUrl || '';
+          let image = item.imageUrl || item.image || item.thumbnail || item.thumbnailUrl || '';
+          if (image && image.startsWith('//')) {
+            image = 'https:' + image;
+          }
           const rating = parseFloat(item.score) || Math.round((4.2 + (idx % 8) * 0.1) * 10) / 10;
           const reviewCount = parseInt(item.reviewCount, 10) || Math.round(50 + (idx * 137 % 3000));
 
@@ -2016,7 +2417,16 @@ app.get('/api/shopping/search', async (req, res) => {
         const price = parseInt(priceText, 10) || 0;
         const mall = $n(el).find('[class*="product_mall__"]').text().trim() || '네이버쇼핑';
         const link = $n(el).find('[class*="product_title__"] a').attr('href') || '';
-        const image = $n(el).find('[class*="thumbnail_img__"] img').attr('src') || '';
+        
+        const imgTag = $n(el).find('img');
+        let image = '';
+        if (imgTag.length > 0) {
+          image = imgTag.attr('data-src') || imgTag.attr('data-lazy-src') || imgTag.attr('data-original') || imgTag.attr('src') || '';
+        }
+        if (image && image.startsWith('//')) {
+          image = 'https:' + image;
+        }
+        
         const rating = Math.round((4.3 + (i % 7) * 0.1) * 10) / 10;
         const reviewCount = Math.round(30 + (i * 123 % 2000));
 
@@ -2119,6 +2529,1393 @@ app.get('/api/shopping/search', async (req, res) => {
     priceBins,
     products
   });
+});
+
+// --- 티스토리 API 프록시 엔드포인트 ---
+
+// 1. OAuth 토큰 교환 프록시
+app.post('/api/tistory/token', async (req, res) => {
+  const { client_id, client_secret, redirect_uri, code } = req.body;
+
+  if (!client_id || !client_secret || !redirect_uri || !code) {
+    return res.status(400).json({ error: '필수 매개변수(client_id, client_secret, redirect_uri, code)가 누락되었습니다.' });
+  }
+
+  try {
+    const response = await axios.get('https://www.tistory.com/oauth/access_token', {
+      params: {
+        client_id,
+        client_secret,
+        redirect_uri,
+        code,
+        grant_type: 'authorization_code'
+      },
+      responseType: 'text'
+    });
+
+    const body = response.data;
+    if (body.includes('access_token=')) {
+      const token = body.split('access_token=')[1].split('&')[0];
+      res.json({ success: true, access_token: token });
+    } else {
+      res.status(400).json({ error: '토큰 발급 실패: ' + body });
+    }
+  } catch (error) {
+    console.error('[Tistory Proxy] Token exchange failed:', error.message);
+    const errorMsg = error.response?.data || error.message;
+    res.status(500).json({ error: `티스토리 서버 통신 실패: ${errorMsg}` });
+  }
+});
+
+// 2. 블로그 정보 및 목록 조회 프록시
+app.get('/api/tistory/blogs', async (req, res) => {
+  const { access_token } = req.query;
+
+  if (!access_token) {
+    return res.status(400).json({ error: 'Access Token이 필요합니다.' });
+  }
+
+  try {
+    const response = await axios.get('https://www.tistory.com/apis/blog/info', {
+      params: {
+        access_token,
+        output: 'json'
+      }
+    });
+
+    res.json(response.data);
+  } catch (error) {
+    console.error('[Tistory Proxy] Fetch blogs failed:', error.message);
+    const errorMsg = error.response?.data || error.message;
+    res.status(500).json({ error: `블로그 정보를 가져오는 데 실패했습니다: ${errorMsg}` });
+  }
+});
+
+// 3. 카테고리 목록 조회 프록시
+app.get('/api/tistory/categories', async (req, res) => {
+  const { access_token, blogName } = req.query;
+
+  if (!access_token || !blogName) {
+    return res.status(400).json({ error: 'Access Token과 blogName이 필요합니다.' });
+  }
+
+  try {
+    const response = await axios.get('https://www.tistory.com/apis/category/list', {
+      params: {
+        access_token,
+        blogName,
+        output: 'json'
+      }
+    });
+
+    res.json(response.data);
+  } catch (error) {
+    console.error('[Tistory Proxy] Fetch categories failed:', error.message);
+    const errorMsg = error.response?.data || error.message;
+    res.status(500).json({ error: `카테고리 목록을 가져오는 데 실패했습니다: ${errorMsg}` });
+  }
+});
+
+// 4. 글 쓰기/발행 프록시
+app.post('/api/tistory/post', async (req, res) => {
+  const { access_token, blogName, title, content, visibility, category, tag } = req.body;
+
+  if (!access_token || !blogName || !title || !content) {
+    return res.status(400).json({ error: '필수 매개변수(access_token, blogName, title, content)가 누락되었습니다.' });
+  }
+
+  try {
+    // Tistory API write post requires URL encoded body
+    const params = new URLSearchParams();
+    params.append('access_token', access_token);
+    params.append('blogName', blogName);
+    params.append('title', title);
+    params.append('content', content);
+    if (visibility !== undefined) params.append('visibility', visibility);
+    if (category !== undefined) params.append('category', category);
+    if (tag !== undefined) params.append('tag', tag);
+    params.append('output', 'json');
+
+    const response = await axios.post('https://www.tistory.com/apis/post/write', params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    });
+
+    res.json(response.data);
+  } catch (error) {
+    console.error('[Tistory Proxy] Publish post failed:', error.message);
+    const errorMsg = error.response?.data || error.message;
+    res.status(500).json({ error: `글 발행에 실패했습니다: ${errorMsg}` });
+  }
+});
+
+// --- 워드프레스 API 프록시 엔드포인트 ---
+
+function cleanSiteUrl(url) {
+  let cleaned = url.trim();
+  if (!/^https?:\/\//i.test(cleaned)) {
+    cleaned = 'https://' + cleaned;
+  }
+  return cleaned.replace(/\/+$/, '');
+}
+
+// 1. 연결 상태 확인 프록시
+app.post('/api/wordpress/connect', async (req, res) => {
+  const { siteUrl, username, appPassword } = req.body;
+
+  if (!siteUrl || !username || !appPassword) {
+    return res.status(400).json({ error: '필수 매개변수(siteUrl, username, appPassword)가 누락되었습니다.' });
+  }
+
+  const cleanedUrl = cleanSiteUrl(siteUrl);
+  const authHeader = 'Basic ' + Buffer.from(`${username}:${appPassword}`).toString('base64');
+
+  try {
+    const response = await axios.get(`${cleanedUrl}/wp-json/wp/v2/users/me`, {
+      headers: {
+        'Authorization': authHeader
+      },
+      timeout: 8000
+    });
+
+    res.json({ success: true, user: response.data, siteUrl: cleanedUrl });
+  } catch (error) {
+    console.error('[WordPress Proxy] Connection check failed:', error.message);
+    const errorData = error.response?.data || {};
+    res.status(error.response?.status || 500).json({
+      error: '워드프레스 사이트에 연결할 수 없습니다. 주소 및 로그인 정보가 정확한지 확인해 주세요.',
+      message: error.message,
+      details: errorData
+    });
+  }
+});
+
+// 2. 카테고리 목록 조회 프록시
+app.get('/api/wordpress/categories', async (req, res) => {
+  const { siteUrl, username, appPassword } = req.query;
+
+  if (!siteUrl || !username || !appPassword) {
+    return res.status(400).json({ error: '필수 매개변수(siteUrl, username, appPassword)가 누락되었습니다.' });
+  }
+
+  const cleanedUrl = cleanSiteUrl(siteUrl);
+  const authHeader = 'Basic ' + Buffer.from(`${username}:${appPassword}`).toString('base64');
+
+  try {
+    const response = await axios.get(`${cleanedUrl}/wp-json/wp/v2/categories`, {
+      params: { per_page: 100 },
+      headers: {
+        'Authorization': authHeader
+      },
+      timeout: 8000
+    });
+
+    res.json(response.data);
+  } catch (error) {
+    console.error('[WordPress Proxy] Fetch categories failed:', error.message);
+    res.status(500).json({ error: `카테고리 목록을 가져오는 데 실패했습니다: ${error.message}` });
+  }
+});
+
+// 3. 글 쓰기/발행 프록시
+app.post('/api/wordpress/post', async (req, res) => {
+  const { siteUrl, username, appPassword, title, content, status, categories, tags } = req.body;
+
+  if (!siteUrl || !username || !appPassword || !title || !content) {
+    return res.status(400).json({ error: '필수 매개변수가 누락되었습니다.' });
+  }
+
+  const cleanedUrl = cleanSiteUrl(siteUrl);
+  const authHeader = 'Basic ' + Buffer.from(`${username}:${appPassword}`).toString('base64');
+
+  try {
+    // A. 태그(문자열 리스트)를 ID 배열로 해결
+    const resolvedTagIds = [];
+    if (tags) {
+      let tagNames = [];
+      if (typeof tags === 'string') {
+        tagNames = tags.split(',').map(t => t.trim()).filter(t => t.length > 0);
+      } else if (Array.isArray(tags)) {
+        tagNames = tags.map(t => t.trim()).filter(t => t.length > 0);
+      }
+
+      for (const tagName of tagNames) {
+        try {
+          // 1) 기존 태그 검색
+          const searchRes = await axios.get(`${cleanedUrl}/wp-json/wp/v2/tags`, {
+            params: { search: tagName },
+            headers: { 'Authorization': authHeader },
+            timeout: 5000
+          });
+
+          const existingTag = searchRes.data.find(t => t.name.toLowerCase() === tagName.toLowerCase());
+          if (existingTag) {
+            resolvedTagIds.push(existingTag.id);
+          } else {
+            // 2) 신규 태그 생성
+            const createRes = await axios.post(`${cleanedUrl}/wp-json/wp/v2/tags`, {
+              name: tagName
+            }, {
+              headers: {
+                'Authorization': authHeader,
+                'Content-Type': 'application/json'
+              },
+              timeout: 5000
+            });
+            resolvedTagIds.push(createRes.data.id);
+          }
+        } catch (tagErr) {
+          console.warn(`[WordPress Proxy] Tag resolution warning for "${tagName}":`, tagErr.message);
+        }
+      }
+    }
+
+    // B. 워드프레스에 포스트 작성 API 호출
+    const postData = {
+      title,
+      content,
+      status: status || 'draft',
+      categories: categories || []
+    };
+    if (resolvedTagIds.length > 0) {
+      postData.tags = resolvedTagIds;
+    }
+
+    const response = await axios.post(`${cleanedUrl}/wp-json/wp/v2/posts`, postData, {
+      headers: {
+        'Authorization': authHeader,
+        'Content-Type': 'application/json'
+      },
+      timeout: 10000
+    });
+
+    res.json({
+      success: true,
+      postId: response.data.id,
+      postUrl: response.data.link
+    });
+  } catch (error) {
+    console.error('[WordPress Proxy] Publish post failed:', error.message);
+    const errorData = error.response?.data || {};
+    res.status(error.response?.status || 500).json({
+      error: '워드프레스 글 발행에 실패했습니다.',
+      message: error.message,
+      details: errorData
+    });
+  }
+});
+// --- RSS 프록시 API (AI RSS News 앱용 CORS 우회) ---
+app.get('/api/rss-proxy', async (req, res) => {
+  const { url } = req.query;
+  if (!url) {
+    return res.status(400).json({ error: 'url 파라미터가 필요합니다.' });
+  }
+
+  try {
+    const response = await axios.get(url, {
+      timeout: 10000,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; CineAHO RSS Aggregator/1.0)',
+        'Accept': 'application/rss+xml, application/xml, application/atom+xml, text/xml, */*'
+      },
+      responseType: 'text',
+      // Some feeds return non-UTF8 encoding; let axios handle it
+      transformResponse: [(data) => data]
+    });
+
+    // Set XML content type
+    const contentType = response.headers['content-type'] || 'application/xml; charset=utf-8';
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Cache-Control', 'public, max-age=300'); // Cache for 5 minutes
+    res.send(response.data);
+  } catch (err) {
+    console.error(`[RSS Proxy] Failed to fetch ${url}:`, err.message);
+    res.status(502).json({ error: `RSS 피드를 가져올 수 없습니다: ${err.message}` });
+  }
+});
+
+// --- 비디오 정보 조회 API (YouTube 전용) ---
+app.get('/api/video/info', async (req, res) => {
+  const { url } = req.query;
+  if (!url) {
+    return res.status(400).json({ error: 'URL 파라미터가 누락되었습니다.' });
+  }
+  try {
+    const info = await videoProcessor.getYoutubeInfo(url);
+    res.json(info);
+  } catch (err) {
+    console.error('[API/VideoInfo] Failed:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- 비디오 GIF/WebP 추출 변환 API ---
+app.post('/api/video/extract', upload.single('videoFile'), async (req, res) => {
+  const { source, url, startTime, endTime, outputFormat, ratio, fps, quality } = req.body;
+
+  try {
+    let result;
+    if (source === 'youtube') {
+      if (!url) {
+        return res.status(400).json({ error: '유튜브 URL이 필요합니다.' });
+      }
+      result = await videoProcessor.extractYoutubeSegment(url, startTime, endTime, outputFormat, ratio, fps, quality);
+    } else if (source === 'upload') {
+      if (!req.file) {
+        return res.status(400).json({ error: '업로드된 비디오 파일이 없습니다.' });
+      }
+      result = await videoProcessor.extractLocalSegment(req.file.path, startTime, endTime, outputFormat, ratio, fps, quality);
+      // Clean up uploaded original temp file
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+    } else {
+      return res.status(400).json({ error: '유효하지 않은 동영상 소스입니다.' });
+    }
+
+    const fileStats = fs.statSync(result.outputPath);
+    
+    // Send file size and download the file
+    res.setHeader('X-File-Size', fileStats.size);
+    res.setHeader('Access-Control-Expose-Headers', 'X-File-Size, Content-Disposition');
+    
+    res.download(result.outputPath, result.fileName, (err) => {
+      // Clean up final converted temp file after download completes/fails
+      if (fs.existsSync(result.outputPath)) {
+        fs.unlinkSync(result.outputPath);
+      }
+      if (err && !res.headersSent) {
+        console.error('[API/ExtractDownload] Error:', err.message);
+      }
+    });
+
+  } catch (err) {
+    console.error('[API/Extract] Failed:', err.message);
+    // Clean up uploaded file if it exists
+    if (req.file && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- 네이버 블로그 종합 진단기 API ---
+app.get('/api/naver-blog-analyze', async (req, res) => {
+  let { blogId } = req.query;
+
+  if (!blogId) {
+    return res.status(400).json({ success: false, error: '블로그 아이디 또는 주소를 입력해주세요.' });
+  }
+
+  // 블로그 ID 파싱 (URL 형태로 들어올 경우 ID만 추출)
+  blogId = blogId.trim();
+  const urlMatches = [
+    /blog\.naver\.com\/([a-zA-Z0-9_-]+)/,
+    /blog\.naver\.com\/PostList\.(naver|nhn)\?.*blogId=([a-zA-Z0-9_-]+)/,
+    /m\.blog\.naver\.com\/([a-zA-Z0-9_-]+)/,
+    /m\.blog\.naver\.com\/PostList\.(naver|nhn)\?.*blogId=([a-zA-Z0-9_-]+)/
+  ];
+  for (const regex of urlMatches) {
+    const match = blogId.match(regex);
+    if (match) {
+      blogId = (match[1] === 'naver' || match[1] === 'nhn') ? match[2] : match[1];
+      break;
+    }
+  }
+
+  const rssUrl = `https://rss.blog.naver.com/${blogId}.xml`;
+  const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+
+  let parsedPosts = [];
+  let blogTitle = `${blogId}님의 블로그`;
+  let blogDescription = '네이버 블로그 종합 진단 리포트';
+  let isFallback = false;
+
+  try {
+    const response = await axios.get(rssUrl, {
+      headers: { 'User-Agent': userAgent },
+      timeout: 5000
+    });
+
+    const $ = cheerio.load(response.data, { xmlMode: true });
+
+    blogTitle = $('channel > title').text().replace(' : 네이버 블로그', '').trim() || blogTitle;
+    blogDescription = $('channel > description').text().trim() || blogDescription;
+
+    $('item').each((idx, el) => {
+      const item = $(el);
+      const title = item.find('title').text().trim();
+      const link = item.find('link').text().trim();
+      const description = item.find('description').text().trim();
+      const pubDate = item.find('pubDate').text().trim();
+      const category = item.find('category').text().trim() || '전체';
+
+      // 포스트 고유 번호 추출
+      let logNo = '';
+      const logNoMatch = link.match(/logNo=(\d+)/) || link.match(/\/(\d+)$/);
+      if (logNoMatch) {
+        logNo = logNoMatch[1];
+      } else {
+        logNo = String(Date.now() - idx * 86400000);
+      }
+
+      parsedPosts.push({
+        title,
+        link,
+        logNo,
+        description,
+        pubDate,
+        category
+      });
+    });
+
+    if (parsedPosts.length === 0) {
+      throw new Error('RSS 아이템이 존재하지 않습니다.');
+    }
+  } catch (err) {
+    console.warn(`[NAVER BLOG] RSS 파싱 실패 (${blogId}), 데모용 폴백 데이터를 생성합니다:`, err.message);
+    isFallback = true;
+
+    // 아이디 기반 카테고리 테마 판별
+    let theme = 'general';
+    const cleanId = blogId.toLowerCase();
+    if (cleanId.includes('tech') || cleanId.includes('it') || cleanId.includes('dev') || cleanId.includes('code')) theme = 'tech';
+    else if (cleanId.includes('beauty') || cleanId.includes('fashion') || cleanId.includes('makeup')) theme = 'beauty';
+    else if (cleanId.includes('food') || cleanId.includes('eat') || cleanId.includes('cook') || cleanId.includes('travel')) theme = 'food';
+
+    const fallbackThemes = {
+      tech: {
+        title: `IT/테크 전문 ${blogId}의 테크하우스`,
+        desc: '최신 디바이스 리뷰, 프론트엔드 최적화 및 인공지능 트렌드 가이드',
+        categories: ['IT/테크', '디지털 가전', '인공지능', '프로그래밍'],
+        posts: [
+          'M4 칩 탑재 맥북 프로 사용기 - 성능과 배터리 타임 혁신적 개선',
+          '아이폰 17 울트라 핵심 루머 총정리 - 슬림 폼팩터의 등장 배경',
+          'Gemini Nano 온디바이스 AI 활용법 및 개발자 최적화 가이드',
+          'React 19에서 변경된 핵심 패러다임과 컴포넌트 실사용 후기',
+          '초보 개발자를 위한 Git & GitHub 브랜치 관리 및 충돌 방지 꿀팁',
+          '쿠팡플레이 4K 스트리밍 화질 깨짐 현상 원인 및 해결 노하우',
+          'Windows 11 신형 프리뷰 탑재 Copilot 신기능 직접 다뤄보니',
+          '웹 렌더링 성능 가속화 기법 - 레이지 로딩과 이미지 압축 리포트',
+          '키크론 Q1 Max 풀알루미늄 폼가스켓 키보드 매력과 타이핑 타건 후기',
+          '공식 OpenAI API 연동 크롬 확장 프로그램 제작 튜토리얼 A to Z'
+        ]
+      },
+      beauty: {
+        title: `${blogId}의 뷰티풀 스타일 라이프`,
+        desc: '메이크업 추천, 톤별 퍼스널 코디 및 감성 브랜드 내돈내산 가이드',
+        categories: ['뷰티/코스메틱', '데일리 룩북', '헤어 레시피', '라이프스타일'],
+        posts: [
+          '봄 웜톤 찰떡 신상 벨벳 틴트 5종 밀착 발색 비교 리뷰',
+          '건조한 환절기 피부 속건조 완벽 케어 히알루론산 크림 내돈내산 추천',
+          '올리브영 세일 꿀템 - 유튜버 추천 숨겨진 인생템 7가지 상세 분석',
+          '2026 아메카지 스타일 룩북 - 봄가을 남녀공용 아우터 스타일 코디',
+          '얼굴형 보정 단발 태슬컷 3개월 유지 관리법 및 드라이 요령',
+          '샤넬 보이백 미디움 클래식 캐주얼 데일리 코디 연출법 3가지',
+          '민감성 피부를 위한 아누아 어성초 수분 토너 진정 솔직 후기',
+          '눈 시림 없는 백탁 무자극 촉촉한 선크림 브랜드 전격 분석',
+          '성수동 이색 편집숍 가구점 투어 - 주말 인테리어 소품 쇼핑 리스트',
+          '노화 방지를 위한 레티놀 크림 함량별 입문 사용 규칙 및 주의사항'
+        ]
+      },
+      food: {
+        title: `${blogId}의 미식 레이더 & 여행 지도`,
+        desc: '골목식당 리얼 맛집 리뷰, 감성 오션뷰 카페 정보 및 주말 여행지 추천',
+        categories: ['맛집 탐방', '카페 투어', '국내 여행', '글램핑 요리'],
+        posts: [
+          '성수동 예약 필수 뇨끼 맛집 - 이탈리안 빈티지 생면 파스타 후기',
+          '속초 동해바다 한눈에 들어오는 오션뷰 베이커리 감성 카페 지도',
+          '종로 을지로 3가 골목 노포 탐방 - 연탄 돼지갈비와 감자탕의 정취',
+          '에스프레소 초보자용 가이드 - 피에노, 콘파냐, 로마노 맛 차이 비교',
+          '글램핑 캠핑 그리들 삼겹살 김치 치즈 볶음밥 황금 레시피',
+          '강릉 중앙시장 필수 먹거리 투어 - 오징어순대부터 아이스크림 호떡까지',
+          '제주도 조용한 동쪽 구좌읍 감성 독채 독특한 포토존 내돈내산 후기',
+          '홈베이킹 성공 공식 - 노오븐 초간단 촉촉 바스크 치즈케이크 만들기',
+          '부산 영도 흰여울문화마을 탁 트인 바다 전망 골목 산책 로드맵',
+          '여의도 더현대 서울 웨이팅 줄이기 비법과 디저트 핫플 총정리'
+        ]
+      },
+      general: {
+        title: `${blogId}의 일상다반사 아카이브`,
+        desc: '독서 에세이, 소소한 재테크 정보 및 건강관리 홈트레이닝 기록',
+        categories: ['일상/생각', '도서 리뷰', '앱테크/재테크', '웰니스/운동'],
+        posts: [
+          '도서 리뷰 - 김호연 소설 속 따뜻한 시선과 위로의 서평 후기',
+          '소소한 부업 가이드 - 3주 동안 5만 원 캐시 모은 만보기 앱 분석',
+          '주간 일기 - 주말 선유도 공원 피크닉과 홈베이킹 스콘 일지',
+          '청년 적금 금리 비교 추천 - 최고 연 6% 우대이율 통장 개설 가이드',
+          '거북목 교정 밴드 1개월 사용 후기 - 뻐근한 허리 통증 극복 과정',
+          '실내 유산소 홈트 루틴 - 아파트 층간소음 없는 전신 칼로리 소모 운동',
+          '에어팟 맥스 실버 1년 착용 솔직 리뷰 - 음질, 무게, 노이즈캔슬링',
+          '직장인 자취러 일주일 반찬 만들기 - 식비 50% 절약하는 밀프렙 방법',
+          '미니멀 라이프 비우기 실천 - 가구 배치 변경 및 안 입는 옷 정리 정리',
+          '업무 생산성 향상을 위한 나만의 만능 노션(Notion) 템플릿 제작법'
+        ]
+      }
+    };
+
+    const selectedTheme = fallbackThemes[theme];
+    blogTitle = selectedTheme.title;
+    blogDescription = selectedTheme.desc;
+
+    const now = Date.now();
+    selectedTheme.posts.forEach((title, idx) => {
+      const daysAgo = idx * 3 + Math.floor(idx / 2);
+      const postDate = new Date(now - daysAgo * 24 * 60 * 60 * 1000);
+      const link = `https://blog.naver.com/${blogId}/${223456789000 + idx}`;
+      const logNo = String(223456789000 + idx);
+      const category = selectedTheme.categories[idx % selectedTheme.categories.length];
+      const description = `안녕하세요! 오늘 공유해 드릴 주제는 바로 "${title}" 입니다. 네이버 검색 노출 로직을 극대화하고 독자분들께 가치 높은 정보를 드리기 위해 핵심 요점 위주로 깔끔하게 정리했습니다. 재미있게 읽어주시고 유익하셨다면 공감 클릭 및 댓글 피드백 부탁드립니다!`;
+
+      parsedPosts.push({
+        title,
+        link,
+        logNo,
+        description,
+        pubDate: postDate.toUTCString(),
+        category
+      });
+    });
+  }
+
+  // 결정론적 해시 연산 함수 (ID가 같으면 항상 동일하고 그럴듯한 통계값 반환)
+  function getHash(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return Math.abs(hash);
+  }
+
+  const postsWithStats = parsedPosts.map((post, idx) => {
+    const hash = getHash(post.title + post.logNo);
+
+    // 1. 조회수 (최신 글일수록 조회수가 쌓일 시간이 적으므로 오래된 글의 조회수를 높게 보정)
+    const recencyMultiplier = 1 + (parsedPosts.length - 1 - idx) * 0.45;
+    const baseViews = 150 + (hash % 1350);
+    const views = Math.round(baseViews * recencyMultiplier);
+
+    // 2. 공감수 (조회수의 약 1.5% ~ 5%)
+    const sympathyRate = 0.015 + (hash % 35) * 0.001;
+    const likes = Math.round(views * sympathyRate) + 3;
+
+    // 3. 댓글수 (공감수의 약 8% ~ 22%)
+    const commentRate = 0.08 + (hash % 15) * 0.01;
+    const comments = Math.round(likes * commentRate) + (hash % 3 === 0 ? 1 : 0);
+
+    // 4. 평균 머문 시간 (글자수와 댓글수의 상호작용으로 계산, 초 단위)
+    const simulatedCharCount = 600 + (hash % 2100); // 600 ~ 2700자
+    const baseStay = 70 + Math.min(180, Math.round(simulatedCharCount / 8.5));
+    const stayTime = baseStay + (comments * 7) + (likes * 2.5);
+
+    // 5. 이탈률 (인게이지먼트가 높을수록 이탈률이 낮아짐)
+    const baseBounce = 89 - (likes * 0.25) - (comments * 0.6);
+    const bounceRate = Math.max(40, Math.min(95, Math.round(baseBounce + (hash % 7))));
+
+    // 머문 시간 포맷팅 (MM:SS)
+    const mins = Math.floor(stayTime / 60);
+    const secs = stayTime % 60;
+    const stayTimeFormatted = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+    // 임의의 키워드 추출 (제목 기준 형태소 시늉)
+    const cleanTitle = post.title.replace(/[^\w\sㄱ-ㅎㅏ-ㅣ가-힣]/g, ' ');
+    const keywords = cleanTitle.split(/\s+/).filter(w => w.length >= 2 && w.length <= 8).slice(0, 4);
+
+    return {
+      ...post,
+      views,
+      likes,
+      comments,
+      stayTime,
+      stayTimeFormatted,
+      bounceRate,
+      bodyLength: simulatedCharCount,
+      keywords
+    };
+  });
+
+  // 종합 통계 계산
+  const totalViews = postsWithStats.reduce((sum, p) => sum + p.views, 0);
+  const avgViews = Math.round(totalViews / postsWithStats.length);
+  const avgStayTime = Math.round(postsWithStats.reduce((sum, p) => sum + p.stayTime, 0) / postsWithStats.length);
+  const avgBounceRate = Math.round(postsWithStats.reduce((sum, p) => sum + p.bounceRate, 0) / postsWithStats.length);
+  const totalLikes = postsWithStats.reduce((sum, p) => sum + p.likes, 0);
+  const totalComments = postsWithStats.reduce((sum, p) => sum + p.comments, 0);
+
+  const engagementIndex = totalViews > 0
+    ? Math.round(((totalLikes + totalComments) / totalViews) * 100 * 10) / 10
+    : 0.0;
+
+  // 5가지 진단 축 산출 (30 ~ 100점 척도)
+  const trafficScore = Math.min(100, Math.max(30, Math.round((avgViews / 1700) * 100)));
+  const engagementScore = Math.min(100, Math.max(35, Math.round((engagementIndex / 5.5) * 100)));
+  const stayScore = Math.min(100, Math.max(30, Math.round((avgStayTime / 210) * 100)));
+  const activityScore = isFallback ? 80 : 96; // RSS 실시간 수집 성공 시 가산
+  
+  const blogHash = getHash(blogTitle + blogId);
+  const seoScore = 78 + (blogHash % 19); // 78 ~ 96점
+
+  const overallScore = Math.round((trafficScore + engagementScore + stayScore + activityScore + seoScore) / 5);
+
+  let grade = 'B';
+  if (overallScore >= 92) grade = 'S';
+  else if (overallScore >= 82) grade = 'A';
+  else if (overallScore >= 70) grade = 'B';
+  else if (overallScore >= 55) grade = 'C';
+  else grade = 'D';
+
+  res.json({
+    success: true,
+    blogId,
+    blogTitle,
+    blogDescription,
+    isFallback,
+    overallScore,
+    grade,
+    metrics: {
+      totalViews,
+      avgViews,
+      avgStayTime,
+      avgStayTimeFormatted: `${Math.floor(avgStayTime / 60)}분 ${avgStayTime % 60}초`,
+      avgBounceRate,
+      totalLikes,
+      totalComments,
+      engagementIndex
+    },
+    dimensionScores: {
+      traffic: trafficScore,
+      engagement: engagementScore,
+      dwellTime: stayScore,
+      activity: activityScore,
+      seo: seoScore
+    },
+    posts: postsWithStats
+  });
+});
+
+// ==========================================
+// --- JW Player Video Downloader backend ---
+// ==========================================
+const { exec } = require('child_process');
+
+const jwDownloadDir = path.join(__dirname, 'uploads', 'jw-downloads');
+if (!fs.existsSync(jwDownloadDir)) {
+  fs.mkdirSync(jwDownloadDir, { recursive: true });
+}
+
+// Sweeper function to clean old downloads
+function cleanOldJwDownloads() {
+  if (!fs.existsSync(jwDownloadDir)) return;
+  fs.readdir(jwDownloadDir, (err, files) => {
+    if (err) return;
+    const now = Date.now();
+    files.forEach(file => {
+      const filePath = path.join(jwDownloadDir, file);
+      fs.stat(filePath, (err, stats) => {
+        if (err) return;
+        if (now - stats.mtimeMs > 3600000) { // 1 hour expiration
+          fs.unlink(filePath, err => {
+            if (!err) {
+              console.log(`[JW-Downloader] Swept expired file: ${file}`);
+            }
+          });
+        }
+      });
+    });
+  });
+}
+// Clean on startup
+cleanOldJwDownloads();
+
+const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+const hlsTasks = new Map();
+
+// Helper to crawl and extract JW Player sources
+async function extractJwSources(targetUrl, depth = 0, visited = new Set()) {
+  if (depth > 2 || visited.has(targetUrl)) return [];
+  visited.add(targetUrl);
+
+  const sources = [];
+  try {
+    const response = await axios.get(targetUrl, {
+      headers: {
+        'User-Agent': USER_AGENT,
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7'
+      },
+      timeout: 8000
+    });
+
+    const html = response.data;
+    if (typeof html !== 'string') return [];
+
+    const $ = cheerio.load(html);
+
+    // 1. Script tags extraction
+    $('script').each((i, el) => {
+      const scriptContent = $(el).html() || '';
+      if (!scriptContent) return;
+
+      // 1.1 sources array parsing first to capture precise labels
+      const sourcesArrayRegex = /sources\s*:\s*\[([\s\S]*?)\]/gi;
+      let arrayMatch;
+      while ((arrayMatch = sourcesArrayRegex.exec(scriptContent)) !== null) {
+        const arrayStr = arrayMatch[1];
+        // Match each object block inside the array: { ... }
+        const blockRegex = /\{([\s\S]*?)\}/g;
+        let blockMatch;
+        while ((blockMatch = blockRegex.exec(arrayStr)) !== null) {
+          const blockStr = blockMatch[1];
+          const fileMatch = blockStr.match(/(?:file|src)\s*:\s*["']([^"']+)["']/i);
+          if (fileMatch) {
+            let matchedUrl = fileMatch[1];
+            try {
+              matchedUrl = new URL(matchedUrl, targetUrl).href;
+              const isM3u8 = matchedUrl.toLowerCase().includes('.m3u8');
+              const isMpd = matchedUrl.toLowerCase().includes('.mpd');
+              const ext = isM3u8 ? 'm3u8' : (isMpd ? 'mpd' : 'mp4');
+              
+              const labelMatch = blockStr.match(/(?:label|quality)\s*:\s*["']([^"']+)["']/i);
+              const label = labelMatch ? labelMatch[1] : (isM3u8 ? 'Auto (HLS)' : 'Direct Video');
+
+              if (!sources.some(s => s.url === matchedUrl)) {
+                sources.push({
+                  url: matchedUrl,
+                  type: isM3u8 ? 'HLS (M3U8)' : (isMpd ? 'DASH (MPD)' : 'MP4/Direct'),
+                  ext,
+                  label
+                });
+              }
+            } catch (e) {}
+          }
+        }
+      }
+
+      // 1.2 Individual file: parameters parsing second for standalone declarations
+      const fileRegex = /(?:"file"|'file'|file)\s*:\s*["']([^"'\s]+?\.(?:mp4|m3u8|mpd|webm|ogg|m4v)(?:\?[^"']*)?)["']/gi;
+      let match;
+      while ((match = fileRegex.exec(scriptContent)) !== null) {
+        let matchedUrl = match[1];
+        try {
+          matchedUrl = new URL(matchedUrl, targetUrl).href;
+          if (sources.some(s => s.url === matchedUrl)) continue; // Already added with correct label
+          
+          const isM3u8 = matchedUrl.toLowerCase().includes('.m3u8');
+          const isMpd = matchedUrl.toLowerCase().includes('.mpd');
+          
+          // For standalone, look in a small window ONLY if there's a label nearby
+          const vicinity = scriptContent.substring(Math.max(0, match.index - 50), Math.min(scriptContent.length, match.index + 100));
+          const labelMatch = vicinity.match(/(?:label|quality)\s*:\s*["']([^"']+)["']/i);
+          const label = labelMatch ? labelMatch[1] : (isM3u8 ? 'Auto (HLS)' : (isMpd ? 'Auto (DASH)' : 'Direct Video'));
+          
+          sources.push({
+            url: matchedUrl,
+            type: isM3u8 ? 'HLS (M3U8)' : (isMpd ? 'DASH (MPD)' : 'MP4/Direct'),
+            ext: isM3u8 ? 'm3u8' : (isMpd ? 'mpd' : 'mp4'),
+            label
+          });
+        } catch (e) {}
+      }
+    });
+
+    // 2. Video and source elements extraction
+    $('video, source').each((i, el) => {
+      let src = $(el).attr('src') || $(el).attr('data-src') || '';
+      if (src) {
+        try {
+          src = new URL(src, targetUrl).href;
+          const isM3u8 = src.toLowerCase().includes('.m3u8');
+          const isMpd = src.toLowerCase().includes('.mpd');
+          const label = $(el).attr('label') || $(el).attr('res') || (isM3u8 ? 'Auto (HLS)' : 'Direct Video');
+          const ext = isM3u8 ? 'm3u8' : (isMpd ? 'mpd' : 'mp4');
+
+          if (!sources.some(s => s.url === src)) {
+            sources.push({
+              url: src,
+              type: isM3u8 ? 'HLS (M3U8)' : (isMpd ? 'DASH (MPD)' : 'MP4/Direct'),
+              ext,
+              label
+            });
+          }
+        } catch (e) {}
+      }
+    });
+
+    // 3. Iframe recursive search
+    const iframes = [];
+    $('iframe').each((i, el) => {
+      const src = $(el).attr('src') || '';
+      if (src && !src.startsWith('javascript:') && !src.startsWith('about:') && !src.startsWith('data:')) {
+        try {
+          const resolvedSrc = new URL(src, targetUrl).href;
+          if (resolvedSrc.startsWith('http://') || resolvedSrc.startsWith('https://')) {
+            iframes.push(resolvedSrc);
+          }
+        } catch (e) {}
+      }
+    });
+
+    for (const iframeUrl of iframes) {
+      const subSources = await extractJwSources(iframeUrl, depth + 1, visited);
+      subSources.forEach(s => {
+        if (!sources.some(exist => exist.url === s.url)) {
+          sources.push(s);
+        }
+      });
+    }
+  } catch (err) {
+    console.error(`[JW-Extractor] Crawling error on ${targetUrl}:`, err.message);
+  }
+  return sources;
+}
+
+// 1. API: Extract video links from target page
+app.post('/api/jw-download/extract', async (req, res) => {
+  const { url } = req.body;
+  if (!url) {
+    return res.status(400).json({ error: 'URL을 입력해 주세요.' });
+  }
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    return res.status(400).json({ error: '올바른 웹페이지 주소가 아닙니다. http:// 또는 https://로 시작해야 합니다.' });
+  }
+
+  try {
+    // Get page HTML for title
+    const response = await axios.get(url, {
+      headers: { 'User-Agent': USER_AGENT },
+      timeout: 8000
+    });
+    const $ = cheerio.load(response.data);
+    const pageTitle = $('title').text().trim() || 'JW Player Video Source';
+
+    const sources = await extractJwSources(url);
+
+    res.json({
+      success: true,
+      title: pageTitle,
+      sources
+    });
+  } catch (err) {
+    console.error('[JW-Downloader] Extract failed:', err.message);
+    res.status(500).json({ error: '웹페이지를 로드하거나 미디어 소스를 추출하는 데 실패했습니다.' });
+  }
+});
+
+// 2. API: Proxy stream direct video files (CORS bypass)
+app.get('/api/jw-download/stream', async (req, res) => {
+  const { url } = req.query;
+  if (!url) {
+    return res.status(400).json({ error: 'URL이 필요합니다.' });
+  }
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    return res.status(400).json({ error: '올바른 주소가 아닙니다.' });
+  }
+
+  try {
+    const response = await axios({
+      method: 'get',
+      url: url,
+      responseType: 'stream',
+      headers: { 'User-Agent': USER_AGENT },
+      timeout: 60000
+    });
+
+    res.setHeader('Content-Type', response.headers['content-type'] || 'video/mp4');
+    if (response.headers['content-length']) {
+      res.setHeader('Content-Length', response.headers['content-length']);
+    }
+
+    let filename = 'video.mp4';
+    try {
+      const urlPath = new URL(url).pathname;
+      const baseName = path.basename(urlPath);
+      if (baseName && baseName.includes('.')) {
+        filename = baseName;
+      }
+    } catch (e) {}
+
+    res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(filename)}"`);
+    response.data.pipe(res);
+  } catch (err) {
+    console.error('[JW-Downloader] Direct stream proxy failed:', err.message);
+    res.status(500).json({ error: '비디오 파일을 스트림으로 전송하는 데 실패했습니다.' });
+  }
+});
+
+// 3. API: Start HLS download (M3U8 -> MP4 conversion via ffmpeg)
+app.post('/api/jw-download/hls-start', async (req, res) => {
+  const { url } = req.body;
+  if (!url) {
+    return res.status(400).json({ error: 'M3U8 URL이 필요합니다.' });
+  }
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    return res.status(400).json({ error: '올바른 HLS 스트리밍 주소가 아닙니다.' });
+  }
+  if (/["';&|`$<>]/g.test(url)) {
+    return res.status(400).json({ error: '동영상 주소에 허용되지 않는 문자가 포함되어 있습니다.' });
+  }
+
+  const taskId = Date.now().toString() + '_' + Math.random().toString(36).substring(2, 7);
+  const destPath = path.join(jwDownloadDir, `jw_video_${taskId}.mp4`);
+
+  hlsTasks.set(taskId, {
+    status: 'processing',
+    destPath,
+    startTime: Date.now(),
+    progress: 0,
+    downloadUrl: null
+  });
+
+  const cmd = `ffmpeg -y -i "${url}" -c copy -bsf:a aac_adtstoasc "${destPath}"`;
+  console.log(`[JW-Downloader] Starting HLS convert: ${cmd}`);
+
+  exec(cmd, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`[JW-Downloader] ffmpeg error for ${taskId}:`, error.message);
+      hlsTasks.set(taskId, {
+        status: 'failed',
+        error: error.message,
+        progress: 0
+      });
+      if (fs.existsSync(destPath)) {
+        try { fs.unlinkSync(destPath); } catch (e) {}
+      }
+    } else {
+      console.log(`[JW-Downloader] ffmpeg completed for ${taskId}`);
+      hlsTasks.set(taskId, {
+        status: 'completed',
+        downloadUrl: `/uploads/jw-downloads/jw_video_${taskId}.mp4`,
+        progress: 100
+      });
+    }
+  });
+
+  res.json({
+    success: true,
+    taskId
+  });
+});
+
+// 4. API: Check HLS download status
+app.get('/api/jw-download/hls-status', (req, res) => {
+  const { id } = req.query;
+  if (!id || !hlsTasks.has(id)) {
+    return res.status(404).json({ error: '해당 다운로드 태스크를 찾을 수 없습니다.' });
+  }
+
+  const task = hlsTasks.get(id);
+  let currentSize = 0;
+
+  if (task.status === 'processing' && fs.existsSync(task.destPath)) {
+    try {
+      const stats = fs.statSync(task.destPath);
+      currentSize = stats.size;
+    } catch (e) {}
+  }
+
+  res.json({
+    success: true,
+    status: task.status,
+    size: currentSize,
+    progress: task.progress,
+    downloadUrl: task.downloadUrl,
+    error: task.error || null
+  });
+});
+
+// ===========================================
+// --- Admin App Status Dashboard Backend ---
+// ===========================================
+const APP_METADATA = {
+  'naver-seo': { name: '네이버 SEO', icon: 'fa-solid fa-square-rss', link: './naver-seo/index.html' },
+  'ai-rss-news': { name: 'AI 뉴스', icon: 'fa-solid fa-square-rss', link: './ai-rss-news/index.html' },
+  'youtube-hub': { name: '유튜브 분석', icon: 'fa-brands fa-youtube', link: './youtube-hub/index.html' },
+  'youtube-search': { name: '유튜브 검색', icon: 'fa-solid fa-magnifying-glass-chart', link: './youtube-search/index.html' },
+  'youtube-miner': { name: '떡상 소재 채굴기', icon: 'fa-solid fa-fire', link: './youtube-miner/index.html' },
+  'ai-video-generator': { name: 'AI 영상 제작기', icon: 'fa-solid fa-wand-magic-sparkles', link: './ai-video-generator/index.html' },
+  'checklist': { name: '체크리스트', icon: 'fa-solid fa-clipboard-check', link: './checklist/index.html' },
+  'lotto': { name: '로또 생성기', icon: 'fa-solid fa-dice', link: './lotto/index.html' },
+  'omok': { name: '오목 대국실', icon: 'fa-solid fa-gamepad', link: './omok/index.html' },
+  'janggi': { name: '장기 대국실', icon: 'fa-solid fa-gamepad', link: './janggi/index.html' },
+  'calculator': { name: '통합 계산기', icon: 'fa-solid fa-calculator', link: './calculator/index.html' },
+  'kosis': { name: '물가 통계', icon: 'fa-solid fa-chart-line', link: './kosis/index.html' },
+  'saju': { name: '사주 분석', icon: 'fa-solid fa-hand-holding-heart', link: './saju/index.html' },
+  'tarot': { name: '타로 카드', icon: 'fa-solid fa-wand-magic-sparkles', link: './tarot/index.html' },
+  'sudoku': { name: '스도쿠 Pro', icon: 'fa-solid fa-puzzle-piece', link: './sudoku/index.html' },
+  'tetris': { name: '테트리스', icon: 'fa-solid fa-shapes', link: './tetris/index.html' },
+  '2048': { name: '2048 퍼즐', icon: 'fa-solid fa-square-plus', link: './2048/index.html' },
+  'galaga': { name: '갤러그 슈팅', icon: 'fa-solid fa-rocket', link: './galaga/index.html' },
+  'qrcode': { name: 'QR 생성기', icon: 'fa-solid fa-qrcode', link: './qrcode/index.html' },
+  'pdf': { name: 'PDF 도구', icon: 'fa-solid fa-file-pdf', link: './pdf/index.html' },
+  'monitor': { name: '화소 검사기', icon: 'fa-solid fa-display', link: './monitor/index.html' },
+  'apple': { name: '사과게임+', icon: 'fa-solid fa-apple-whole', link: './apple/index.html' },
+  'marble': { name: '구슬 룰렛', icon: 'fa-solid fa-circle-nodes', link: './marble/index.html' },
+  'godfield': { name: '갓 필드', icon: 'fa-solid fa-crown', link: './godfield/index.html' },
+  'toeic': { name: '토익 학습기', icon: 'fa-solid fa-book-open-reader', link: './toeic/index.html' },
+  'print': { name: '프린트 편집', icon: 'fa-solid fa-print', link: './print/index.html' },
+  'bmi': { name: 'BMI 계산', icon: 'fa-solid fa-weight-scale', link: './bmi/index.html' },
+  'bmr': { name: 'BMR 계산', icon: 'fa-solid fa-fire-flame-curved', link: './bmr/index.html' },
+  'whr': { name: 'WHR 계산', icon: 'fa-solid fa-arrows-left-right-to-line', link: './whr/index.html' },
+  'thr': { name: 'THR 계산', icon: 'fa-solid fa-heart-pulse', link: './thr/index.html' },
+  'macros': { name: '탄단지 계산', icon: 'fa-solid fa-carrot', link: './macros/index.html' },
+  'water-intake': { name: '수분 섭취', icon: 'fa-solid fa-droplet', link: './water-intake/index.html' },
+  'blood-pressure': { name: '혈압 계산', icon: 'fa-solid fa-heart-pulse', link: './blood-pressure/index.html' },
+  'child-height': { name: '예상 키', icon: 'fa-solid fa-ruler-vertical', link: './child-height/index.html' },
+  'exercise-calories': { name: '운동 칼로리', icon: 'fa-solid fa-fire-flame-curved', link: './exercise-calories/index.html' },
+  'food-nutrition': { name: '음식 분석', icon: 'fa-solid fa-camera-retro', link: './food-nutrition/index.html' },
+  'emoticon-maker': { name: '이모티콘', icon: 'fa-solid fa-face-smile-wink', link: './emoticon-maker/index.html' },
+  'billiards-3d': { name: '당구 3D', icon: 'fa-solid fa-circle-dot', link: './billiards-3d/index.html' },
+  'assembly': { name: '국회의원', icon: 'fa-solid fa-building-columns', link: './assembly/index.html' },
+  'bio-medical-trends': { name: '의학 논문', icon: 'fa-solid fa-dna', link: './bio-medical-trends/index.html' },
+  'stock-trends': { name: '주식 동향', icon: 'fa-solid fa-arrow-trend-up', link: './stock-trends/index.html' },
+  'trend': { name: '트렌드 분석', icon: 'fa-solid fa-chart-line', link: './trend/index.html' },
+  'quant-simulator': { name: '퀀트 시뮬레이션', icon: 'fa-solid fa-chart-pie', link: './quant-simulator/index.html' },
+  'game-news': { name: '게임 뉴스', icon: 'fa-solid fa-gamepad', link: './game-news/index.html' },
+  'neuro-game': { name: '신경 게임', icon: 'fa-solid fa-brain', link: './neuro-game/index.html' },
+  'memory-game': { name: '카드 맞추기', icon: 'fa-solid fa-clone', link: './memory-game/index.html' },
+  'blackjack': { name: '블랙잭 3D', icon: 'fa-diamond', link: './blackjack/index.html' },
+  'vampire-survivors': { name: '비행기 서바이벌', icon: 'fa-solid fa-jet-fighter', link: './vampire-survivors/index.html' },
+  'tistory-poster': { name: '티스토리 포스터', icon: 'fa-solid fa-paper-plane', link: './tistory-poster/index.html' },
+  'wordpress-poster': { name: '워드프레스 포스터', icon: 'fa-brands fa-wordpress', link: './wordpress-poster/index.html' },
+  'quoridor': { name: '쿼리도 3D', icon: 'fa-solid fa-chess-board', link: './quoridor/index.html' },
+  'ludus-coriovalli': { name: '루두스 코리오발리', icon: 'fa-solid fa-chess-board', link: './ludus-coriovalli/index.html' },
+  'video-extractor': { name: '비디오 GIF/WebP 추출기', icon: 'fa-solid fa-film', link: './video-extractor/index.html' },
+  'naver-blog-evaluator': { name: '네이버 블로그 종합 진단기', icon: 'fa-solid fa-chart-bar', link: './naver-blog-evaluator/index.html' },
+  'k-wais-test': { name: '웩슬러 지능검사', icon: 'fa-solid fa-brain', link: './k-wais-test/index.html' },
+  'jw-downloader': { name: 'JW 다운로더', icon: 'fa-solid fa-download', link: './jw-downloader/index.html' },
+  'pinball-3d': { name: '3D 핀볼 아케이드', icon: 'fa-solid fa-gamepad', link: './pinball-3d/index.html' },
+  'adhd-test': { name: '종합 ADHD 인지 검사기', icon: 'fa-solid fa-brain-circuit', link: './adhd-test/index.html' },
+  'youtube-blog': { name: 'AI 유튜브 블로그 요약기', icon: 'fa-solid fa-blog', link: './youtube-blog/index.html' }
+};
+
+const crypto = require('crypto');
+const configFilePath = path.join(__dirname, 'data', 'app-config.json');
+
+let appConfig = {
+  passwordHash: '',
+  salt: '',
+  appStatuses: {}
+};
+
+// Initialize configuration
+if (!fs.existsSync(path.dirname(configFilePath))) {
+  fs.mkdirSync(path.dirname(configFilePath), { recursive: true });
+}
+
+if (fs.existsSync(configFilePath)) {
+  try {
+    appConfig = JSON.parse(fs.readFileSync(configFilePath, 'utf8'));
+  } catch (e) {
+    console.error('[Admin] Failed to load app-config.json, using default', e);
+  }
+} else {
+  try {
+    fs.writeFileSync(configFilePath, JSON.stringify(appConfig, null, 2), 'utf8');
+  } catch (e) {}
+}
+
+// Password hashing helper
+function hashPassword(password, salt) {
+  return crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+}
+
+// Session store for logged-in admins
+const adminSessions = new Set();
+
+// Authentication middleware
+function requireAdmin(req, res, next) {
+  let token = req.headers['authorization'];
+  if (token && token.startsWith('Bearer ')) {
+    token = token.substring(7);
+  }
+  
+  if (!token && req.headers.cookie) {
+    const match = req.headers.cookie.match(/admin_session=([^;]+)/);
+    if (match) token = match[1];
+  }
+
+  if (token && adminSessions.has(token)) {
+    return next();
+  }
+  res.status(401).json({ error: '인증이 필요하거나 세션이 만료되었습니다.' });
+}
+
+// 1. API: Check if setup is completed
+app.get('/api/admin/check-setup', (req, res) => {
+  res.json({ isSetup: !!appConfig.passwordHash });
+});
+
+// 2. API: Set initial password
+app.post('/api/admin/setup', (req, res) => {
+  if (appConfig.passwordHash) {
+    return res.status(400).json({ error: '이미 초기 비밀번호가 설정되어 있습니다.' });
+  }
+  const { password } = req.body;
+  if (!password || password.length < 4) {
+    return res.status(400).json({ error: '비밀번호는 최소 4자 이상이어야 합니다.' });
+  }
+
+  try {
+    const salt = crypto.randomBytes(16).toString('hex');
+    const hash = hashPassword(password, salt);
+    appConfig.salt = salt;
+    appConfig.passwordHash = hash;
+    fs.writeFileSync(configFilePath, JSON.stringify(appConfig, null, 2), 'utf8');
+    res.json({ success: true });
+  } catch (err) {
+    console.error('[Admin] Setup error:', err);
+    res.status(500).json({ error: '설정을 저장하지 못했습니다.' });
+  }
+});
+
+// 3. API: Admin Login
+app.post('/api/admin/login', (req, res) => {
+  const { password } = req.body;
+  if (!appConfig.passwordHash) {
+    return res.status(400).json({ error: '먼저 초기 비밀번호를 설정해 주세요.' });
+  }
+  if (!password) {
+    return res.status(400).json({ error: '비밀번호를 입력해 주세요.' });
+  }
+
+  const hash = hashPassword(password, appConfig.salt);
+  if (hash === appConfig.passwordHash) {
+    const token = crypto.randomBytes(32).toString('hex');
+    adminSessions.add(token);
+    res.json({ success: true, token });
+  } else {
+    res.status(400).json({ error: '비밀번호가 일치하지 않습니다.' });
+  }
+});
+
+// 4. API: Change Password
+app.post('/api/admin/change-password', requireAdmin, (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({ error: '현재 비밀번호와 새 비밀번호를 모두 입력해 주세요.' });
+  }
+  if (newPassword.length < 4) {
+    return res.status(400).json({ error: '새 비밀번호는 최소 4자 이상이어야 합니다.' });
+  }
+
+  const currentHash = hashPassword(currentPassword, appConfig.salt);
+  if (currentHash !== appConfig.passwordHash) {
+    return res.status(400).json({ error: '현재 비밀번호가 일치하지 않습니다.' });
+  }
+
+  try {
+    const newSalt = crypto.randomBytes(16).toString('hex');
+    const newHash = hashPassword(newPassword, newSalt);
+    appConfig.salt = newSalt;
+    appConfig.passwordHash = newHash;
+    fs.writeFileSync(configFilePath, JSON.stringify(appConfig, null, 2), 'utf8');
+    res.json({ success: true });
+  } catch (err) {
+    console.error('[Admin] Change password error:', err);
+    res.status(500).json({ error: '새 비밀번호를 저장하지 못했습니다.' });
+  }
+});
+
+// 5. API: Get app list (from APP_METADATA)
+app.get('/api/admin/apps-list', (req, res) => {
+  res.json(APP_METADATA);
+});
+
+// 6. API: Get app statuses (Public)
+app.get('/api/apps/status', (req, res) => {
+  res.json(appConfig.appStatuses || {});
+});
+
+// 7. API: Save app statuses (Admin)
+app.post('/api/apps/status', requireAdmin, (req, res) => {
+  const { statuses } = req.body;
+  if (!statuses || typeof statuses !== 'object') {
+    return res.status(400).json({ error: '올바른 상태 데이터 포맷이 아닙니다.' });
+  }
+
+  try {
+    appConfig.appStatuses = statuses;
+    fs.writeFileSync(configFilePath, JSON.stringify(appConfig, null, 2), 'utf8');
+    res.json({ success: true });
+  } catch (err) {
+    console.error('[Admin] Save statuses error:', err);
+    res.status(500).json({ error: '상태 설정을 저장하지 못했습니다.' });
+  }
+});
+
+// 30분 주기로 디스크 청소 주기 작동
+setInterval(cleanOldJwDownloads, 30 * 60 * 1000);
+
+// === Youtube-Blog Linker APIs ===
+
+function extractVideoId(url) {
+  const regExp = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/|shorts\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[1].length === 11) ? match[1] : null;
+}
+
+async function fetchYoutubeMetadata(videoId) {
+  try {
+    const url = `https://www.youtube.com/watch?v=${videoId}`;
+    const response = await axios.get(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7'
+      }
+    });
+    
+    const html = response.data;
+    const titleMatch = html.match(/<meta name="title" content="([^"]+)"/);
+    const title = titleMatch ? titleMatch[1] : '제목 없음';
+    
+    const descMatch = html.match(/<meta name="description" content="([^"]+)"/);
+    const description = descMatch ? descMatch[1] : '설명 없음';
+    
+    return { title, description };
+  } catch (error) {
+    console.error('[YT-Blog] 메타데이터 파싱 실패:', error.message);
+    return { title: '유튜브 비디오', description: '메타데이터를 가져올 수 없습니다.' };
+  }
+}
+
+app.get('/api/transcript', async (req, res) => {
+  const { url } = req.query;
+  if (!url) {
+    return res.status(400).json({ error: '유튜브 URL이 필요합니다.' });
+  }
+
+  const videoId = extractVideoId(url);
+  if (!videoId) {
+    return res.status(400).json({ error: '올바르지 않은 유튜브 URL입니다.' });
+  }
+
+  try {
+    console.log(`[YT-Blog] 자막 요청 비디오 ID: ${videoId}`);
+    const transcriptList = await YoutubeTranscript.fetchTranscript(videoId);
+    const fullText = transcriptList.map(t => t.text).join(' ');
+    
+    res.json({
+      success: true,
+      videoId,
+      text: fullText,
+      transcript: transcriptList
+    });
+  } catch (error) {
+    console.warn(`[YT-Blog] 자막 추출 실패 (ID: ${videoId}), 메타데이터 대체 시도:`, error.message);
+    const metadata = await fetchYoutubeMetadata(videoId);
+    res.json({
+      success: false,
+      videoId,
+      hasTranscript: false,
+      title: metadata.title,
+      description: metadata.description,
+      text: `이 영상은 자막이 비활성화되어 있습니다.\n\n[제목]\n${metadata.title}\n\n[설명]\n${metadata.description}`,
+      message: '자막을 직접 추출할 수 없어, 영상 제목과 설명을 대체 요약용으로 전달합니다.'
+    });
+  }
+});
+
+app.post('/api/summarize', async (req, res) => {
+  const { text, videoId, apiKey, customPrompt } = req.body;
+  if (!text) {
+    return res.status(400).json({ error: '요약할 텍스트가 필요합니다.' });
+  }
+
+  const activeApiKey = apiKey || process.env.GEMINI_API_KEY;
+  if (!activeApiKey) {
+    return res.status(400).json({ 
+      error: 'Gemini API Key가 누락되었습니다. 설정에서 API Key를 입력해주시거나 서버 측 환경 설정을 완료해주세요.' 
+    });
+  }
+
+  try {
+    const genAI = new GoogleGenerativeAI(activeApiKey);
+    const defaultPrompt = `
+역할: 너는 전문 테크 지식 블로그 에디터이자 칼럼니스트이다.
+작업: 아래 제공되는 텍스트 정보를 깊이 있게 분석하여 독자적인 전문 지식 칼럼 및 블로그 포스팅용 구조화 요약 JSON 데이터를 생성하라.
+
+⚠️ [매우 중요 - 금지 규칙]
+- 작성되는 본문(title, summary, sections 내의 모든 heading과 content, timeline 내의 모든 topic과 description 등) 전체에서 **'유튜브', '영상', '비디오', '스크립트', '채널', '구독', '유튜버', '말하길', '동영상에서는' 등의 유튜브 연관 메타적 표현을 절대 포함하지 말라**.
+- 마치 하나의 완결된 도서, 전공 매뉴얼, 혹은 독자적인 기술 칼럼을 쓴 것처럼 오직 해당 기술/개념 자체에 대한 핵심 본문 콘텐츠로만 객관적이고 매끄럽게 작성하라.
+
+요청하는 JSON 구조:
+{
+  "title": "영상 주제를 관통하는 세련되고 클릭하고 싶게 만드는 블로그 제목",
+  "summary": "전체 내용을 핵심 요약한 한 줄 요약문",
+  "keywords": ["주요 키워드 3~5개"],
+  "sections": [
+    {
+      "heading": "섹션 1: 주요 소주제 제목",
+      "content": "이 소주제에 대한 핵심 내용 요약 및 분석 (최소 3문장 이상, 가독성 높은 구어체 및 서술 형식)"
+    },
+    ...
+  ],
+  "timeline": [
+    {
+      "time": "MM:SS 형식을 갖춘 타임라인 시작점 (예: 01:20)",
+      "topic": "해당 시간대의 핵심 주제",
+      "description": "무슨 내용이 다뤄지는지 요약 설명"
+    },
+    ...
+  ],
+  "infographic": {
+    "type": "process 또는 comparison 또는 stats 또는 mindmap",
+    "title": "인포그래픽 시각화 자료의 제목",
+    "data": {
+      "steps": [{"step": 1, "title": "단계 제목", "desc": "단계 요약"}],
+      "headers": ["비교기준", "대상 A", "대상 B"],
+      "rows": [["속성 1", "내용 A1", "내용 B1"], ["속성 2", "내용 A2", "내용 B2"]],
+      "metrics": [{"label": "핵심 지표", "value": "수치 (예: 80% 또는 100억)", "desc": "지표 설명"}],
+      "root": "중심 토픽",
+      "branches": [{"branch": "주요 분기 1", "leaves": ["세부 항목 1", "세부 항목 2"]}]
+    }
+  }
+}
+
+비디오 스크립트/정보:
+${text}
+
+추가 사용자 지침: ${customPrompt || '없음'}
+`;
+
+    const modelsToTry = ['gemini-2.0-flash', 'gemini-1.5-flash-latest', 'gemini-2.5-flash'];
+    let lastError = null;
+    let parsedData = null;
+
+    for (const modelName of modelsToTry) {
+      try {
+        console.log(`[YT-Blog] 모델 ${modelName} 호출 시도 중...`);
+        const model = genAI.getGenerativeModel({ 
+          model: modelName,
+          generationConfig: {
+            responseMimeType: "application/json"
+          }
+        });
+        
+        const result = await model.generateContent(defaultPrompt);
+        const responseText = result.response.text();
+        parsedData = JSON.parse(responseText);
+        console.log(`[YT-Blog] 모델 ${modelName} 호출 요약 성공!`);
+        break; 
+      } catch (err) {
+        console.warn(`[YT-Blog] 모델 ${modelName} 호출 실패:`, err.message);
+        lastError = err;
+      }
+    }
+
+    if (!parsedData) {
+      throw lastError || new Error('모든 가용한 Gemini 모델 호출에 실패했습니다.');
+    }
+
+    res.json(parsedData);
+  } catch (error) {
+    console.error('[YT-Blog] Gemini 호출 중 최종 에러:', error);
+    res.status(500).json({ 
+      error: 'Gemini 요약 생성 중 서버 오류가 발생했습니다.', 
+      details: error.message 
+    });
+  }
 });
 
 // 메인페이지 매칭
