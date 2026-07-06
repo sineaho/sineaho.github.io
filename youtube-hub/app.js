@@ -403,7 +403,8 @@ if (newsCardsContainer) {
       growthRate: 0.7,
       tags: ["#SBS뉴스", "#실시간", "#속보", "#한화", "#폭발"],
       description: "속보, 폭발, 한화, 에어로스페이스, 경찰, 소방 합동 감식 진행 중",
-      thumbGradient: "linear-gradient(135deg, #1e293b, #0f172a)"
+      thumbGradient: "linear-gradient(135deg, #1e293b, #0f172a)",
+      videoId: "9uLCEmc774U"
     },
     {
       id: 2,
@@ -420,7 +421,8 @@ if (newsCardsContainer) {
       growthRate: 2.1,
       tags: ["#선거", "#시장", "#서울시장", "#지방선거", "#오세훈"],
       description: "선거를 하루 앞둔 오늘(2일) 저녁 오세훈 국민의힘 서울시장 후보는 '파이널 유세'를 펼쳤습니다.",
-      thumbGradient: "linear-gradient(135deg, #0f172a, #1e1b4b)"
+      thumbGradient: "linear-gradient(135deg, #0f172a, #1e1b4b)",
+      videoId: "6MdsToU5Zf8"
     },
     {
       id: 3,
@@ -437,7 +439,8 @@ if (newsCardsContainer) {
       growthRate: 3.7,
       tags: ["#Sadiq", "#Khan", "#social", "#media", "#ban"],
       description: "Mayor of London Sir Sadiq Khan will warn about the dangers of social media platforms on kids.",
-      thumbGradient: "linear-gradient(135deg, #0284c7, #0f172a)"
+      thumbGradient: "linear-gradient(135deg, #0284c7, #0f172a)",
+      videoId: "7GyU3SDwoiQ"
     },
     {
       id: 4,
@@ -454,7 +457,8 @@ if (newsCardsContainer) {
       growthRate: 6.3,
       tags: ["#선거", "#사고", "#대통령", "#선거전", "#스타벅스"],
       description: "<앵커> 선거 막판 불거진 서소문 고가차도 붕괴 사고나 스타벅스 파문 같은 각종...",
-      thumbGradient: "linear-gradient(135deg, #172554, #0f172a)"
+      thumbGradient: "linear-gradient(135deg, #172554, #0f172a)",
+      videoId: "UKHCciSjt7g"
     },
     {
       id: 5,
@@ -471,7 +475,8 @@ if (newsCardsContainer) {
       growthRate: 1.5,
       tags: ["#연합뉴스TV", "#공수처", "#종합특검", "#비공개"],
       description: "종합특검법 수사 대상 및 공수처 외압 파장 속 비공개 심문 절차 전환 소식입니다.",
-      thumbGradient: "linear-gradient(135deg, #451a03, #0f172a)"
+      thumbGradient: "linear-gradient(135deg, #451a03, #0f172a)",
+      videoId: "1-ZFK-N54Js"
     },
     {
       id: 6,
@@ -488,7 +493,8 @@ if (newsCardsContainer) {
       growthRate: 0.9,
       tags: ["#합동감식", "#CCTV", "#화약", "#폭발사고"],
       description: "경찰 and 국과수 주도 화약 폭발 합동 감식 현장 보고. 현장에 CCTV가 없어 수사에 난항.",
-      thumbGradient: "linear-gradient(135deg, #4c0519, #0f172a)"
+      thumbGradient: "linear-gradient(135deg, #4c0519, #0f172a)",
+      videoId: "zrM4WQ46sDw"
     },
     {
       id: 7,
@@ -505,7 +511,8 @@ if (newsCardsContainer) {
       growthRate: 4.8,
       tags: ["#선거", "#표심", "#PK", "#지방선거", "#격전지"],
       description: "PK 낙동강 벨트 중심 10명 중 2명의 중도층 부동표가 캐스팅보트를 쥐고 있는 형국.",
-      thumbGradient: "linear-gradient(135deg, #111827, #064e3b)"
+      thumbGradient: "linear-gradient(135deg, #111827, #064e3b)",
+      videoId: "S1ouDrWOov8"
     },
     {
       id: 8,
@@ -522,7 +529,8 @@ if (newsCardsContainer) {
       growthRate: 8.2,
       tags: ["#대통령", "#메뚜기", "#비하인드뉴스", "#청와대"],
       description: "농가 격려차 방문한 영농 단지에서 벼 위를 뛰어다니는 메뚜기를 보며 나눈 유쾌한 대화.",
-      thumbGradient: "linear-gradient(135deg, #311042, #0f172a)"
+      thumbGradient: "linear-gradient(135deg, #311042, #0f172a)",
+      videoId: "YGKVWGUP9xI"
     },
     {
       id: 9,
@@ -539,7 +547,8 @@ if (newsCardsContainer) {
       growthRate: 2.7,
       tags: ["#Liban", "#combat", "#intensifient", "#France24"],
       description: "Les frappes aériennes et les combats terrestres s'intensifient dans la région frontalière du Sud-Liban.",
-      thumbGradient: "linear-gradient(135deg, #1e1b4b, #311042)"
+      thumbGradient: "linear-gradient(135deg, #1e1b4b, #311042)",
+      videoId: "HFkt17_8lto"
     },
     {
       id: 10,
@@ -556,7 +565,8 @@ if (newsCardsContainer) {
       growthRate: 5.4,
       tags: ["#YTN", "#실시간", "#라이브", "#뉴스생중계", "#속보"],
       description: "대한민국 대표 뉴스 YTN의 실시간 24시간 스트리밍 방송입니다.",
-      thumbGradient: "linear-gradient(135deg, #be123c, #1f2937)"
+      thumbGradient: "linear-gradient(135deg, #be123c, #1f2937)",
+      videoId: "oueftKIQSnQ"
     },
     {
       id: 11,
@@ -573,7 +583,8 @@ if (newsCardsContainer) {
       growthRate: 10.2,
       tags: ["#CNN", "#SpaceX", "#Rocket", "#Launch", "#SuperHeavy"],
       description: "NASA coordinates and SpaceX telemetry updates for the orbital test flight from Boca Chica.",
-      thumbGradient: "linear-gradient(135deg, #090d16, #991b1b)"
+      thumbGradient: "linear-gradient(135deg, #090d16, #991b1b)",
+      videoId: "iRbDmdCe6zA"
     },
     {
       id: 12,
@@ -590,7 +601,8 @@ if (newsCardsContainer) {
       growthRate: 1.1,
       tags: ["#AI", "#elections", "#cineaho", "#docu"],
       description: "An in-depth documentary investigating how synthetic avatars and AI content sway local voting behaviors.",
-      thumbGradient: "linear-gradient(135deg, #1e293b, #0d9488)"
+      thumbGradient: "linear-gradient(135deg, #1e293b, #0d9488)",
+      videoId: "qtrUg-QPC-8"
     },
     {
       id: 13,
@@ -607,7 +619,8 @@ if (newsCardsContainer) {
       growthRate: 0.5,
       tags: ["#누리호", "#다큐멘터리", "#우주개발", "#KBS다큐"],
       description: "누리호 프로젝트의 뼈대 설계부터 연소시험 통과까지 피땀 흘린 연구원들의 감동 비하인드.",
-      thumbGradient: "linear-gradient(135deg, #0369a1, #0f172a)"
+      thumbGradient: "linear-gradient(135deg, #0369a1, #0f172a)",
+      videoId: "ZACUseum0F8"
     },
     {
       id: 14,
@@ -624,7 +637,8 @@ if (newsCardsContainer) {
       growthRate: 7.8,
       tags: ["#누리호", "#속보", "#우주", "#KARI"],
       description: "과기정통부 보고에 따르면 4차 발사용 단 조립 완료 후 탑재 위성 연동성 전정 확인 작업 중.",
-      thumbGradient: "linear-gradient(135deg, #1e293b, #1e3a8a)"
+      thumbGradient: "linear-gradient(135deg, #1e293b, #1e3a8a)",
+      videoId: "jmjMsQMtswc"
     },
     {
       id: 15,
@@ -641,7 +655,8 @@ if (newsCardsContainer) {
       growthRate: 4.1,
       tags: ["#MBC", "#뉴스데스크", "#실시간", "#지방선거"],
       description: "여야 수뇌부의 막판 총력 지지 호소 현장 분석 및 실시간 리포트 종합 중계.",
-      thumbGradient: "linear-gradient(135deg, #a21caf, #0f172a)"
+      thumbGradient: "linear-gradient(135deg, #a21caf, #0f172a)",
+      videoId: "a5LdrO0gopk"
     },
     {
       id: 16,
@@ -658,7 +673,8 @@ if (newsCardsContainer) {
       growthRate: 3.2,
       tags: ["#스타벅스", "#물가상승", "#커피가격", "#직장인"],
       description: "유명 프랜차이즈 브랜드들의 연쇄 가격 인상 도미노 파장 속에 서민 체감 물가 고통 증가.",
-      thumbGradient: "linear-gradient(135deg, #0f766e, #0f172a)"
+      thumbGradient: "linear-gradient(135deg, #0f766e, #0f172a)",
+      videoId: "syhy-JjkSvY"
     }
   ];
 
@@ -706,6 +722,14 @@ if (newsCardsContainer) {
     if (savedNews) {
       try {
         newsData = JSON.parse(savedNews);
+        
+        // If any cached item is missing the videoId key or uses old invalid mock video IDs, force reset and load default dataset
+        const oldMockIds = ["coYw-tI302w", "uQ88y0E4Bws", "N55R97d26_c", "aY5_zZ0531c", "q49P6_bQxYw", "lP2sS_V3oF0", "h3MuIUNMwzI", "J5f_b_z-0k4", "qf5u2L9kM3M", "tK9V05d_UvQ", "5p4B81N0F-w", "9AuqerQW2t4", "pE9fGfB1c4s", "M-x4UupmBfM"];
+        const needsMigration = newsData.some(item => !item.videoId || oldMockIds.includes(item.videoId));
+        if (needsMigration) {
+          console.log("Old cached news data or invalid video IDs detected. Re-initializing default news...");
+          initializeDefaultNews();
+        }
       } catch (e) {
         console.error("Failed to parse saved news, fallback to default", e);
         initializeDefaultNews();
@@ -789,7 +813,7 @@ if (newsCardsContainer) {
           <div class="news-item-card" data-id="${item.id}">
             <div class="news-item-thumb-wrapper">
               ${topBadge}
-              <div class="news-item-thumb" style="background: ${item.thumbGradient};"></div>
+              <div class="news-item-thumb" style="background: url('https://img.youtube.com/vi/${item.videoId}/mqdefault.jpg') center/cover no-repeat, ${item.thumbGradient};"></div>
               <span class="news-duration-badge">${item.duration}</span>
             </div>
             <div class="news-item-content">
@@ -826,7 +850,7 @@ if (newsCardsContainer) {
           <div class="news-item-card" data-id="${item.id}">
             <div class="news-item-thumb-wrapper">
               ${topBadge}
-              <div class="news-item-thumb" style="background: ${item.thumbGradient};"></div>
+              <div class="news-item-thumb" style="background: url('https://img.youtube.com/vi/${item.videoId}/mqdefault.jpg') center/cover no-repeat, ${item.thumbGradient};"></div>
               <span class="news-duration-badge">${item.duration}</span>
             </div>
             <div class="news-item-content">
@@ -1071,69 +1095,148 @@ if (newsCardsContainer) {
 
   // Tab 2: Render Analysis Dashboard Charts
   function renderAnalysisCharts() {
-    // A. Keywords Word Cloud
+    // A. Keywords Word Cloud (Real-time dynamic analysis)
     const wordcloud = document.querySelector('.keywords-cloud-container');
     if (wordcloud) {
-      const keywords = [
-        { text: "합동감식", size: "size-lg", count: 124 },
-        { text: "선거 D-1", size: "size-lg", count: 98 },
-        { text: "오세훈", size: "size-md", count: 54 },
-        { text: "스타벅스", size: "size-md", count: 48 },
-        { text: "누리호 예비조립", size: "size-lg", count: 87 },
-        { text: "Sadiq Khan", size: "size-md", count: 32 },
-        { text: "대통령 비하인드", size: "size-lg", count: 110 },
-        { text: "폭발사고", size: "size-md", count: 45 },
-        { text: "Liban combats", size: "size-sm", count: 28 },
-        { text: "공수처 특검", size: "size-md", count: 67 },
-        { text: "SpaceX", size: "size-sm", count: 23 },
-        { text: "물가상승", size: "size-sm", count: 19 },
-        { text: "AI curation", size: "size-sm", count: 14 }
-      ];
-
-      wordcloud.innerHTML = keywords.map(kw => `
-        <a href="#" class="keyword-tag ${kw.size}" data-word="${kw.text}">${kw.text}</a>
-      `).join('');
-
-      // Add click handler to keyword tags to perform auto-search
-      wordcloud.querySelectorAll('.keyword-tag').forEach(tag => {
-        tag.addEventListener('click', (e) => {
-          e.preventDefault();
-          const word = tag.getAttribute('data-word');
-          
-          // Set inputs
-          searchQuery = word;
-          searchInput.value = word;
-          
-          // Switch to News tab
-          switchPrimaryTab('news-view');
-          
-          // Trigger filter
-          applyFilters();
-        });
+      const tagCounts = {};
+      newsData.forEach(item => {
+        if (item.tags && Array.isArray(item.tags)) {
+          item.tags.forEach(tag => {
+            tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+          });
+        }
       });
+      // Sort and pick top 15
+      const sortedTags = Object.entries(tagCounts)
+        .map(([text, count]) => ({ text, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 15);
+      
+      if (sortedTags.length === 0) {
+        wordcloud.innerHTML = `<span style="color:var(--text-muted); font-size:0.85rem;">실시간 수집된 키워드가 없습니다.</span>`;
+      } else {
+        const maxCount = sortedTags[0].count;
+        wordcloud.innerHTML = sortedTags.map(kw => {
+          let sizeClass = 'size-sm';
+          const ratio = kw.count / maxCount;
+          if (ratio > 0.7) sizeClass = 'size-lg';
+          else if (ratio > 0.3) sizeClass = 'size-md';
+          return `<a href="#" class="keyword-tag ${sizeClass}" data-word="${kw.text}">${kw.text}</a>`;
+        }).join('');
+
+        // Add click handler to keyword tags to perform auto-search
+        wordcloud.querySelectorAll('.keyword-tag').forEach(tag => {
+          tag.addEventListener('click', (e) => {
+            e.preventDefault();
+            const word = tag.getAttribute('data-word');
+            
+            // Set inputs
+            searchQuery = word;
+            searchInput.value = word;
+            
+            // Switch to News tab
+            switchPrimaryTab('news-view');
+            
+            // Trigger filter
+            applyFilters();
+          });
+        });
+      }
     }
 
-    // B. Broadcaster Share Chart (Proportional Flex Bars)
+    // B. Broadcaster Share Chart (Proportional Flex Bars - Real-time dynamic analysis)
     const shareChartTrack = document.querySelector('.share-chart-track');
     const shareChartLegends = document.querySelector('.share-chart-legends');
     if (shareChartTrack && shareChartLegends) {
-      const dataShares = [
-        { label: "SBS 뉴스", pct: 31, colorClass: "color-sbs" },
-        { label: "JTBC News", pct: 25, colorClass: "color-jtbc" },
-        { label: "MBCNEWS", pct: 19, colorClass: "color-mbc" },
-        { label: "YTN", pct: 13, colorClass: "color-ytn" },
-        { label: "KBS News", pct: 7, colorClass: "color-kbs" },
-        { label: "기타", pct: 5, colorClass: "color-others" }
-      ];
+      const counts = {};
+      newsData.forEach(item => {
+        counts[item.channel] = (counts[item.channel] || 0) + 1;
+      });
+      const total = newsData.length || 1;
+      const shares = Object.entries(counts)
+        .map(([channel, count]) => ({
+          label: channel,
+          pct: Math.round((count / total) * 100),
+          colorClass: brandColors[channel] || 'color-others'
+        }))
+        .sort((a, b) => b.pct - a.pct);
+      
+      // Limit to top 5 and group rest into '기타'
+      let displayShares = shares.slice(0, 5);
+      if (shares.length > 5) {
+        const otherPct = shares.slice(5).reduce((acc, cur) => acc + cur.pct, 0);
+        if (otherPct > 0) {
+          displayShares.push({ label: "기타", pct: otherPct, colorClass: "color-others" });
+        }
+      }
 
-      shareChartTrack.innerHTML = dataShares.map(s => `
+      shareChartTrack.innerHTML = displayShares.map(s => `
         <div class="share-bar ${s.colorClass}" style="width: ${s.pct}%;" title="${s.label} (${s.pct}%)"></div>
       `).join('');
 
-      shareChartLegends.innerHTML = dataShares.map(s => `
+      shareChartLegends.innerHTML = displayShares.map(s => `
         <div class="legend-item">
           <div class="legend-color-dot ${s.colorClass}"></div>
           <span>${s.label}: <strong>${s.pct}%</strong></span>
+        </div>
+      `).join('');
+    }
+
+    // C. Duration Segment Chart (Real-time dynamic analysis)
+    const barChartContainer = document.querySelector('.bar-chart-container');
+    if (barChartContainer) {
+      let under5 = 0;
+      let range5to15 = 0;
+      let range15to30 = 0;
+      let over30 = 0;
+      newsData.forEach(item => {
+        const mins = parseDurationToMinutes(item.duration);
+        if (mins < 5) under5++;
+        else if (mins < 15) range5to15++;
+        else if (mins < 30) range15to30++;
+        else over30++;
+      });
+      const total = newsData.length || 1;
+      const pctUnder5 = Math.round((under5 / total) * 100);
+      const pct5to15 = Math.round((range5to15 / total) * 100);
+      const pct15to30 = Math.round((range15to30 / total) * 100);
+      const pctOver30 = Math.round((over30 / total) * 100);
+
+      barChartContainer.innerHTML = `
+        <div class="bar-chart-bar" style="--height: ${pctUnder5}%;" data-label="5분 미만"><span class="bar-val">${pctUnder5}%</span></div>
+        <div class="bar-chart-bar" style="--height: ${pct5to15}%;" data-label="5분 - 15분"><span class="bar-val">${pct5to15}%</span></div>
+        <div class="bar-chart-bar" style="--height: ${pct15to30}%;" data-label="15분 - 30분"><span class="bar-val">${pct15to30}%</span></div>
+        <div class="bar-chart-bar" style="--height: ${pctOver30}%;" data-label="30분 이상"><span class="bar-val">${pctOver30}%</span></div>
+      `;
+    }
+
+    // D. Live Streams Breakdown (Real-time dynamic analysis)
+    const liveProgressList = document.querySelector('.live-progress-list');
+    if (liveProgressList) {
+      const channelStats = {};
+      newsData.forEach(item => {
+        if (!channelStats[item.channel]) {
+          channelStats[item.channel] = { total: 0, live: 0 };
+        }
+        channelStats[item.channel].total++;
+        if (item.type === 'live' || item.title.includes('LIVE') || item.title.includes('라이브')) {
+          channelStats[item.channel].live++;
+        }
+      });
+
+      const liveShares = Object.entries(channelStats)
+        .map(([channel, stats]) => ({
+          label: channel,
+          pct: Math.round((stats.live / stats.total) * 100)
+        }))
+        .sort((a, b) => b.pct - a.pct)
+        .slice(0, 4); // Display top 4
+
+      liveProgressList.innerHTML = liveShares.map(s => `
+        <div class="live-progress-row">
+          <span class="row-label">${s.label}</span>
+          <div class="progress-bar-wrapper"><div class="progress-bar-fill" style="width: ${s.pct}%;"></div></div>
+          <span class="row-pct">${s.pct}%</span>
         </div>
       `).join('');
     }
@@ -1196,7 +1299,8 @@ if (newsCardsContainer) {
       growthRate: 12.4,
       tags: ["#개표속보", "#지방선거", "#당선확정", "#격전지"],
       description: "전국 개표 상황 긴급 보도. 주요 핵심 격전지 부동표의 최종 선택에 따른 판세 분석 결과.",
-      thumbGradient: "linear-gradient(135deg, #172554, #be123c)"
+      thumbGradient: "linear-gradient(135deg, #172554, #be123c)",
+      videoId: "ve-hmicTjg0"
     },
     {
       title: "[속보] 국과수·경찰 화약 세척공장 폭발 현장 2차 합동 감식 브리핑 발표",
@@ -1210,7 +1314,8 @@ if (newsCardsContainer) {
       growthRate: 8.5,
       tags: ["#합동감식", "#국과수", "#폭발원인", "#뉴스룸"],
       description: "화약 세척 작업실 내부 잔류 가스 인화 가능성에 무게를 둔 정밀 분석 중간 보고 발표.",
-      thumbGradient: "linear-gradient(135deg, #311042, #1e1b4b)"
+      thumbGradient: "linear-gradient(135deg, #311042, #1e1b4b)",
+      videoId: "NmiPB9069js"
     },
     {
       title: "[🔴LIVE] YTN 뉴스 라이브 - 스타벅스 커피값 인상 여파에 기획재정부 물가 안정 대책 논의",
@@ -1224,7 +1329,8 @@ if (newsCardsContainer) {
       growthRate: 4.8,
       tags: ["#YTN", "#물가대책", "#스타벅스", "#실시간"],
       description: "커피, 가공식품 등 주요 가공품목 중심 가격 억제 유도 방침과 기업 협조 당부 내용 중계.",
-      thumbGradient: "linear-gradient(135deg, #090d16, #12005e)"
+      thumbGradient: "linear-gradient(135deg, #090d16, #12005e)",
+      videoId: "hI6WP9tC_yc"
     },
     {
       title: "[🔴속보] 공수처 비공개 영장 심사 종료... 법조계 \"인용 여부 오늘 밤 결정\"",
@@ -1238,7 +1344,8 @@ if (newsCardsContainer) {
       growthRate: 9.3,
       tags: ["#공수처", "#영장실질심사", "#법조계", "#속보"],
       description: "핵심 피의자 신문 절차 완료. 변호인단 입장 발표 및 최종 영장 기각/인용 여부 대기 중.",
-      thumbGradient: "linear-gradient(135deg, #451a03, #1e293b)"
+      thumbGradient: "linear-gradient(135deg, #451a03, #1e293b)",
+      videoId: "yCXTRHVWRRc"
     },
     {
       title: "SpaceX Starship successfully enters planned orbit during test flight 6",
@@ -1252,7 +1359,8 @@ if (newsCardsContainer) {
       growthRate: 15.6,
       tags: ["#SpaceX", "#Starship", "#Orbit", "#Telemetry", "#CNN"],
       description: "Flight controllers confirm second stage engine cut-off and nominal trajectory in low Earth orbit.",
-      thumbGradient: "linear-gradient(135deg, #0f172a, #991b1b)"
+      thumbGradient: "linear-gradient(135deg, #0f172a, #991b1b)",
+      videoId: "pvoa6468XcQ"
     },
     {
       title: "CineAHO real-time search: Global chip shortages easing as local fab output rises",
@@ -1266,7 +1374,8 @@ if (newsCardsContainer) {
       growthRate: 2.5,
       tags: ["#CineAHO", "#semiconductor", "#shortage", "#tech", "#docu"],
       description: "Special documentary tracking industrial supply chains and local silicon fab expansions in Asia.",
-      thumbGradient: "linear-gradient(135deg, #0f172a, #0d9488)"
+      thumbGradient: "linear-gradient(135deg, #0f172a, #0d9488)",
+      videoId: "mmHij2a151M"
     }
   ];
 
@@ -1340,6 +1449,12 @@ if (newsCardsContainer) {
     if (statsTab && statsTab.classList.contains('active')) {
       renderStatisticsTable();
     }
+
+    // If analysis tab is currently open, refresh analysis charts in real-time
+    const analysisTab = document.getElementById('tab-analysis-view');
+    if (analysisTab && analysisTab.classList.contains('active')) {
+      renderAnalysisCharts();
+    }
   }, 10000); // 10 seconds interval
 
   // Open News Detail Modal with mockup video player
@@ -1354,30 +1469,16 @@ if (newsCardsContainer) {
     
     const html = `
       <div class="news-detail-modal-container">
-        <!-- Mock Video Player -->
-        <div class="mock-player-wrapper">
-          <div class="mock-player-video" style="background: ${item.thumbGradient};">
-            <div class="mock-player-overlay">
-              <button class="mock-play-btn"><i class="fa-solid fa-play"></i></button>
-              <div class="mock-controls-bar">
-                <div class="playback-timeline">
-                  <div class="playback-progress" style="width: 35%;"></div>
-                </div>
-                <div class="controls-row">
-                  <div class="controls-left">
-                    <i class="fa-solid fa-pause"></i>
-                    <i class="fa-solid fa-volume-high"></i>
-                    <span class="playback-time">01:15 / ${item.duration}</span>
-                  </div>
-                  <div class="controls-right">
-                    <i class="fa-solid fa-closed-captioning"></i>
-                    <i class="fa-solid fa-gear"></i>
-                    <i class="fa-solid fa-expand"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <!-- Real Video Player (with Sound Enabled) -->
+        <div class="mock-player-wrapper" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); background: #000; margin-bottom: 1.5rem;">
+          <iframe 
+            src="https://www.youtube.com/embed/${item.videoId}?autoplay=1&mute=0&enablejsapi=1" 
+            title="${item.title}" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen 
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;">
+          </iframe>
         </div>
 
         <!-- News Info -->
@@ -1691,6 +1792,18 @@ if (newsCardsContainer) {
         
         // Apply filters
         applyFilters();
+        
+        // If stats tab is currently open, refresh stats table
+        const statsTab = document.getElementById('tab-stats-view');
+        if (statsTab && statsTab.classList.contains('active')) {
+          renderStatisticsTable();
+        }
+
+        // If analysis tab is currently open, refresh analysis charts in real-time
+        const analysisTab = document.getElementById('tab-analysis-view');
+        if (analysisTab && analysisTab.classList.contains('active')) {
+          renderAnalysisCharts();
+        }
         
         // Show success toast
         showNewsToast('수동 실시간 뉴스 & 다큐 업데이트 완료! (+2건 수집)');
