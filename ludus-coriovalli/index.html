@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D 루두스 코리오발리 (Ludus Coriovalli 3D) - CineAHO</title>
+  <meta name="description" content="AI와 고고학적 연구로 복원된 고대 로마의 비대칭 추상 전략 보드게임 루두스 코리오발리입니다. 3D 입체 석판 위에서 사냥개와 토끼의 지혜 대결을 즐겨보세요.">
+  
+  <!-- Google Fonts Outfit, Inter, Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-purple"></div>
+  <div class="bg-glow bg-glow-blue"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>Ludus Coriovalli 3D</span></span>
+    </div>
+    <div class="header-right">
+      <button id="btn-rules" class="btn btn-secondary">
+        <i class="fa-solid fa-circle-question"></i>
+        <span>게임 방법</span>
+      </button>
+      <a href="../index.html" class="btn btn-back-home">
+        <i class="fa-solid fa-house"></i>
+        <span>포털 메인</span>
+      </a>
+      <button id="theme-toggle" class="btn-theme">
+        <i class="fa-solid fa-sun"></i>
+        <span>라이트</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-container">
+    
+    <!-- Game Lobby (Lobby Panel) -->
+    <section id="lobby-panel" class="lobby-card glass-panel">
+      <div class="lobby-header">
+        <i class="fa-solid fa-shield-halved icon-accent"></i>
+        <h2>루두스 코리오발리 설정</h2>
+      </div>
+      
+      <div class="lobby-content">
+        <!-- Select Player Faction -->
+        <div class="lobby-section">
+          <h3>1. 나의 진영 선택</h3>
+          <div class="faction-buttons">
+            <button class="btn-faction-toggle active" data-faction="hounds">
+              <i class="fa-solid fa-dog"></i>
+              <div class="faction-meta">
+                <span class="fac-name">사냥개 (Hounds)</span>
+                <span class="fac-desc">4개의 돌 / 전진 및 수직만 가능 / 포위 승리</span>
+              </div>
+            </button>
+            <button class="btn-faction-toggle" data-faction="hares">
+              <i class="fa-solid fa-rabbit"></i>
+              <div class="faction-meta">
+                <span class="fac-name">토끼 (Hares)</span>
+                <span class="fac-desc">2개의 돌 / 전방향 이동 가능 / 탈출 승리</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mode & Difficulty Settings -->
+        <div class="lobby-grid">
+          <div class="lobby-section">
+            <h3>2. 대전 상대 설정</h3>
+            <div class="lobby-select-wrapper">
+              <select id="select-game-mode">
+                <option value="human-ai" selected>싱글 플레이 (vs 스마트 AI)</option>
+                <option value="human-human">2인 로컬 플레이 (Hotseat)</option>
+                <option value="ai-ai">AI 대전 관전 시뮬레이션</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="lobby-section" id="ai-difficulty-wrapper">
+            <h3>3. AI 난이도</h3>
+            <div class="difficulty-buttons">
+              <button class="btn-diff active" data-diff="hard">
+                <i class="fa-solid fa-brain"></i> 스마트 AI
+              </button>
+              <button class="btn-diff" data-diff="easy">
+                <i class="fa-solid fa-feather-pointed"></i> 연습용 AI
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Start Button -->
+        <div class="lobby-actions">
+          <button id="btn-start-game" class="btn btn-start">
+            <i class="fa-solid fa-play"></i> 고대 로마 석판 대국 시작
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Game Section (Initially Hidden) -->
+    <section id="game-panel" class="game-layout" style="display: none;">
+      
+      <!-- Side Panels: Player lists / Info (Left Side) -->
+      <div class="side-info-panel flex-col gap-1">
+        
+        <!-- Turn Indicator Banner -->
+        <div class="turn-card glass-panel">
+          <div class="turn-header">
+            <span class="pulse-dot" id="turn-indicator-dot"></span>
+            <span id="turn-title-text">사냥개(Hounds) 턴</span>
+          </div>
+          <p id="turn-timer">남은 시간: 15초</p>
+          <p id="move-count-banner" style="font-size: 0.75rem; margin-top: 0.25rem; color: var(--text-muted);">진행 턴수: 0 / 50</p>
+        </div>
+
+        <!-- Players List Dashboard -->
+        <div class="players-dashboard glass-panel">
+          <h3>진영 상태</h3>
+          <div class="player-list-items" id="hud-players-list">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Interactive Controls Card -->
+        <div class="controls-card glass-panel">
+          <h3>도구 상자</h3>
+          <div class="controls-grid">
+            <button id="btn-reset-camera" class="btn btn-control">
+              <i class="fa-solid fa-camera"></i>
+              <span>카메라 앵글 리셋</span>
+            </button>
+            <button id="btn-undo" class="btn btn-control" disabled>
+              <i class="fa-solid fa-rotate-left"></i>
+              <span>한 수 되돌리기</span>
+            </button>
+            <button id="btn-quit" class="btn btn-control btn-danger">
+              <i class="fa-solid fa-flag"></i>
+              <span>기권하고 로비로</span>
+            </button>
+          </div>
+
+          <!-- Auto AI Play speed adjustment for spectator mode -->
+          <div class="ai-speed-controller" id="ai-speed-wrapper" style="display: none; margin-top: 1rem;">
+            <label for="range-ai-speed">AI 대국 속도: <span id="ai-speed-val">1.2</span>초</label>
+            <input type="range" id="range-ai-speed" min="0.3" max="3.0" step="0.1" value="1.2">
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Center 3D Board Canvas Area -->
+      <div class="board-3d-scene-container glass-panel">
+        <div class="scene-instructions">
+          <i class="fa-solid fa-arrows-to-eye"></i> 마우스로 로마 석판을 드래그하여 다각도로 감상할 수 있습니다.
+        </div>
+
+        <!-- 3D Perspective Scene -->
+        <div class="scene-3d" id="scene-3d-canvas">
+          <div class="board-3d-wrapper" id="board-wrapper-element">
+            
+            <!-- The 3D Limestone Roman Slab -->
+            <div class="board-3d" id="board-element">
+              
+              <!-- Engraved Lines connecting the graph nodes -->
+              <svg class="board-svg-lines" id="board-svg-element" viewBox="0 0 500 300">
+                <!-- SVG lines dynamically generated to match graph edges -->
+              </svg>
+              
+              <!-- Vertices/Nodes container -->
+              <div class="board-nodes" id="board-nodes-element"></div>
+
+              <!-- Stone Pebble pieces container -->
+              <div class="board-pieces" id="pieces-element"></div>
+
+              <!-- Slab 3D Sides/Thickness -->
+              <div class="slab-side slab-front"></div>
+              <div class="slab-side slab-back"></div>
+              <div class="slab-side slab-left"></div>
+              <div class="slab-side slab-right"></div>
+              <div class="slab-side slab-bottom"></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Modals & Overlays -->
+  <!-- Rules Modal -->
+  <div id="rules-modal" class="modal-overlay" style="display: none;">
+    <div class="rules-card glass-panel">
+      <div class="modal-header">
+        <i class="fa-solid fa-circle-question"></i>
+        <h3>루두스 코리오발리 (Ludus Coriovalli) 룰 안내</h3>
+      </div>
+      
+      <div class="modal-body">
+        <p><strong>루두스 코리오발리</strong>는 네덜란드 헤를렌(Coriovallum)의 로마시대 목욕탕 유적지에서 발견된 석판 유물을 토대로, Maastricht 대학교 연구팀이 <strong>AI 인공지능 시뮬레이션</strong>을 통해 그 규칙을 고증 복원해 낸 고대 로마의 비대칭 추상 전략 보드게임입니다.</p>
+        
+        <h4>🐺 사냥개 진영 (Hounds - 4개)</h4>
+        <ul>
+          <li><strong>이동 제약:</strong> 선을 따라 빈 인접 칸으로 1칸씩 이동하되, <strong>절대 왼쪽(뒤)으로 후퇴할 수 없습니다</strong> (수직, 오른쪽 전진, 대각선 전진만 가능).</li>
+          <li><strong>승리 조건:</strong> 토끼 2마리를 돌과 석판 구석으로 완전히 가로막아 <strong>더 이상 이동할 수 없도록 포위(Block)</strong>하면 즉시 승리합니다.</li>
+        </ul>
+        
+        <h4>🐇 토끼 진영 (Hares - 2개)</h4>
+        <ul>
+          <li><strong>이동 제약:</strong> 제한이 없습니다. 선을 따라 사방 모든 방향(왼쪽 후퇴 포함)으로 1칸씩 자유롭게 이동합니다.</li>
+          <li><strong>승리 조건:</strong> 사냥개들의 그물망 수비벽을 뚫고 <strong>사냥개들보다 더 왼쪽 칸으로 탈출</strong>하거나, 사냥개의 포위를 피해 <strong>50턴(왕복 100수) 동안 생존</strong>하면 즉시 승리합니다.</li>
+        </ul>
+
+        <h4>🎮 조작 방법</h4>
+        <p>자신의 차례에 돌을 클릭한 후, <strong>녹색으로 활성화되는 이동 경로 노드</strong> 중 하나를 클릭하면 이동합니다. 석판 바탕 영역을 마우스로 드래그하면 3D 각도를 조절할 수 있습니다.</p>
+      </div>
+
+      <div class="modal-actions">
+        <button id="btn-close-rules" class="btn btn-primary">이해 완료</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Winner Modal -->
+  <div id="winner-modal" class="modal-overlay" style="display: none;">
+    <div class="winner-card glass-panel">
+      <div class="winner-icon" id="winner-trophy-icon">
+        <i class="fa-solid fa-trophy"></i>
+      </div>
+      <h3 class="winner-title" id="winner-title-name">사냥개(Hounds) 승리!</h3>
+      <p class="winner-desc" id="winner-desc-text">토끼를 완벽하게 포위하여 길을 차단했습니다.</p>
+      
+      <div class="winner-actions">
+        <button id="btn-lobby-return" class="btn btn-primary">대기실로</button>
+        <button id="btn-restart-game" class="btn btn-secondary">다시 대국</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <p>© 2026 CineAHO. Ludus Coriovalli 3D Ancient Roman Strategy Simulator.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
