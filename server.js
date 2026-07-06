@@ -4,6 +4,8 @@ const express = require('express');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const cors = require('cors');
+const { YoutubeTranscript } = require('youtube-transcript');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 const path = require('path');
 const stockCollector = require('./utils/stock-collector');
 const historyLoader = require('./utils/history-loader');
@@ -3583,7 +3585,8 @@ const APP_METADATA = {
   'k-wais-test': { name: '웩슬러 지능검사', icon: 'fa-solid fa-brain', link: './k-wais-test/index.html' },
   'jw-downloader': { name: 'JW 다운로더', icon: 'fa-solid fa-download', link: './jw-downloader/index.html' },
   'pinball-3d': { name: '3D 핀볼 아케이드', icon: 'fa-solid fa-gamepad', link: './pinball-3d/index.html' },
-  'adhd-test': { name: '종합 ADHD 인지 검사기', icon: 'fa-solid fa-brain-circuit', link: './adhd-test/index.html' }
+  'adhd-test': { name: '종합 ADHD 인지 검사기', icon: 'fa-solid fa-brain-circuit', link: './adhd-test/index.html' },
+  'youtube-blog': { name: 'AI 유튜브 블로그 요약기', icon: 'fa-solid fa-blog', link: './youtube-blog/index.html' }
 };
 
 const crypto = require('crypto');
@@ -3743,6 +3746,177 @@ app.post('/api/apps/status', requireAdmin, (req, res) => {
 
 // 30분 주기로 디스크 청소 주기 작동
 setInterval(cleanOldJwDownloads, 30 * 60 * 1000);
+
+// === Youtube-Blog Linker APIs ===
+
+function extractVideoId(url) {
+  const regExp = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/|shorts\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[1].length === 11) ? match[1] : null;
+}
+
+async function fetchYoutubeMetadata(videoId) {
+  try {
+    const url = `https://www.youtube.com/watch?v=${videoId}`;
+    const response = await axios.get(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7'
+      }
+    });
+    
+    const html = response.data;
+    const titleMatch = html.match(/<meta name="title" content="([^"]+)"/);
+    const title = titleMatch ? titleMatch[1] : '제목 없음';
+    
+    const descMatch = html.match(/<meta name="description" content="([^"]+)"/);
+    const description = descMatch ? descMatch[1] : '설명 없음';
+    
+    return { title, description };
+  } catch (error) {
+    console.error('[YT-Blog] 메타데이터 파싱 실패:', error.message);
+    return { title: '유튜브 비디오', description: '메타데이터를 가져올 수 없습니다.' };
+  }
+}
+
+app.get('/api/transcript', async (req, res) => {
+  const { url } = req.query;
+  if (!url) {
+    return res.status(400).json({ error: '유튜브 URL이 필요합니다.' });
+  }
+
+  const videoId = extractVideoId(url);
+  if (!videoId) {
+    return res.status(400).json({ error: '올바르지 않은 유튜브 URL입니다.' });
+  }
+
+  try {
+    console.log(`[YT-Blog] 자막 요청 비디오 ID: ${videoId}`);
+    const transcriptList = await YoutubeTranscript.fetchTranscript(videoId);
+    const fullText = transcriptList.map(t => t.text).join(' ');
+    
+    res.json({
+      success: true,
+      videoId,
+      text: fullText,
+      transcript: transcriptList
+    });
+  } catch (error) {
+    console.warn(`[YT-Blog] 자막 추출 실패 (ID: ${videoId}), 메타데이터 대체 시도:`, error.message);
+    const metadata = await fetchYoutubeMetadata(videoId);
+    res.json({
+      success: false,
+      videoId,
+      hasTranscript: false,
+      title: metadata.title,
+      description: metadata.description,
+      text: `이 영상은 자막이 비활성화되어 있습니다.\n\n[제목]\n${metadata.title}\n\n[설명]\n${metadata.description}`,
+      message: '자막을 직접 추출할 수 없어, 영상 제목과 설명을 대체 요약용으로 전달합니다.'
+    });
+  }
+});
+
+app.post('/api/summarize', async (req, res) => {
+  const { text, videoId, apiKey, customPrompt } = req.body;
+  if (!text) {
+    return res.status(400).json({ error: '요약할 텍스트가 필요합니다.' });
+  }
+
+  const activeApiKey = apiKey || process.env.GEMINI_API_KEY;
+  if (!activeApiKey) {
+    return res.status(400).json({ 
+      error: 'Gemini API Key가 누락되었습니다. 설정에서 API Key를 입력해주시거나 서버 측 환경 설정을 완료해주세요.' 
+    });
+  }
+
+  try {
+    const genAI = new GoogleGenerativeAI(activeApiKey);
+    const defaultPrompt = `
+역할: 너는 전문 테크 지식 블로그 에디터이자 칼럼니스트이다.
+작업: 아래 제공되는 텍스트 정보를 깊이 있게 분석하여 독자적인 전문 지식 칼럼 및 블로그 포스팅용 구조화 요약 JSON 데이터를 생성하라.
+
+⚠️ [매우 중요 - 금지 규칙]
+- 작성되는 본문(title, summary, sections 내의 모든 heading과 content, timeline 내의 모든 topic과 description 등) 전체에서 **'유튜브', '영상', '비디오', '스크립트', '채널', '구독', '유튜버', '말하길', '동영상에서는' 등의 유튜브 연관 메타적 표현을 절대 포함하지 말라**.
+- 마치 하나의 완결된 도서, 전공 매뉴얼, 혹은 독자적인 기술 칼럼을 쓴 것처럼 오직 해당 기술/개념 자체에 대한 핵심 본문 콘텐츠로만 객관적이고 매끄럽게 작성하라.
+
+요청하는 JSON 구조:
+{
+  "title": "영상 주제를 관통하는 세련되고 클릭하고 싶게 만드는 블로그 제목",
+  "summary": "전체 내용을 핵심 요약한 한 줄 요약문",
+  "keywords": ["주요 키워드 3~5개"],
+  "sections": [
+    {
+      "heading": "섹션 1: 주요 소주제 제목",
+      "content": "이 소주제에 대한 핵심 내용 요약 및 분석 (최소 3문장 이상, 가독성 높은 구어체 및 서술 형식)"
+    },
+    ...
+  ],
+  "timeline": [
+    {
+      "time": "MM:SS 형식을 갖춘 타임라인 시작점 (예: 01:20)",
+      "topic": "해당 시간대의 핵심 주제",
+      "description": "무슨 내용이 다뤄지는지 요약 설명"
+    },
+    ...
+  ],
+  "infographic": {
+    "type": "process 또는 comparison 또는 stats 또는 mindmap",
+    "title": "인포그래픽 시각화 자료의 제목",
+    "data": {
+      "steps": [{"step": 1, "title": "단계 제목", "desc": "단계 요약"}],
+      "headers": ["비교기준", "대상 A", "대상 B"],
+      "rows": [["속성 1", "내용 A1", "내용 B1"], ["속성 2", "내용 A2", "내용 B2"]],
+      "metrics": [{"label": "핵심 지표", "value": "수치 (예: 80% 또는 100억)", "desc": "지표 설명"}],
+      "root": "중심 토픽",
+      "branches": [{"branch": "주요 분기 1", "leaves": ["세부 항목 1", "세부 항목 2"]}]
+    }
+  }
+}
+
+비디오 스크립트/정보:
+${text}
+
+추가 사용자 지침: ${customPrompt || '없음'}
+`;
+
+    const modelsToTry = ['gemini-2.0-flash', 'gemini-1.5-flash-latest', 'gemini-2.5-flash'];
+    let lastError = null;
+    let parsedData = null;
+
+    for (const modelName of modelsToTry) {
+      try {
+        console.log(`[YT-Blog] 모델 ${modelName} 호출 시도 중...`);
+        const model = genAI.getGenerativeModel({ 
+          model: modelName,
+          generationConfig: {
+            responseMimeType: "application/json"
+          }
+        });
+        
+        const result = await model.generateContent(defaultPrompt);
+        const responseText = result.response.text();
+        parsedData = JSON.parse(responseText);
+        console.log(`[YT-Blog] 모델 ${modelName} 호출 요약 성공!`);
+        break; 
+      } catch (err) {
+        console.warn(`[YT-Blog] 모델 ${modelName} 호출 실패:`, err.message);
+        lastError = err;
+      }
+    }
+
+    if (!parsedData) {
+      throw lastError || new Error('모든 가용한 Gemini 모델 호출에 실패했습니다.');
+    }
+
+    res.json(parsedData);
+  } catch (error) {
+    console.error('[YT-Blog] Gemini 호출 중 최종 에러:', error);
+    res.status(500).json({ 
+      error: 'Gemini 요약 생성 중 서버 오류가 발생했습니다.', 
+      details: error.message 
+    });
+  }
+});
 
 // 메인페이지 매칭
 app.get('/', (req, res) => {
