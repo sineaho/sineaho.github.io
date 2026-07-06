@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>종합 ADHD 인지 검사기 (ADHD Cognitive Test) - CineAHO</title>
+  
+  <!-- FontAwesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Local Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="app-header glass-panel">
+    <div class="header-left">
+      <a href="../index.html" class="btn-back">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>포털 홈</span>
+      </a>
+      <div class="logo-area">
+        <i class="fa-solid fa-brain-circuit brain-icon"></i>
+        <span class="logo-text">CineAHO's <span>ADHD Test</span></span>
+      </div>
+    </div>
+    <div class="header-right">
+      <button id="theme-toggle" class="btn-theme" title="테마 전환">
+        <i class="fa-solid fa-sun"></i>
+        <span>라이트</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <!-- 1. Intro Lobby -->
+    <section id="sec-lobby" class="active-section lobby-container">
+      <div class="lobby-hero glass-panel animate-fade-in">
+        <span class="badge-new"><i class="fa-solid fa-bolt"></i> 신규 탑재</span>
+        <h1>종합 ADHD 인지 검사기</h1>
+        <p class="hero-desc">
+          성인 ADHD 자가진단 표준 척도(ASRS v1.1)와 집중력·반응 억제력을 측정하는 두 가지 임상 인지 게임 검사를 결합하여, 나의 집중 및 제어 메커니즘을 종합 진단합니다.
+        </p>
+        <div class="hero-actions">
+          <button id="btn-start-all" class="btn-primary-neon">
+            <i class="fa-solid fa-circle-play"></i> 종합 검사 시작하기 (약 5분 소요)
+          </button>
+        </div>
+      </div>
+
+      <!-- Test Types Grid -->
+      <div class="test-types-grid">
+        <!-- Card 1 -->
+        <div class="test-type-card glass-panel animate-fade-in" style="animation-delay: 0.1s;">
+          <div class="card-icon cyan"><i class="fa-solid fa-clipboard-question"></i></div>
+          <h3>ASRS 자가진단 검사</h3>
+          <p>세계보건기구(WHO) 표준 18개 질문 항목을 기반으로, 평소 일상 생활 속의 부주의와 과잉행동·충동성을 계량적으로 평가합니다.</p>
+          <span class="badge-time"><i class="fa-regular fa-clock"></i> 2분 소요</span>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="test-type-card glass-panel animate-fade-in" style="animation-delay: 0.2s;">
+          <div class="card-icon magenta"><i class="fa-solid fa-hand-pointer"></i></div>
+          <h3>Go/No-Go 지속주의력 검사</h3>
+          <p>순간적으로 나타나는 타겟 도형(Go)에 반응하고 방해 고리(No-Go)에 대한 충동을 억제하며 누락율과 과오반응율을 컴퓨터 정밀 측정합니다.</p>
+          <span class="badge-time"><i class="fa-regular fa-clock"></i> 1분 30초 소요</span>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="test-type-card glass-panel animate-fade-in" style="animation-delay: 0.3s;">
+          <div class="card-icon purple"><i class="fa-solid fa-eye"></i></div>
+          <h3>스트룹(Stroop) 선택주의력 검사</h3>
+          <p>단어의 색상 정보와 의미 정보가 충돌할 때 발생하는 뇌의 인지적 간섭 비용을 계산하여 억제 제어력 및 다차원 선택 집중을 분석합니다.</p>
+          <span class="badge-time"><i class="fa-regular fa-clock"></i> 1분 30초 소요</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Test 1: ASRS Questionnaire -->
+    <section id="sec-asrs" class="lobby-container">
+      <div class="test-box glass-panel animate-fade-in">
+        <div class="test-header">
+          <div class="test-indicator">
+            <span class="current-test-label">STAGE 1</span>
+            <span class="test-title">ASRS 자가 진단 설문</span>
+          </div>
+          <div class="progress-bar-container">
+            <div id="asrs-progress" class="progress-bar-fill" style="width: 0%;"></div>
+          </div>
+          <div id="asrs-page-number" class="page-number">1 / 18</div>
+        </div>
+
+        <div class="asrs-body">
+          <div id="asrs-question-container" class="question-container">
+            <h2 id="asrs-question-text" class="question-text">여기에 질문이 렌더링됩니다.</h2>
+          </div>
+
+          <div class="asrs-options-grid">
+            <button class="btn-option" data-value="0">
+              <span class="option-label">전혀 없음</span>
+            </button>
+            <button class="btn-option" data-value="1">
+              <span class="option-label">드물게 있음</span>
+            </button>
+            <button class="btn-option" data-value="2">
+              <span class="option-label">간혹 있음</span>
+            </button>
+            <button class="btn-option" data-value="3">
+              <span class="option-label">자주 있음</span>
+            </button>
+            <button class="btn-option" data-value="4">
+              <span class="option-label">아주 자주 있음</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="test-footer-nav">
+          <button id="btn-asrs-prev" class="btn-secondary" disabled>
+            <i class="fa-solid fa-chevron-left"></i> 이전 질문
+          </button>
+          <div class="test-stage-name">자가 보고 평정 척도</div>
+          <button id="btn-asrs-next" class="btn-secondary" style="visibility: hidden;">
+            다음 질문 <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Test 2: Go/No-Go Test -->
+    <section id="sec-gonogo" class="lobby-container">
+      <div class="test-box glass-panel animate-fade-in">
+        <div class="test-header">
+          <div class="test-indicator">
+            <span class="current-test-label bg-magenta">STAGE 2</span>
+            <span class="test-title">Go/No-Go 반응 억제 검사</span>
+          </div>
+          <div class="gonogo-stats">
+            <span id="gonogo-counter">진행률: 0 / 40</span>
+          </div>
+        </div>
+
+        <div class="game-body-wrapper">
+          <!-- Countdown Overlay -->
+          <div id="gonogo-countdown-overlay" class="countdown-overlay hidden">
+            <div id="gonogo-countdown-number" class="countdown-num">3</div>
+            <p class="countdown-tip">손가락을 키보드 [Space] 키 또는 화면 터치패드에 올려주세요!</p>
+          </div>
+
+          <!-- Instructions View -->
+          <div id="gonogo-instructions" class="instructions-panel">
+            <div class="rule-box">
+              <div class="rule-item">
+                <div class="rule-symbol go-symbol"></div>
+                <div class="rule-desc">
+                  <strong>초록색 원 (GO):</strong> 보는 즉시 최대한 빨리 <strong>[Space]</strong> 키를 누르거나 화면을 터치하세요!
+                </div>
+              </div>
+              <div class="rule-item">
+                <div class="rule-symbol nogo-symbol"></div>
+                <div class="rule-desc">
+                  <strong>빨간색 엑스 (NO-GO):</strong> 절대 키를 누르지 말고 <strong>대기</strong>하세요! (충동 억제)
+                </div>
+              </div>
+            </div>
+            <div class="instruction-notes">
+              <p><i class="fa-solid fa-triangle-exclamation"></i> 주의: 타겟의 75%는 초록색 원입니다. 손가락이 자동 반사적으로 눌리므로 억제 제어가 매우 까다롭습니다!</p>
+            </div>
+            <button id="btn-start-gonogo" class="btn-primary-neon magenta">
+              <i class="fa-solid fa-circle-play"></i> 반응 검사 시작하기
+            </button>
+          </div>
+
+          <!-- Active Game Screen -->
+          <div id="gonogo-game-screen" class="game-screen hidden">
+            <canvas id="gonogo-canvas" width="400" height="400"></canvas>
+            <div id="mobile-gonogo-tap" class="mobile-tap-area">
+              <span>여기를 터치하세요!</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="test-footer-nav">
+          <div class="test-stage-name">지속주의력 및 반응제어 척도</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Test 3: Stroop Test -->
+    <section id="sec-stroop" class="lobby-container">
+      <div class="test-box glass-panel animate-fade-in">
+        <div class="test-header">
+          <div class="test-indicator">
+            <span class="current-test-label bg-purple">STAGE 3</span>
+            <span class="test-title">스트룹 색상-단어 인지간섭 검사</span>
+          </div>
+          <div class="stroop-stats">
+            <span id="stroop-counter">진행률: 0 / 24</span>
+          </div>
+        </div>
+
+        <div class="game-body-wrapper">
+          <!-- Countdown Overlay -->
+          <div id="stroop-countdown-overlay" class="countdown-overlay hidden">
+            <div id="stroop-countdown-number" class="countdown-num">3</div>
+            <p class="countdown-tip">글자의 뜻이 아닌, 실제 단어의 <b>'색상'</b>을 선택해야 합니다!</p>
+          </div>
+
+          <!-- Instructions View -->
+          <div id="stroop-instructions" class="instructions-panel">
+            <div class="rule-box">
+              <div class="example-box-row">
+                <div class="example-card">
+                  <span class="example-text text-green-value">빨강</span>
+                  <span class="arrow-indicator"><i class="fa-solid fa-arrow-right"></i></span>
+                  <span class="btn-preview-color bg-green">초록 선택 (정답)</span>
+                </div>
+                <div class="example-card">
+                  <span class="example-text text-yellow-value">파랑</span>
+                  <span class="arrow-indicator"><i class="fa-solid fa-arrow-right"></i></span>
+                  <span class="btn-preview-color bg-yellow">노랑 선택 (정답)</span>
+                </div>
+              </div>
+            </div>
+            <div class="instruction-notes">
+              <p><i class="fa-solid fa-keyboard"></i> 키보드 단축키 지원: [1] 빨강, [2] 초록, [3] 파랑, [4] 노랑</p>
+            </div>
+            <button id="btn-start-stroop" class="btn-primary-neon purple">
+              <i class="fa-solid fa-circle-play"></i> 스트룹 검사 시작하기
+            </button>
+          </div>
+
+          <!-- Active Game Screen -->
+          <div id="stroop-game-screen" class="game-screen hidden">
+            <div class="stroop-stimulus-box glass-panel">
+              <span id="stroop-word" class="stroop-word">빨강</span>
+            </div>
+
+            <!-- Choice Grid -->
+            <div class="stroop-choices-grid">
+              <button class="btn-choice-color choice-red" data-color="red">
+                <span class="btn-number">1</span> 빨강
+              </button>
+              <button class="btn-choice-color choice-green" data-color="green">
+                <span class="btn-number">2</span> 초록
+              </button>
+              <button class="btn-choice-color choice-blue" data-color="blue">
+                <span class="btn-number">3</span> 파랑
+              </button>
+              <button class="btn-choice-color choice-yellow" data-color="yellow">
+                <span class="btn-number">4</span> 노랑
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="test-footer-nav">
+          <div class="test-stage-name">선택주의력 및 인지 유연성 척도</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Scoring Loading Board -->
+    <section id="sec-loading" class="lobby-container">
+      <div class="test-box glass-panel animate-fade-in text-center">
+        <div class="loading-animation-wrapper">
+          <div class="radar-scan"></div>
+          <i class="fa-solid fa-brain-circuit big-brain-icon"></i>
+        </div>
+        <h2 class="loading-title">ADHD 인지 검사 채점 중</h2>
+        <p class="loading-desc">
+          ASRS 문항별 배점 가중치를 적용하고, Go/No-Go 지속 정밀 반응 시간 분석 및 스트룹 효과(Stroop Effect)에 의한 전두엽 억제 간섭 가중을 계산하고 있습니다...
+        </p>
+        <div class="progress-bar-container max-w-sm mx-auto">
+          <div id="scoring-progress" class="progress-bar-fill" style="width: 0%;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Diagnostic Report Details -->
+    <section id="sec-report" class="lobby-container">
+      <div class="report-wrapper animate-fade-in">
+        
+        <!-- Top Summary Panel -->
+        <div class="report-header-panel glass-panel">
+          <div class="report-title-row">
+            <div>
+              <span class="badge-report"><i class="fa-solid fa-file-medical"></i> 인지 기능 진단서</span>
+              <h1>ADHD 종합 프로필 분석 리포트</h1>
+            </div>
+            <div class="report-meta">
+              <span id="lbl-report-date">검사일시: 2026.06.25</span>
+            </div>
+          </div>
+
+          <div class="summary-result-grid">
+            <!-- Gauge Card -->
+            <div class="result-gauge-card glass-panel">
+              <h3>종합 ADHD 성향 지수</h3>
+              <div class="gauge-svg-wrapper">
+                <svg class="gauge-svg" viewBox="0 0 200 100">
+                  <path class="gauge-bg" d="M 20,90 A 80,80 0 0,1 180,90" fill="none" stroke-width="16" />
+                  <path id="gauge-fill" class="gauge-fill-cyan" d="M 20,90 A 80,80 0 0,1 180,90" fill="none" stroke-width="16" stroke-dasharray="251.2" stroke-dashoffset="251.2" />
+                </svg>
+                <div class="gauge-val-box">
+                  <span id="lbl-risk-val" class="gauge-number">48</span>
+                  <span class="gauge-unit">/ 100</span>
+                </div>
+              </div>
+              <div class="gauge-status-bar">
+                <span id="lbl-risk-status" class="status-badge bg-green">임상학적 정상 (Normal)</span>
+              </div>
+            </div>
+
+            <!-- Stats Table -->
+            <div class="result-profile-card glass-panel">
+              <h3>검사 방법별 요약 프로필</h3>
+              <div class="stats-table-wrapper">
+                <table class="report-table">
+                  <thead>
+                    <tr>
+                      <th>측정 영역</th>
+                      <th>지표 점수</th>
+                      <th>평가 상태</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="bold"><i class="fa-solid fa-clipboard-question icon-cyan"></i> ASRS 자가진단</td>
+                      <td id="td-asrs-score">28 / 72</td>
+                      <td><span id="badge-asrs-eval" class="mini-badge bg-green">주의점수 미달</span></td>
+                    </tr>
+                    <tr>
+                      <td class="bold"><i class="fa-solid fa-hand-pointer icon-magenta"></i> Go/No-Go 누락율 (부주의)</td>
+                      <td id="td-gonogo-omission">5.0% (2회)</td>
+                      <td><span id="badge-gonogo-omission" class="mini-badge bg-green">우수</span></td>
+                    </tr>
+                    <tr>
+                      <td class="bold"><i class="fa-solid fa-hand-pointer icon-magenta"></i> Go/No-Go 오반응율 (충동성)</td>
+                      <td id="td-gonogo-commission">20.0% (2회)</td>
+                      <td><span id="badge-gonogo-commission" class="mini-badge bg-yellow">주의 요망</span></td>
+                    </tr>
+                    <tr>
+                      <td class="bold"><i class="fa-solid fa-eye icon-purple"></i> 스트룹 간섭 반응차 (제어 비용)</td>
+                      <td id="td-stroop-cost">125ms</td>
+                      <td><span id="badge-stroop-eval" class="mini-badge bg-green">양호</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detailed Multi-Charts Panel -->
+        <div class="report-charts-grid">
+          <!-- Chart 1: Radar Chart (Cognitive Dimensions) -->
+          <div class="chart-container-card glass-panel">
+            <h3>4대 인지 및 조절 도메인 프로필</h3>
+            <div class="chart-canvas-wrapper radar-chart-wrapper">
+              <canvas id="chart-cognitive-profile"></canvas>
+            </div>
+            <p class="chart-desc">
+              주의력(지속성), 행동 제어(억제력), 인지 유연성(스트룹 제어), 부주의 자가인식(설문지 역산)의 백분위수 맵입니다. 넓고 둥글수록 고른 인지 조절력을 뜻합니다.
+            </p>
+          </div>
+
+          <!-- Chart 2: Stroop Bar Chart (Congruent vs Incongruent RT) -->
+          <div class="chart-container-card glass-panel">
+            <h3>스트룹 인지간섭 속도 비교</h3>
+            <div class="chart-canvas-wrapper">
+              <canvas id="chart-stroop-reaction"></canvas>
+            </div>
+            <p class="chart-desc">
+              단어의 색과 뜻이 일치하는 조건(단어 뜻대로 일치 반응)과 불일치하는 조건(의미 억제 후 실제 잉크색 반응) 간의 평균 응답 속도 차이(ms)를 시각화합니다.
+            </p>
+          </div>
+        </div>
+
+        <!-- Detailed Analysis & Wellness Recommendation -->
+        <div class="report-section-card glass-panel">
+          <div class="card-icon cyan"><i class="fa-solid fa-stethoscope"></i></div>
+          <h2>전두엽 연합 인지 통제 종합 평가</h2>
+          <div id="lbl-report-detail-text" class="report-detail-text">
+            이곳에 종합 분석 텍스트가 자동으로 작성됩니다.
+          </div>
+        </div>
+
+        <!-- Treatment & Wellness Action Roadmap -->
+        <div class="report-section-card glass-panel">
+          <div class="card-icon magenta"><i class="fa-solid fa-seedling"></i></div>
+          <h2>인지 조절력 및 집중력 개선을 위한 일상 행동 수칙</h2>
+          <div class="roadmap-grid">
+            <div class="roadmap-item">
+              <div class="step-num">01</div>
+              <h4>체계적인 포모도로 시간 관리법</h4>
+              <p>25분 집중과 5분 휴식을 알람 시계 타이머와 함께 명시적으로 분리하여 일상 업무 및 학업 중 과부하에 따른 피로와 주의산만을 방지하세요.</p>
+            </div>
+            <div class="roadmap-item">
+              <div class="step-num">02</div>
+              <h4>충동성 제어를 위한 '일단 멈춤' 시각 앵커</h4>
+              <p>즉각적인 반응이 나올 때, 2초간 숨을 깊게 들이쉬며 검지손가락을 엄지손가락으로 꾹 누르는 고유 신체 신호(Anchor)를 습관화하여 충동 회로를 무력화하십시오.</p>
+            </div>
+            <div class="roadmap-item">
+              <div class="step-num">03</div>
+              <h4>물리적인 환경 격리 및 소음 차단</h4>
+              <p>컴퓨터 화면에는 오직 실행해야 할 하나의 탭만 활성화하고, 책상 위의 스마트폰을 가방 속으로 완전히 치우며 백색 소음 또는 액티브 노이즈 캔슬링 이어폰을 이용하십시오.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Actions -->
+        <div class="report-bottom-actions">
+          <button id="btn-retry" class="btn-secondary">
+            <i class="fa-solid fa-rotate-left"></i> 테스트 다시 하기
+          </button>
+          <button id="btn-export-pdf" class="btn-primary-neon">
+            <i class="fa-solid fa-print"></i> 진단서 출력 / PDF 저장
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p class="copyright">&copy; 2026 CineAHO. All rights reserved.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

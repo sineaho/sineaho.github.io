@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAHO 관리자 대시보드 - App Status Admin</title>
+  <!-- Google Fonts Outfit & Inter & Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Glowing Orbs -->
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+
+  <div class="app-container">
+    
+    <!-- 1. Password Setup View -->
+    <div id="setup-view" class="auth-card glass-panel hidden">
+      <div class="auth-header">
+        <i class="fa-solid fa-user-shield auth-icon text-orange"></i>
+        <h2>관리자 비밀번호 설정</h2>
+        <p>최초 접속입니다. 시스템 보안을 위한 관리자 비밀번호를 설정해 주세요.</p>
+      </div>
+      <form id="setup-form">
+        <div class="input-group">
+          <label for="setup-password">새 비밀번호</label>
+          <div class="input-with-icon">
+            <i class="fa-solid fa-key"></i>
+            <input type="password" id="setup-password" placeholder="비밀번호 입력 (최소 4자)" required minlength="4">
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="setup-password-confirm">비밀번호 확인</label>
+          <div class="input-with-icon">
+            <i class="fa-solid fa-circle-check"></i>
+            <input type="password" id="setup-password-confirm" placeholder="비밀번호 재입력" required minlength="4">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">
+          <i class="fa-solid fa-save"></i> 설정 완료 및 로그인
+        </button>
+      </form>
+    </div>
+
+    <!-- 2. Login View -->
+    <div id="login-view" class="auth-card glass-panel hidden">
+      <div class="auth-header">
+        <i class="fa-solid fa-lock auth-icon text-cyan"></i>
+        <h2>관리자 인증</h2>
+        <p>대시보드에 접근하려면 비밀번호를 입력해 주세요.</p>
+      </div>
+      <form id="login-form">
+        <div class="input-group">
+          <label for="login-password">비밀번호</label>
+          <div class="input-with-icon">
+            <i class="fa-solid fa-key"></i>
+            <input type="password" id="login-password" placeholder="관리자 비밀번호 입력" required>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">
+          <i class="fa-solid fa-unlock"></i> 로그인
+        </button>
+      </form>
+    </div>
+
+    <!-- 3. Admin Dashboard View -->
+    <div id="dashboard-view" class="dashboard-panel glass-panel hidden">
+      <header class="dashboard-header">
+        <div class="header-left">
+          <a href="../index.html" class="back-btn" title="CineAHO 홈으로">
+            <i class="fa-solid fa-chevron-left"></i>
+          </a>
+          <div class="app-logo">
+            <i class="fa-solid fa-sliders logo-icon text-orange"></i>
+            <h1 class="logo-text">앱 상태 관리자 <span class="engine-sub">CineAHO Admin</span></h1>
+          </div>
+        </div>
+        <div class="header-right">
+          <button id="btn-open-pw-modal" class="btn-action">
+            <i class="fa-solid fa-key"></i>
+            <span>비밀번호 변경</span>
+          </button>
+          <button id="btn-logout" class="btn-action logout-btn">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>로그아웃</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Dashboard Controls -->
+      <div class="dashboard-controls">
+        <div class="search-bar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="app-search" placeholder="애플리케이션 이름 또는 키워드 검색...">
+        </div>
+        <div class="status-summary">
+          <span>전체 앱: <strong id="total-apps-count">0</strong>개</span>
+          <span class="divider">|</span>
+          <span class="text-green">액티브: <strong id="active-apps-count">0</strong></span>
+          <span class="text-red">비액티브: <strong id="inactive-apps-count">0</strong></span>
+          <span class="text-yellow">준비중: <strong id="soon-apps-count">0</strong></span>
+        </div>
+      </div>
+
+      <!-- App Table / List Container -->
+      <div class="app-list-container">
+        <table class="app-table">
+          <thead>
+            <tr>
+              <th width="30%">애플리케이션</th>
+              <th width="15%">아이콘</th>
+              <th width="20%">카테고리</th>
+              <th width="35%">상태 설정</th>
+            </tr>
+          </thead>
+          <tbody id="app-list-body">
+            <!-- Dynamic Content -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Floating Footer Control -->
+      <div class="dashboard-footer-actions">
+        <p class="status-tip"><i class="fa-solid fa-circle-info"></i> 상태 변경 후 반드시 아래 저장 버튼을 눌러주셔야 반영됩니다.</p>
+        <button id="btn-save-statuses" class="btn btn-save">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          <span>설정 저장하기</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Change Password Modal -->
+  <div id="pw-modal" class="modal-overlay hidden">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-key text-orange"></i> 비밀번호 변경</h3>
+        <button id="btn-close-pw-modal" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="change-pw-form">
+        <div class="input-group">
+          <label for="current-password">현재 비밀번호</label>
+          <div class="input-with-icon">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="current-password" placeholder="현재 비밀번호 입력" required>
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="new-password">새 비밀번호</label>
+          <div class="input-with-icon">
+            <i class="fa-solid fa-key"></i>
+            <input type="password" id="new-password" placeholder="새 비밀번호 입력 (최소 4자)" required minlength="4">
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="new-password-confirm">새 비밀번호 확인</label>
+          <div class="input-with-icon">
+            <i class="fa-solid fa-circle-check"></i>
+            <input type="password" id="new-password-confirm" placeholder="새 비밀번호 재입력" required minlength="4">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btn-cancel-pw" class="btn btn-secondary">취소</button>
+          <button type="submit" class="btn btn-primary">비밀번호 업데이트</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast system -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

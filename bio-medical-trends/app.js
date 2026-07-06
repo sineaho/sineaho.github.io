@@ -322,6 +322,30 @@ let selectedYear = 'all';
 let currentSortColumn = 'id';
 let currentSortAsc = true;
 
+// Dynamically populate the year filter select options based on dataset
+function populateYearFilter() {
+  const filterYear = document.getElementById('filter-year');
+  if (!filterYear) return;
+
+  const uniqueYears = [...new Set(papersDataset.map(p => p.year))];
+  uniqueYears.sort((a, b) => b - a);
+
+  let html = '<option value="all">전체 연도</option>';
+  uniqueYears.forEach(yr => {
+    html += `<option value="${yr}">${yr}년</option>`;
+  });
+
+  const prevVal = filterYear.value;
+  filterYear.innerHTML = html;
+  
+  if (uniqueYears.includes(parseInt(prevVal, 10)) || prevVal === 'all') {
+    filterYear.value = prevVal;
+  } else {
+    filterYear.value = 'all';
+    selectedYear = 'all';
+  }
+}
+
 // 2. Initialize Charts, Navigation, Theme & Stats
 async function initAll() {
   initTheme();
@@ -330,6 +354,7 @@ async function initAll() {
   // Try to load fresh data from backend. If it fails, fallback to local storage or static array
   const loadSuccess = await fetchBioTrends(false);
   
+  populateYearFilter();
   initDashboardCharts();
   initExplorerTable();
   initSimulator();
@@ -348,6 +373,7 @@ async function initAll() {
       const success = await fetchBioTrends(true);
       
       if (success) {
+        populateYearFilter();
         initDashboardCharts();
         initExplorerTable();
         initSimulator();
@@ -643,7 +669,7 @@ function initDashboardCharts() {
   if (ctxLine) {
     if (lineChart) lineChart.destroy();
 
-    const chartYears = Object.keys(years).sort();
+    const chartYears = Object.keys(years).map(Number).sort((a, b) => a - b).map(String);
     const chartAvgCitations = chartYears.map(yr => {
       const item = years[yr];
       return item.count > 0 ? Math.round(item.sum / item.count) : 0;

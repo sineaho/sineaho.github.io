@@ -89,29 +89,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function fetchAndParseRSS(feedSource) {
     let xmlText = "";
-    let localFetchError = null;
 
-    try {
-      // 1. Try local server proxy with cache-buster parameter
-      const localProxyUrl = `/api/rss-proxy?url=${encodeURIComponent(feedSource.url)}&_t=${Date.now()}`;
-      const response = await fetch(localProxyUrl);
-      if (!response.ok) {
-        throw new Error(`Local proxy response status: ${response.status}`);
+    // Try multiple fetch strategies in order
+    const strategies = [
+      // 1. Local server proxy (best option)
+      async () => {
+        const proxyUrl = `/api/rss-proxy?url=${encodeURIComponent(feedSource.url)}&_t=${Date.now()}`;
+        const res = await fetch(proxyUrl);
+        if (!res.ok) throw new Error(`Local proxy status: ${res.status}`);
+        return await res.text();
+      },
+      // 2. Fallback: corsproxy.io public CORS proxy
+      async () => {
+        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(feedSource.url)}`;
+        const res = await fetch(proxyUrl);
+        if (!res.ok) throw new Error(`corsproxy.io status: ${res.status}`);
+        return await res.text();
+      },
+      // 3. Fallback: api.allorigins.win public CORS proxy
+      async () => {
+        const cacheBuster = feedSource.url + (feedSource.url.includes('?') ? '&' : '?') + `_t=${Date.now()}`;
+        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(cacheBuster)}`;
+        const res = await fetch(proxyUrl);
+        if (!res.ok) throw new Error(`allorigins status: ${res.status}`);
+        return await res.text();
       }
-      xmlText = await response.text();
-    } catch (err) {
-      localFetchError = err;
-      console.warn(`Local proxy failed for ${feedSource.name}, falling back to public CORS proxy:`, err.message);
-      
-      // 2. Fallback to public CORS proxy (api.allorigins.win) with cache-busting on the target URL
-      const targetUrlWithCacheBuster = feedSource.url + (feedSource.url.includes('?') ? '&' : '?') + `_t=${Date.now()}`;
-      const publicProxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrlWithCacheBuster)}`;
-      
-      const response = await fetch(publicProxyUrl);
-      if (!response.ok) {
-        throw new Error(`Fallback proxy failed: ${response.statusText} (local error: ${localFetchError.message})`);
+    ];
+
+    for (let i = 0; i < strategies.length; i++) {
+      try {
+        xmlText = await strategies[i]();
+        break; // Success, stop trying
+      } catch (err) {
+        console.warn(`[RSS] Strategy ${i + 1} failed for ${feedSource.name}:`, err.message);
+        if (i === strategies.length - 1) {
+          // All strategies failed
+          throw new Error(`All fetch strategies failed for ${feedSource.name}`);
+        }
       }
-      xmlText = await response.text();
     }
 
     const parser = new DOMParser();

@@ -7,33 +7,33 @@
       "uniqueToday": 0
     },
     "main": {
-      "total": 839549,
-      "today": 3,
+      "total": 839696,
+      "today": 9,
       "uniqueTotal": 326401,
       "uniqueToday": 1
     },
     "saju": {
-      "total": 1,
+      "total": 2,
       "today": 0,
-      "uniqueTotal": 1,
+      "uniqueTotal": 2,
       "uniqueToday": 0
     },
     "youtube-hub": {
-      "total": 52,
+      "total": 65,
       "today": 0,
       "uniqueTotal": 2,
       "uniqueToday": 0
     },
     "naver-seo": {
-      "total": 4,
-      "today": 0,
-      "uniqueTotal": 1,
-      "uniqueToday": 0
+      "total": 10,
+      "today": 1,
+      "uniqueTotal": 2,
+      "uniqueToday": 1
     },
     "ai-rss-news": {
-      "total": 17,
+      "total": 28,
       "today": 0,
-      "uniqueTotal": 6,
+      "uniqueTotal": 8,
       "uniqueToday": 0
     },
     "emoticon-maker": {
@@ -49,13 +49,13 @@
       "uniqueToday": 0
     },
     "kosis": {
-      "total": 1,
+      "total": 9,
       "today": 0,
-      "uniqueTotal": 1,
+      "uniqueTotal": 2,
       "uniqueToday": 0
     },
     "tetris": {
-      "total": 1,
+      "total": 2,
       "today": 0,
       "uniqueTotal": 1,
       "uniqueToday": 0
@@ -73,7 +73,7 @@
       "uniqueToday": 0
     },
     "marble": {
-      "total": 1,
+      "total": 2,
       "today": 0,
       "uniqueTotal": 1,
       "uniqueToday": 0
@@ -97,7 +97,7 @@
       "uniqueToday": 0
     },
     "bio-medical-trends": {
-      "total": 25,
+      "total": 31,
       "today": 0,
       "uniqueTotal": 2,
       "uniqueToday": 0
@@ -145,7 +145,7 @@
       "uniqueToday": 0
     },
     "horse-racing": {
-      "total": 3,
+      "total": 4,
       "today": 0,
       "uniqueTotal": 2,
       "uniqueToday": 0
@@ -217,7 +217,7 @@
       "uniqueToday": 0
     },
     "quant-simulator": {
-      "total": 3,
+      "total": 4,
       "today": 0,
       "uniqueTotal": 2,
       "uniqueToday": 0
@@ -241,34 +241,34 @@
       "uniqueToday": 0
     },
     "youtube-search": {
-      "total": 10,
+      "total": 13,
       "today": 0,
       "uniqueTotal": 2,
       "uniqueToday": 0
     },
     "blackjack": {
-      "total": 5,
+      "total": 7,
       "today": 0,
       "uniqueTotal": 2,
       "uniqueToday": 0
     },
     "youtube-miner": {
-      "total": 9,
+      "total": 12,
       "today": 0,
       "uniqueTotal": 2,
       "uniqueToday": 0
     },
     "vampire-survivors": {
-      "total": 4,
+      "total": 5,
       "today": 0,
       "uniqueTotal": 2,
       "uniqueToday": 0
     },
     "ai-video-generator": {
-      "total": 6,
-      "today": 2,
+      "total": 7,
+      "today": 0,
       "uniqueTotal": 2,
-      "uniqueToday": 1
+      "uniqueToday": 0
     },
     "events": {
       "total": 1,
@@ -277,30 +277,111 @@
       "uniqueToday": 0
     },
     "stock-analyzer": {
-      "total": 3,
-      "today": 1,
+      "total": 11,
+      "today": 0,
       "uniqueTotal": 2,
-      "uniqueToday": 1
+      "uniqueToday": 0
     },
     "shopping-analyzer": {
+      "total": 12,
+      "today": 0,
+      "uniqueTotal": 2,
+      "uniqueToday": 0
+    },
+    "tistory-poster": {
       "total": 3,
-      "today": 1,
+      "today": 0,
+      "uniqueTotal": 2,
+      "uniqueToday": 0
+    },
+    "wordpress-poster": {
+      "total": 2,
+      "today": 0,
+      "uniqueTotal": 2,
+      "uniqueToday": 0
+    },
+    "quoridor": {
+      "total": 18,
+      "today": 0,
+      "uniqueTotal": 2,
+      "uniqueToday": 0
+    },
+    "ludus-coriovalli": {
+      "total": 31,
+      "today": 0,
+      "uniqueTotal": 2,
+      "uniqueToday": 0
+    },
+    "video-extractor": {
+      "total": 9,
+      "today": 0,
+      "uniqueTotal": 5,
+      "uniqueToday": 0
+    },
+    "naver-blog-evaluator": {
+      "total": 8,
+      "today": 0,
+      "uniqueTotal": 2,
+      "uniqueToday": 0
+    },
+    "k-wais-test": {
+      "total": 3,
+      "today": 0,
+      "uniqueTotal": 2,
+      "uniqueToday": 0
+    },
+    "jw-downloader": {
+      "total": 2,
+      "today": 0,
+      "uniqueTotal": 2,
+      "uniqueToday": 0
+    },
+    "admin": {
+      "total": 11,
+      "today": 0,
+      "uniqueTotal": 2,
+      "uniqueToday": 0
+    },
+    "pinball-3d": {
+      "total": 27,
+      "today": 0,
+      "uniqueTotal": 2,
+      "uniqueToday": 0
+    },
+    "tarot": {
+      "total": 1,
+      "today": 0,
+      "uniqueTotal": 1,
+      "uniqueToday": 0
+    },
+    "adhd-test": {
+      "total": 3,
+      "today": 0,
+      "uniqueTotal": 2,
+      "uniqueToday": 0
+    },
+    "catan-3d": {
+      "total": 39,
+      "today": 0,
+      "uniqueTotal": 3,
+      "uniqueToday": 0
+    },
+    "youtube-blog": {
+      "total": 4,
+      "today": 4,
       "uniqueTotal": 1,
       "uniqueToday": 1
     }
   },
-  "lastResetDate": "2026-06-12",
+  "lastResetDate": "2026-07-07",
   "todayIPs": {
     "main": [
       "::1"
     ],
-    "stock-analyzer": [
+    "naver-seo": [
       "::1"
     ],
-    "ai-video-generator": [
-      "::1"
-    ],
-    "shopping-analyzer": [
+    "youtube-blog": [
       "::1"
     ]
   }

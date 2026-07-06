@@ -3,17 +3,17 @@
 const defaultRSSSources = [
   {
     id: "source-1",
-    name: "GeekNews AI",
-    url: "https://news.hada.io/rss",
+    name: "TechCrunch AI",
+    url: "https://techcrunch.com/category/artificial-intelligence/feed/",
     column: 1,
-    category: "코딩·도구/AI"
+    category: "일반/AI"
   },
   {
     id: "source-2",
-    name: "디지털투데이 IT·AI",
-    url: "http://www.digitaltoday.co.kr/rss/all.xml",
+    name: "Ars Technica AI",
+    url: "https://feeds.arstechnica.com/arstechnica/technology-lab",
     column: 1,
-    category: "일반/AI"
+    category: "코딩·도구/AI"
   },
   {
     id: "source-3",

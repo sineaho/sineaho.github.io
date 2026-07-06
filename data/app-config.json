@@ -1,0 +1,14 @@
+{
+  "passwordHash": "4ce062d3698d349e891f5553aab0e7a7b65ad6631b6380ab26932a0ec5d0074cee4bd15e16061092e1210e7fecad44120724f89c2ead198c962e9c5907035f7e",
+  "salt": "901b6ed171986ade2b36fc8ad410bc7c",
+  "appStatuses": {
+    "blackjack": "active",
+    "sudoku": "coming-soon",
+    "pinball-3d": "inactive",
+    "jw-downloader": "coming-soon",
+    "galaga": "coming-soon",
+    "assembly": "coming-soon",
+    "wordpress-poster": "coming-soon",
+    "tistory-poster": "coming-soon"
+  }
+}

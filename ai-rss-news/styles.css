@@ -125,6 +125,26 @@ body {
   outline: none;
 }
 
+.search-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  min-width: 180px;
+  transition: all 0.2s;
+}
+
+.search-input-wrap:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.15);
+}
+
+.search-input-wrap #search-input {
+  padding: 8px 10px 8px 32px;
+}
+
 .subtext-mute {
   color: var(--text-muted);
   font-size: 11px;

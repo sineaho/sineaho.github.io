@@ -1,964 +1,1193 @@
-/* =============================================================
-   BlackJack 3D – Three.js Casino Table + Game Logic
-   ============================================================= */
+/* ==========================================================================
+   CineAHO 3D Blackjack Sub-App - Game Engine & Sound Synthesizer
+   ========================================================================== */
 
-(function () {
-  'use strict';
+// --- Card Data definition ---
+const SUITS = [
+    { name: 'spades', symbol: '♠', isRed: false },
+    { name: 'hearts', symbol: '♥', isRed: true },
+    { name: 'diamonds', symbol: '♦', isRed: true },
+    { name: 'clubs', symbol: '♣', isRed: false }
+];
 
-  // ── Configuration ──
-  const CARD_WIDTH = 1.4;
-  const CARD_HEIGHT = 2.0;
-  const CARD_DEPTH = 0.04;
-  const TABLE_RADIUS = 8;
-  const DEAL_DURATION = 400; // ms per card animation
-  const SUITS = ['♠', '♥', '♦', '♣'];
-  const SUIT_COLORS = { '♠': '#111827', '♥': '#e11d48', '♦': '#2563eb', '♣': '#059669' };
-  const DEALER_STAND = 17;
-  const TARGET = 21;
+const VALUES = [
+    { name: 'A', value: 11 },
+    { name: '2', value: 2 },
+    { name: '3', value: 3 },
+    { name: '4', value: 4 },
+    { name: '5', value: 5 },
+    { name: '6', value: 6 },
+    { name: '7', value: 7 },
+    { name: '8', value: 8 },
+    { name: '9', value: 9 },
+    { name: '10', value: 10 },
+    { name: 'J', value: 10 },
+    { name: 'Q', value: 10 },
+    { name: 'K', value: 10 }
+];
 
-  // ── Game State ──
-  let playerHand = [];
-  let dealerHand = [];
-  let phase = 'betting'; // betting | dealing | player | dealer | result
-  let chips = 1000;
-  let currentBet = 50;
-  let stats = { wins: 0, losses: 0, ties: 0, streak: 0 };
-
-  // ── Three.js Globals ──
-  let scene, camera, renderer, controls;
-  let cardMeshes = { player: [], dealer: [] };
-  let deckMesh;
-  let tableGroup;
-  let animationQueue = [];
-  let isAnimating = false;
-
-  // ── DOM References ──
-  const container = document.getElementById('three-canvas-container');
-  const loadingOverlay = document.getElementById('loading-overlay');
-  const dealerTotalHud = document.getElementById('dealer-total-hud');
-  const playerTotalHud = document.getElementById('player-total-hud');
-  const resultBanner = document.getElementById('result-banner');
-  const chipCountEl = document.getElementById('chip-count');
-  const currentBetEl = document.getElementById('current-bet-value');
-  const btnDeal = document.getElementById('btn-deal');
-  const btnHit = document.getElementById('btn-hit');
-  const btnStand = document.getElementById('btn-stand');
-  const btnNewGame = document.getElementById('btn-new-game');
-  const betChips = document.querySelectorAll('.bet-chip');
-
-  // Stats DOM
-  const statWins = document.getElementById('stat-wins');
-  const statLosses = document.getElementById('stat-losses');
-  const statTies = document.getElementById('stat-ties');
-  const statStreak = document.getElementById('stat-streak');
-
-  // Camera buttons
-  const btnCamDefault = document.getElementById('btn-cam-default');
-  const btnCamOverhead = document.getElementById('btn-cam-overhead');
-  const btnCamClose = document.getElementById('btn-cam-close');
-
-  // ══════════════════════════════════════════════
-  //  THREE.JS SCENE SETUP
-  // ══════════════════════════════════════════════
-  function initThree() {
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0a14);
-    scene.fog = new THREE.Fog(0x0a0a14, 20, 50);
-
-    // Camera
-    camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
-    camera.position.set(0, 8, 7.5);
-    camera.lookAt(0, 0, 0.5);
-
-    // Renderer
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.2;
-    container.appendChild(renderer.domElement);
-
-    // OrbitControls
-    controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.08;
-    controls.minDistance = 5;
-    controls.maxDistance = 25;
-    controls.maxPolarAngle = Math.PI / 2.2;
-    controls.target.set(0, 0, 0);
-
-    // Lighting
-    setupLights();
-
-    // Build Scene
-    buildCasinoTable();
-    buildDeck();
-
-    // Resize Handler
-    window.addEventListener('resize', onResize);
-
-    // Hide loading
-    setTimeout(() => {
-      loadingOverlay.classList.add('hidden');
-    }, 800);
-
-    // Render Loop
-    animate();
-  }
-
-  function setupLights() {
-    // Ambient
-    const ambient = new THREE.AmbientLight(0xffffff, 0.45);
-    scene.add(ambient);
-
-    // Main overhead spot
-    const mainLight = new THREE.SpotLight(0xffeedd, 1.2, 30, Math.PI / 4, 0.5, 1);
-    mainLight.position.set(0, 15, 0);
-    mainLight.castShadow = true;
-    mainLight.shadow.mapSize.set(2048, 2048);
-    mainLight.shadow.camera.near = 1;
-    mainLight.shadow.camera.far = 25;
-    scene.add(mainLight);
-    scene.add(mainLight.target);
-
-    // Dedicated front light for card clarity
-    const cardLight = new THREE.DirectionalLight(0xffffff, 0.85);
-    cardLight.position.set(0, 10, 10);
-    cardLight.castShadow = true;
-    cardLight.shadow.mapSize.set(1024, 1024);
-    scene.add(cardLight);
-
-    // Accent warm point lights
-    const warmLeft = new THREE.PointLight(0xf59e0b, 0.25, 20);
-    warmLeft.position.set(-6, 6, -3);
-    scene.add(warmLeft);
-
-    const warmRight = new THREE.PointLight(0xf59e0b, 0.25, 20);
-    warmRight.position.set(6, 6, -3);
-    scene.add(warmRight);
-
-    // Cool fill
-    const coolFill = new THREE.PointLight(0x6366f1, 0.15, 20);
-    coolFill.position.set(0, 8, 8);
-    scene.add(coolFill);
-  }
-
-  function buildCasinoTable() {
-    tableGroup = new THREE.Group();
-
-    // ── Table Surface (semi-circle / D-shape blackjack table) ──
-    const tableShape = new THREE.Shape();
-    // Straight back edge
-    tableShape.moveTo(-TABLE_RADIUS * 0.8, -TABLE_RADIUS * 0.35);
-    tableShape.lineTo(TABLE_RADIUS * 0.8, -TABLE_RADIUS * 0.35);
-    // Curved front
-    tableShape.absarc(0, -TABLE_RADIUS * 0.35, TABLE_RADIUS * 0.8, 0, Math.PI, false);
-
-    const tableGeo = new THREE.ExtrudeGeometry(tableShape, { depth: 0.3, bevelEnabled: true, bevelSize: 0.08, bevelThickness: 0.05, bevelSegments: 3 });
-    const tableMat = new THREE.MeshStandardMaterial({
-      color: 0x0d5e2e,
-      roughness: 0.85,
-      metalness: 0.05,
-    });
-    const tableMesh = new THREE.Mesh(tableGeo, tableMat);
-    tableMesh.rotation.x = -Math.PI / 2;
-    tableMesh.position.y = -0.15;
-    tableMesh.receiveShadow = true;
-    tableGroup.add(tableMesh);
-
-    // ── Table Edge (rim) ──
-    const rimShape = new THREE.Shape();
-    rimShape.moveTo(-TABLE_RADIUS * 0.85, -TABLE_RADIUS * 0.35);
-    rimShape.lineTo(TABLE_RADIUS * 0.85, -TABLE_RADIUS * 0.35);
-    rimShape.absarc(0, -TABLE_RADIUS * 0.35, TABLE_RADIUS * 0.85, 0, Math.PI, false);
-
-    const innerShape = new THREE.Shape();
-    innerShape.moveTo(-TABLE_RADIUS * 0.78, -TABLE_RADIUS * 0.35);
-    innerShape.lineTo(TABLE_RADIUS * 0.78, -TABLE_RADIUS * 0.35);
-    innerShape.absarc(0, -TABLE_RADIUS * 0.35, TABLE_RADIUS * 0.78, 0, Math.PI, false);
-
-    rimShape.holes.push(innerShape);
-    const rimGeo = new THREE.ExtrudeGeometry(rimShape, { depth: 0.6, bevelEnabled: true, bevelSize: 0.05, bevelThickness: 0.03 });
-    const rimMat = new THREE.MeshStandardMaterial({
-      color: 0x3d1a0a,
-      roughness: 0.3,
-      metalness: 0.6,
-    });
-    const rimMesh = new THREE.Mesh(rimGeo, rimMat);
-    rimMesh.rotation.x = -Math.PI / 2;
-    rimMesh.position.y = -0.3;
-    rimMesh.receiveShadow = true;
-    rimMesh.castShadow = true;
-    tableGroup.add(rimMesh);
-
-    // ── Felt Lines ──
-    const lineMat = new THREE.MeshBasicMaterial({ color: 0x1a7a44, transparent: true, opacity: 0.5 });
-
-    // Dealer line arc
-    const arcCurve = new THREE.EllipseCurve(0, -TABLE_RADIUS * 0.35, TABLE_RADIUS * 0.55, TABLE_RADIUS * 0.55, 0, Math.PI, false);
-    const arcPoints = arcCurve.getPoints(64);
-    const arcGeo = new THREE.BufferGeometry().setFromPoints(arcPoints);
-    const arcLine = new THREE.Line(arcGeo, new THREE.LineBasicMaterial({ color: 0x1a7a44, transparent: true, opacity: 0.4 }));
-    arcLine.rotation.x = -Math.PI / 2;
-    arcLine.position.y = 0.01;
-    tableGroup.add(arcLine);
-
-    // Table legs (4 pillars)
-    const legGeo = new THREE.CylinderGeometry(0.2, 0.25, 2.5, 12);
-    const legMat = new THREE.MeshStandardMaterial({ color: 0x2a1008, roughness: 0.4, metalness: 0.5 });
-    const legPositions = [[-4, -1.4, -2], [4, -1.4, -2], [-3, -1.4, 3], [3, -1.4, 3]];
-    legPositions.forEach(pos => {
-      const leg = new THREE.Mesh(legGeo, legMat);
-      leg.position.set(...pos);
-      leg.castShadow = true;
-      tableGroup.add(leg);
-    });
-
-    // Floor
-    const floorGeo = new THREE.PlaneGeometry(30, 30);
-    const floorMat = new THREE.MeshStandardMaterial({ color: 0x0a0a14, roughness: 0.95, metalness: 0 });
-    const floor = new THREE.Mesh(floorGeo, floorMat);
-    floor.rotation.x = -Math.PI / 2;
-    floor.position.y = -2.7;
-    floor.receiveShadow = true;
-    tableGroup.add(floor);
-
-    scene.add(tableGroup);
-  }
-
-  function buildDeck() {
-    // Stack of cards on the right side of table
-    const deckGroup = new THREE.Group();
-    for (let i = 0; i < 8; i++) {
-      const cardGeo = new THREE.BoxGeometry(CARD_WIDTH, CARD_DEPTH, CARD_HEIGHT);
-      const cardMat = new THREE.MeshStandardMaterial({
-        color: 0x1a237e,
-        roughness: 0.5,
-        metalness: 0.3,
-      });
-      const card = new THREE.Mesh(cardGeo, cardMat);
-      card.position.y = i * CARD_DEPTH;
-      card.castShadow = true;
-      deckGroup.add(card);
+// --- Web Audio Synth Controller ---
+class SoundController {
+    constructor() {
+        this.ctx = null;
     }
-    deckGroup.position.set(4.5, 0.1, -1.5);
-    deckMesh = deckGroup;
-    scene.add(deckGroup);
-  }
 
-  // ══════════════════════════════════════════════
-  //  CARD MESH CREATION
-  // ══════════════════════════════════════════════
-  function createCardMesh(card, faceDown = false) {
-    const group = new THREE.Group();
-
-    // Card body
-    const geo = new THREE.BoxGeometry(CARD_WIDTH, CARD_DEPTH, CARD_HEIGHT);
-
-    // Multi-material: top=face, bottom=back, sides=edge
-    const faceMat = new THREE.MeshStandardMaterial({
-      color: faceDown ? 0x1a237e : 0xf5f5f0,
-      roughness: 0.4,
-      metalness: 0.1,
-    });
-    const backMat = new THREE.MeshStandardMaterial({
-      color: 0x1a237e,
-      roughness: 0.4,
-      metalness: 0.3,
-    });
-    const edgeMat = new THREE.MeshStandardMaterial({
-      color: 0xcccccc,
-      roughness: 0.6,
-      metalness: 0.1,
-    });
-
-    // BoxGeometry faces: +x, -x, +y (top), -y (bottom), +z, -z
-    const materials = [edgeMat, edgeMat, faceMat, backMat, edgeMat, edgeMat];
-    const mesh = new THREE.Mesh(geo, materials);
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-    group.add(mesh);
-
-    // Card face decorations (only if face-up)
-    if (!faceDown) {
-      // Value text
-      const canvas = document.createElement('canvas');
-      canvas.width = 512;
-      canvas.height = 768;
-      const ctx = canvas.getContext('2d');
-
-      // White background
-      ctx.fillStyle = '#f5f5f0';
-      ctx.fillRect(0, 0, 512, 768);
-
-      // Border
-      ctx.strokeStyle = '#cccccc';
-      ctx.lineWidth = 8;
-      ctx.roundRect ? ctx.roundRect(16, 16, 480, 736, 24) : ctx.strokeRect(16, 16, 480, 736);
-      ctx.stroke();
-
-      // Suit color
-      const suitColor = SUIT_COLORS[card.suit] || '#333';
-
-      // Top-left value + suit
-      ctx.fillStyle = suitColor;
-      ctx.font = 'bold 88px Outfit, Arial, sans-serif';
-      ctx.textAlign = 'left';
-      ctx.fillText(card.value.toString(), 40, 100);
-      ctx.font = '64px Arial, sans-serif';
-      ctx.fillText(card.suit, 44, 170);
-
-      // Center value large
-      ctx.font = 'bold 240px Outfit, Arial, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(card.value.toString(), 256, 400);
-
-      // Center suit
-      ctx.font = '120px Arial, sans-serif';
-      ctx.fillText(card.suit, 256, 540);
-
-      // Bottom-right value + suit (rotated)
-      ctx.save();
-      ctx.translate(472, 668);
-      ctx.rotate(Math.PI);
-      ctx.font = 'bold 88px Outfit, Arial, sans-serif';
-      ctx.textAlign = 'left';
-      ctx.fillText(card.value.toString(), 0, 0);
-      ctx.font = '64px Arial, sans-serif';
-      ctx.fillText(card.suit, 4, 70);
-      ctx.restore();
-
-      const texture = new THREE.CanvasTexture(canvas);
-      texture.anisotropy = 8;
-
-      // Apply texture to top face
-      const texMat = new THREE.MeshStandardMaterial({
-        map: texture,
-        roughness: 0.35,
-        metalness: 0.05,
-      });
-      mesh.material[2] = texMat; // top face (+y)
-    } else {
-      // Card back pattern
-      const canvas = document.createElement('canvas');
-      canvas.width = 512;
-      canvas.height = 768;
-      const ctx = canvas.getContext('2d');
-
-      // Dark blue background
-      const grad = ctx.createLinearGradient(0, 0, 512, 768);
-      grad.addColorStop(0, '#1a237e');
-      grad.addColorStop(0.5, '#283593');
-      grad.addColorStop(1, '#1a237e');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 512, 768);
-
-      // Diamond pattern
-      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-      ctx.lineWidth = 2;
-      for (let i = 0; i < 20; i++) {
-        for (let j = 0; j < 30; j++) {
-          const cx = i * 52 + (j % 2) * 26;
-          const cy = j * 26;
-          ctx.beginPath();
-          ctx.moveTo(cx, cy - 16);
-          ctx.lineTo(cx + 16, cy);
-          ctx.lineTo(cx, cy + 16);
-          ctx.lineTo(cx - 16, cy);
-          ctx.closePath();
-          ctx.stroke();
+    init() {
+        if (!this.ctx) {
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
         }
-      }
-
-      // Center emblem
-      ctx.fillStyle = 'rgba(245,158,11,0.25)';
-      ctx.font = 'bold 120px serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('♠', 256, 410);
-
-      // Border
-      ctx.strokeStyle = 'rgba(245,158,11,0.4)';
-      ctx.lineWidth = 12;
-      ctx.strokeRect(24, 24, 464, 720);
-      ctx.strokeStyle = 'rgba(245,158,11,0.2)';
-      ctx.lineWidth = 4;
-      ctx.strokeRect(40, 40, 432, 688);
-
-      const texture = new THREE.CanvasTexture(canvas);
-      texture.anisotropy = 8;
-
-      const texMat = new THREE.MeshStandardMaterial({
-        map: texture,
-        roughness: 0.4,
-        metalness: 0.3,
-      });
-      mesh.material[2] = texMat; // top face
+        if (this.ctx.state === 'suspended') {
+            this.ctx.resume();
+        }
     }
 
-    group.userData = { card, faceDown };
-    return group;
-  }
+    playCardDraw() {
+        this.init();
+        const ctx = this.ctx;
+        const now = ctx.currentTime;
+        
+        // Friction slide noise sweep
+        const bufferSize = ctx.sampleRate * 0.16;
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+            data[i] = Math.random() * 2 - 1;
+        }
 
-  // ══════════════════════════════════════════════
-  //  CARD ANIMATION SYSTEM
-  // ══════════════════════════════════════════════
-  function queueAnimation(fn) {
-    animationQueue.push(fn);
-    if (!isAnimating) processQueue();
-  }
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
 
-  function processQueue() {
-    if (animationQueue.length === 0) {
-      isAnimating = false;
-      return;
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(1100, now);
+        filter.frequency.exponentialRampToValueAtTime(160, now + 0.16);
+        filter.Q.setValueAtTime(4, now);
+
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.05, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        noise.start(now);
     }
-    isAnimating = true;
-    const fn = animationQueue.shift();
-    fn(() => processQueue());
-  }
 
-  function animateCardDeal(cardMesh, targetPos, targetRotation, duration, onComplete) {
-    const startPos = { x: deckMesh.position.x, y: deckMesh.position.y + 0.5, z: deckMesh.position.z };
-    const startRot = { x: 0, y: 0, z: 0 };
-    const startTime = performance.now();
+    playChipClick() {
+        this.init();
+        const ctx = this.ctx;
+        const now = ctx.currentTime;
 
-    // Arc height
-    const arcHeight = 3;
+        // Double high sine wave clinks
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const gain = ctx.createGain();
 
-    function update() {
-      const elapsed = performance.now() - startTime;
-      let t = Math.min(elapsed / duration, 1);
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(2300, now);
+        osc1.frequency.exponentialRampToValueAtTime(1600, now + 0.04);
 
-      // Ease out cubic
-      t = 1 - Math.pow(1 - t, 3);
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(3300, now);
+        osc2.frequency.exponentialRampToValueAtTime(2100, now + 0.05);
 
-      // Position with arc
-      cardMesh.position.x = startPos.x + (targetPos.x - startPos.x) * t;
-      cardMesh.position.z = startPos.z + (targetPos.z - startPos.z) * t;
-      // Y with parabolic arc
-      const arcT = 4 * t * (1 - t); // peaks at t=0.5
-      cardMesh.position.y = startPos.y + (targetPos.y - startPos.y) * t + arcHeight * arcT;
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
 
-      // Rotation
-      cardMesh.rotation.x = startRot.x + (targetRotation.x - startRot.x) * t;
-      cardMesh.rotation.y = startRot.y + (targetRotation.y - startRot.y) * t + Math.PI * 2 * (1 - t) * 0.3;
-      cardMesh.rotation.z = startRot.z + (targetRotation.z - startRot.z) * t;
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(ctx.destination);
 
-      if (t < 1) {
-        requestAnimationFrame(update);
-      } else {
-        cardMesh.position.set(targetPos.x, targetPos.y, targetPos.z);
-        cardMesh.rotation.set(targetRotation.x, targetRotation.y, targetRotation.z);
-        if (onComplete) onComplete();
-      }
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 0.07);
+        osc2.stop(now + 0.07);
     }
-    requestAnimationFrame(update);
-  }
 
-  function animateCardFlip(cardMesh, card, duration, onComplete) {
-    const startTime = performance.now();
-    let flipped = false;
+    playWin() {
+        this.init();
+        const ctx = this.ctx;
+        const now = ctx.currentTime;
 
-    function update() {
-      const elapsed = performance.now() - startTime;
-      let t = Math.min(elapsed / duration, 1);
+        // Major chime chord arpeggio
+        const notes = [261.63, 329.63, 392.00, 523.25]; // C4, E4, G4, C5
+        notes.forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.07);
+            
+            gain.gain.setValueAtTime(0, now + idx * 0.07);
+            gain.gain.linearRampToValueAtTime(0.07, now + idx * 0.07 + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.07 + 0.35);
 
-      // Flip around Z
-      const angle = Math.PI * t;
-      cardMesh.rotation.z = angle;
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            
+            osc.start(now + idx * 0.07);
+            osc.stop(now + idx * 0.07 + 0.45);
+        });
+    }
 
-      // At halfway, swap texture
-      if (t >= 0.5 && !flipped) {
-        flipped = true;
-        // Replace with face-up card
-        const newCard = createCardMesh(card, false);
-        const targetPos = cardMesh.position.clone();
-        const parent = cardMesh.parent;
+    playLoss() {
+        this.init();
+        const ctx = this.ctx;
+        const now = ctx.currentTime;
 
-        // Copy children's materials
-        newCard.position.copy(targetPos);
-        newCard.rotation.copy(cardMesh.rotation);
-        newCard.rotation.z = Math.PI - cardMesh.rotation.z;
+        // Descending low saw wave buzzer
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
 
-        // Remove old, add new
-        scene.remove(cardMesh);
-        scene.add(newCard);
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.linearRampToValueAtTime(75, now + 0.4);
 
-        // Update reference
-        const idx = cardMeshes.dealer.indexOf(cardMesh);
-        if (idx >= 0) cardMeshes.dealer[idx] = newCard;
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
 
-        // Continue animation on new card
-        const startTime2 = performance.now();
-        const remainDuration = duration * (1 - t);
-        function update2() {
-          const elapsed2 = performance.now() - startTime2;
-          let t2 = Math.min(elapsed2 / remainDuration, 1);
-          newCard.rotation.z = Math.PI + Math.PI * t2;
-          if (t2 < 1) {
-            requestAnimationFrame(update2);
-          } else {
-            newCard.rotation.z = 0;
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.45);
+    }
+
+    playPush() {
+        this.init();
+        const ctx = this.ctx;
+        const now = ctx.currentTime;
+
+        // Brief double neutral chime
+        const notes = [349.23, 349.23]; // F4
+        notes.forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.15);
+
+            gain.gain.setValueAtTime(0, now + idx * 0.15);
+            gain.gain.linearRampToValueAtTime(0.08, now + idx * 0.15 + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.15 + 0.2);
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.start(now + idx * 0.15);
+            osc.stop(now + idx * 0.15 + 0.25);
+        });
+    }
+}
+
+const soundCtrl = new SoundController();
+
+// --- Card Deck Shoe (6 Decks) ---
+class Shoe {
+    constructor(deckCount = 6) {
+        this.deckCount = deckCount;
+        this.cards = [];
+        this.reset();
+    }
+
+    reset() {
+        this.cards = [];
+        for (let d = 0; d < this.deckCount; d++) {
+            for (let suit of SUITS) {
+                for (let val of VALUES) {
+                    this.cards.push({ suit, val });
+                }
+            }
+        }
+        this.shuffle();
+    }
+
+    shuffle() {
+        for (let i = this.cards.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
+        }
+    }
+
+    draw() {
+        if (this.cards.length < 20) {
+            this.reset();
+        }
+        return this.cards.pop();
+    }
+}
+
+// --- Main Blackjack Game Controller ---
+class BlackjackGame {
+    constructor() {
+        this.shoe = new Shoe();
+        this.state = 'BETTING'; // BETTING, DEALING, PLAYER_TURNS, DEALER_TURN, SETTLEMENT
+        
+        // Spot seating (Spot 2 is active User player)
+        this.players = [
+            { id: 0, type: 'ai', name: '카지노로얄', balance: 50000, currentBet: 0, pendingBet: 0, cards: [], score: 0, active: true, status: 'playing' },
+            { id: 1, type: 'ai', name: 'casino', balance: 20000, currentBet: 0, pendingBet: 0, cards: [], score: 0, active: true, status: 'playing' },
+            { id: 2, type: 'user', name: '나 (Player)', balance: 100000, currentBet: 0, pendingBet: 0, cards: [], score: 0, active: true, status: 'playing' },
+            { id: 3, type: 'ai', name: 'magiccater5', balance: 15000, currentBet: 0, pendingBet: 0, cards: [], score: 0, active: true, status: 'playing' },
+            { id: 4, type: 'empty', name: '사자왕', balance: 30000, currentBet: 0, pendingBet: 0, cards: [], score: 0, active: false, status: 'playing' }
+        ];
+
+        this.dealer = { name: '딜러', cards: [], score: 0 };
+        
+        this.activeTurnIdx = 0;
+        this.timeRemaining = 15;
+        this.timerInterval = null;
+        this.currentChipValue = 500;
+
+        // Portal Stats
+        this.stats = {
+            wins: 0,
+            losses: 0,
+            ties: 0,
+            streak: 0
+        };
+
+        // Load balance & stats from LocalStorage
+        this.loadGameState();
+
+        // UI Hooks
+        this.dom = {
+            timerSec: document.getElementById('timer-sec'),
+            timerProgress: document.getElementById('timer-progress'),
+            timerContainer: document.getElementById('timer-container'),
+            dealerSpeech: document.getElementById('dealer-speech'),
+            dealerCards: document.getElementById('dealer-cards'),
+            dealerScore: document.getElementById('dealer-score'),
+            btnReset: document.getElementById('btn-reset'),
+            btnBet: document.getElementById('btn-bet'),
+            btnHit: document.getElementById('btn-hit'),
+            btnStand: document.getElementById('btn-stand'),
+            btnDouble: document.getElementById('btn-double'),
+            playActions: document.getElementById('play-actions'),
+            gameBanner: document.getElementById('game-banner'),
+            bannerText: document.getElementById('banner-text'),
+            chipsList: document.querySelectorAll('.bet-chips .bet-chip'),
+            btnJoin4: document.getElementById('btn-join-4'),
+            spot4: document.getElementById('spot-4'),
+            // Stats HUD
+            statWins: document.getElementById('stat-wins'),
+            statLosses: document.getElementById('stat-losses'),
+            statTies: document.getElementById('stat-ties'),
+            statStreak: document.getElementById('stat-streak')
+        };
+
+        this.registerEventListeners();
+        this.startBettingPhase();
+    }
+
+    // --- State Persistence ---
+    loadGameState() {
+        const savedBalance = localStorage.getItem('cineaho_bj3d_balance');
+        if (savedBalance) {
+            try {
+                const balances = JSON.parse(savedBalance);
+                this.players.forEach((p, idx) => {
+                    if (balances[idx] !== undefined) {
+                        p.balance = balances[idx];
+                    }
+                });
+            } catch (e) {
+                console.error("Failed to load balances", e);
+            }
+        }
+
+        const savedStats = localStorage.getItem('cineaho_bj3d_stats');
+        if (savedStats) {
+            try {
+                this.stats = JSON.parse(savedStats);
+            } catch (e) {
+                console.error("Failed to load stats", e);
+            }
+        }
+    }
+
+    saveGameState() {
+        const balances = this.players.map(p => p.balance);
+        localStorage.setItem('cineaho_bj3d_balance', JSON.stringify(balances));
+        localStorage.setItem('cineaho_bj3d_stats', JSON.stringify(this.stats));
+    }
+
+    // --- UI Listeners ---
+    registerEventListeners() {
+        // Chip Click Selection
+        this.dom.chipsList.forEach(chipEl => {
+            chipEl.addEventListener('click', () => {
+                const valAttr = chipEl.getAttribute('data-value');
+                soundCtrl.playChipClick();
+                
+                this.dom.chipsList.forEach(c => c.classList.remove('active'));
+                chipEl.classList.add('active');
+
+                if (valAttr === 'max') {
+                    this.currentChipValue = 'max';
+                } else {
+                    this.currentChipValue = parseInt(valAttr);
+                }
+            });
+        });
+
+        // Bet Ring Click on main player (Spot 2)
+        const spot2El = document.getElementById('spot-2');
+        spot2El.querySelector('.spot-bet-ring').addEventListener('click', () => {
+            if (this.state !== 'BETTING') return;
+            this.placeUserBet();
+        });
+
+        // Reset and Bet Confirm buttons
+        this.dom.btnReset.addEventListener('click', () => {
+            if (this.state !== 'BETTING') return;
+            soundCtrl.init();
+            this.resetUserBet();
+        });
+
+        this.dom.btnBet.addEventListener('click', () => {
+            if (this.state !== 'BETTING') return;
+            soundCtrl.init();
+            this.lockBetsAndStart();
+        });
+
+        // In-game user choice buttons
+        this.dom.btnHit.addEventListener('click', () => {
+            if (this.state !== 'PLAYER_TURNS' || this.activeTurnIdx !== 2) return;
+            this.playerHit(2);
+        });
+
+        this.dom.btnStand.addEventListener('click', () => {
+            if (this.state !== 'PLAYER_TURNS' || this.activeTurnIdx !== 2) return;
+            this.playerStand(2);
+        });
+
+        this.dom.btnDouble.addEventListener('click', () => {
+            if (this.state !== 'PLAYER_TURNS' || this.activeTurnIdx !== 2) return;
+            this.playerDoubleDown(2);
+        });
+
+        // Join button (Seat 4 AI activation)
+        this.dom.btnJoin4.addEventListener('click', () => {
+            soundCtrl.init();
+            this.joinSpot4();
+        });
+    }
+
+    joinSpot4() {
+        const spot = this.players[4];
+        spot.active = true;
+        spot.type = 'ai';
+        this.dom.btnJoin4.classList.add('hidden');
+        this.dom.spot4.classList.remove('empty-spot');
+        this.dom.spot4.querySelector('.player-tag').classList.remove('hidden');
+        this.updateBalancesUI();
+        this.showToast("사자왕님이 자리에 참가했습니다.");
+        
+        if (this.state === 'BETTING') {
+            setTimeout(() => {
+                this.placeAIBet(4);
+            }, 600);
+        }
+    }
+
+    // --- Speech updates ---
+    setDealerSpeech(text) {
+        this.dom.dealerSpeech.innerText = text;
+        this.dom.dealerSpeech.style.animation = 'none';
+        this.dom.dealerSpeech.offsetHeight; // trigger reflow
+        this.dom.dealerSpeech.style.animation = 'bounceSpeech 4s infinite ease-in-out, popSpeech 0.25s ease-out';
+    }
+
+    showToast(message) {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerText = message;
+        container.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.remove();
+        }, 2500);
+    }
+
+    // --- Betting flow ---
+    startBettingPhase() {
+        this.state = 'BETTING';
+        this.timeRemaining = 15;
+        this.dom.timerContainer.style.opacity = '1';
+        this.setDealerSpeech("배팅해 주세요.");
+
+        // Clear card DOMs
+        this.clearTableVisuals();
+
+        // UI active controls
+        this.dom.btnReset.disabled = false;
+        this.dom.btnBet.disabled = false;
+        this.dom.btnHit.disabled = true;
+        this.dom.btnStand.disabled = true;
+        this.dom.btnDouble.disabled = true;
+        this.dom.playActions.classList.add('hidden');
+        this.dom.btnBet.classList.remove('hidden');
+
+        // Reset game status
+        this.players.forEach(p => {
+            p.currentBet = 0;
+            p.cards = [];
+            p.score = 0;
+            p.status = 'playing';
+            document.getElementById(`score-${p.id}`).classList.remove('bust', 'blackjack');
+        });
+        this.dealer.cards = [];
+        this.dealer.score = 0;
+        this.dom.dealerScore.classList.remove('bust', 'blackjack');
+
+        // Place bets for AI players with short staggered delays
+        this.players.forEach(p => {
+            if (p.active && p.type === 'ai') {
+                setTimeout(() => {
+                    this.placeAIBet(p.id);
+                }, Math.random() * 1800 + 800);
+            }
+        });
+
+        this.startTimer();
+        this.updateBalancesUI();
+        this.updateStatsUI();
+    }
+
+    startTimer() {
+        if (this.timerInterval) clearInterval(this.timerInterval);
+        
+        this.updateTimerCircle();
+        this.timerInterval = setInterval(() => {
+            this.timeRemaining--;
+            if (this.timeRemaining < 0) {
+                clearInterval(this.timerInterval);
+                this.lockBetsAndStart();
+            } else {
+                this.dom.timerSec.innerText = this.timeRemaining;
+                this.updateTimerCircle();
+            }
+        }, 1000);
+    }
+
+    updateTimerCircle() {
+        this.dom.timerSec.innerText = this.timeRemaining;
+        const circleLength = 283;
+        const offset = circleLength - (this.timeRemaining / 15) * circleLength;
+        this.dom.timerProgress.style.strokeDashoffset = offset;
+        
+        if (this.timeRemaining <= 5) {
+            this.dom.timerProgress.style.stroke = 'var(--red)';
+        } else {
+            this.dom.timerProgress.style.stroke = 'var(--gold)';
+        }
+    }
+
+    placeUserBet() {
+        const user = this.players[2];
+        let amount = 0;
+
+        if (this.currentChipValue === 'max') {
+            amount = user.balance - user.pendingBet;
+        } else {
+            amount = this.currentChipValue;
+        }
+
+        if (user.pendingBet + amount > 250000) {
+            this.showToast("최대 배팅금액은 25만 골드입니다.");
+            return;
+        }
+
+        if (user.pendingBet + amount > user.balance) {
+            this.showToast("보유 자금이 부족합니다!");
+            return;
+        }
+
+        user.pendingBet += amount;
+        soundCtrl.playChipClick();
+        this.renderBetChips(2, user.pendingBet);
+        document.getElementById('spot-2').classList.add('bet-placed');
+    }
+
+    resetUserBet() {
+        const user = this.players[2];
+        user.pendingBet = 0;
+        this.renderBetChips(2, 0);
+        document.getElementById('spot-2').classList.remove('bet-placed');
+    }
+
+    placeAIBet(aiIdx) {
+        if (this.state !== 'BETTING') return;
+        const ai = this.players[aiIdx];
+        if (ai.balance <= 500) {
+            ai.balance = 20000; // Free refill for AI
+        }
+
+        let bet = 500;
+        if (ai.balance > 40000) {
+            const pool = [1000, 2000, 5000, 10000];
+            bet = pool[Math.floor(Math.random() * pool.length)];
+        } else if (ai.balance > 15000) {
+            const pool = [500, 1000, 2000];
+            bet = pool[Math.floor(Math.random() * pool.length)];
+        } else {
+            bet = 500;
+        }
+
+        ai.pendingBet = bet;
+        this.renderBetChips(aiIdx, bet);
+        document.getElementById(`spot-${aiIdx}`).classList.add('bet-placed');
+        soundCtrl.playChipClick();
+    }
+
+    renderBetChips(spotIdx, amount) {
+        const container = document.getElementById(`chips-${spotIdx}`);
+        container.innerHTML = '';
+        if (amount <= 0) return;
+
+        const DENOMINATIONS = [
+            { value: 50000, class: 'purple', label: '5만' },
+            { value: 10000, class: 'blue', label: '1만' },
+            { value: 2000, class: 'red', label: '2000' },
+            { value: 500, class: 'green', label: '500' }
+        ];
+
+        let temp = amount;
+        const chipsList = [];
+        for (let denom of DENOMINATIONS) {
+            const count = Math.floor(temp / denom.value);
+            for (let i = 0; i < count; i++) {
+                chipsList.push(denom);
+            }
+            temp %= denom.value;
+        }
+
+        // Render stacked chips
+        const visible = chipsList.reverse().slice(-8);
+        visible.forEach((chip, index) => {
+            const chipEl = document.createElement('div');
+            chipEl.className = `game-chip-visual ${chip.class}`;
+            chipEl.style.setProperty('--chip-col', `var(--chip-${chip.class})`);
+            chipEl.style.transform = `translate(${index * 1.5}px, -${index * 3.5}px)`;
+            chipEl.innerText = chip.label;
+            container.appendChild(chipEl);
+        });
+
+        // Wiggle player badge for visual feedback
+        const tag = document.getElementById(`spot-${spotIdx}`).querySelector('.player-tag');
+        if (tag) {
+            tag.style.transform = 'translateY(8px) scale(0.98)';
+            setTimeout(() => tag.style.transform = '', 150);
+        }
+    }
+
+    lockBetsAndStart() {
+        if (this.state !== 'BETTING') return;
+        clearInterval(this.timerInterval);
+        this.dom.timerContainer.style.opacity = '0';
+
+        const user = this.players[2];
+        if (user.pendingBet === 0) {
+            if (user.balance >= 500) {
+                user.pendingBet = 500;
+                this.renderBetChips(2, 500);
+                document.getElementById('spot-2').classList.add('bet-placed');
+                this.showToast("최소 배팅(500)으로 베팅되었습니다.");
+            } else {
+                // Out of balance user refill
+                this.showToast("자금이 부족해 충전금 10,000 골드가 제공됩니다.");
+                user.balance = 10000;
+                user.pendingBet = 500;
+                this.renderBetChips(2, 500);
+                document.getElementById('spot-2').classList.add('bet-placed');
+            }
+        }
+
+        // Substract bets from balances
+        this.players.forEach(p => {
+            if (p.active) {
+                if (p.pendingBet === 0 && p.type === 'ai') {
+                    p.pendingBet = 500;
+                    this.renderBetChips(p.id, 500);
+                }
+                p.currentBet = p.pendingBet;
+                p.balance -= p.currentBet;
+                p.pendingBet = 0;
+            }
+        });
+
+        this.updateBalancesUI();
+        this.saveGameState();
+        this.startDealingPhase();
+    }
+
+    updateBalancesUI() {
+        this.players.forEach(p => {
+            const balEl = document.getElementById(`balance-${p.id}`);
+            if (balEl) {
+                balEl.innerText = p.balance.toLocaleString();
+            }
+        });
+        
+        // Sync portal header chip count display
+        const portalChips = document.getElementById('chip-count');
+        if (portalChips) {
+            portalChips.innerText = this.players[2].balance.toLocaleString();
+        }
+    }
+
+    updateStatsUI() {
+        if (this.dom.statWins) this.dom.statWins.innerText = this.stats.wins;
+        if (this.dom.statLosses) this.dom.statLosses.innerText = this.stats.losses;
+        if (this.dom.statTies) this.dom.statTies.innerText = this.stats.ties;
+        if (this.dom.statStreak) this.dom.statStreak.innerText = this.stats.streak;
+    }
+
+    clearTableVisuals() {
+        this.players.forEach(p => {
+            document.getElementById(`cards-${p.id}`).innerHTML = '';
+            const scoreEl = document.getElementById(`score-${p.id}`);
+            scoreEl.classList.remove('visible');
+            scoreEl.innerText = '0';
+        });
+        this.dom.dealerCards.innerHTML = '';
+        this.dom.dealerScore.classList.remove('visible');
+        this.dom.dealerScore.innerText = '0';
+    }
+
+    // --- Dealing cards ---
+    async startDealingPhase() {
+        this.state = 'DEALING';
+        this.setDealerSpeech("카드를 분배합니다.");
+
+        const activeSpots = this.players.filter(p => p.active && p.currentBet > 0);
+        
+        // Round 1
+        for (let spot of activeSpots) {
+            await this.dealCardToSpot(spot.id, true);
+        }
+        await this.dealCardToDealer(true);
+
+        // Round 2
+        for (let spot of activeSpots) {
+            await this.dealCardToSpot(spot.id, true);
+        }
+        await this.dealCardToDealer(false); // Second dealer card face down
+
+        this.startPlayerTurns();
+    }
+
+    dealCardToSpot(spotIdx, faceUp = true) {
+        return new Promise((resolve) => {
+            const player = this.players[spotIdx];
+            const cardData = this.shoe.draw();
+            player.cards.push(cardData);
+            player.score = this.calculateHand(player.cards);
+
+            const container = document.getElementById(`cards-${spotIdx}`);
+            const cardEl = this.createCardElement(cardData);
+            container.appendChild(cardEl);
+
+            this.animateDeal(cardEl, container, () => {
+                if (faceUp) {
+                    cardEl.querySelector('.card-inner').classList.add('flipped');
+                }
+                
+                const scoreEl = document.getElementById(`score-${spotIdx}`);
+                scoreEl.innerText = player.score;
+                scoreEl.classList.add('visible');
+                
+                if (player.score > 21) {
+                    scoreEl.classList.add('bust');
+                } else if (player.score === 21 && player.cards.length === 2) {
+                    scoreEl.classList.add('blackjack');
+                }
+                
+                resolve();
+            });
+        });
+    }
+
+    dealCardToDealer(faceUp = true) {
+        return new Promise((resolve) => {
+            const cardData = this.shoe.draw();
+            this.dealer.cards.push(cardData);
+            
+            const visible = faceUp ? this.dealer.cards : [this.dealer.cards[0]];
+            this.dealer.score = this.calculateHand(visible);
+
+            const container = this.dom.dealerCards;
+            const cardEl = this.createCardElement(cardData);
+            container.appendChild(cardEl);
+
+            this.animateDeal(cardEl, container, () => {
+                if (faceUp) {
+                    cardEl.querySelector('.card-inner').classList.add('flipped');
+                }
+                this.dom.dealerScore.innerText = this.dealer.score;
+                this.dom.dealerScore.classList.add('visible');
+                
+                resolve();
+            });
+        });
+    }
+
+    createCardElement(card) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'card-3d-wrapper';
+        
+        const cardClass = card.suit.isRed ? 'hearts' : 'spades';
+        
+        wrapper.innerHTML = `
+            <div class="card-inner">
+                <div class="card-face card-back"></div>
+                <div class="card-face card-front ${card.suit.name} ${cardClass}">
+                    <div class="card-corner top">
+                        <span class="card-value">${card.val.name}</span>
+                        <span class="card-suit-mini">${card.suit.symbol}</span>
+                    </div>
+                    <div class="card-center-suit">${card.suit.symbol}</div>
+                    <div class="card-corner bottom">
+                        <span class="card-value">${card.val.name}</span>
+                        <span class="card-suit-mini">${card.suit.symbol}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        return wrapper;
+    }
+
+    animateDeal(cardEl, targetContainer, onComplete) {
+        const shoeEl = document.getElementById('card-shoe');
+        const shoeRect = shoeEl.getBoundingClientRect();
+        const targetRect = targetContainer.getBoundingClientRect();
+
+        // Translate delta coordinate offset
+        const startX = shoeRect.left - targetRect.left + 15;
+        const startY = shoeRect.top - targetRect.top - 10;
+
+        const cardIdx = targetContainer.children.length - 1;
+        const overlapOffset = cardIdx * 18;
+
+        cardEl.style.left = '0px';
+        cardEl.style.top = '0px';
+        cardEl.style.transform = `translate3d(${startX}px, ${startY}px, 350px) rotate(-35deg) scale(0.12)`;
+        cardEl.style.transition = 'none';
+
+        cardEl.offsetHeight; // trigger layout
+
+        setTimeout(() => {
+            cardEl.style.transition = 'transform 0.65s cubic-bezier(0.25, 0.8, 0.25, 1), left 0.65s ease';
+            cardEl.style.left = `${overlapOffset}px`;
+            cardEl.style.transform = 'translate3d(0, 0, 0) rotate(0deg) scale(1)';
+            soundCtrl.playCardDraw();
+        }, 15);
+
+        setTimeout(() => {
             if (onComplete) onComplete();
-          }
+        }, 650);
+    }
+
+    calculateHand(cards) {
+        let score = 0;
+        let aces = 0;
+        for (let card of cards) {
+            const val = card.val.value;
+            if (card.val.name === 'A') {
+                aces++;
+            }
+            score += val;
         }
-        requestAnimationFrame(update2);
-        return; // stop this animation
-      }
-
-      if (t < 1) {
-        requestAnimationFrame(update);
-      } else {
-        if (onComplete) onComplete();
-      }
-    }
-    requestAnimationFrame(update);
-  }
-
-  // ══════════════════════════════════════════════
-  //  CARD POSITIONS
-  // ══════════════════════════════════════════════
-  function getPlayerCardPos(index) {
-    const startX = -2;
-    const spacing = CARD_WIDTH + 0.3;
-    return {
-      x: startX + index * spacing,
-      y: 0.08 + index * CARD_DEPTH,
-      z: 2.5
-    };
-  }
-
-  function getDealerCardPos(index) {
-    const startX = -2;
-    const spacing = CARD_WIDTH + 0.3;
-    return {
-      x: startX + index * spacing,
-      y: 0.08 + index * CARD_DEPTH,
-      z: -2
-    };
-  }
-
-  // ══════════════════════════════════════════════
-  //  GAME LOGIC
-  // ══════════════════════════════════════════════
-  function drawCard() {
-    const value = Math.floor(Math.random() * 6) + 1;
-    const suit = SUITS[Math.floor(Math.random() * SUITS.length)];
-    return { value, suit };
-  }
-
-  function handTotal(hand) {
-    return hand.reduce((sum, c) => sum + c.value, 0);
-  }
-
-  function updateHUD() {
-    playerTotalHud.textContent = playerHand.length > 0 ? handTotal(playerHand) : '-';
-
-    if (phase === 'dealer' || phase === 'result') {
-      dealerTotalHud.textContent = handTotal(dealerHand);
-    } else if (dealerHand.length > 1) {
-      // Show only the visible card total
-      dealerTotalHud.textContent = dealerHand[1].value + ' + ?';
-    } else if (dealerHand.length === 1) {
-      dealerTotalHud.textContent = '?';
-    } else {
-      dealerTotalHud.textContent = '-';
+        while (score > 21 && aces > 0) {
+            score -= 10;
+            aces--;
+        }
+        return score;
     }
 
-    chipCountEl.textContent = chips;
-    statWins.textContent = stats.wins;
-    statLosses.textContent = stats.losses;
-    statTies.textContent = stats.ties;
-    statStreak.textContent = stats.streak;
-  }
-
-  function showResult(message, cssClass, chipDelta) {
-    resultBanner.textContent = message;
-    resultBanner.className = 'result-banner ' + cssClass;
-    resultBanner.style.display = 'block';
-
-    chips += chipDelta;
-    if (chips < 0) chips = 0;
-
-    phase = 'result';
-    btnHit.disabled = true;
-    btnStand.disabled = true;
-    btnDeal.style.display = 'none';
-    btnNewGame.style.display = 'flex';
-
-    updateHUD();
-  }
-
-  function clearTable() {
-    // Remove all card meshes
-    cardMeshes.player.forEach(m => scene.remove(m));
-    cardMeshes.dealer.forEach(m => scene.remove(m));
-    cardMeshes.player = [];
-    cardMeshes.dealer = [];
-    playerHand = [];
-    dealerHand = [];
-    animationQueue = [];
-    isAnimating = false;
-  }
-
-  // ── Deal ──
-  function startDeal() {
-    if (chips < currentBet) {
-      alert('칩이 부족합니다! 베팅을 줄여주세요.');
-      return;
+    // --- Turn cycles ---
+    startPlayerTurns() {
+        this.state = 'PLAYER_TURNS';
+        this.activeTurnIdx = 0;
+        this.nextPlayerTurn();
     }
 
-    clearTable();
-    resultBanner.style.display = 'none';
-    phase = 'dealing';
-    btnDeal.style.display = 'none';
-    btnNewGame.style.display = 'none';
-    btnHit.disabled = true;
-    btnStand.disabled = true;
+    nextPlayerTurn() {
+        this.players.forEach(p => {
+            document.getElementById(`spot-${p.id}`).classList.remove('active-turn');
+        });
 
-    // Draw cards
-    const pCard1 = drawCard();
-    const pCard2 = drawCard();
-    const dCard1 = drawCard(); // face down
-    const dCard2 = drawCard();
+        if (this.activeTurnIdx >= this.players.length) {
+            this.startDealerTurn();
+            return;
+        }
 
-    playerHand.push(pCard1, pCard2);
-    dealerHand.push(dCard1, dCard2);
+        const player = this.players[this.activeTurnIdx];
+        if (!player.active || player.currentBet <= 0) {
+            this.activeTurnIdx++;
+            this.nextPlayerTurn();
+            return;
+        }
 
-    // Animate dealing: P1, D1(down), P2, D2
-    queueAnimation((done) => {
-      const mesh = createCardMesh(pCard1, false);
-      scene.add(mesh);
-      mesh.position.set(deckMesh.position.x, deckMesh.position.y + 0.5, deckMesh.position.z);
-      cardMeshes.player.push(mesh);
-      const pos = getPlayerCardPos(0);
-      animateCardDeal(mesh, pos, { x: 0, y: 0, z: 0 }, DEAL_DURATION, () => {
-        updateHUD();
-        done();
-      });
-    });
+        document.getElementById(`spot-${player.id}`).classList.add('active-turn');
 
-    queueAnimation((done) => {
-      const mesh = createCardMesh(dCard1, true);
-      scene.add(mesh);
-      mesh.position.set(deckMesh.position.x, deckMesh.position.y + 0.5, deckMesh.position.z);
-      cardMeshes.dealer.push(mesh);
-      const pos = getDealerCardPos(0);
-      animateCardDeal(mesh, pos, { x: 0, y: 0, z: 0 }, DEAL_DURATION, () => {
-        updateHUD();
-        done();
-      });
-    });
+        if (player.score === 21) {
+            this.setDealerSpeech(`${player.name}님, 블랙잭!`);
+            player.status = 'blackjack';
+            setTimeout(() => {
+                this.activeTurnIdx++;
+                this.nextPlayerTurn();
+            }, 1200);
+            return;
+        }
 
-    queueAnimation((done) => {
-      const mesh = createCardMesh(pCard2, false);
-      scene.add(mesh);
-      mesh.position.set(deckMesh.position.x, deckMesh.position.y + 0.5, deckMesh.position.z);
-      cardMeshes.player.push(mesh);
-      const pos = getPlayerCardPos(1);
-      animateCardDeal(mesh, pos, { x: 0, y: 0, z: 0 }, DEAL_DURATION, () => {
-        updateHUD();
-        done();
-      });
-    });
-
-    queueAnimation((done) => {
-      const mesh = createCardMesh(dCard2, false);
-      scene.add(mesh);
-      mesh.position.set(deckMesh.position.x, deckMesh.position.y + 0.5, deckMesh.position.z);
-      cardMeshes.dealer.push(mesh);
-      const pos = getDealerCardPos(1);
-      animateCardDeal(mesh, pos, { x: 0, y: 0, z: 0 }, DEAL_DURATION, () => {
-        updateHUD();
-        // Check for natural 21
-        checkAfterDeal();
-        done();
-      });
-    });
-  }
-
-  function checkAfterDeal() {
-    const pTotal = handTotal(playerHand);
-    if (pTotal === TARGET) {
-      // Player blackjack! Reveal dealer
-      revealDealerAndResolve();
-      return;
-    }
-    // Normal play
-    phase = 'player';
-    btnHit.disabled = false;
-    btnStand.disabled = false;
-  }
-
-  // ── Hit ──
-  function playerHit() {
-    if (phase !== 'player') return;
-    btnHit.disabled = true;
-    btnStand.disabled = true;
-
-    const card = drawCard();
-    playerHand.push(card);
-
-    queueAnimation((done) => {
-      const idx = cardMeshes.player.length;
-      const mesh = createCardMesh(card, false);
-      scene.add(mesh);
-      mesh.position.set(deckMesh.position.x, deckMesh.position.y + 0.5, deckMesh.position.z);
-      cardMeshes.player.push(mesh);
-      const pos = getPlayerCardPos(idx);
-      animateCardDeal(mesh, pos, { x: 0, y: 0, z: 0 }, DEAL_DURATION, () => {
-        updateHUD();
-        const total = handTotal(playerHand);
-        if (total > TARGET) {
-          stats.losses++;
-          stats.streak = 0;
-          showResult(`버스트! (${total}) 패배 -${currentBet}`, 'result-lose', -currentBet);
-        } else if (total === TARGET) {
-          // Auto-stand at 21
-          playerStand();
+        if (player.type === 'ai') {
+            this.playAITurn(player.id);
         } else {
-          btnHit.disabled = false;
-          btnStand.disabled = false;
+            this.playUserTurn();
         }
-        done();
-      });
-    });
-  }
+    }
 
-  // ── Stand ──
-  function playerStand() {
-    if (phase !== 'player' && phase !== 'dealing') return;
-    phase = 'dealer';
-    btnHit.disabled = true;
-    btnStand.disabled = true;
+    playAITurn(aiIdx) {
+        const ai = this.players[aiIdx];
+        this.setDealerSpeech(`${ai.name}님이 고민 중입니다...`);
 
-    revealDealerAndResolve();
-  }
+        setTimeout(() => {
+            if (ai.score < 17) {
+                this.setDealerSpeech(`${ai.name}님, 힛 (Hit).`);
+                this.dealCardToSpot(aiIdx, true).then(() => {
+                    setTimeout(() => {
+                        if (ai.score > 21) {
+                            this.setDealerSpeech(`${ai.name}님 버스트!`);
+                            ai.status = 'bust';
+                            setTimeout(() => {
+                                this.activeTurnIdx++;
+                                this.nextPlayerTurn();
+                            }, 1200);
+                        } else {
+                            this.playAITurn(aiIdx);
+                        }
+                    }, 800);
+                });
+            } else {
+                this.setDealerSpeech(`${ai.name}님 스탠드.`);
+                ai.status = 'stand';
+                setTimeout(() => {
+                    this.activeTurnIdx++;
+                    this.nextPlayerTurn();
+                }, 1200);
+            }
+        }, 1500);
+    }
 
-  function revealDealerAndResolve() {
-    phase = 'dealer';
+    playUserTurn() {
+        this.setDealerSpeech("당신의 차례입니다. 선택해 주세요.");
+        this.dom.playActions.classList.remove('hidden');
+        this.dom.btnBet.classList.add('hidden');
+        this.dom.btnReset.disabled = true;
 
-    // Flip dealer's hidden card
-    queueAnimation((done) => {
-      const hiddenMesh = cardMeshes.dealer[0];
-      const card = dealerHand[0];
-
-      // Replace with face-up version
-      const newMesh = createCardMesh(card, false);
-      newMesh.position.copy(hiddenMesh.position);
-      newMesh.rotation.copy(hiddenMesh.rotation);
-      scene.remove(hiddenMesh);
-      scene.add(newMesh);
-      cardMeshes.dealer[0] = newMesh;
-
-      // Simple flip animation
-      const startTime = performance.now();
-      const dur = 400;
-      function flipAnim() {
-        const t = Math.min((performance.now() - startTime) / dur, 1);
-        const eased = 1 - Math.pow(1 - t, 3);
-        // Rotate around local Y for flip effect
-        newMesh.scale.x = Math.abs(Math.cos(Math.PI * eased));
-        if (t < 1) {
-          requestAnimationFrame(flipAnim);
+        this.dom.btnHit.disabled = false;
+        this.dom.btnStand.disabled = false;
+        
+        const user = this.players[2];
+        if (user.cards.length === 2 && user.balance >= user.currentBet) {
+            this.dom.btnDouble.disabled = false;
         } else {
-          newMesh.scale.x = 1;
-          updateHUD();
-          done();
+            this.dom.btnDouble.disabled = true;
         }
-      }
-      requestAnimationFrame(flipAnim);
-    });
+    }
 
-    // Dealer draws until >= 17
-    function dealerDraw() {
-      if (handTotal(dealerHand) < DEALER_STAND) {
-        const card = drawCard();
-        dealerHand.push(card);
+    playerHit(spotIdx) {
+        this.dom.btnHit.disabled = true;
+        this.dom.btnStand.disabled = true;
+        this.dom.btnDouble.disabled = true;
 
-        queueAnimation((done) => {
-          const idx = cardMeshes.dealer.length;
-          const mesh = createCardMesh(card, false);
-          scene.add(mesh);
-          mesh.position.set(deckMesh.position.x, deckMesh.position.y + 0.5, deckMesh.position.z);
-          cardMeshes.dealer.push(mesh);
-          const pos = getDealerCardPos(idx);
-          animateCardDeal(mesh, pos, { x: 0, y: 0, z: 0 }, DEAL_DURATION, () => {
-            updateHUD();
-            done();
-          });
+        this.setDealerSpeech("힛, 카드 추가.");
+        this.dealCardToSpot(spotIdx, true).then(() => {
+            const user = this.players[spotIdx];
+            if (user.score > 21) {
+                this.setDealerSpeech("버스트하셨습니다!");
+                user.status = 'bust';
+                this.dom.playActions.classList.add('hidden');
+                setTimeout(() => {
+                    this.activeTurnIdx++;
+                    this.nextPlayerTurn();
+                }, 1500);
+            } else if (user.score === 21) {
+                user.status = 'stand';
+                this.dom.playActions.classList.add('hidden');
+                setTimeout(() => {
+                    this.activeTurnIdx++;
+                    this.nextPlayerTurn();
+                }, 1500);
+            } else {
+                this.playUserTurn();
+            }
+        });
+    }
+
+    playerStand(spotIdx) {
+        this.dom.playActions.classList.add('hidden');
+        const user = this.players[spotIdx];
+        user.status = 'stand';
+        this.setDealerSpeech("스탠드.");
+        
+        setTimeout(() => {
+            this.activeTurnIdx++;
+            this.nextPlayerTurn();
+        }, 800);
+    }
+
+    playerDoubleDown(spotIdx) {
+        this.dom.btnHit.disabled = true;
+        this.dom.btnStand.disabled = true;
+        this.dom.btnDouble.disabled = true;
+        this.dom.playActions.classList.add('hidden');
+
+        const user = this.players[spotIdx];
+        user.balance -= user.currentBet;
+        user.currentBet *= 2;
+        
+        this.updateBalancesUI();
+        this.renderBetChips(spotIdx, user.currentBet);
+        this.setDealerSpeech("더블 다운! 한 장만 추가합니다.");
+        
+        soundCtrl.playChipClick();
+
+        this.dealCardToSpot(spotIdx, true).then(() => {
+            if (user.score > 21) {
+                user.status = 'bust';
+                this.setDealerSpeech("버스트하셨습니다!");
+            } else {
+                user.status = 'stand';
+            }
+            
+            setTimeout(() => {
+                this.activeTurnIdx++;
+                this.nextPlayerTurn();
+            }, 1500);
+        });
+    }
+
+    // --- Dealer sequence ---
+    async startDealerTurn() {
+        this.state = 'DEALER_TURN';
+        this.setDealerSpeech("딜러 카드를 공개합니다.");
+
+        // Reveal dealer hidden card
+        const hole = this.dom.dealerCards.children[1];
+        hole.querySelector('.card-inner').classList.add('flipped');
+        soundCtrl.playCardDraw();
+
+        this.dealer.score = this.calculateHand(this.dealer.cards);
+        this.dom.dealerScore.innerText = this.dealer.score;
+
+        await new Promise(r => setTimeout(r, 1200));
+
+        while (this.dealer.score < 17) {
+            this.setDealerSpeech("딜러 카드 한 장 더 받습니다.");
+            await this.dealCardToDealer(true);
+            await new Promise(r => setTimeout(r, 1200));
+        }
+
+        if (this.dealer.score > 21) {
+            this.setDealerSpeech("딜러 버스트!");
+            this.dom.dealerScore.classList.add('bust');
+        } else if (this.dealer.score === 21 && this.dealer.cards.length === 2) {
+            this.dom.dealerScore.classList.add('blackjack');
+            this.setDealerSpeech("딜러 블랙잭!");
+        } else {
+            this.setDealerSpeech(`딜러 ${this.dealer.score}점, 스탠드.`);
+        }
+
+        await new Promise(r => setTimeout(r, 1500));
+        this.settleRound();
+    }
+
+    // --- Settlement comparison ---
+    settleRound() {
+        this.state = 'SETTLEMENT';
+        const dScore = this.dealer.score;
+        const dBlackjack = (dScore === 21 && this.dealer.cards.length === 2);
+
+        this.players.forEach(p => {
+            if (!p.active || p.currentBet <= 0) return;
+
+            const pBust = p.status === 'bust';
+            const pBlackjack = p.status === 'blackjack';
+            let result = 'lose';
+
+            if (pBust) {
+                result = 'lose';
+            } else if (dScore > 21) {
+                result = pBlackjack ? 'blackjack_win' : 'win';
+            } else if (pBlackjack) {
+                result = dBlackjack ? 'push' : 'blackjack_win';
+            } else if (dBlackjack) {
+                result = 'lose';
+            } else if (p.score > dScore) {
+                result = 'win';
+            } else if (p.score < dScore) {
+                result = 'lose';
+            } else {
+                result = 'push';
+            }
+
+            let winnings = 0;
+            if (result === 'win') {
+                winnings = p.currentBet * 2;
+                p.balance += winnings;
+                this.markSpotWinner(p.id, false);
+            } else if (result === 'blackjack_win') {
+                winnings = Math.floor(p.currentBet * 2.5);
+                p.balance += winnings;
+                this.markSpotWinner(p.id, true);
+            } else if (result === 'push') {
+                winnings = p.currentBet;
+                p.balance += winnings;
+                this.markSpotPush(p.id);
+            } else {
+                this.markSpotLoser(p.id);
+            }
+
+            // Update user stats
+            if (p.id === 2) {
+                if (result === 'win' || result === 'blackjack_win') {
+                    this.stats.wins++;
+                    this.stats.streak++;
+                } else if (result === 'push') {
+                    this.stats.ties++;
+                    this.stats.streak = 0;
+                } else {
+                    this.stats.losses++;
+                    this.stats.streak = 0;
+                }
+            }
         });
 
-        // Schedule next draw check
-        queueAnimation((done) => {
-          dealerDraw();
-          done();
-        });
-      } else {
-        // Resolve
-        queueAnimation((done) => {
-          resolveGame();
-          done();
-        });
-      }
+        // Trigger results visual banner for user (Spot 2)
+        const user = this.players[2];
+        if (user.currentBet > 0) {
+            const userBust = user.status === 'bust';
+            const userBJ = user.status === 'blackjack';
+            
+            let userResultText = "LOSE";
+            let userResultClass = "lose";
+
+            if (userBust) {
+                userResultText = "BUST";
+                userResultClass = "lose";
+                soundCtrl.playLoss();
+            } else if (dScore > 21) {
+                userResultText = userBJ ? "BLACKJACK" : "YOU WIN";
+                userResultClass = "win";
+                soundCtrl.playWin();
+            } else if (userBJ) {
+                if (dBlackjack) {
+                    userResultText = "PUSH";
+                    userResultClass = "push";
+                    soundCtrl.playPush();
+                } else {
+                    userResultText = "BLACKJACK";
+                    userResultClass = "win";
+                    soundCtrl.playWin();
+                }
+            } else if (dBlackjack) {
+                userResultText = "LOSE";
+                userResultClass = "lose";
+                soundCtrl.playLoss();
+            } else if (user.score > dScore) {
+                userResultText = "YOU WIN";
+                userResultClass = "win";
+                soundCtrl.playWin();
+            } else if (user.score < dScore) {
+                userResultText = "YOU LOSE";
+                userResultClass = "lose";
+                soundCtrl.playLoss();
+            } else {
+                userResultText = "PUSH";
+                userResultClass = "push";
+                soundCtrl.playPush();
+            }
+
+            this.showBanner(userResultText, userResultClass);
+        }
+
+        this.updateBalancesUI();
+        this.updateStatsUI();
+        this.saveGameState();
+
+        // 5 seconds delay then reset for next betting round
+        setTimeout(() => {
+            this.hideBanner();
+            this.startBettingPhase();
+        }, 5000);
     }
 
-    // Start dealer drawing after reveal
-    queueAnimation((done) => {
-      dealerDraw();
-      done();
-    });
-  }
-
-  function resolveGame() {
-    const pTotal = handTotal(playerHand);
-    const dTotal = handTotal(dealerHand);
-
-    if (dTotal > TARGET) {
-      stats.wins++;
-      stats.streak++;
-      showResult(`딜러 버스트! (${dTotal}) 승리 +${currentBet}`, 'result-win', currentBet);
-    } else if (pTotal > dTotal) {
-      stats.wins++;
-      stats.streak++;
-      showResult(`승리! ${pTotal} vs ${dTotal} +${currentBet}`, 'result-win', currentBet);
-    } else if (dTotal > pTotal) {
-      stats.losses++;
-      stats.streak = 0;
-      showResult(`패배 ${pTotal} vs ${dTotal} -${currentBet}`, 'result-lose', -currentBet);
-    } else {
-      stats.ties++;
-      showResult(`무승부 ${pTotal} vs ${dTotal} ±0`, 'result-tie', 0);
-    }
-  }
-
-  // ── New Game ──
-  function newGame() {
-    clearTable();
-    resultBanner.style.display = 'none';
-    phase = 'betting';
-    btnDeal.style.display = 'flex';
-    btnNewGame.style.display = 'none';
-    btnHit.disabled = true;
-    btnStand.disabled = true;
-
-    if (chips <= 0) {
-      chips = 1000;
-      alert('칩이 모두 소진되었습니다. 1,000칩으로 재시작합니다!');
+    showBanner(text, cssClass) {
+        this.dom.bannerText.innerText = text;
+        this.dom.bannerText.className = `banner-title ${cssClass}`;
+        this.dom.gameBanner.classList.add('visible');
     }
 
-    updateHUD();
-  }
-
-  // ══════════════════════════════════════════════
-  //  CAMERA PRESETS
-  // ══════════════════════════════════════════════
-  function setCameraPreset(preset) {
-    const camBtns = [btnCamDefault, btnCamOverhead, btnCamClose];
-    camBtns.forEach(b => b.classList.remove('active'));
-
-    let targetPos, targetLookAt;
-    switch (preset) {
-      case 'default':
-        targetPos = { x: 0, y: 8, z: 7.5 };
-        targetLookAt = { x: 0, y: 0, z: 0.5 };
-        btnCamDefault.classList.add('active');
-        break;
-      case 'overhead':
-        targetPos = { x: 0, y: 12, z: 0.5 };
-        targetLookAt = { x: 0, y: 0, z: 0.2 };
-        btnCamOverhead.classList.add('active');
-        break;
-      case 'close':
-        targetPos = { x: 0, y: 4, z: 4.5 };
-        targetLookAt = { x: 0, y: 0, z: 1.5 };
-        btnCamClose.classList.add('active');
-        break;
+    hideBanner() {
+        this.dom.gameBanner.classList.remove('visible');
     }
 
-    // Smooth camera transition
-    const startPos = { x: camera.position.x, y: camera.position.y, z: camera.position.z };
-    const startTarget = { x: controls.target.x, y: controls.target.y, z: controls.target.z };
-    const startTime = performance.now();
-    const dur = 800;
-
-    function camAnim() {
-      const t = Math.min((performance.now() - startTime) / dur, 1);
-      const e = 1 - Math.pow(1 - t, 3);
-
-      camera.position.x = startPos.x + (targetPos.x - startPos.x) * e;
-      camera.position.y = startPos.y + (targetPos.y - startPos.y) * e;
-      camera.position.z = startPos.z + (targetPos.z - startPos.z) * e;
-
-      controls.target.x = startTarget.x + (targetLookAt.x - startTarget.x) * e;
-      controls.target.y = startTarget.y + (targetLookAt.y - startTarget.y) * e;
-      controls.target.z = startTarget.z + (targetLookAt.z - startTarget.z) * e;
-
-      controls.update();
-
-      if (t < 1) requestAnimationFrame(camAnim);
-    }
-    requestAnimationFrame(camAnim);
-  }
-
-  // ══════════════════════════════════════════════
-  //  EVENT LISTENERS
-  // ══════════════════════════════════════════════
-  function setupEventListeners() {
-    btnDeal.addEventListener('click', startDeal);
-    btnHit.addEventListener('click', playerHit);
-    btnStand.addEventListener('click', playerStand);
-    btnNewGame.addEventListener('click', newGame);
-
-    // Betting chips
-    betChips.forEach(chip => {
-      chip.addEventListener('click', () => {
-        if (phase !== 'betting' && phase !== 'result') return;
-        betChips.forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-        currentBet = parseInt(chip.dataset.amount);
-        currentBetEl.textContent = currentBet;
-      });
-    });
-
-    // Camera presets
-    btnCamDefault.addEventListener('click', () => setCameraPreset('default'));
-    btnCamOverhead.addEventListener('click', () => setCameraPreset('overhead'));
-    btnCamClose.addEventListener('click', () => setCameraPreset('close'));
-  }
-
-  // ══════════════════════════════════════════════
-  //  RENDER LOOP & RESIZE
-  // ══════════════════════════════════════════════
-  function animate() {
-    requestAnimationFrame(animate);
-    controls.update();
-
-    // Subtle deck hover animation
-    if (deckMesh) {
-      deckMesh.position.y = 0.1 + Math.sin(performance.now() * 0.001) * 0.03;
+    markSpotWinner(spotIdx, isBlackjack) {
+        const spotEl = document.getElementById(`spot-${spotIdx}`);
+        spotEl.classList.remove('bet-placed');
+        
+        const bet = this.players[spotIdx].currentBet;
+        const prize = isBlackjack ? Math.floor(bet * 1.5) : bet;
+        this.spawnFloatingScoreEffect(spotIdx, `+${prize.toLocaleString()}`, 'var(--gold)');
     }
 
-    renderer.render(scene, camera);
-  }
+    markSpotLoser(spotIdx) {
+        const spotEl = document.getElementById(`spot-${spotIdx}`);
+        spotEl.classList.remove('bet-placed');
+        
+        const bet = this.players[spotIdx].currentBet;
+        this.spawnFloatingScoreEffect(spotIdx, `-${bet.toLocaleString()}`, 'var(--red)');
+    }
 
-  function onResize() {
-    const w = container.clientWidth;
-    const h = container.clientHeight;
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-    renderer.setSize(w, h);
-  }
+    markSpotPush(spotIdx) {
+        const spotEl = document.getElementById(`spot-${spotIdx}`);
+        spotEl.classList.remove('bet-placed');
+        this.spawnFloatingScoreEffect(spotIdx, 'PUSH', 'var(--blue)');
+    }
 
-  // ══════════════════════════════════════════════
-  //  INIT
-  // ══════════════════════════════════════════════
-  document.addEventListener('DOMContentLoaded', () => {
-    initThree();
-    setupEventListeners();
-    updateHUD();
-  });
+    spawnFloatingScoreEffect(spotIdx, text, color) {
+        const spotEl = document.getElementById(`spot-${spotIdx}`);
+        const eff = document.createElement('div');
+        eff.innerText = text;
+        eff.style.position = 'absolute';
+        eff.style.top = '30px';
+        eff.style.left = '50%';
+        eff.style.transform = 'translateX(-50%)';
+        eff.style.color = color;
+        eff.style.fontSize = '18px';
+        eff.style.fontWeight = '900';
+        eff.style.fontFamily = "'Outfit', sans-serif";
+        eff.style.textShadow = '0 0 10px rgba(0,0,0,0.8), 0 0 5px ' + color;
+        eff.style.pointerEvents = 'none';
+        eff.style.zIndex = '100';
+        eff.style.transition = 'all 1.5s cubic-bezier(0.19, 1, 0.22, 1)';
+        
+        spotEl.appendChild(eff);
 
-})();
+        setTimeout(() => {
+            eff.style.transform = 'translate3d(-50%, -60px, 0)';
+            eff.style.opacity = '0';
+        }, 50);
+
+        setTimeout(() => {
+            eff.remove();
+        }, 1600);
+    }
+}
+
+// Global initialization
+window.addEventListener('DOMContentLoaded', () => {
+    window.gameInstance = new BlackjackGame();
+});
