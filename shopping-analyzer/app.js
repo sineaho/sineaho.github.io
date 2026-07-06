@@ -257,6 +257,37 @@ function applyFilters() {
   // Update result count
   const countEl = document.getElementById('result-match-count');
   if (countEl) countEl.textContent = filtered.length.toLocaleString();
+
+  // Dynamically update KPIs based on filtered list
+  const minPriceEl = document.getElementById('kpi-min-price');
+  const maxPriceEl = document.getElementById('kpi-max-price');
+  const avgPriceEl = document.getElementById('kpi-avg-price');
+  const topProductEl = document.getElementById('kpi-top-product');
+
+  if (filtered.length > 0) {
+    const prices = filtered.map(p => p.price);
+    const minPrice = Math.min(...prices);
+    const maxPrice = Math.max(...prices);
+    const avgPrice = Math.round(prices.reduce((sum, val) => sum + val, 0) / prices.length);
+    
+    if (minPriceEl) minPriceEl.textContent = `₩${minPrice.toLocaleString()}`;
+    if (maxPriceEl) maxPriceEl.textContent = `₩${maxPrice.toLocaleString()}`;
+    if (avgPriceEl) avgPriceEl.textContent = `₩${avgPrice.toLocaleString()}`;
+    
+    const topProduct = filtered[0]; // The dataset is already sorted by popularity score descending
+    if (topProductEl && topProduct) {
+      topProductEl.textContent = topProduct.name;
+      topProductEl.title = topProduct.name;
+    }
+  } else {
+    if (minPriceEl) minPriceEl.textContent = `₩0`;
+    if (maxPriceEl) maxPriceEl.textContent = `₩0`;
+    if (avgPriceEl) avgPriceEl.textContent = `₩0`;
+    if (topProductEl) {
+      topProductEl.textContent = '-';
+      topProductEl.title = '';
+    }
+  }
 }
 
 function renderTable(data) {

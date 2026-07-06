@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D 핀볼 아케이드 (Pinball 3D) - CineAHO</title>
+  <meta name="description" content="Three.js와 물리 충돌 엔진을 활용한 프리미엄 3D 핀볼 게임. 서부 개척 시대, 현대 네온 도시, 미래 우주 포탈 3가지 테마 스테이지를 제공합니다.">
+  
+  <!-- Google Fonts Inter, Noto Sans KR, Outfit, Orbitron -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Orbitron:wght@500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-orange"></div>
+  <div class="bg-glow bg-glow-cyan"></div>
+
+  <!-- Header Navigation -->
+  <header class="main-header glass-header">
+    <div class="header-left">
+      <div class="logo-circle">AHO</div>
+      <span class="logo-text">CineAHO's <span>Pinball 3D</span></span>
+    </div>
+    <div class="header-right">
+      <button id="btn-rules" class="btn btn-secondary">
+        <i class="fa-solid fa-circle-question"></i>
+        <span data-key="rules-btn">게임 방법</span>
+      </button>
+      <a href="../index.html" class="btn btn-back-home">
+        <i class="fa-solid fa-house"></i>
+        <span data-key="home-btn">포털 메인</span>
+      </a>
+      <button id="theme-toggle" class="btn-theme">
+        <i class="fa-solid fa-sun"></i>
+        <span data-key="theme-btn">라이트</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-container">
+    
+    <!-- Game Lobby (Theme Selector) -->
+    <section id="lobby-panel" class="lobby-card glass-panel">
+      <div class="lobby-header">
+        <i class="fa-solid fa-gamepad icon-accent"></i>
+        <h2 data-key="lobby-title">핀볼 스테이지 선택</h2>
+      </div>
+      
+      <p class="lobby-desc" data-key="lobby-subtitle">원하는 시대적 테마의 스테이지를 골라 핀볼을 시작하세요.</p>
+      
+      <div class="theme-grid">
+        <!-- Theme 1: Western -->
+        <div class="theme-card card-western" data-theme="western">
+          <div class="theme-card-img">
+            <span class="theme-icon">🤠</span>
+          </div>
+          <div class="theme-info">
+            <h3>서부 개척 시대 (Western)</h3>
+            <p>따뜻한 먼지바람 속 살룬 배럴, 선인장 장애물, 통나무 레일과 따뜻한 백열등 테마</p>
+          </div>
+        </div>
+        
+        <!-- Theme 2: Modern -->
+        <div class="theme-card card-modern" data-theme="modern">
+          <div class="theme-card-img">
+            <span class="theme-icon">🏙️</span>
+          </div>
+          <div class="theme-info">
+            <h3>현대 도시 (Modern)</h3>
+            <p>화려한 카본 그리드, 금속 고속 슬라이드 레일, 빌딩 범퍼와 네온 블라인드 조명 테마</p>
+          </div>
+        </div>
+        
+        <!-- Theme 3: Future -->
+        <div class="theme-card card-future" data-theme="future">
+          <div class="theme-card-img">
+            <span class="theme-icon">🚀</span>
+          </div>
+          <div class="theme-info">
+            <h3>미래 우주 (Future)</h3>
+            <p>홀로그램 그리드 플레이트, 중력 편향 포탈, 플라스마 링 범퍼와 레이저 스펙트럼 테마</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="lobby-actions">
+        <button id="btn-start-game" class="btn btn-start" disabled>
+          <i class="fa-solid fa-play"></i> <span data-key="start-btn">스테이지 입장하기</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Game Board Section (Initially Hidden) -->
+    <section id="game-panel" class="game-layout" style="display: none;">
+      
+      <!-- Side Info HUD (Left) -->
+      <div class="side-info-panel flex-col gap-1">
+        
+        <!-- Score & Status Card -->
+        <div class="hud-card glass-panel">
+          <div class="hud-header">
+            <span class="hud-label" data-key="score-lbl">SCORE</span>
+            <div id="score-display" class="digital-text">000,000</div>
+          </div>
+          <div class="hud-grid">
+            <div class="hud-item">
+              <span class="hud-sub-label" data-key="balls-lbl">BALLS</span>
+              <div id="balls-display" class="hud-value">3</div>
+            </div>
+            <div class="hud-item">
+              <span class="hud-sub-label" data-key="multiplier-lbl">BONUS</span>
+              <div id="multiplier-display" class="hud-value">x1</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- High Score Card -->
+        <div class="hud-card glass-panel">
+          <h3 data-key="highscore-title">최고 기록</h3>
+          <div class="highscore-list">
+            <div class="score-row">
+              <span class="rank">1st</span>
+              <span id="high-score-val" class="score">1,500,000</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls Helper -->
+        <div class="controls-card glass-panel">
+          <h3 data-key="controls-title">게임 조작법</h3>
+          <div class="controls-list">
+            <div class="control-row">
+              <span class="key">A / Left Shift / ←</span>
+              <span class="action" data-key="ctrl-left">왼쪽 플리퍼</span>
+            </div>
+            <div class="control-row">
+              <span class="key">D / Right Shift / →</span>
+              <span class="action" data-key="ctrl-right">오른쪽 플리퍼</span>
+            </div>
+            <div class="control-row">
+              <span class="key">Space / ↓ (Hold)</span>
+              <span class="action" data-key="ctrl-plunger">런처 (압축 후 해제)</span>
+            </div>
+            <div class="control-row">
+              <span class="key">R</span>
+              <span class="action" data-key="ctrl-restart">게임 리셋</span>
+            </div>
+          </div>
+          <div class="control-actions">
+            <button id="btn-sound-toggle" class="btn btn-control">
+              <i class="fa-solid fa-volume-high"></i> <span data-key="sound-toggle">소리 끄기</span>
+            </button>
+            <button id="btn-quit" class="btn btn-control btn-danger">
+              <i class="fa-solid fa-flag"></i> <span data-key="quit-btn">스테이지 기권</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 3D Canvas Area (Center) -->
+      <div class="canvas-3d-container glass-panel">
+        <div class="scene-instructions">
+          <i class="fa-solid fa-arrows-to-eye"></i> <span data-key="camera-instructions">마우스 드래그로 각도 회전, 휠로 줌이 가능합니다.</span>
+        </div>
+
+        <div id="canvas-wrapper">
+          <!-- Canvas appended by Three.js -->
+        </div>
+
+        <!-- Mobile Controls (Touch Buttons) -->
+        <div class="mobile-controls">
+          <button id="btn-mobile-left" class="btn-touch">L</button>
+          <div class="mobile-plunger-area">
+            <button id="btn-mobile-plunger" class="btn-touch btn-plunge">LAUNCH</button>
+          </div>
+          <button id="btn-mobile-right" class="btn-touch">R</button>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Modals -->
+  <!-- Rules Modal -->
+  <div id="rules-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <i class="fa-solid fa-circle-question"></i>
+        <h3 data-key="rules-title">3D 핀볼 게임 방법</h3>
+      </div>
+      
+      <div class="modal-body">
+        <h4>🎮 기본 플레이</h4>
+        <ul>
+          <li>**볼 런처**: 스페이스 바 또는 아래쪽 화살표를 꾹 눌러 스프링을 장전하고 떼면 공이 쏘아집니다.</li>
+          <li>**플리퍼 컨트롤**: 왼쪽 쉬프트(A)와 오른쪽 쉬프트(D) 키를 눌러 플리퍼를 조작하여 공을 위로 쳐올리세요.</li>
+          <li>**목표**: 공이 아래 구멍으로 빠지지 않게 하며 테이블의 다양한 범퍼, 트리거, 슬링샷을 맞춰 높은 점수를 획득하세요.</li>
+        </ul>
+        
+        <h4>🌟 스테이지 특징</h4>
+        <ul>
+          <li><strong>🤠 서부 개척 시대:</strong> 나무 판 위에서 선인장 범퍼와 살룬 게이트를 맞춰 보너스를 모으세요.</li>
+          <li><strong>🏙️ 현대 도시:</strong> 금속 트랙을 따라 돌며 고속 루프 보너스와 신호등 트리거를 맞추세요.</li>
+          <li><strong>🚀 미래 우주:</strong> 에너지 게이트와 웜홀 포탈을 통과하여 텔레포트 및 고배율 찬스를 노리세요.</li>
+        </ul>
+      </div>
+
+      <div class="modal-actions">
+        <button id="btn-close-rules" class="btn btn-primary" data-key="close-btn">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Over Modal -->
+  <div id="gameover-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card glass-panel text-center">
+      <div class="gameover-icon">
+        <i class="fa-solid fa-trophy text-accent"></i>
+      </div>
+      <h2 data-key="gameover-title">GAME OVER</h2>
+      <p class="final-score-desc"><span data-key="final-score-lbl">최종 점수:</span> <strong id="final-score-val" class="text-accent">0</strong></p>
+      <p id="new-record-msg" class="text-glow" style="display: none;" data-key="new-record">🎉 새로운 최고 기록 달성! 🎉</p>
+      
+      <div class="modal-actions gap-1 justify-center">
+        <button id="btn-lobby-return" class="btn btn-primary" data-key="lobby-return-btn">로비로 이동</button>
+        <button id="btn-restart-game" class="btn btn-secondary" data-key="restart-btn">다시 시작</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer copyright (tiny, standard) -->
+  <footer style="margin-top: 30px; padding: 20px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); font-size: 13px; color: #64748b;">
+    <div>CineAHO's SandBox - 모든 도구를 한 곳에서 &copy; 2025 Cineaho. All right reserved.</div>
+  </footer>
+
+  <!-- External CDN Libraries (Three.js and OrbitControls) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
