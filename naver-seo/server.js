@@ -97,41 +97,73 @@ app.post('/api/analyze', async (req, res) => {
     // 스마트에디터 ONE/3.0 컴포넌트들 탐색 (.se-component)
     const components = mainContainer.find('.se-component, .se-component-content, .se_component');
     
-    if (components.length > 0) {
-      components.each((i, el) => {
+    // 중복 및 중첩된 하위 컴포넌트 제외 필터링 (가장 상위 컴포넌트만 남김)
+    const topLevelComponents = [];
+    components.each((i, el) => {
+      let isNested = false;
+      let parent = $(el).parent();
+      while (parent.length > 0 && parent[0] !== mainContainer[0]) {
+        if (parent.hasClass('se-component') || parent.hasClass('se-component-content') || parent.hasClass('se_component')) {
+          isNested = true;
+          break;
+        }
+        parent = parent.parent();
+      }
+      if (!isNested) {
+        topLevelComponents.push(el);
+      }
+    });
+
+    if (topLevelComponents.length > 0) {
+      topLevelComponents.forEach((el) => {
         const comp = $(el);
 
-        // 1. 텍스트 컴포넌트
-        if (comp.hasClass('se-component-text') || comp.find('.se-text-paragraph').length > 0) {
+        // 1. 인용구 컴포넌트 (소제목 대용으로 많이 쓰임) - 텍스트보다 먼저 체크하여 p태그 매칭 중복 방지
+        if (comp.hasClass('se-component-quote') || comp.find('.se-quote').length > 0) {
+          const quoteText = comp.find('.se-quote').text().trim();
+          if (quoteText) {
+            bodyMarkdown.push(`## ${quoteText}`);
+          }
+        }
+        // 2. 텍스트 컴포넌트
+        else if (comp.hasClass('se-component-text') || comp.find('.se-text-paragraph').length > 0) {
           comp.find('.se-text-paragraph, p').each((j, pEl) => {
             const p = $(pEl);
             let text = p.text().trim();
             if (!text) return;
 
-            // 소제목 판단: 폰트 크기 클래스 감지 (예: se-fs-fs19, se-fs-fs16, se-fs-fs24 등)
             const classAttr = p.attr('class') || '';
+            
+            // 소제목 클래스 검출 (.se-title-paragraph)
+            const isTitleParagraph = p.hasClass('se-title-paragraph') || classAttr.includes('se-title-paragraph');
+
+            // 폰트 크기 클래스 감지 (p태그 자체 클래스 및 하위 span 태그 클래스 검사)
+            let size = 0;
             const fsMatch = classAttr.match(/se-fs-fs(\d+)/) || classAttr.match(/se-fs(\d+)/) || classAttr.match(/se_fs_fs(\d+)/);
             
             if (fsMatch) {
-              const size = parseInt(fsMatch[1], 10);
-              if (size >= 19) {
-                bodyMarkdown.push(`## ${text}`);
-              } else if (size >= 16) {
-                bodyMarkdown.push(`### ${text}`);
-              } else {
-                bodyMarkdown.push(text);
-              }
+              size = parseInt(fsMatch[1], 10);
+            } else {
+              p.find('span').each((k, spanEl) => {
+                const spanClass = $(spanEl).attr('class') || '';
+                const spanFsMatch = spanClass.match(/se-fs-fs(\d+)/) || spanClass.match(/se-fs(\d+)/) || spanClass.match(/se_fs_fs(\d+)/);
+                if (spanFsMatch) {
+                  const spanSize = parseInt(spanFsMatch[1], 10);
+                  if (spanSize > size) {
+                    size = spanSize;
+                  }
+                }
+              });
+            }
+
+            if (isTitleParagraph || size >= 19) {
+              bodyMarkdown.push(`## ${text}`);
+            } else if (size >= 16) {
+              bodyMarkdown.push(`### ${text}`);
             } else {
               bodyMarkdown.push(text);
             }
           });
-        }
-        // 2. 인용구 컴포넌트 (소제목 대용으로 많이 쓰임)
-        else if (comp.hasClass('se-component-quote') || comp.find('.se-quote').length > 0) {
-          const quoteText = comp.find('.se-quote').text().trim();
-          if (quoteText) {
-            bodyMarkdown.push(`## ${quoteText}`);
-          }
         }
         // 3. 이미지 컴포넌트
         else if (comp.hasClass('se-component-image') || comp.find('img').length > 0) {
@@ -231,26 +263,74 @@ app.post('/api/analyze', async (req, res) => {
       }
     });
 
-    // 2단계: 모바일 클래스 선택자 보조 매칭
-    $('.wrap_tag a, .se-tag, .tag_area a, .tag_list a, .se-tag-text, .se_tag').each((i, el) => {
-      const tagText = $(el).text().replace('#', '').trim();
+    // 2단계: 모바일/PC 클래스 선택자 보조 매칭
+    $('.wrap_tag a, .se-tag, .tag_area a, .tag_list a, .se-tag-text, .se_tag, #tagList a, .post_tag a, .tag a').each((i, el) => {
+      let tagText = $(el).text().replace(/#/g, '').trim();
       if (tagText && !tags.includes(tagText)) {
         tags.push(tagText);
       }
     });
 
-    // 3단계: 본문 전체(특히 맨 마지막 부분)에서 직접 단일 #태그 텍스트 추출 (사용자가 본문 맨 밑에 타이핑한 해시코드)
-    // (?<!#)#을 통해 마크다운의 ##, ### (소제목)을 제외하고 오직 단일 #으로 구성된 해시코드만 탐색합니다.
-    const bodyTagRegex = /(?<!#)#([a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣_]+)/g;
-    let bodyTagMatch;
-    // 본문의 마지막 1500자 혹은 전체 본문에서 해시코드를 분석
-    const searchArea = fullText.length > 1500 ? fullText.substring(fullText.length - 1500) : fullText;
-    while ((bodyTagMatch = bodyTagRegex.exec(searchArea)) !== null) {
-      const tagText = bodyTagMatch[1].trim();
-      if (tagText && !tags.includes(tagText)) {
-        tags.push(tagText);
+    // 3단계: script 태그 내부의 JSON/JS 변수 메타데이터 수집 (Naver React State 등)
+    $('script').each((i, el) => {
+      const jsCode = $(el).html() || '';
+      if (jsCode.includes('tagNames') || jsCode.includes('tagName') || jsCode.includes('tagList') || jsCode.includes('tags')) {
+        // 3-1: tagNames 매칭 (쉼표로 구분된 태그 목록)
+        const tagNamesRegex = /\\?"tagNames\\?"\s*:\s*\\?"(.*?)\\?"/g;
+        let match;
+        while ((match = tagNamesRegex.exec(jsCode)) !== null) {
+          const val = match[1];
+          const splitTags = val.split(',');
+          splitTags.forEach(t => {
+            let cleanTag = t.trim();
+            if (cleanTag.includes('\\u')) {
+              try {
+                cleanTag = cleanTag.replace(/\\u([0-9a-fA-F]{4})/g, (m, grp) => {
+                  return String.fromCharCode(parseInt(grp, 16));
+                });
+              } catch (e) {}
+            }
+            cleanTag = cleanTag.replace(/\\/g, '');
+            if (cleanTag && !tags.includes(cleanTag)) {
+              tags.push(cleanTag);
+            }
+          });
+        }
+
+        // 3-2: tagName 매칭 (개별 태그)
+        const tagNameRegex = /\\?"tagName\\?"\s*:\s*\\?"(.*?)\\?"/g;
+        let matchName;
+        while ((matchName = tagNameRegex.exec(jsCode)) !== null) {
+          let cleanTag = matchName[1].trim();
+          if (cleanTag.includes('\\u')) {
+            try {
+              cleanTag = cleanTag.replace(/\\u([0-9a-fA-F]{4})/g, (m, grp) => {
+                return String.fromCharCode(parseInt(grp, 16));
+              });
+            } catch (e) {}
+          }
+          cleanTag = cleanTag.replace(/\\/g, '');
+          if (cleanTag && !tags.includes(cleanTag)) {
+            tags.push(cleanTag);
+          }
+        }
       }
-    }
+    });
+
+    // 4단계: 본문 전체 직접 타이핑 해시코드 추출 (#태그)
+    const lines = fullText.split('\n');
+    lines.forEach(line => {
+      if (line.trim().startsWith('##')) return; // 헤더 제외
+      
+      const bodyTagRegex = /(?<!#)#([a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣_]{1,30})/g;
+      let bodyTagMatch;
+      while ((bodyTagMatch = bodyTagRegex.exec(line)) !== null) {
+        const tagText = bodyTagMatch[1].trim();
+        if (tagText && !tags.includes(tagText)) {
+          tags.push(tagText);
+        }
+      }
+    });
 
     res.json({
       title,
