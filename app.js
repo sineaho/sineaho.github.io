@@ -632,9 +632,52 @@ function renderFrequentTools() {
 // --- Naver Blog RSS Loader (최신 6개 글 지원 및 다국어 요약문 매핑) ---
 let lastBlogPosts = null;
 
+// GitHub Pages 등 정적 호스팅 환경을 위한 폴백 데이터
+const MOCK_BLOG_FEED = [
+  {
+    title: 'React 19 정식 출시 및 프론트엔드 주요 아키텍처 변화 총정리',
+    summary: 'React 19에서 정식으로 발표된 Actions API, useActionState, useTransition 훅의 사용법을 소개하고 기존 폼 상태 관리에서 보일러플레이트가 획기적으로 감소하는 패턴을 자세히 분석합니다.',
+    pubDate: '2026. 07. 05',
+    link: 'https://blog.naver.com/sineaho',
+    titleEn: 'React 19 Official Release and Overview of Major Frontend Changes',
+    summaryEn: 'Introduces the new Actions API, useActionState, and useTransition hooks in React 19, analyzing patterns that drastically reduce boilerplate in form state management.',
+    titleJa: 'React 19の正式リリースと主要フロントエンドアーキテクチャの変更点まとめ',
+    summaryJa: 'React 19で発表されたActions API、useActionState、useTransitionフックの使い方を紹介し、従来のフォーム状態管理におけるボイラープレートの大幅な削減パターンを分析します。'
+  },
+  {
+    title: 'AI 에이전틱 엔지니어링(Agentic Engineering)의 개념과 미래 생존 역량',
+    summary: '인공지능 코딩 도구의 발전에 대응하여 단순 구현자(Coder)를 넘어 여러 AI 에이전트를 감독하고 비즈니스 아키텍처를 정의하는 스마트 엔지니어로 도약하기 위한 커리어 전략을 고찰합니다.',
+    pubDate: '2026. 06. 28',
+    link: 'https://blog.naver.com/sineaho',
+    titleEn: 'The Concept of AI Agentic Engineering and Future Developer Survival Skills',
+    summaryEn: 'Discusses career strategies for evolving beyond a simple coder to a smart engineer who supervises multiple AI agents and defines business architecture in response to advancing AI coding tools.',
+    titleJa: 'AIエージェンティックエンジニアリング의 개념과 미래의 개발자 생존 전략',
+    summaryJa: 'AIコーディングツールの発展に対応し、単なる実装者（コーダー）を超えて複数のAIエージェントを監督し、ビジネスアーキテクチャを定義するスマートエンジニアへのキャリア戦略を考察します。'
+  },
+  {
+    title: '웹 퍼포먼스를 극대화하는 CSS 그라디언트 및 글래스모피즘 미학 설계',
+    summary: '사용자 경험(UX)과 인터랙션을 고려한 모던 다크 테마 설계 기법, CSS 백드롭 필터를 통한 투명 카드 디자인 및 성능 저하 없는 미세 마이크로 인터랙션 구현 가이드입니다.',
+    pubDate: '2026. 06. 15',
+    link: 'https://blog.naver.com/sineaho',
+    titleEn: 'Designing CSS Gradients and Glassmorphism Aesthetics for Web Performance',
+    summaryEn: 'A guide to modern dark theme design taking UX and interaction into account, incorporating transparent cards with CSS backdrop-filters, and implementing lightweight micro-interactions.',
+    titleJa: 'ウェブパフォーマンスを極大化するCSSグラデーションとグラスモフィズムの美学設計',
+    summaryJa: 'ユーザー体験（UX）とインタラクションを考慮したモダンなダークテーマ設計、CSSバックドロップフィルターによる透明カードデザイン、パフォーマンスを低下させない微細なマイクロインタラクションの実装ガイドです。'
+  }
+];
+
 async function loadNaverBlogFeed() {
   const container = document.getElementById('blog-posts-container');
   if (!container) return;
+
+  const isGitHubPages = window.location.hostname.includes('github.io');
+
+  if (isGitHubPages) {
+    console.log('[Naver Blog] GitHub Pages 정적 환경 감지. 폴백 피드를 로드합니다.');
+    lastBlogPosts = MOCK_BLOG_FEED;
+    renderNaverBlogFeed();
+    return;
+  }
 
   try {
     const response = await fetch('/api/naver-blog/latest');
@@ -642,13 +685,9 @@ async function loadNaverBlogFeed() {
     lastBlogPosts = await response.json();
     renderNaverBlogFeed();
   } catch (error) {
-    console.error('[Naver Blog] Failed to fetch feed:', error);
-    const errorMsg = currentLang === 'ko' ? '블로그 글을 불러오는 중 오류가 발생했습니다.' : 'Failed to load blog posts.';
-    container.innerHTML = `
-      <div class="blog-loading-spinner" style="color: #ef4444;">
-        <i class="fa-solid fa-circle-exclamation"></i> ${errorMsg}
-      </div>
-    `;
+    console.warn('[Naver Blog] API 페칭 실패. 폴백 피드로 대체합니다:', error.message);
+    lastBlogPosts = MOCK_BLOG_FEED;
+    renderNaverBlogFeed();
   }
 }
 
