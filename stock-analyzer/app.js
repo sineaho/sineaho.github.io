@@ -57,6 +57,15 @@ async function performAnalysis(code) {
   
   try {
     const response = await fetch(`/api/stock/analyze?code=${encodeURIComponent(code)}`);
+    
+    if (!response.ok) {
+      if (response.status === 502 || response.status === 503 || response.status === 504 || response.status === 404) {
+        alert('백엔드 서버가 절전 모드에서 깨어나는 중입니다. Render 무료 서버 특성상 첫 호출 시 약 30초가 소요될 수 있으니 잠시 후 다시 진단 버튼을 눌러주세요.');
+        showLoading(false);
+        return;
+      }
+    }
+
     const result = await response.json();
     
     if (result.success && result.data) {
@@ -67,7 +76,7 @@ async function performAnalysis(code) {
     }
   } catch (err) {
     console.error('API Error:', err);
-    alert('서버와의 네트워크 연결에 실패했습니다. 나중에 다시 시도해 주세요.');
+    alert('서버와의 통신에 지연이 발생하고 있습니다. 백엔드가 구동 중일 수 있으니 잠시 후 다시 시도해 주세요.');
     showLoading(false);
   }
 }
