@@ -92,26 +92,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Try multiple fetch strategies in order
     const strategies = [
-      // 1. Local server proxy (best option)
+      // 1. Local or Cloudflare Reverse Proxy to Backend
       async () => {
         const proxyUrl = `/api/rss-proxy?url=${encodeURIComponent(feedSource.url)}&_t=${Date.now()}`;
         const res = await fetch(proxyUrl);
-        if (!res.ok) throw new Error(`Local proxy status: ${res.status}`);
+        if (!res.ok) throw new Error(`Backend proxy status: ${res.status}`);
         return await res.text();
       },
-      // 2. Fallback: corsproxy.io public CORS proxy
+      // 2. High-speed Public CORS Proxy (codetabs)
       async () => {
-        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(feedSource.url)}`;
+        const proxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(feedSource.url)}`;
         const res = await fetch(proxyUrl);
-        if (!res.ok) throw new Error(`corsproxy.io status: ${res.status}`);
+        if (!res.ok) throw new Error(`codetabs status: ${res.status}`);
         return await res.text();
       },
-      // 3. Fallback: api.allorigins.win public CORS proxy
+      // 3. Fallback: api.allorigins.win
       async () => {
         const cacheBuster = feedSource.url + (feedSource.url.includes('?') ? '&' : '?') + `_t=${Date.now()}`;
         const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(cacheBuster)}`;
         const res = await fetch(proxyUrl);
         if (!res.ok) throw new Error(`allorigins status: ${res.status}`);
+        return await res.text();
+      },
+      // 4. Fallback: corsproxy.io
+      async () => {
+        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(feedSource.url)}`;
+        const res = await fetch(proxyUrl);
+        if (!res.ok) throw new Error(`corsproxy.io status: ${res.status}`);
         return await res.text();
       }
     ];

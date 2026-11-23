@@ -20,6 +20,16 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+// --- 헬스체크 & 서버 가동 상태 API (Render, Cloudflare, UptimeRobot 핑 및 모니터링용) ---
+app.get(['/api/health', '/api/status'], (req, res) => {
+  res.json({
+    status: 'ok',
+    uptime: Math.round(process.uptime()),
+    timestamp: new Date().toISOString(),
+    service: 'cineaho-backend'
+  });
+});
+
 // --- 실시간 방문자수 집계 시스템 ---
 const STATS_FILE = path.join(__dirname, 'data', 'visitor-stats.json');
 

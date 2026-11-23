@@ -108,6 +108,9 @@ function initFormHandler() {
     try {
       const response = await fetch(`/api/naver-blog-analyze?blogId=${encodeURIComponent(blogId)}`);
       if (!response.ok) {
+        if (response.status === 404 || response.status === 502 || response.status === 503) {
+          throw new Error('백엔드 API 서버에 연결 중입니다. Render 서버가 절전 모드에서 깨어나는 중일 수 있으니 약 30초 후 다시 시도해 주세요.');
+        }
         throw new Error('데이터 수집 중 오류가 발생했습니다.');
       }
       
