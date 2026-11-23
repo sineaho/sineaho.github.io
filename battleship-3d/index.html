@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D 배틀쉽 온라인 (Battleship 3D Online) - CineAHO</title>
+  <meta name="description" content="실시간 3D 그래픽으로 즐기는 전략 함선 격침 게임. 방을 만들어 온라인으로 친구와 대결하세요.">
+  
+  <!-- Google Fonts: Inter, Noto Sans KR, Outfit, Orbitron -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Orbitron:wght@500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Lighting Effects -->
+  <div class="bg-glow bg-glow-blue"></div>
+  <div class="bg-glow bg-glow-magenta"></div>
+
+  <!-- Main Portal Container -->
+  <main class="app-container">
+    
+    <!-- LOBBY SCREEN -->
+    <section id="lobby-screen" class="lobby-wrapper glass-panel">
+      <div class="lobby-header text-center">
+        <div class="logo-icon-3d"><i class="fa-solid fa-ship"></i></div>
+        <h1 class="logo-title">BATTLESHIP <span class="accent-text">3D</span></h1>
+        <p class="logo-subtitle">ONLINE MULTIPLAYER NAVAL WARFARE</p>
+      </div>
+
+      <!-- Shared Player Nickname Setting -->
+      <div class="lobby-nickname-panel glass-panel-inner" style="max-width: 500px; margin: 0 auto 24px auto;">
+        <div class="input-group" style="margin-bottom: 0;">
+          <label for="player-nickname">사령관 닉네임 설정</label>
+          <input type="text" id="player-nickname" placeholder="닉네임을 입력하세요..." maxlength="12" value="제독">
+        </div>
+      </div>
+
+      <!-- Mode Select Tabs -->
+      <div class="lobby-tabs">
+        <button id="tab-online" class="lobby-tab-btn active"><i class="fa-solid fa-globe"></i> 온라인 대전</button>
+        <button id="tab-cpu" class="lobby-tab-btn"><i class="fa-solid fa-robot"></i> 인공지능(CPU) 대전</button>
+      </div>
+
+      <!-- Online Tab Content -->
+      <div id="content-online" class="lobby-grid tab-content">
+        <!-- Join / Host Section -->
+        <div class="lobby-card glass-panel-inner">
+          <h3 class="card-title"><i class="fa-solid fa-anchor"></i> 방 만들기 및 입장</h3>
+          <p class="panel-guide" style="margin-bottom: 15px;">새로운 작전 회의실을 개설하거나 방 코드를 입력하여 다른 사령관의 함대를 타격하세요.</p>
+          <div class="action-buttons">
+            <button id="btn-create-room" class="btn btn-primary btn-block">
+              <i class="fa-solid fa-plus"></i> 새로운 방 만들기
+            </button>
+          </div>
+
+          <div class="join-input-box">
+            <input type="text" id="join-room-id" placeholder="방 코드 5자리 입력..." maxlength="5">
+            <button id="btn-join-room" class="btn btn-secondary">
+              참가 <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Room List Section -->
+        <div class="lobby-card glass-panel-inner">
+          <div class="card-header-flex">
+            <h3 class="card-title"><i class="fa-solid fa-list-ul"></i> 참여 가능한 대기방</h3>
+            <button id="btn-refresh-lobbies" class="btn-icon-sm" title="새로고침">
+              <i class="fa-solid fa-rotate"></i>
+            </button>
+          </div>
+          
+          <div class="room-list-container" id="room-list-container">
+            <div class="no-rooms-msg">
+              <i class="fa-solid fa-radar fa-spin"></i>
+              <p>참여 가능한 공개 방이 없습니다.</p>
+              <span class="sub-msg">새로운 방을 생성해 보세요!</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CPU Tab Content (Initially Hidden) -->
+      <div id="content-cpu" class="lobby-card glass-panel-inner tab-content" style="display: none; max-width: 500px; margin: 0 auto;">
+        <h3 class="card-title"><i class="fa-solid fa-robot"></i> 싱글플레이어 인공지능전</h3>
+        <p class="panel-guide" style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 20px;">
+          인공지능 사령관을 상대로 전술 규격을 설정하여 훈련하십시오.
+        </p>
+
+        <!-- 1. Grid Size Selection -->
+        <div class="control-row-custom">
+          <label class="custom-label">작전 그리드 크기</label>
+          <div class="segmented-control" id="grid-size-select">
+            <button class="segment-btn" data-val="8">8 x 8</button>
+            <button class="segment-btn active" data-val="10">10 x 10</button>
+            <button class="segment-btn" data-val="12">12 x 12</button>
+          </div>
+        </div>
+
+        <!-- 2. AI Level Selection -->
+        <div class="control-row-custom">
+          <label class="custom-label">인공지능 전술 등급</label>
+          <div class="segmented-control" id="ai-level-select">
+            <button class="segment-btn" data-val="easy">초급 (쉬움)</button>
+            <button class="segment-btn active" data-val="normal">중급 (보통)</button>
+            <button class="segment-btn" data-val="hard">고급 (어려움)</button>
+          </div>
+        </div>
+
+        <!-- 3. Ship Counts Configuration -->
+        <div class="control-row-custom">
+          <label class="custom-label">참전 함선 수량 설정 (최대 8척)</label>
+          <div class="ship-counter-list">
+            <div class="ship-counter-item" data-ship="carrier">
+              <span class="counter-ship-name">항공모함 (크기 5)</span>
+              <div class="counter-controls">
+                <button class="btn-counter-dec">-</button>
+                <span class="counter-value">1</span>
+                <button class="btn-counter-inc">+</button>
+              </div>
+            </div>
+            <div class="ship-counter-item" data-ship="battleship">
+              <span class="counter-ship-name">전투함 (크기 4)</span>
+              <div class="counter-controls">
+                <button class="btn-counter-dec">-</button>
+                <span class="counter-value">1</span>
+                <button class="btn-counter-inc">+</button>
+              </div>
+            </div>
+            <div class="ship-counter-item" data-ship="cruiser">
+              <span class="counter-ship-name">순양함 (크기 3)</span>
+              <div class="counter-controls">
+                <button class="btn-counter-dec">-</button>
+                <span class="counter-value">1</span>
+                <button class="btn-counter-inc">+</button>
+              </div>
+            </div>
+            <div class="ship-counter-item" data-ship="submarine">
+              <span class="counter-ship-name">잠수함 (크기 3)</span>
+              <div class="counter-controls">
+                <button class="btn-counter-dec">-</button>
+                <span class="counter-value">1</span>
+                <button class="btn-counter-inc">+</button>
+              </div>
+            </div>
+            <div class="ship-counter-item" data-ship="destroyer">
+              <span class="counter-ship-name">구축함 (크기 2)</span>
+              <div class="counter-controls">
+                <button class="btn-counter-dec">-</button>
+                <span class="counter-value">1</span>
+                <button class="btn-counter-inc">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="validation-warning" id="config-warning" style="display:none; color:var(--color-danger); font-size:0.75rem; margin-top:8px;">
+            <i class="fa-solid fa-circle-exclamation"></i> 함선 총 갯수는 1척 이상, 8척 이하여야 합니다.
+          </div>
+        </div>
+
+        <button id="btn-start-cpu-game" class="btn btn-primary btn-block" style="font-size: 1.1rem; padding: 15px; margin-top:15px;">
+          <i class="fa-solid fa-play"></i> 인공지능 대전 시작하기
+        </button>
+      </div>
+
+      <div class="lobby-footer text-center">
+        <a href="../index.html" class="btn btn-text">
+          <i class="fa-solid fa-house"></i> 포털 메인으로 가기
+        </a>
+      </div>
+    </section>
+
+    <!-- GAME SCREEN -->
+    <section id="game-screen" class="game-wrapper" style="display: none;">
+      
+      <!-- Left Area: 3D Viewport -->
+      <div class="viewport-container">
+        <header class="game-header glass-panel">
+          <div class="header-left">
+            <div class="logo-circle">B3D</div>
+            <span class="logo-text">Battleship <span>3D</span></span>
+          </div>
+          <div class="header-right">
+            <button id="btn-camera-reset" class="btn-icon-round" title="카메라 리셋">
+              <i class="fa-solid fa-video"></i>
+            </button>
+            <button id="btn-rules" class="btn-icon-round" title="게임 방법">
+              <i class="fa-solid fa-circle-question"></i>
+            </button>
+            <button id="btn-exit-game" class="btn-icon-round btn-danger-action" title="방 나가기">
+              <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+          </div>
+        </header>
+
+        <!-- Three.js Canvas Container -->
+        <div id="canvas-container">
+          <div class="loading-overlay" id="loading-overlay" style="display: none;">
+            <div class="spinner"></div>
+            <p>3D 바다 환경을 소환하는 중...</p>
+          </div>
+        </div>
+
+        <!-- Floating State Banner / State Tips -->
+        <div class="state-banner-container">
+          <div class="state-banner glass-panel" id="state-banner">
+            <i class="fa-solid fa-compass fa-spin text-accent"></i>
+            <span id="state-banner-text">게임 초기화 중...</span>
+          </div>
+        </div>
+
+        <!-- Float Help controls -->
+        <div class="hud-helper glass-panel">
+          <div class="hud-helper-item"><i class="fa-solid fa-mouse"></i> 좌클릭: 타일 선택 / 사격</div>
+          <div class="hud-helper-item"><i class="fa-solid fa-arrows-to-eye"></i> 우클릭 드래그: 카메라 회전</div>
+          <div class="hud-helper-item"><i class="fa-solid fa-keyboard"></i> <kbd>R</kbd> : 배치 단계에서 함선 회전</div>
+        </div>
+      </div>
+
+      <!-- Right Area: Control Panel -->
+      <aside class="control-panel glass-panel">
+        
+        <!-- Room Info Section -->
+        <section class="panel-section room-info-section">
+          <div class="section-title">
+            <i class="fa-solid fa-server icon-accent"></i>
+            <h3>네트워크 상태</h3>
+          </div>
+          <div class="room-info-box">
+            <div class="info-row">
+              <span>방 코드:</span>
+              <strong class="room-code-tag" id="room-code-display">-----</strong>
+              <button id="btn-copy-code" class="btn-icon-xs" title="방 코드 복사">
+                <i class="fa-solid fa-copy"></i>
+              </button>
+            </div>
+            <div class="info-row">
+              <span>내 역할:</span>
+              <span id="role-display" class="role-badge">대기 중</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Players Score Board -->
+        <section class="panel-section scoreboard-section">
+          <div class="section-title">
+            <i class="fa-solid fa-users icon-accent"></i>
+            <h3>함대 사령부</h3>
+          </div>
+          <div class="players-list" id="players-list">
+            <!-- Dynamic Player Status cards -->
+            <div class="player-status-card me">
+              <div class="player-avatar cyan-glow"><i class="fa-solid fa-shield-halved"></i></div>
+              <div class="player-info">
+                <div class="player-name" id="my-name-display">나</div>
+                <div class="player-detail" id="my-status-detail">준비 대기 중</div>
+              </div>
+            </div>
+            <div class="player-status-card opponent">
+              <div class="player-avatar magenta-glow"><i class="fa-solid fa-crosshairs"></i></div>
+              <div class="player-info">
+                <div class="player-name" id="opponent-name-display">상대방</div>
+                <div class="player-detail" id="opponent-status-detail">입장 대기 중</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Ships Inventory Section (Dynamic) -->
+        <section class="panel-section ships-section">
+          <div class="section-title">
+            <i class="fa-solid fa-anchor icon-accent"></i>
+            <h3>함선 정보</h3>
+          </div>
+          
+          <!-- Placement Controls (Visible only during placement phase) -->
+          <div id="placement-panel" class="placement-controls">
+            <p class="panel-guide">배치할 함선을 선택하고 아래 보드판의 타일을 클릭해 배치해 주세요.</p>
+            <div class="ship-select-list" id="ship-select-list">
+              <!-- JS will build this list -->
+            </div>
+            <div class="placement-actions">
+              <button id="btn-rotate-ship" class="btn btn-secondary btn-block">
+                <i class="fa-solid fa-rotate-right"></i> 회전하기 (R키)
+              </button>
+              <button id="btn-ready" class="btn btn-primary btn-block" disabled>
+                <i class="fa-solid fa-check"></i> 배치 완료 & 준비
+              </button>
+            </div>
+          </div>
+
+          <!-- Ships Status (Visible during playing phase) -->
+          <div id="ships-status-panel" class="ships-status-panel" style="display: none;">
+            <div class="status-grid-header">
+              <span>내 함선 상태</span>
+              <span>상대 침몰 현황</span>
+            </div>
+            <div class="ships-status-split">
+              <div class="ship-health-list" id="my-ships-health">
+                <!-- Populated dynamically -->
+              </div>
+              <div class="ship-health-list" id="opponent-ships-sunk">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Chat & Logs Section -->
+        <section class="panel-section chat-section">
+          <div class="section-title">
+            <i class="fa-solid fa-comments icon-accent"></i>
+            <h3>작전 통신 및 로그</h3>
+          </div>
+          <div class="chat-box">
+            <div class="chat-logs" id="chat-logs">
+              <!-- Logs and chats go here -->
+            </div>
+            <div class="chat-input-box">
+              <input type="text" id="chat-input" placeholder="메시지를 입력하세요..." maxlength="50">
+              <button id="btn-send-chat" class="btn-icon-round"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+          </div>
+        </section>
+        
+      </aside>
+    </section>
+
+  </main>
+
+  <!-- Rules Modal -->
+  <div id="rules-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-circle-info icon-accent"></i> 3D 배틀쉽 온라인 게임 규칙</h2>
+        <button class="btn-close" onclick="closeModal('rules-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h4>1. 함선 배치 (Placement Phase)</h4>
+        <ul>
+          <li>자신의 보드판(왼쪽 그리드)에 5척의 함선을 겹치지 않게 배치합니다.</li>
+          <li>배치 중 함선 목록에서 함선을 선택한 후, 마우스를 그리드 위에 대고 클릭하면 배치됩니다.</li>
+          <li><strong>R키</strong> 또는 <strong>회전 버튼</strong>을 눌러 가로/세로 방향을 전환할 수 있습니다.</li>
+          <li>모든 함선을 배치한 후 <strong>배치 완료 & 준비</strong> 버튼을 누르면 상대방을 기다립니다.</li>
+        </ul>
+        
+        <h4>2. 게임 진행 (Battle Phase)</h4>
+        <ul>
+          <li>두 플레이어가 모두 배치를 마치면 실시간 대결이 시작됩니다.</li>
+          <li>자신의 차례일 때 상대편 그리드(오른쪽 그리드)를 클릭하여 미사일을 발사합니다.</li>
+          <li><strong>타격 (Hit)</strong>: 상대 함선을 격침하면 붉은색 마커가 생기며, <strong>한 번 더 사격 기회</strong>를 얻습니다.</li>
+          <li><strong>빗나감 (Miss)</strong>: 바다에 떨어지면 청색 마커가 생기고 <strong>턴이 상대방에게 넘어갑니다</strong>.</li>
+        </ul>
+
+        <h4>3. 함선 종류 및 크기</h4>
+        <ul>
+          <li><i class="fa-solid fa-ship"></i> 항공모함 (Carrier) - 크기 5</li>
+          <li><i class="fa-solid fa-ship"></i> 전투함 (Battleship) - 크기 4</li>
+          <li><i class="fa-solid fa-ship"></i> 순양함 (Cruiser) - 크기 3</li>
+          <li><i class="fa-solid fa-ship"></i> 잠수함 (Submarine) - 크기 3</li>
+          <li><i class="fa-solid fa-ship"></i> 구축함 (Destroyer) - 크기 2</li>
+        </ul>
+
+        <h4>4. 승리 조건</h4>
+        <ul>
+          <li>상대방의 함선 5척(총 17칸)을 가장 먼저 모두 격침시키는 플레이어가 최종 승리합니다.</li>
+          <li>상대방 함선이 격침되면 해당 함선의 모습이 오른쪽 3D 화면에 투명하게 공개됩니다.</li>
+        </ul>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" onclick="closeModal('rules-modal')">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Winner Modal -->
+  <div id="winner-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card glass-panel text-center">
+      <div class="winner-trophy">
+        <i class="fa-solid fa-trophy text-accent"></i>
+      </div>
+      <h2 id="winner-title">승리자 발생!</h2>
+      <p id="winner-desc">플레이어가 게임에서 승리했습니다!</p>
+      <div class="modal-actions">
+        <button onclick="location.reload()" class="btn btn-primary">대기실로 가기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Three.js and OrbitControls via CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  
+  <!-- Main Game logic -->
+  <script src="app.js"></script>
+
+</body>
+</html>

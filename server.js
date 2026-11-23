@@ -3918,6 +3918,18 @@ ${text}
   }
 });
 
+// --- 3D Battleship Online Routes ---
+const battleshipManager = require('./utils/battleship-manager');
+
+app.post('/api/battleship/create-room', battleshipManager.createRoom);
+app.post('/api/battleship/join-room', battleshipManager.joinRoom);
+app.get('/api/battleship/events', battleshipManager.setupSSE);
+app.post('/api/battleship/place-ships', battleshipManager.placeShips);
+app.post('/api/battleship/shoot', battleshipManager.shoot);
+app.post('/api/battleship/chat', battleshipManager.chat);
+app.post('/api/battleship/exit', battleshipManager.exitRoom);
+app.get('/api/battleship/lobbies', battleshipManager.getActiveRooms);
+
 // 메인페이지 매칭
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));

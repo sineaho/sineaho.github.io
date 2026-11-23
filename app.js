@@ -670,25 +670,72 @@ async function loadNaverBlogFeed() {
   const container = document.getElementById('blog-posts-container');
   if (!container) return;
 
-  const isGitHubPages = window.location.hostname.includes('github.io');
+  let posts = null;
 
-  if (isGitHubPages) {
-    console.log('[Naver Blog] GitHub Pages 정적 환경 감지. 폴백 피드를 로드합니다.');
-    lastBlogPosts = MOCK_BLOG_FEED;
-    renderNaverBlogFeed();
-    return;
-  }
-
+  // 1. 먼저 자체 백엔드 API(/api/naver-blog/latest) 호출 시도 (로컬 Node.js 서버 환경 지원)
   try {
     const response = await fetch('/api/naver-blog/latest');
-    if (!response.ok) throw new Error('API response not OK');
-    lastBlogPosts = await response.json();
-    renderNaverBlogFeed();
-  } catch (error) {
-    console.warn('[Naver Blog] API 페칭 실패. 폴백 피드로 대체합니다:', error.message);
-    lastBlogPosts = MOCK_BLOG_FEED;
-    renderNaverBlogFeed();
+    if (response.ok) {
+      const data = await response.json();
+      if (Array.isArray(data) && data.length > 0) {
+        posts = data;
+      }
+    }
+  } catch (err) {
+    // 자체 백엔드가 없는 정적/서버리스 환경에서는 다음 단계로 이동
   }
+
+  // 2. 자체 API가 없는 환경(Cloudflare Workers, GitHub Pages 등)에서는 CORS RSS 프록시로 실제 네이버 블로그 최신 글 로드
+  if (!posts || posts.length === 0) {
+    try {
+      const rssUrl = encodeURIComponent('https://rss.blog.naver.com/sineaho.xml');
+      const proxyRes = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`);
+      if (proxyRes.ok) {
+        const proxyData = await proxyRes.json();
+        if (proxyData.status === 'ok' && Array.isArray(proxyData.items) && proxyData.items.length > 0) {
+          posts = proxyData.items.slice(0, 6).map(item => {
+            // HTML 태그 제거 및 텍스트 요약 생성
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = item.description || item.content || '';
+            let cleanText = (tempDiv.textContent || tempDiv.innerText || '').replace(/\s+/g, ' ').trim();
+            cleanText = cleanText.replace(/\.{3,}$/, '').trim();
+            if (cleanText.length > 130) {
+              cleanText = cleanText.substring(0, 130) + '...';
+            } else if (cleanText.length > 0 && !cleanText.endsWith('.')) {
+              cleanText += '...';
+            }
+
+            // 날짜 포맷 (예: 2026-11-23 10:20:00 -> 2026. 11. 23)
+            let formattedDate = item.pubDate || '';
+            if (formattedDate.includes('-')) {
+              const datePart = formattedDate.split(' ')[0].split('-');
+              if (datePart.length === 3) {
+                formattedDate = `${datePart[0]}. ${datePart[1]}. ${datePart[2]}`;
+              }
+            }
+
+            return {
+              title: item.title,
+              summary: cleanText || '블로그 본문 미리보기를 보려면 원글 보기를 클릭하세요.',
+              pubDate: formattedDate,
+              link: item.link
+            };
+          });
+        }
+      }
+    } catch (proxyErr) {
+      console.warn('[Naver Blog] RSS 프록시 요청 실패:', proxyErr.message);
+    }
+  }
+
+  // 3. 실제 글 데이터가 있으면 렌더링, 네트워크 단절 등으로 모두 실패 시에만 폴백 피드로 안전하게 표시
+  if (posts && posts.length > 0) {
+    lastBlogPosts = posts;
+  } else {
+    console.warn('[Naver Blog] 모든 실시간 피드 요청 실패. 폴백 피드로 대체합니다.');
+    lastBlogPosts = MOCK_BLOG_FEED;
+  }
+  renderNaverBlogFeed();
 }
 
 function renderNaverBlogFeed() {
